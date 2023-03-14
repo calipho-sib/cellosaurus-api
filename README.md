@@ -121,6 +121,13 @@ J. Biomol. Tech. 29:25-38(2018).
 DOI: 10.7171/jbt.18-2902-002; PMID: 29805321
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5945021/
 
+## Powered by
+
+* git : https://git-scm.com/
+* github : https://github.com/
+* python : https://www.python.org/
+* fastAPI : https://fastapi.tiangolo.com/
+* solr : https://solr.apache.org/
 
 ## Licensing
 
