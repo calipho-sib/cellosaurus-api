@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        .result-table td,th {
+          border: 1px solid black;
+          border-collapse: collapse;
+          padding:5px;
+        }
+        .result-table   {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        
+        h1 {
+          color: maroon;
+          margin-left: 40px;
+        }
+        </style>    
+</head>
+<html>
+    <body>
+        <form>
+            <table>
+                <tbody>
+                    <tr><td><h3>Fulll search form</h3></td></tr>
+                    <tr>
+                        <td>Search criteria</td>
+                        <td><input style="width:100%;" type"text" name="q" value="$q" /></td>
+                    </tr>
+                    <tr>
+                        <td>Output fields</td>
+                        <td><input style="width:100%;" type"text" name="fields" value="$fields" /></td>
+                    </tr>
+                    <tr>
+                        <td>Sort criteria</td>
+                        <td><input style="width:100%;" type"text" name="sort" value="$sort" /></td>
+                    </tr>
+                    <tr>
+                        <td>Max output rows</td>
+                        <td><input style="width:100%;" type"text" name="rows" value="$rows" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><button type="submit" formmethod="get">Submit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Num found</td>
+                        <td>$numFound</td>
+                    </tr>
+                    <tr>
+                        <td>Output</td>
+                        <table class="result-table">
+                            <tbody>
+                                $resultRows
+                            </tbody>
+                        </table>
+                    </tr>
+                    <tr><td colspan="2">
+                        <h3>Useful links</h3>
+                        <ul>
+                            <li><a target="_blank" href="https://solr.apache.org/guide/8_11/the-standard-query-parser.html">Solr search syntax</href></li>
+                            <li><a target="_blank" href="$scope/static/fields_help.html">Comprehensive description of Cellosaurus cell line fields</href></li>
+                        </ul>
+                    </td></tr>
+                </tbody>
+            </table>
+        </form>
+
+    </body>
+</html>
+

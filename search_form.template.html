@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <form>
+            <table>
+                <tbody>
+                    <tr><td><h3>Search form</h3></td></tr>
+                    <tr>
+                        <td>Search criteria</td>
+                        <td><input style="width:100%;" type"text" name="q" value="$q" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><button type="submit" formmethod="get">Submit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Num found</td>
+                        <td>$numFound</td>
+                    </tr>
+                    <tr>
+                        <td>IDs found</td>
+                        <td><textarea cols="50" rows="20" id="idsFound">$idsFound</textarea></td>
+                    </tr>
+                    <tr><td colspan="2">
+                        <h3>Useful links</h3>
+                        <ul>
+                            <li><a target="_blank" href="https://solr.apache.org/guide/8_11/the-standard-query-parser.html">Solr search syntax</href></li>
+                            <li><a target="_blank" href="$scope/static/fields_help.html">Comprehensive description of Cellosaurus cell line fields</href></li>
+                        </ul>
+                    </td></tr>
+                </tbody>
+            </table>
+        </form>
+
+    </body>
+</html>
+

@@ -1,0 +1,510 @@
+#
+# Search and output field tag definition
+#
+# Version 1.5 - pam, 13.02.2023
+#
+# Fields must be declared in the following order:
+#
+# TG: Once.         tag.         Field identifier to be used in an API request in the value of parameter field or query
+# DE: Once or more. Description. Describes the content of the field, Used in Help page for API users.
+# SH: Once.         Short tag.   Obsolete - Value to be used in an API request in the value of parameter field or query
+# NG: Once.         Long tag.    Obsolete - Value to be used in an API request in the value of parameter filed or query
+# PR: Once or more. Prefix.      Prefix in cellosaurus line of txt version selected by short or long tag
+# XP: Once or more. Xpath expr.  XML path in cellosaurus XML version selected by short or long tag
+# //: Once.         Terminator
+#
+
+
+TG   id
+DE   Recommended name. Most frequently the name of the cell line as provided in the original publication.
+SH   ID
+NG   name
+PR   ID
+XP   /cell-line/name-list/name[@type="identifier"]
+CC   I know its an exception: that I call it name when it is called ID/identifier
+//
+TG   sy
+DE   List of synonyms. We try to list all the different synonyms for the cell line, including alternative use
+DE   of lower and upper cases characters. Misspellings are not included in synonyms (see the "misspelling" tag).   
+SH   SY
+NG   synonym
+PR   SY
+XP   /cell-line/name-list/name[@type="synonym"]
+//
+TG   idsy
+DE   Recommended name with all its synonyms. Concatenation of ID and SY.
+SH   IDSY
+NG   name-synonym
+PR   ID
+PR   SY
+XP   /cell-line/name-list/name
+//
+TG   ac
+DE   Primary accession. It is the unique identifier of the cell line.
+DE   It is normally stable across Cellosaurus versions but when two entries are merged, one of the two
+DE   accessions stays primary while the second one becomes secondary (see ACAS)  
+SH   AC
+NG   accession
+PR   AC
+XP   /cell-line/accession-list/accession[@type="primary"]
+//
+TG   acas
+DE   Primary and secondary accession. Secondary accession are former primary accession kept here to ensure the access to a cell
+DE   line via old identifiers.
+PR   AC
+PR   AS
+XP   /cell-line/accession-list/accession
+CC   No need to allow separate query/retrieval of primary and secondary AC
+CC   Pam: ok but useful for solr and technical reasons
+CC   Pam note: we cannot use 'AS' as a solr filed name
+//
+TG   dr
+DE   Cross-references to external resources: cell lines catalogs, databases, 
+DE   resources listing cell lines as samples or to ontologies. A cross-reference has two parts: 
+DE   the short name of the resource (i.e. CCLE) and an identifier used to locate a particular
+DE   entry of the resource related to the cell line. 
+DE   For a formal description of all the resources referred to in the Cellosaurus, 
+DE   see <a target="_blank" href="https://ftp.expasy.org/databases/cellosaurus/cellosaurus_xrefs.txt">here</href> .
+SH   DR
+NG   xref
+PR   DR
+XP   /cell-line/xref-list/xref
+CC   No need to have distinct fields for the different resources:
+CC   there are too many and there are too many changes from release to release
+//
+TG   ref
+DE   Publication references. Mostly publications describing the establishment of a cell line or its characterization.
+DE   Can be journal articles, book chapters, patents and theses. Contains the cross-reference of the publication, 
+DE   its title, authors (or group/consortium) and citation elements.
+SH   REF
+NG   reference
+PR   RX
+PR   RA
+PR   RG
+PR   RT
+PR   RL
+XP   /cell-line/reference-list/reference
+XP   /publication
+CC   Pam: everything about publications and cell-line internal-id referencing them
+//
+TG   rx
+DE   Publication cross-reference. A unique identifier allowing to access the publication online.
+DE   The cross-reference has two parts: 
+DE   the shorname of the online resource (i.e. PubMed, DOI, CLPUB or Patent) and an identifier used to locate the particular
+DE   publication (i.e. pmid) related to the cell line. 
+DE   For a formal description of all the resources referred to in the Cellosaurus, 
+DE   see <a target="_blank" href="https://ftp.expasy.org/databases/cellosaurus/cellosaurus_xrefs.txt">here</href> .
+SH   RX
+NG   ref-xref
+PR   RX
+XP   /cell-line/reference-list/reference
+XP   /publication/attribute::internal-id
+XP   /publication/xref-list/xref
+CC   Pam: publication xrefs with cell-line internal-id referencing them
+//
+TG   ra
+DE   Publication authors. List of authors of a publication referenced in a cell line entry.
+SH   RA
+NG   ref-author
+PR   RA
+PR   RG
+XP   /cell-line/reference-list/reference
+XP   /publication/attribute::internal-id
+XP   /publication/author-list/person
+XP   /publication/author-list/consortium
+//
+TG   rt
+DE   Publication title. Title of a publication referenced in a cell line entry.
+SH   RT
+NG   ref-title
+PR   RT
+XP   /cell-line/reference-list/reference
+XP   /publication/attribute::internal-id
+XP   /publication/title
+CC   Note: only a few references with a RG line instead of RA (8 so far).
+CC   Alain has put the name of the consortium inside the author-list (ok) as
+CC   a "<person name" (example: <person name="The HD iPSC consortium"/>).
+CC   Not very elegant but no need to change. Only question do we change the short
+CC   tag from "RA" to "RARG" which is not very elegant but would be more correct
+CC   in term of content
+//
+TG   rl
+DE   Publication citation elements. Citation elements of a publication referenced in a cell line entry.
+SH   RL
+NG   ref-citation
+PR   RL
+XP   /cell-line/reference-list/reference
+XP   /publication/attribute::type
+XP   /publication/attribute::date
+XP   /publication/attribute::journal-name
+XP   /publication/attribute::volume
+XP   /publication/attribute::last-page
+XP   /publication/attribute::first-page
+XP   /publication/attribute::publisher
+XP   /publication/attribute::city
+XP   /publication/attribute::database
+XP   /publication/attribute::patent
+XP   /publication/attribute::institution
+XP   /publication/attribute::country
+XP   /publication/attribute::location
+XP   /publication/attribute::internal-id
+CC   TODO Pam: optimize this somehow
+//
+TG   ww
+DE   Web page related to the cell line
+SH   WW
+NG   web-page
+PR   WW
+XP   /cell-line/web-page-list/url
+//
+TG   genome-ancestry
+DE   Estimated ethnic ancestry of the donor of a human cell line based on the analysis of its genome.
+SH   CC-genome
+NG   genome-ancestry
+PR   CC   Genome ancestry
+XP   /cell-line/genome-ancestry
+//
+TG   hla
+DE   HLA typing information. Alleles identified on the MHC type I and type II genes of the donor of a human cell line. 
+SH   CC-HLA
+NG   hla
+PR   CC   HLA typing
+XP   /cell-line/hla-typing-list/hla-typing
+CC   For both the API and the full text search: no need to go deep in the structure of the HLA information:
+CC   if one really want to get cell lines with a specific HLA allele value for a particular gene lets do that in SPARQL
+//
+TG   registration
+DE   Official list, or register in which the cell line is registered.
+SH   CC-registration
+NG   registration
+PR   CC   Registration
+XP   /cell-line/registration-list/registration
+//
+TG   sequence-variation
+DE   Important sequence variations of the cell line compared to the reference genome of the species.
+SH   CC-seq
+NG   sequence-variation
+PR   CC   Sequence variation
+XP   /cell-line/sequence-variation-list/sequence-variation
+//
+TG   anecdotal
+DE   Anecdotal details regarding the cell line (its origin, its name or any other particularity).
+SH   CC-anecdotal
+NG   anecdotal
+PR   CC   Anecdotal
+XP   /cell-line/comment-list/comment[@category="Anecdotal"]
+//
+TG   biotechnology
+DE   Type of use of the cell line in a biotechnological context.
+SH   CC-biotech
+NG   biotechnology
+PR   CC   Biotechnology
+XP   /cell-line/comment-list/comment[@category="Biotechnology"]
+//
+TG   breed
+DE   Breed or subspecies an animal cell line is derived from.
+SH   CC-breed
+NG   breed
+PR   CC   Breed/subspecies
+XP   /cell-line/comment-list/comment[starts-with(@category,"Breed")]
+CC   Pam: problem with slash in attribute name "Breed/subspecies", workaround by using starts-with() in XP
+//
+TG   caution
+DE   Errors, inconsistencies, ambiguities regarding the origin or other aspects of the cell line.
+SH   CC-caution
+NG   caution
+PR   CC   Caution
+XP   /cell-line/comment-list/comment[@category="Caution"]
+//
+TG   characteristics
+DE   Production process or specific biological properties of the cell line.
+SH   CC-characteristics
+NG   characteristics
+PR   CC   Characteristics
+XP   /cell-line/comment-list/comment[@category="Characteristics"]
+//
+TG   metastatic-site
+DE   Body part, organ the cell line is derived from in the case of a cell line originating from a cancer metastasis.
+SH   CC-metastatic-site
+NG   metastatic-site
+PR   CC   Derived from metastatic site
+XP   /cell-line/comment-list/comment[@category="Derived from metastatic site"]
+CC   Will be merged with "sampling site" in a modified, structured comment that will have its own XML element
+//
+TG   donor-info
+DE   Miscellaneous information relevant to the donor of the cell line.
+SH   CC-donor-info
+NG   donor-info
+PR   CC   Donor information
+XP   /cell-line/comment-list/comment[@category="Donor info"]
+CC   Added october 2022
+//
+TG   sampling-site
+DE   Body part, organ, cell-type the cell line is derived from.
+SH   CC-sampling-site
+NG   sampling-site
+PR   CC   Derived from sampling site
+XP   /cell-line/comment-list/comment[@category="Derived from sampling site"]
+CC   Will be merged with "metastatic site" in a modified, structured comment that will have its own XML element
+//
+TG   discontinued
+DE   Discontinuation status of the cell line in a cell line catalog.
+SH   CC-discontinued
+NG   discontinued
+PR   CC   Discontinued
+XP   /cell-line/comment-list/comment[@category="Discontinued"]
+//
+TG   doubling-time
+DE   Population doubling-time of the cell line.
+SH   CC-doubling-time
+NG   doubling-time
+PR   CC   Doubling time
+XP   /cell-line/comment-list/comment[@category="Doubling time"]
+CC   For the short tag: I hesitated: if I put CC-DT, it looks like if its concern the "DT" (Date) line. And If put CC-PDT (for population doubling time), a often used abbreviation, it seems weird not to use it inside the Cellosaurus
+//
+TG   from
+DE   Laboratory, research institute, university having established the cell line.
+SH   CC-from
+NG   from
+PR   CC   From
+XP   /cell-line/comment-list/comment[@category="From"]
+//
+TG   group
+DE   Specific group the cell line belongs to (example: fish cell lines, vaccine production cell lines).
+SH   CC-group
+NG   group
+PR   CC   Group
+XP   /cell-line/comment-list/comment[@category="Group"]
+//
+TG   karyotype
+DE   Information relevant to the chromosomes of a cell line (often to describe chromosomal abnormalities).
+SH   CC-karyotype
+NG   karyotype
+PR   CC   Karyotypic information
+XP   /cell-line/comment-list/comment[@category="Karyotypic information"]
+//
+TG   knockout
+DE   Gene(s) knocked-out in the cell line and method to obtain the KO.
+SH   CC-KO
+NG   knockout
+PR   CC   Knockout cell
+XP   /cell-line/comment-list/comment[@category="Knockout cell"]
+//
+TG   msi
+DE   Microsatellite instability degree.
+SH   CC-MSI
+NG   msi
+PR   CC   Microsatellite instability
+XP   /cell-line/comment-list/comment[@category="Microsatellite instability"]
+//
+TG   miscellaneous
+DE   Miscellaneous remarks about the cell line.
+SH   CC-miscellaneous
+NG   miscellaneous
+PR   CC   Miscellaneous
+XP   /cell-line/comment-list/comment[@category="Miscellaneous"]
+//
+TG   misspelling
+DE   Identified misspelling(s) of the cell line name with in some case the specific publication or external resource entry where it appears.
+SH   CC-misspelling
+NG   misspelling
+PR   CC   Misspelling
+XP   /cell-line/misspelling-list/misspelling
+//
+TG   mab-isotype
+DE   Monoclonal antibody isotype. Examples: IgG2a, kappa; IgM, lambda.
+SH   CC-mAb-isotype
+NG   mab-isotype
+PR   CC   Monoclonal antibody isotype
+XP   /cell-line/comment-list/comment[@category="Monoclonal antibody isotype"]
+//
+TG   mab-target
+DE   Monoclonal antibody target molecule. Generally a specific protein or chemical compound.
+SH   CC-mAb-target
+NG   mab-target
+PR   CC   Monoclonal antibody target
+XP   /cell-line/comment-list/comment[@category="Monoclonal antibody target"]
+//
+TG   omics
+DE   "Omics" study(ies) carried out on the cell line.
+SH   CC-omics
+NG   omics
+PR   CC   Omics
+XP   /cell-line/comment-list/comment[@category="Omics"]
+//
+TG   population
+DE   Ethnic group, nationality of the individual from which the cell line was sampled.
+SH   CC-population
+NG   population
+PR   CC   Population
+XP   /cell-line/comment-list/comment[@category="Population"]
+//
+TG   problematic
+DE   Known problem(s) related to the cell line: contaminated, misidentified, misclassified cell line or appearing in a retracted paper.
+SH   CC-problematic
+NG   problematic
+PR   CC   Problematic cell line
+XP   /cell-line/comment-list/comment[@category="Problematic cell line"]
+//
+TG   resistance
+DE   Selected to be resistant to some chemical compound (like a drug used in chemotherapy) or toxin. with a cross-reference to either ChEBI,
+DE   DrugBank, NCIt or UniProtKB.
+SH   CC-resistance
+NG   resistance
+PR   CC   Selected for resistance to
+XP   /cell-line/comment-list/comment[@category="Selected for resistance to"]
+//
+TG   senescence
+DE   When a finite cell line will senesce.
+SH   CC-senescence
+NG   senescence
+PR   CC   Senescence
+XP   /cell-line/comment-list/comment[@category="Senescence"]
+//
+TG   transfected
+DE   Transfected genetic element(s) in the cell line: gene name and identifier in UniProtKB, HGNC, MGI, RGD, VGNC and FlyBase.
+SH   CC-transfected
+NG   transfected
+PR   CC   Transfected with
+XP   /cell-line/comment-list/comment[@category="Transfected with"]
+//
+TG   transformant
+DE   What caused the cell line to be transformed: generally a virus (with a cross-reference to NCBI taxon identifier), a chemical compound
+DE   (with a cross-reference to ChEBI) or a form of irradiation (with a cross-reference to NCIt).
+SH   CC-transformant
+NG   transformant
+PR   CC   Transformant
+XP   /cell-line/comment-list/comment[@category="Transformant"]
+//
+TG   virology
+DE   Susceptibility of the cell line to viral infection, presence of integrated viruses or any other virology-related information.
+SH   CC-virology
+NG   virology
+PR   CC   Virology
+XP   /cell-line/comment-list/comment[@category="Virology"]
+//
+TG   cc
+DE   Comment(s). Any content described in fields 
+DE   genome-ancestry, hla, registration, sequence-variation, anecdotal, biotechnology, breed, caution, characteristics, 
+DE   metastatic-site, sampling-site, discontinued, donor-info, doubling-time, from, group, karyotype, knockout, miscellaneous, 
+DE   misspelling, mab-isotype, mab-target, msi, omics, population, problematic, resistance, senescence, transfected, transformant, virology.
+SH   CC
+NG   comment
+PR   CC
+XP   /cell-line/comment-list/comment
+//
+TG   str
+DE   Short tandem repeat profile.
+SH   ST
+NG   str
+PR   ST
+XP   /cell-line/str-list
+CC   Pam: for solr index we miss the marker id attribute value
+CC   For both the API and the full text search: no need to go deep in the structure
+CC   of the STR profile: CLASTR is used for search in STR profiles and if one really want
+CC   to get cell lines with a specific STR value for a marker lets do that in SPARQL
+//
+TG   di
+DE   Disease(s) suffered by the individual from which the cell line originated with its NCI Thesaurus or ORDO identifier.
+SH   DI
+NG   disease
+PR   DI
+XP   /cell-line/disease-list/cv-term
+//
+TG   din
+DE   Disease(s) suffered by the individual from which the cell line originated, restricted to diseases having a NCI Thesaurus identifier.
+SH   DIN
+NG   disease-ncit
+PR   DI   NCIt
+XP   /cell-line/disease-list/cv-term[@terminology="NCIt"]
+//
+TG   dio
+DE   Disease(s) suffered by the individual from which the cell line originated, restricted to diseases having an ORDO identifier.
+SH   DIO
+NG   disease-ordo
+PR   DI   ORDO
+XP   /cell-line/disease-list/cv-term[@terminology="ORDO"]
+//
+TG   ox
+DE   Species of the individual from which the cell line originates with its NCBI taxon identifier.
+SH   OX
+NG   species
+PR   OX
+XP   /cell-line/species-list/cv-term
+CC   Pam: we miss the attribute values in solr indexes
+//
+TG   sx
+DE   Sex of the individual from which the cell line originates.
+SH   SX
+NG   sex
+PR   SX
+XP   /cell-line/attribute::sex
+//
+TG   ag
+DE   Age at sampling time of the individual from which the cell line was established.
+SH   AG
+NG   age
+PR   AG
+XP   /cell-line/attribute::age
+CC   Will stop being an attribute and become an XML element
+CC   when links to developmental stage ontology are added
+//
+TG   oi
+DE   Cell line(s) originating from same individual (sister cell lines).
+SH   OI
+NG   same-origin-as
+PR   OI
+XP   /cell-line/same-origin-as
+//
+TG   hi
+DE   Parent cell line from which the cell line originates.
+SH   HI
+NG   derived-from
+PR   HI
+XP   /cell-line/derived-from
+//
+TG   ch
+DE   Cell line(s) originated from the cell line (child cell lines).
+SH   CH
+NG   child-list
+PR   CH
+XP   /cell-line/child-list/child
+CC   Maybe create a new XML element <children-list>
+CC   The only virtual field
+CC   Pam: I chose <child-list> to be more consstent with other <...-list> elements
+//
+TG   ca
+DE   Category to which a cell line belongs, one of 14 defined terms. Example: cancer cell line, hybridoma, transformed cell line.
+SH   CA
+NG   category
+PR   CA
+XP   /cell-line/attribute::category
+//
+TG   dt
+DE   Creation date, last modification date and version number of the cell line Cellosaurus entry.
+PR   DT
+XP   /cell-line/attribute::created
+XP   /cell-line/attribute::last-updated
+XP   /cell-line/attribute::entry-version
+//
+TG   dtc
+DE   Creation date of the cell line Cellosaurus entry.
+SH   DTC
+NG   created
+PR   DT
+XP   /cell-line/attribute::created
+//
+TG   dtu
+DE   Last modification date of the cell line Cellosaurus entry.
+SH   DTU
+NG   last-updated
+PR   DT
+XP   /cell-line/attribute::last-updated
+//
+TG   dtv
+DE   Version number of the cell line Cellosaurus entry.
+SH   DTV
+NG   entry-version
+PR   DT
+XP   /cell-line/attribute::entry-version
+//

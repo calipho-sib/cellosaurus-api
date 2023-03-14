@@ -1,0 +1,88 @@
+import datetime
+
+SERIAL_DIR = "./serial/"
+
+RI_FILE = SERIAL_DIR + "ri.bin"
+CL_IDX_FILE = SERIAL_DIR + "cl-idx.bin"
+CL_XML_FILE = SERIAL_DIR + "cl-xml.bin"
+CL_JSO_FILE = SERIAL_DIR + "cl-jso.bin"
+CL_TXT_FILE = SERIAL_DIR + "cl-txt.bin"
+
+RF_IDX_FILE = SERIAL_DIR + "rf-idx.bin"
+RF_XML_FILE = SERIAL_DIR + "rf-xml.bin"
+RF_JSO_FILE = SERIAL_DIR + "rf-jso.bin"
+RF_TXT_FILE = SERIAL_DIR + "rf-txt.bin"
+
+FLDDEF_FILE = "./fields_def.txt"
+
+# used in main.py and in fields_utils.py
+CELLAPI_VERSION="1.0.2"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def log_it(*things):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    now = datetime.datetime.now().isoformat().replace('T',' ')[:19]
+    print(now, *things, flush=True)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_properties(env):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    props = dict()
+    prop_file='cellapi_httpserver.config.' + env
+    f_in = open(prop_file, 'r')
+    while True:
+        line = f_in.readline()
+        if line == '': break
+        if line[0:1] == '#' : continue
+        if '=' in line:
+            nv = line.split('=')
+            name = nv[0].strip()
+            # the value may contain "=" as well
+            value = '='.join(nv[1:])
+            value = value.strip()
+            props[name]=value
+    f_in.close()
+    return props
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_search_result_txt_header(meta):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    s = ""
+    for k in meta["query"]: 
+        value = meta["query"][k]
+        if not isinstance(value,str): value = str(value)
+        s += "##   query." + k + ": " + value + "\n"
+    value =  meta["fields"]
+    if isinstance(value,list): value = ",".join(value)
+    elif value is None: value = "(None)"
+    s += "##   query.fields: " + value + "\n"
+    s += "##   query.format: "  + meta["format"] + "\n"
+    s += "##   response.numFound: " + str(meta["numFound"]) + "\n"
+    s += "\n"
+    
+    return s
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_format_from_headers(headers):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    value_str = None
+    for k in headers.keys():
+        if k.lower() == "accept":
+            value_str = headers.get(k)
+            break
+    if value_str is None: return "json" # our default
+
+    value_list = value_str.split(",")
+    for item in value_list:
+        value = item.split(";")[0].strip()   # we don't care of the q value
+        if value == "application/json": return "json"    
+        elif value == "application/xml": return "xml"
+        elif value == "text/plain": return "txt"
+        elif value == "text/tab-separated-values": return "tsv"
+        elif value.startswith("application/"): return "json"
+        elif value.startswith("text/"): return "txt"
+
+    return "json" # our default
+    
+    

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+ <head>
+  <link type="text/css" rel="stylesheet" href="static/swagger-ui.css">
+  <link rel="shortcut icon" href="favicon32.png">
+  <title>Cellosaurus API quick start</title>
+ </head>
+
+ <body>
+  <div id="swagger-ui">
+   <div class="swagger-ui">
+    <div class="information-container wrapper">
+
+     <section class="block col-12">
+      <div>
+       <div class="info">
+        <hgroup class="main">
+         <h2 class="title">Cellosaurus API
+          <span>
+           <small><pre class="version">$version</pre></small>
+           <small class="version-stamp"><pre class="version">OAS3</pre></small>
+          </span>
+         </h2>
+        </hgroup>
+        <div class="description>">A very quick overview of the API functionalities</div>
+       </div>
+      </div>
+     </section>
+
+     <div class="no-margin">
+      <div class="operation-tag-content">
+
+         <h3 style="margin-block-start: 12px; margin-block-end: 6px;" class="opbloc-tag">Examples</h3>
+
+         <div class="opblock opblock-get is-open">
+           <div style="padding:5px;">
+           Get information about the current version of the Cellosaurus
+          </div>
+           <ul>
+             <li><a href="$scope/release-info"/>$scope/release-info</a></li>
+           </ul>
+           <div>
+             <p style="padding-left:26px;">
+               The format of the response can be changed to tsv, json or xml by adding the <i>format</i>
+               parameter to the URL, i.e. <i>format=xml</i>.<br>This is true for all API calls.
+             </p>
+           </div>
+         </div>
+
+         <div class="opblock opblock-get is-open">
+           <div style="padding:5px;">
+             Get the short tandem repeat (STR) profile of cell line with accession CVCL_VG99 in json format
+          </div>
+           <ul>
+             <li><a href="$scope/cell-line/CVCL_VG99?fields=ac,str&format=json"/>$scope/cell-line/CVCL_VG99?fields=ac,str&format=json</a></li>
+           </ul>
+           <div>
+             <p style="padding-left:26px;">
+               If the <i>fields</i> parameter is absent, the full cell line record is sent in the response.<br>
+               See the bottom of this page to find a link to a page describing the list of cell line fields.
+             </p>
+           </div>
+         </div>
+
+         <div class="opblock opblock-get is-open">
+           <div style="padding:5px;">
+             Find human cell lines obtained from the liver of a patient with an
+             hepatoblastoma and retrieve their recommended name, acccession and the sequence variations
+          </div>
+           <ul>
+             <li><a href="$scope/search/cell-line?q=sampling-site:liver ox:sapiens di:Hepatoblastoma&fields=id,ac,sequence-variation"/>
+             $scope/search/cell-line?q=sampling-site:liver ox:sapiens di:Hepatoblastoma&fields=id,ac,sequence-variation
+             </a></li>
+           </ul>
+           <div>
+             <p style="padding-left:26px;">
+             Any field name used as a value for the <i>fields</i> parameter ( here <i>sampling-site</i>,<i>ox</i>, and <i>di</i> ) can also be used
+             in the search query <i>q</i> parameter.<br>
+             Search criteria in the <i>q</i> parameter are implicitly connected with a <i>AND</i> operator.<br>
+             The search syntax is a subset of the Solr search syntax. See links at the bottom for details.<br>
+             If you want to access and test the search method using a streamlined interface you can click <a href="search/form.html">here</a>.
+
+             </p>
+           </div>
+         </div>
+
+       <h3 style="margin-block-start: 12px; margin-block-end: 6px;" class="opbloc-tag">More documentation</h3>
+
+       <div class="opblock opblock-get is-open">
+       <ul>
+       <li style="padding-bottom:5px;"><a href="help">Comprehensive description of Cellosaurus API methods</a></li>
+       <li style="padding-bottom:5px;"><a href="static/fields_help.html">Comprehensive description of Cellosaurus cell line fields</a></li>
+       <li><a target="_blank" href="https://solr.apache.org/guide/8_11/the-standard-query-parser.html">Solr search syntax</a></li>
+       </ul>
+       </div>
+      </div>
+     </div>
+
+    </div>
+   </div>
+  </div>
+
+ </body>
+</html>

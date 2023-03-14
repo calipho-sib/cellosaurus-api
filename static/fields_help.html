@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+ <head>
+  <link type="text/css" rel="stylesheet" href="swagger-ui.css">
+  <link rel="shortcut icon" href="favicon32.png">
+  <title>Cellosaurus fields</title>  
+ </head>
+ 
+ <body>
+  <div id="swagger-ui">
+   <div class="swagger-ui">
+    <div class="information-container wrapper">
+    
+     <section class="block col-12">
+      <div>
+       <div class="info">
+        <hgroup class="main">
+         <h2 class="title">Cellosaurus API
+          <span>
+           <small><pre class="version">1.0.2</pre></small>
+           <small class="version-stamp"><pre class="version">OAS3</pre></small>
+          </span>
+         </h2>
+        </hgroup>
+       </div>
+      </div>
+     </section>
+
+     <div class="no-margin">
+      <div class="operation-tag-content">
+       <h3 class="opbloc-tag">
+        <span>Cellosaurus fields description</span>
+       </h3>
+       <span>
+        <div class="opblock opblock-get is-open">
+         <div class="parameters-container">
+          <div class="table-container">    
+           <table>
+            <thead>
+             <tr>
+              <th class="col_header parameters-col_name">Field tag</th>
+              <th class="col_header parameters-col_description">Description</th>
+             </tr>
+            </thead>            
+            <tbody><tr><td class="parameters-col_name" style="padding-right: 10px;">id</td><td class="parameters-col_description">Recommended name. Most frequently the name of the cell line as provided in the original publication.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">sy</td><td class="parameters-col_description">List of synonyms. We try to list all the different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms (see the "misspelling" tag).</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">idsy</td><td class="parameters-col_description">Recommended name with all its synonyms. Concatenation of ID and SY.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">ac</td><td class="parameters-col_description">Primary accession. It is the unique identifier of the cell line. It is normally stable across Cellosaurus versions but when two entries are merged, one of the two accessions stays primary while the second one becomes secondary (see ACAS)</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">acas</td><td class="parameters-col_description">Primary and secondary accession. Secondary accession are former primary accession kept here to ensure the access to a cell line via old identifiers.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">dr</td><td class="parameters-col_description">Cross-references to external resources: cell lines catalogs, databases, resources listing cell lines as samples or to ontologies. A cross-reference has two parts: the short name of the resource (i.e. CCLE) and an identifier used to locate a particular entry of the resource related to the cell line. For a formal description of all the resources referred to in the Cellosaurus, see <a target="_blank" href="https://ftp.expasy.org/databases/cellosaurus/cellosaurus_xrefs.txt">here</href> .</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">ref</td><td class="parameters-col_description">Publication references. Mostly publications describing the establishment of a cell line or its characterization. Can be journal articles, book chapters, patents and theses. Contains the cross-reference of the publication, its title, authors (or group/consortium) and citation elements.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">rx</td><td class="parameters-col_description">Publication cross-reference. A unique identifier allowing to access the publication online. The cross-reference has two parts: the shorname of the online resource (i.e. PubMed, DOI, CLPUB or Patent) and an identifier used to locate the particular publication (i.e. pmid) related to the cell line. For a formal description of all the resources referred to in the Cellosaurus, see <a target="_blank" href="https://ftp.expasy.org/databases/cellosaurus/cellosaurus_xrefs.txt">here</href> .</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">ra</td><td class="parameters-col_description">Publication authors. List of authors of a publication referenced in a cell line entry.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">rt</td><td class="parameters-col_description">Publication title. Title of a publication referenced in a cell line entry.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">rl</td><td class="parameters-col_description">Publication citation elements. Citation elements of a publication referenced in a cell line entry.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">ww</td><td class="parameters-col_description">Web page related to the cell line</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">genome-ancestry</td><td class="parameters-col_description">Estimated ethnic ancestry of the donor of a human cell line based on the analysis of its genome.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">hla</td><td class="parameters-col_description">HLA typing information. Alleles identified on the MHC type I and type II genes of the donor of a human cell line.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">registration</td><td class="parameters-col_description">Official list, or register in which the cell line is registered.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">sequence-variation</td><td class="parameters-col_description">Important sequence variations of the cell line compared to the reference genome of the species.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">anecdotal</td><td class="parameters-col_description">Anecdotal details regarding the cell line (its origin, its name or any other particularity).</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">biotechnology</td><td class="parameters-col_description">Type of use of the cell line in a biotechnological context.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">breed</td><td class="parameters-col_description">Breed or subspecies an animal cell line is derived from.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">caution</td><td class="parameters-col_description">Errors, inconsistencies, ambiguities regarding the origin or other aspects of the cell line.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">characteristics</td><td class="parameters-col_description">Production process or specific biological properties of the cell line.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">metastatic-site</td><td class="parameters-col_description">Body part, organ the cell line is derived from in the case of a cell line originating from a cancer metastasis.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">donor-info</td><td class="parameters-col_description">Miscellaneous information relevant to the donor of the cell line.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">sampling-site</td><td class="parameters-col_description">Body part, organ, cell-type the cell line is derived from.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">discontinued</td><td class="parameters-col_description">Discontinuation status of the cell line in a cell line catalog.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">doubling-time</td><td class="parameters-col_description">Population doubling-time of the cell line.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">from</td><td class="parameters-col_description">Laboratory, research institute, university having established the cell line.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">group</td><td class="parameters-col_description">Specific group the cell line belongs to (example: fish cell lines, vaccine production cell lines).</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">karyotype</td><td class="parameters-col_description">Information relevant to the chromosomes of a cell line (often to describe chromosomal abnormalities).</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">knockout</td><td class="parameters-col_description">Gene(s) knocked-out in the cell line and method to obtain the KO.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">msi</td><td class="parameters-col_description">Microsatellite instability degree.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">miscellaneous</td><td class="parameters-col_description">Miscellaneous remarks about the cell line.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">misspelling</td><td class="parameters-col_description">Identified misspelling(s) of the cell line name with in some case the specific publication or external resource entry where it appears.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">mab-isotype</td><td class="parameters-col_description">Monoclonal antibody isotype. Examples: IgG2a, kappa; IgM, lambda.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">mab-target</td><td class="parameters-col_description">Monoclonal antibody target molecule. Generally a specific protein or chemical compound.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">omics</td><td class="parameters-col_description">"Omics" study(ies) carried out on the cell line.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">population</td><td class="parameters-col_description">Ethnic group, nationality of the individual from which the cell line was sampled.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">problematic</td><td class="parameters-col_description">Known problem(s) related to the cell line: contaminated, misidentified, misclassified cell line or appearing in a retracted paper.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">resistance</td><td class="parameters-col_description">Selected to be resistant to some chemical compound (like a drug used in chemotherapy) or toxin. with a cross-reference to either ChEBI, DrugBank, NCIt or UniProtKB.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">senescence</td><td class="parameters-col_description">When a finite cell line will senesce.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">transfected</td><td class="parameters-col_description">Transfected genetic element(s) in the cell line: gene name and identifier in UniProtKB, HGNC, MGI, RGD, VGNC and FlyBase.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">transformant</td><td class="parameters-col_description">What caused the cell line to be transformed: generally a virus (with a cross-reference to NCBI taxon identifier), a chemical compound (with a cross-reference to ChEBI) or a form of irradiation (with a cross-reference to NCIt).</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">virology</td><td class="parameters-col_description">Susceptibility of the cell line to viral infection, presence of integrated viruses or any other virology-related information.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">cc</td><td class="parameters-col_description">Comment(s). Any content described in fields genome-ancestry, hla, registration, sequence-variation, anecdotal, biotechnology, breed, caution, characteristics, metastatic-site, sampling-site, discontinued, donor-info, doubling-time, from, group, karyotype, knockout, miscellaneous, misspelling, mab-isotype, mab-target, msi, omics, population, problematic, resistance, senescence, transfected, transformant, virology.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">str</td><td class="parameters-col_description">Short tandem repeat profile.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">di</td><td class="parameters-col_description">Disease(s) suffered by the individual from which the cell line originated with its NCI Thesaurus or ORDO identifier.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">din</td><td class="parameters-col_description">Disease(s) suffered by the individual from which the cell line originated, restricted to diseases having a NCI Thesaurus identifier.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">dio</td><td class="parameters-col_description">Disease(s) suffered by the individual from which the cell line originated, restricted to diseases having an ORDO identifier.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">ox</td><td class="parameters-col_description">Species of the individual from which the cell line originates with its NCBI taxon identifier.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">sx</td><td class="parameters-col_description">Sex of the individual from which the cell line originates.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">ag</td><td class="parameters-col_description">Age at sampling time of the individual from which the cell line was established.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">oi</td><td class="parameters-col_description">Cell line(s) originating from same individual (sister cell lines).</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">hi</td><td class="parameters-col_description">Parent cell line from which the cell line originates.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">ch</td><td class="parameters-col_description">Cell line(s) originated from the cell line (child cell lines).</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">ca</td><td class="parameters-col_description">Category to which a cell line belongs, one of 14 defined terms. Example: cancer cell line, hybridoma, transformed cell line.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">dt</td><td class="parameters-col_description">Creation date, last modification date and version number of the cell line Cellosaurus entry.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">dtc</td><td class="parameters-col_description">Creation date of the cell line Cellosaurus entry.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">dtu</td><td class="parameters-col_description">Last modification date of the cell line Cellosaurus entry.</td></tr>
+<tr><td class="parameters-col_name" style="padding-right: 10px;">dtv</td><td class="parameters-col_description">Version number of the cell line Cellosaurus entry.</td></tr>
+</tbody>
+           </table>
+          </div>  
+         </div>
+        </div>
+       </span>
+      </div>
+     </div>
+     
+    </div>
+   </div>
+  </div>
+    
+ </body>
+</html>
+
