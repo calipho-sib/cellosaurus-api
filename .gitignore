@@ -1,3 +1,11 @@
 private
 private/*
+_*.sh
+data_in
+data_in/*
+data_in.downloaded
+data_in.downloaded/*
+*.gz
+*.log
+
 
