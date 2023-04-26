@@ -259,7 +259,7 @@ DE   Population doubling-time of the cell line.
 SH   CC-doubling-time
 NG   doubling-time
 PR   CC   Doubling time
-XP   /cell-line/comment-list/comment[@category="Doubling time"]
+XP   /cell-line/doubling-time-list/doubling-time
 CC   For the short tag: I hesitated: if I put CC-DT, it looks like if its concern the "DT" (Date) line. And If put CC-PDT (for population doubling time), a often used abbreviation, it seems weird not to use it inside the Cellosaurus
 //
 TG   from
