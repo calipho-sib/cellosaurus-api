@@ -236,7 +236,7 @@ DE   Miscellaneous information relevant to the donor of the cell line.
 SH   CC-donor-info
 NG   donor-info
 PR   CC   Donor information
-XP   /cell-line/comment-list/comment[@category="Donor info"]
+XP   /cell-line/comment-list/comment[@category="Donor information"]
 CC   Added october 2022
 //
 TG   sampling-site
