@@ -496,6 +496,7 @@
   <field name="oi" type="text_gen_sort"/>
   <field name="omics" type="text_gen_sort"/>
   <field name="ox" type="text_gen_sort"/>
+  <field name="part_of" type="text_gen_sort"/>
   <field name="population" type="text_gen_sort"/>
   <field name="problematic" type="text_gen_sort"/>
   <field name="ra" type="text_gen_sort"/>
@@ -569,6 +570,7 @@
   <copyField source="oi" dest="text"/>
   <copyField source="omics" dest="text"/>
   <copyField source="ox" dest="text"/>
+  <copyField source="part_of" dest="text"/>
   <copyField source="population" dest="text"/>
   <copyField source="problematic" dest="text"/>
   <copyField source="ra" dest="text"/>

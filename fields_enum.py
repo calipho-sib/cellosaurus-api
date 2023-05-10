@@ -1,5 +1,5 @@
 #
-# Generated : 2023-04-26 15:36:45
+# Generated : 2023-05-10 11:16:12
 #
 
 from enum import Enum
@@ -41,6 +41,7 @@ class Fields(str, Enum):
 	MAB_ISOTYPE = "mab-isotype"
 	MAB_TARGET = "mab-target"
 	OMICS = "omics"
+	PART_OF = "part-of"
 	POPULATION = "population"
 	PROBLEMATIC = "problematic"
 	RESISTANCE = "resistance"

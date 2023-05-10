@@ -332,6 +332,13 @@ NG   omics
 PR   CC   Omics
 XP   /cell-line/comment-list/comment[@category="Omics"]
 //
+TG   part-of
+DE   Collection, panel the cell line is part of.
+SH   cc-part-of
+NG   part-of
+PR   CC   Part of
+XP   /cell-line/comment-list/comment[@category="Part of"]
+//
 TG   population
 DE   Ethnic group, nationality of the individual from which the cell line was sampled.
 SH   CC-population
