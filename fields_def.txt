@@ -333,7 +333,7 @@ PR   CC   Omics
 XP   /cell-line/comment-list/comment[@category="Omics"]
 //
 TG   part-of
-DE   Collection, panel the cell line is part of.
+DE   The cell line belongs to a specific panel or collection of cell lines.
 SH   cc-part-of
 NG   part-of
 PR   CC   Part of
