@@ -239,7 +239,7 @@ XP   /cell-line/comment-list/comment[@category="Donor information"]
 CC   Added october 2022
 //
 TG   derived-from-site
-DE   Body part or organ the cell line is derived from or originating from in case of a cancer metastasis.
+DE   Body part (tissue or organ) the cell line is derived from.
 SH   CC-derived-from-site
 NG   derived-from-site
 PR   CC   Derived from site
