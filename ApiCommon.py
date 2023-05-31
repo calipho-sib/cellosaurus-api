@@ -16,7 +16,7 @@ RF_TXT_FILE = SERIAL_DIR + "rf-txt.bin"
 FLDDEF_FILE = "./fields_def.txt"
 
 # used in main.py and in fields_utils.py
-CELLAPI_VERSION="1.0.2"
+CELLAPI_VERSION="1.0.3"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

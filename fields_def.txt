@@ -1,7 +1,7 @@
 #
 # Search and output field tag definition
 #
-# Version 1.5 - pam, 13.02.2023
+# Version 1.6 - pam, 31.05.2023
 #
 # Fields must be declared in the following order:
 #
@@ -216,20 +216,19 @@ NG   caution
 PR   CC   Caution
 XP   /cell-line/comment-list/comment[@category="Caution"]
 //
+TG   cell-type
+DE   Cell type from which the cell line is derived.
+SH   CC-cell-type
+NG   cell-type
+PR   CC   Cell type
+XP   /cell-line/cell-type
+//
 TG   characteristics
 DE   Production process or specific biological properties of the cell line.
 SH   CC-characteristics
 NG   characteristics
 PR   CC   Characteristics
 XP   /cell-line/comment-list/comment[@category="Characteristics"]
-//
-TG   metastatic-site
-DE   Body part, organ the cell line is derived from in the case of a cell line originating from a cancer metastasis.
-SH   CC-metastatic-site
-NG   metastatic-site
-PR   CC   Derived from metastatic site
-XP   /cell-line/comment-list/comment[@category="Derived from metastatic site"]
-CC   Will be merged with "sampling site" in a modified, structured comment that will have its own XML element
 //
 TG   donor-info
 DE   Miscellaneous information relevant to the donor of the cell line.
@@ -239,13 +238,12 @@ PR   CC   Donor information
 XP   /cell-line/comment-list/comment[@category="Donor information"]
 CC   Added october 2022
 //
-TG   sampling-site
-DE   Body part, organ, cell-type the cell line is derived from.
-SH   CC-sampling-site
-NG   sampling-site
-PR   CC   Derived from sampling site
-XP   /cell-line/comment-list/comment[@category="Derived from sampling site"]
-CC   Will be merged with "metastatic site" in a modified, structured comment that will have its own XML element
+TG   derived-from-site
+DE   Body part or organ the cell line is derived from or originating from in case of a cancer metastasis.
+SH   CC-derived-from-site
+NG   derived-from-site
+PR   CC   Derived from site
+XP   /cell-line/derived-from-site-list/derived-from-site
 //
 TG   discontinued
 DE   Discontinuation status of the cell line in a cell line catalog.
@@ -393,7 +391,7 @@ XP   /cell-line/comment-list/comment[@category="Virology"]
 TG   cc
 DE   Comment(s). Any content described in fields 
 DE   genome-ancestry, hla, registration, sequence-variation, anecdotal, biotechnology, breed, caution, characteristics, 
-DE   metastatic-site, sampling-site, discontinued, donor-info, doubling-time, from, group, karyotype, knockout, miscellaneous, 
+DE   discontinued, donor-info, doubling-time, from, group, karyotype, knockout, miscellaneous, 
 DE   misspelling, mab-isotype, mab-target, msi, omics, population, problematic, resistance, senescence, transfected, transformant, virology.
 SH   CC
 NG   comment
@@ -408,7 +406,7 @@ PR   ST
 XP   /cell-line/str-list
 CC   Pam: for solr index we miss the marker id attribute value
 CC   For both the API and the full text search: no need to go deep in the structure
-CC   of the STR profile: CLASTR is used for search in STR profiles and if one really want
+CC   of the STR profile: CLASTR is used for search in STR profiles and if one really wants
 CC   to get cell lines with a specific STR value for a marker lets do that in SPARQL
 //
 TG   di

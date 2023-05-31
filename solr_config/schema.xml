@@ -489,7 +489,8 @@
   <field name="knockout" type="text_gen_sort"/>
   <field name="mab_isotype" type="text_gen_sort"/>
   <field name="mab_target" type="text_gen_sort"/>
-  <field name="metastatic_site" type="text_gen_sort"/>
+  <field name="derived_from_site" type="text_gen_sort"/>
+  <field name="cell_type" type="text_gen_sort"/>
   <field name="miscellaneous" type="text_gen_sort"/>
   <field name="misspelling" type="text_gen_sort"/>
   <field name="msi" type="text_gen_sort"/>
@@ -507,7 +508,6 @@
   <field name="rl" type="text_gen_sort"/>
   <field name="rt" type="text_gen_sort"/>
   <field name="rx" type="text_gen_sort"/>
-  <field name="sampling_site" type="text_gen_sort"/>
   <field name="sequence_variation" type="text_gen_sort"/>
   <field name="str" type="text_gen_sort"/>
   <field name="sx" type="text_gen_sort"/>
@@ -563,7 +563,7 @@
   <copyField source="knockout" dest="text"/>
   <copyField source="mab_isotype" dest="text"/>
   <copyField source="mab_target" dest="text"/>
-  <copyField source="metastatic_site" dest="text"/>
+  <copyField source="derived_from_site" dest="text"/>
   <copyField source="miscellaneous" dest="text"/>
   <copyField source="misspelling" dest="text"/>
   <copyField source="msi" dest="text"/>
@@ -581,7 +581,7 @@
   <copyField source="rl" dest="text"/>
   <copyField source="rt" dest="text"/>
   <copyField source="rx" dest="text"/>
-  <copyField source="sampling_site" dest="text"/>
+  <copyField source="cell_type" dest="text"/>
   <copyField source="sequence_variation" dest="text"/>
   <copyField source="str" dest="text"/>
   <copyField source="sx" dest="text"/>

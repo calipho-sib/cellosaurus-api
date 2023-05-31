@@ -1,5 +1,5 @@
 #
-# Generated : 2023-05-11 16:53:57
+# Generated : 2023-05-31 14:25:14
 #
 
 from enum import Enum
@@ -25,10 +25,10 @@ class Fields(str, Enum):
 	BIOTECHNOLOGY = "biotechnology"
 	BREED = "breed"
 	CAUTION = "caution"
+	CELL_TYPE = "cell-type"
 	CHARACTERISTICS = "characteristics"
-	METASTATIC_SITE = "metastatic-site"
 	DONOR_INFO = "donor-info"
-	SAMPLING_SITE = "sampling-site"
+	DERIVED_FROM_SITE = "derived-from-site"
 	DISCONTINUED = "discontinued"
 	DOUBLING_TIME = "doubling-time"
 	FROM = "from"
