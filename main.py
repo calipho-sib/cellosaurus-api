@@ -170,7 +170,7 @@ async def get_release_info(
             Alternatively you can also use the HTTP Accept header of your
             request and set it to either text/plain, text/tab-separated-values, application/xml, application/json.
             If the format parameter is used, the accept header value is ignored.
-            If both the format parameter and the Accept are undefined, then the response will use the json format."""
+            If both the format parameter and the Accept header are undefined, then the response will use the json format."""
             )
         ):
 
@@ -228,7 +228,7 @@ async def get_cell_line(
             Alternatively you can also use the HTTP Accept header of your
             request and set it to either text/plain, text/tab-separated-values, application/xml, application/json.
             If the format parameter is used, the accept header value is ignored.
-            If both the format parameter and the Accept are undefined, then the response will use the json format."""
+            If both the format parameter and the Accept header are undefined, then the response will use the json format."""
             ),
         fld: Optional[list[Fields]] = Query(
             default = None,
@@ -388,7 +388,7 @@ async def search_cell_line(
             Alternatively you can also use the HTTP Accept header of your
             request and set it to either text/plain, text/tab-separated-values, application/xml, application/json.
             If the format parameter is used, the accept header value is ignored.
-            If both the format parameter and the Accept are undefined, then the response will use the json format."""
+            If both the format parameter and the Accept header are undefined, then the response will use the json format."""
             ),
         fld: Optional[list[Fields]] = Query(
             default = None,
