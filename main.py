@@ -417,7 +417,7 @@ async def search_cell_line(
             description = """Optional field(s) determining the sort order of the search result.
             Every field name must be followed with a space and the sort direction (ASCending or DESCending).
             When multiple fields are used as the value of this parameter, they must be separated by a comma.
-            All the files described <a href="static/fields_help.html">here</a> in are sortable. 
+            All the fields described <a href="static/fields_help.html">here</a> in are sortable. 
             When this parameter is undefined, the search result rows are sorted by relevance.
             """
             )
