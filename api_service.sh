@@ -1,3 +1,4 @@
+#!/bin/bash
 conf_file="$(hostname).config"
 if [ ! -f "$conf_file" ]; then
   echo Cannot find config file: $conf_file
@@ -15,62 +16,94 @@ host=$(hostname)
 server=$CELLAPI_SERVER
 port=$CELLAPI_PORT
 scope=$CELLAPI_ROOT_PATH
+workers=$CELLAPI_WORKERS
 mypython=$CELLAPI_PYTHON
-pattern="$mypython.main.py"
-
-echo "conf_file : $conf_file"
-echo "action    : $action"
-echo "host      : $host"
-echo "port      : $port"
-echo "scope     : $scope"
-echo "mypython  : $mypython"
-echo "pattern   : $pattern"
+pattern="gunicorn.main:app"
 
 if [ "$server" == "" ]; then
   server=$host
-  echo "Server    : CELLAPI_SERVER undefined, set to default hostname"
+  echo "CELLAPI_SERVER undefined, set to default hostname"
 fi
-echo "Server    : $server"
+if [ "$workers" == "" ]; then
+  workers=4
+  echo "CELLAPI_WORKERS undefined, set to default (4)"
+fi
+
+echo ""
+echo "conf_file : $conf_file"
+echo "action    : $action"
+echo "host      : $host"
+echo "server    : $server"
+echo "port      : $port"
+echo "scope     : $scope"
+echo "workers   : $workers"
+echo "mypython  : $mypython"
+echo "pattern   : $pattern"
+
 
 if [ "$action" == "start" ]; then
   echo "Starting API"
-  nohup $mypython main.py -s $server -p $port -r $scope -l False > cellapi.log 2>&1 &
-  pid=$(pgrep -f $pattern)
-  echo "Started, API process has pid $pid"
+  gunicorn main:app --worker-class uvicorn.workers.UvicornWorker \
+  --workers $workers  --bind $server:$port --timeout 600 \
+  --daemon \
+  --access-logfile cellapi.log --error-logfile cellapi.log --capture-output
+  
+  sleep 2
+  #nohup $mypython main.py -s $server -p $port -r $scope -l True > cellapi.log 2>&1 &
+  pids=$(pgrep -f $pattern)
+  pretty_pids=$(echo $pids | tr '\n', ' ')
+  echo "Started, API process has pid(s) $pretty_pids"
   echo done
 
 elif [ "$action" == "status" ]; then
-  pid=$(pgrep -f $pattern)
-  if [ "$pid" == "" ]; then
+  pids=$(pgrep -f $pattern)
+  if [ "$pids" == "" ]; then
     echo "Stopped, no API process running"
     exit
   else
-    echo "Running, API process has pid $pid"
+    pretty_pids=$(echo $pids | tr '\n', ' ')
+    echo "Running, API process has pid(s) $pretty_pids"
     exit
   fi
 
 elif [ "$action" == "stop" ]; then
   echo "Stopping API"
-  pid=$(pgrep -f $pattern)
-  if [ "$pid" == "" ]; then
+  pids=$(pgrep -f $pattern)
+  if [ "$pids" == "" ]; then
     echo "Oups, found no process to kill"
     exit 3
   else
-    echo Killing pid $pid
-    kill $pid
-    sleep 1
-    pid=$(pgrep -f $pattern)
-    if [ "$pid" != "" ]; then  
-      echo "Could not stop process $pid smoothly"
-      echo "Will use kill -9 in 5 seconds instead..."
-      sleep 5
-      children=$(pgrep -P $pid)
-      echo "Killing main process $pid"
-      kill -9 $pid
-      for p in $children; do
-        echo "Killing sub process $p"
-        kill -9 $p
+    pretty_pids=$(echo $pids | tr '\n', ' ')
+    echo "Killing pid(s) $pretty_pids"
+    kill $pids
+    for T in 1 2 3 4 5 6 7 8 9 10; do
+      pids=$(pgrep -f $pattern)
+      if [ "$pids" == "" ]; then
+        break;
+      fi
+      echo -e ".\c"
+      sleep 1
+    done
+    echo "."
+    pids=$(pgrep -f $pattern)
+    if [ "$pids" != "" ]; then  
+      pretty_pids=$(echo $pids | tr '\n', ' ')
+      echo "Could not stop process $pretty_pids smoothly"
+      echo "Killing -9 process(es) $pretty_pids"
+      kill -9 $pids
+      for T in 1 2 3 4 5 6 7 8 9 10; do
+        pids=$(pgrep -f $pattern)
+        if [ "$pids" == "" ]; then
+          break;
+        fi
+        echo -e ".\c"
       done
+      pids=$(pgrep -f $pattern)
+      if [ "$pids" != "" ]; then  
+        pretty_pids=$(echo $pids | tr '\n', ' ')
+        echo "Oups, could not kill process(es) $pids"
+        exit 4
+      fi
     fi
     echo Done
   fi

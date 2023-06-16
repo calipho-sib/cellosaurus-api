@@ -33,6 +33,8 @@ from fastapi.openapi.docs import get_swagger_ui_html, get_swagger_ui_oauth2_redi
 #from fastapi.openapi.docs import get_redoc_html
 import urllib.parse
 
+from gunicorn import glogging
+
 # ----------------------------------------
 # to be run first (in spyder only)
 # ----------------------------------------
@@ -91,9 +93,13 @@ app = FastAPI(
     docs_url = None, redoc_url = None,
     #docs_url="/docs", redoc_url="/alt/help",
     openapi_tags=tags_metadata,
-    #root_path = "/bla/bla" # see https://fastapi.tiangolo.com/advanced/behind-a-proxy/
+    # root_path = "/bla/bla" # see https://fastapi.tiangolo.com/advanced/behind-a-proxy/
+    # root_path can be passed to fastapi from uvicorn as an argument (see __main__ below) 
+    # but cannot be passed from gunicorn unless a custom worker class is created
+    # see https://github.com/Midnighter/fastapi-mount/tree/root-path
+    # but a simple ENV variable or config file can also be used to set root_path directly 
+    # here in the FastAPI c'tor
     )
-
 
 
 # this is necessary for fastapi / swagger to know where the static files are served i.e. cellosaurus.ng above)
@@ -131,7 +137,6 @@ async def swagger_ui_redirect():
 #     )
 
 
-
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 @app.on_event("startup")
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,9 +154,12 @@ async def startup_event():
     cl_xml_f_in = open(ApiCommon.CL_XML_FILE,"rb")
     rf_xml_f_in = open(ApiCommon.RF_XML_FILE,"rb")
     fldDef = FldDef(ApiCommon.FLDDEF_FILE)
-    log_it("Read cl_dict.pickle" , len(cl_dict), "duration:", round((datetime.datetime.now() - t0).total_seconds(),3))
+    
+    # Customizing uvicorn native log is done below in __main__()
+    # Note: log_it() is self-made, unrelated to fastAPI / uvicorn /gunicorn logging system
+    log_it("INFO:", "Read cl_dict.pickle" , len(cl_dict), duration_since=t0)
+    log_it("INFO:", "app.statrtup() callback was called :-)" )
 
-    log_it("app.statrtup() callback was called :-)" )
 
 
 # see also https://github.com/tiangolo/fastapi/issues/50
@@ -174,6 +182,7 @@ async def get_release_info(
             )
         ):
 
+    t0 = datetime.datetime.now()
     # precedence of format over request headers
     if format is None: format = get_format_from_headers(request.headers)
 
@@ -184,16 +193,19 @@ async def get_release_info(
         data += release_info.get("updated") + "\t"
         data += release_info.get("nb-cell-lines") + "\t"
         data += release_info.get("nb-publications") + "\n"
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data, media_type="text/tab-separated-values")
     elif format == 'txt':
         data  = "version: " +release_info.get("version") + "; "
         data += "updated: " +release_info.get("updated") + "; "
         data += "nb-cell-lines: " +release_info.get("nb-cell-lines") + "; "
         data += "nb-publications: " +release_info.get("nb-publications") + "\n"
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data,media_type="text/plain")
     elif format == 'json':
         obj = {"Cellosausus": {"header": {"release": release_info}}}
         data = json.dumps(obj, sort_keys=True, indent=2)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data,media_type="application/json")
     elif format == "xml":
         root_el = etree.Element("Cellosaurus")
@@ -204,6 +216,7 @@ async def get_release_info(
         rel_el.attrib["nb-cell-lines"] = release_info.get("nb-cell-lines")
         rel_el.attrib["nb-publications"] = release_info.get("nb-publications")
         data = etree.tostring(root_el, encoding="utf-8", pretty_print=True)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data, media_type="application/xml")
 
 
@@ -253,6 +266,8 @@ async def get_cell_line(
 
         ):
 
+    t0 = datetime.datetime.now()
+
     # precedence of fld over fields
     if fld is not None: fields = fld
 
@@ -264,26 +279,31 @@ async def get_cell_line(
     if ac not in cl_dict:
         obj = {"code": 404, "message": "Item not found, ac: " + ac}
         data = json.dumps(obj, sort_keys=True, indent=2) + "\n"
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data, media_type="application/json", status_code=404)
 
     # build and return response in appropriate format
     if format == "tsv":
         data = api.get_tsv_multi_cell([ac], fields, fldDef, cl_dict, cl_txt_f_in)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data,media_type="text/tab-separated-values")
     elif format == 'txt':
         prefixes = fldDef.get_prefixes(fields)
         data = api.get_txt_multi_cell([ac], prefixes, cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data,media_type="text/plain")
     elif format == 'json':
         xpaths = fldDef.get_xpaths(fields)
         node = api.get_xml_multi_cell([ac], xpaths, cl_dict, rf_dict, cl_xml_f_in, rf_xml_f_in)
         obj = api.get_json_object(node)
         data = json.dumps(obj, sort_keys=True, indent=2)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data,media_type="application/json")
     elif format == "xml":
         xpaths = fldDef.get_xpaths(fields)
         node = api.get_xml_multi_cell([ac], xpaths, cl_dict, rf_dict, cl_xml_f_in, rf_xml_f_in)
         data = etree.tostring(node, encoding="utf-8", pretty_print=True)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data, media_type="application/xml")
 
 
@@ -333,7 +353,7 @@ async def get_cell_line_children_txt(
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def get_cell_line_children(ac, format):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    if format is None or format == "": format = "tev"
+    if format is None or format == "": format = "tsv"
 
     if format == "tsv":
         data = api.get_tsv_multi_cell_children([ac], cl_dict)
@@ -423,6 +443,8 @@ async def search_cell_line(
             )
         ):
 
+    t0 = datetime.datetime.now()
+
     # precedence of fld over fields
     if fld is not None: fields = fld
 
@@ -446,6 +468,7 @@ async def search_cell_line(
         if solr_error is not None: error_msg = solr_error.get("msg")
         obj = {"code": response.status_code, "message": error_msg}
         data = json.dumps(obj, sort_keys=True, indent=2) + "\n"
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data, media_type="application/json", status_code=response.status_code)
 
     # now handle successful response
@@ -465,6 +488,7 @@ async def search_cell_line(
     if format == "tsv":
         data = api.get_tsv_multi_cell(ac_list, fields, fldDef, cl_dict, cl_txt_f_in)
         data = get_search_result_txt_header(meta) + data
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data,media_type="text/tab-separated-values")
     elif format == 'txt':
         prefixes = fldDef.get_prefixes(fields)
@@ -472,17 +496,20 @@ async def search_cell_line(
         #print("prefixes", prefixes)
         data = api.get_txt_multi_cell(ac_list, prefixes, cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in)
         data = get_search_result_txt_header(meta) + data
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data,media_type="text/plain")
     elif format == 'json':
         xpaths = fldDef.get_xpaths(fields)
         node = api.get_xml_multi_cell(ac_list, xpaths, cl_dict, rf_dict, cl_xml_f_in, rf_xml_f_in)
         obj = api.get_json_object(node)
         data = json.dumps(obj, sort_keys=True, indent=2)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data,media_type="application/json")
     elif format == "xml":
         xpaths = fldDef.get_xpaths(fields)
         node = api.get_xml_multi_cell(ac_list, xpaths, cl_dict, rf_dict, cl_xml_f_in, rf_xml_f_in)
         data = etree.tostring(node, encoding="utf-8", pretty_print=True)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data, media_type="application/xml")
 
 
@@ -515,9 +542,11 @@ async def search_form(request: Request, q: str = Query(
     ),
 ):
 
+    t0 = datetime.datetime.now()
+
     scope = request.scope.get("root_path")
     if scope is None or scope == "/": scope = ""
-    print(">>> scope", scope)
+    #print(">>> scope", scope)
 
     # read HTML template
     f=open("search_form.template.html","r")
@@ -526,7 +555,7 @@ async def search_form(request: Request, q: str = Query(
 
     # set default query criterion if none
     if q is None or q == "": q = "id:HeLa"
-    log_it("q", q)
+    log_it("INFO:", "q", q)
 
     # send request to solr
     url = api.get_solr_search_url()
@@ -556,7 +585,7 @@ async def search_form(request: Request, q: str = Query(
     content = content.replace("$idsFound", "\n".join(idsFound))
     content = content.replace("$scope", scope)
 
-
+    log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
     return responses.Response(content=content,media_type="text/html")
 
 
@@ -570,6 +599,8 @@ async def fullsearch_form(
     sort: str = Query(default="score desc"),
     rows: int = Query(default=20),
 ):
+
+    t0 = datetime.datetime.now()
 
     scope = request.scope.get("root_path")
     if scope is None or scope == "/": scope = ""
@@ -634,6 +665,7 @@ async def fullsearch_form(
     content = content.replace("$resultRows", resultHeader + "".join(resultRows))
     content = content.replace("$scope", scope)
 
+    log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
     return responses.Response(content=content,media_type="text/html")
 
 
@@ -644,17 +676,33 @@ async def fullsearch_form(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# the __main__ code is used when you run this program as below:
+#
+# $ python main.py -s $server -p $port -r $scope -l True
+#
+# In production main.py run from an external script invoking gunicorn,
+# a multiprocess HTTP request handler, see api_service.sh
+# requirements: pip3.x install "uvicorn[standard]" gunicorn
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if __name__ == '__main__':
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    print("I was in __main__")
 
     parser = argparse.ArgumentParser(description="Run a simple HTTP proxy for cellapi services")
     parser.add_argument("-s", "--server", default="localhost", help="IP address on which the server listens")
     parser.add_argument("-p", "--port", type=int, default=8088, help="port on which the server listens")
     parser.add_argument("-w", "--workers", default="1", help="Number of processes to run in parallel")
     parser.add_argument("-r", "--root_path", default="/", help="root path")
-    parser.add_argument("-l", "--reload", default=True, help="reload on source code change")
+    parser.add_argument("-l", "--reload", default=False, help="reload on source code change")
     args = parser.parse_args()
 
     api.get_solr_search_url(verbose=True)
     print("args.root_path",args.root_path)
-    uvicorn.run("main:app", port=args.port, host=args.server, reload=args.reload, log_level="info",  root_path=args.root_path) #, workers=args.workers )
+
+    # add timestamp in logging system of uvicorn (does NOT work for gunicorn)
+    log_config = uvicorn.config.LOGGING_CONFIG
+    log_config["formatters"]["access"]["fmt"] =  '%(asctime)s %(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
+    log_config["formatters"]["default"]["fmt"] = '%(asctime)s %(levelprefix)s %(message)s'
+    log_config["loggers"]["uvicorn.access"]["propagate"] = True
+    # uvicorn is mono-process, see gunicorn usage in api_service.sh
+    uvicorn.run("main:app", port=args.port, host=args.server, reload=args.reload, log_level="info", log_config=log_config, root_path=args.root_path) #, workers=args.workers )

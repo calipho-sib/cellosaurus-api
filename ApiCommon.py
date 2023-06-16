@@ -1,4 +1,5 @@
 import datetime
+import os
 
 SERIAL_DIR = "./serial/"
 
@@ -20,10 +21,17 @@ CELLAPI_VERSION="1.0.3"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def log_it(*things):
+def log_it(*things, duration_since=None):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    now = datetime.datetime.now().isoformat().replace('T',' ')[:19]
-    print(now, *things, flush=True)
+    t1 = datetime.datetime.now()
+    now = t1.isoformat().replace('T',' ')[:23]
+    pid = "[" + str(os.getpid()) + "]"
+    if duration_since is not None:
+        duration = round((t1 - duration_since).total_seconds(),3)
+        print(now, pid, *things, "duration", duration, flush=True)
+    else:
+        print(now, *things, flush=True)
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_properties(env):

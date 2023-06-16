@@ -14,6 +14,7 @@ import random
 from copy import deepcopy
 
 import ApiCommon
+from ApiCommon import log_it
 from fields_utils import FldDef
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -21,7 +22,7 @@ def get_solr_search_url(verbose=False):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     value = os.getenv("CELLAPI_SOLR_SEARCH_URL","http://localhost:8983/solr/pamcore1/select")
     if verbose:
-        print("reading / getting default for env variable", "CELLAPI_SOLR_SEARCH_URL", value)
+        log_it("INFO:", "reading / getting default for env variable", "CELLAPI_SOLR_SEARCH_URL", value)
     return value
 
 
@@ -118,7 +119,7 @@ def save_txt_refs(input_file):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     t0 = datetime.now()
     output_file = ApiCommon.RF_TXT_FILE
-    print(t0, "Start saving txt references in", output_file)
+    log_it("INFO:", "Start saving txt references in", output_file)
     rf_dict = dict()
     f_in  = open(input_file, "r")
     f_out = open(output_file, "wb")
@@ -129,7 +130,7 @@ def save_txt_refs(input_file):
         lines = read_txt_ref(f_in)
         if lines == None: break
         no += 1
-        if no % 10000 == 0: print("Saving reference", no)
+        if no % 10000 == 0: log_it("INFO:", "Saving reference", no)
 
         # build record as bytes and write them
         pos = f_out.tell()
@@ -150,18 +151,17 @@ def save_txt_refs(input_file):
                     if len(clean_id) > 0: ids.append(clean_id)
                 break
         if len(ids) == 0:
-            print("ERROR, no ids for record", rec)
+            log_it("ERROR: no ids for record", rec)
             sys.exit()
 
         # save info for index
         for id in ids: rf_dict[id] = { "txt_pos": pos, "txt_size": size }
 
 
-    print("Saving reference", no)
+    log_it("INFO:", "Saving reference", no)
     f_in.close()
     f_out.close()
-    delta = datetime.now() - t0
-    print(datetime.now(), "Saved txt reference, count:" , len(rf_dict), "duration:", round(delta.total_seconds(),3))
+    log_it("INFO:", "Saved txt reference, count:" , len(rf_dict), duration_since=t0)
     return rf_dict
 
 
@@ -173,7 +173,7 @@ def save_txt_cell_lines(input_file):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     t0 = datetime.now()
     output_file = ApiCommon.CL_TXT_FILE
-    print(t0, "Start saving txt cell_lines in", output_file)
+    log_it("INFO:", "Start saving txt cell_lines in", output_file)
     cl_dict = dict()
     f_in  = open(input_file, "r")
     f_out = open(output_file, "wb")
@@ -188,7 +188,7 @@ def save_txt_cell_lines(input_file):
         lines = read_txt_cell_line(f_in)
         if lines == None: break
         no += 1
-        if no % 10000 == 0: print("Saving cell line", no)
+        if no % 10000 == 0: log_it("INFO:", "Saving cell line", no)
 
         # build record as bytes and write them
         pos = f_out.tell()
@@ -204,18 +204,17 @@ def save_txt_cell_lines(input_file):
                 ac = line[5:].strip()
                 break
         if ac == None:
-            print("ERROR, no AC for record", rec)
+            log_it("ERROR: no AC for record", rec)
             sys.exit()
 
         # save info for index
         cl_dict[ac] = { "txt_pos": pos, "txt_size": size }
 
 
-    print("Saving cell line", no)
+    log_it("INFO:", "Saving cell line", no)
     f_in.close()
     f_out.close()
-    delta = datetime.now() - t0
-    print(datetime.now(), "Saved txt cell lines, count:" , len(cl_dict), "duration:", round(delta.total_seconds(),3))
+    log_it("INFO:", "Saved txt cell lines, count:" , len(cl_dict), duration_since=t0)
     return cl_dict
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -223,10 +222,10 @@ def save_xml_cell_lines(bigxml_root):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     t0 = datetime.now()
     filename = ApiCommon.CL_XML_FILE
-    print(t0, "Start saving xml cell_lines in", filename)
+    log_it("INFO:", "Start saving xml cell_lines in", filename)
     # find list of cell line elements
     el_list = bigxml_root.xpath("/Cellosaurus/cell-line-list/cell-line/accession-list/accession[@type='primary']")
-    print(datetime.now(), "Found cell line primary accessions, count:" , len(el_list))
+    log_it("INFO:",  "Found cell line primary accessions, count:" , len(el_list))
     # build cell line dictionary key = cvcl, value=(file_offset,obj_size)
     f_out = open(filename, "wb")
     cl_dict = dict()
@@ -235,7 +234,7 @@ def save_xml_cell_lines(bigxml_root):
     for el in el_list:
 
         no+=1
-        if no % 10000 == 0: print("Saving cell line", no)
+        if no % 10000 == 0: log_it("INFO:", "Saving cell line", no)
 
         # write record get its position and size in file
         cl = el.getparent().getparent()
@@ -261,7 +260,7 @@ def save_xml_cell_lines(bigxml_root):
             children_dict[parent_ac].append({"ac": ac, "id": id})
         #if no>10: break
 
-    print("Saving cell line", no)
+    log_it("INFO:", "Saving cell line", no)
     f_out.close()
 
     # update cl dictionary with parent child info
@@ -272,8 +271,7 @@ def save_xml_cell_lines(bigxml_root):
         else:
             rec["child_list"] = list()
 
-    delta = datetime.now() - t0
-    print(datetime.now(), "Saved xml cell lines, count:" , len(cl_dict), "duration:", round(delta.total_seconds(),3))
+    log_it("INFO:", "Saved xml cell lines, count:" , len(cl_dict), duration_since=t0)
     return cl_dict
 
 
@@ -282,9 +280,9 @@ def save_xml_references(bigxml_root):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     filename = ApiCommon.RF_XML_FILE
     t0 = datetime.now()
-    print(t0, "Start saving xml references in", filename)
+    log_it("INFO:", "Start saving xml references in", filename)
     ref_list = bigxml_root.xpath("/Cellosaurus/publication-list/publication")
-    print(datetime.now(), "Found publication elements, count:" , len(ref_list))
+    log_it("INFO:", "Found publication elements, count:" , len(ref_list))
     f_out = open(filename, "wb")
     ref_dict = dict()
     no=0
@@ -294,14 +292,14 @@ def save_xml_references(bigxml_root):
         ref_bytes = etree.tostring(ref, encoding='utf-8')
         pos = f_out.tell()
         size = f_out.write(ref_bytes)
-        if no % 10000 == 0: print("Saving reference", no)
+        if no % 10000 == 0: log_it("INFO:", "Saving reference", no)
         rec = { "xml_pos": pos, "xml_size": size }
         ref_dict[id]=rec
         #if no>10: break
-    print("Saving reference", no)
+    log_it("INFO:", "Saving reference", no)
     f_out.close()
     delta = datetime.now() - t0
-    print(datetime.now(), "Saved xml references, count:" , len(cl_dict), "duration:", round(delta.total_seconds(),3))
+    log_it("INFO:", "Saved xml references, count:" , len(cl_dict), duration_since=t0)
     return ref_dict
 
 
@@ -309,27 +307,27 @@ def save_xml_references(bigxml_root):
 def get_xml_release_info(bigxml_root):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     t0 = datetime.now()
-    print(t0, "Start extracting release stats from xml")
+    log_it("INFO:", "Start extracting release stats from xml")
     node = bigxml_root.xpath("/Cellosaurus/header/release")[0] # there is one and only one such element
     version = node.get("version")
     updated= node.get("updated")
     nb_cell_lines = node.get("nb-cell-lines")
     nb_publications = node.get("nb-publications")
-    print(version, updated, nb_cell_lines, nb_publications)
-    print(datetime.now(), "Extracting release stats done")
+    log_it("INFO:", version, updated, nb_cell_lines, nb_publications)
+    log_it("INFO:", "Extracting release stats done")
     release_info = {"version": version, "updated": updated, "nb-cell-lines":nb_cell_lines, "nb-publications": nb_publications}
     return release_info
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def save_pickle(obj, filename):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    print(datetime.now(), "Start saving object in", filename)
     t0 = datetime.now()
+    log_it("INFO:", "Start saving object in", filename)
     f_out = open(filename, 'wb')
     pickle.dump(obj, f_out, protocol=3) # pickle.HIGHEST_PROTOCOL is 3 for python 3.6, 4 for python 3.8
     f_out.close()
     delta = datetime.now() - t0
-    print(datetime.now(), "Saved object in", filename, "duration:", round(delta.total_seconds(),3))
+    log_it("INFO:", "Saved object in", filename, duration_since=t0)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -341,28 +339,28 @@ def check_xml_references(cl_dict, ref_dict):
         for ref_id in cl["ref_list"]:
             count += 1
             if ref_id not in ref_dict:
-                print("ERROR in", cl_key, "Unknown reference", ref_id )
-    print("Reference check count", count)
+                log_it("ERROR: in", cl_key, "Unknown reference", ref_id )
+    log_it("INFO:", "Reference check count", count)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def load_pickle(filename):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    print(datetime.now(), "Start loading object from", filename)
+    log_it("INFO:", "Start loading object from", filename)
     t0 = datetime.now()
     f_in = open(filename, 'rb')
     obj = pickle.load(f_in)
     f_in.close()
     delta = datetime.now() - t0
-    print(datetime.now(), "Loaded object from", filename, "duration:", round(delta.total_seconds(),3))
+    log_it("INFO:", "Loaded object from", filename, duration_since=t0)
     return obj
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def load_and_parse_xml(filename):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    print(datetime.now(), "reading", filename, "...")
+    log_it("INFO:", "reading", filename, "...")
     parser = etree.XMLParser(remove_blank_text=True)
     root_node = etree.parse(filename, parser).getroot()
-    print(datetime.now(), "xml parsed")
+    log_it("INFO:", "xml parsed")
     return root_node
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -439,11 +437,11 @@ def get_txt_multi_cell(ac_list, prefixes, cl_dict, rf_dict, cl_txt_f_in, rf_txt_
     rf_ids = set()
     # collect cell line records
     for ac in ac_list:
-        #print("ac", ac)
+        #log_it("ac", ac)
         cl = get_txt_cell_line(ac, cl_dict, cl_txt_f_in)
         cl = filter_lines_by_prefixes(cl, prefixes)
-        #print(">>> cl: ",cl)
-        #print("------")
+        #log_it(">>> cl: ",cl)
+        #log_it("------")
         if len(cl)>0 and prefixes is not None: cl += "//\n"
         result += cl
         cl_index = cl_dict[ac]
@@ -522,7 +520,7 @@ def get_txt_multi_cell_children(ac_list, cl_dict):
 def get_txt_reference(rf_id, rf_dict, rf_f_in):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if rf_id not in rf_dict:
-        print("ERROR, reference not found", rf_id)
+        log_it("ERROR: reference not found", rf_id)
         return None
     rf_index = rf_dict[rf_id]
     rf_f_in.seek(rf_index["txt_pos"])
@@ -831,16 +829,16 @@ if __name__ == "__main__":
             f_out.write(data_bytes)
 
             if num_doc % doc_per_file == 0:
-                print(datetime.now(), "wrote " + output_file)
+                log_it("INFO:", "wrote " + output_file)
                 f_out.write(bytes("</add>\n",'utf-8'))
                 f_out.close()
 
         if not f_out.closed:
             f_out.write(bytes("</add>\n",'utf-8'))
             f_out.close()
-        print(datetime.now(), "wrote " + output_file)
-        print(datetime.now(), "wrote cell lines solr documents, count", len(cl_dict))
-        print(datetime.now(), "end")
+        log_it("INFO:", "wrote " + output_file)
+        log_it("INFO:", "wrote cell lines solr documents, count", len(cl_dict))
+        log_it("INFO:", "end")
                     
 
     # -------------------------------------------------------
@@ -907,7 +905,7 @@ if __name__ == "__main__":
     # -------------------------------------------------------
         if args[1]=="release_info":
     # -------------------------------------------------------
-            print(release_info)
+            log_it("INFO:", release_info)
             delta = datetime.now() -t0
 
     # -------------------------------------------------------
