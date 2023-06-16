@@ -432,7 +432,7 @@ async def search_cell_line(
             ),
         sort: Optional[str] = Query(
             default=None,
-            example="group asc,sampling-site desc",
+            example="group asc,derived-from-site desc",
             title = "Sort order",
             description = """Optional field(s) determining the sort order of the search result.
             Every field name must be followed with a space and the sort direction (ASCending or DESCending).
