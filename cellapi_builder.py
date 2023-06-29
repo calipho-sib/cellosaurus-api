@@ -17,7 +17,7 @@ import ApiCommon
 from ApiCommon import log_it
 from fields_utils import FldDef
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -fRead cl_dict
 def get_solr_search_url(verbose=False):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     value = os.getenv("CELLAPI_SOLR_SEARCH_URL","http://localhost:8983/solr/pamcore1/select")
@@ -70,7 +70,9 @@ def get_json_object(el):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def build_jsonable_object(el):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    if "-list" in el.tag:
+    # XML elements containing a list of sub elements are expected to names ending with '-list'
+    # But as always there are some exceptions
+    if "-list" in el.tag or "same-origin-as" == el.tag:
         obj = list()
         for child_el in el:
             obj.append(build_jsonable_object(child_el))
