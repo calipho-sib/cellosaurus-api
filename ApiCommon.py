@@ -30,7 +30,7 @@ def log_it(*things, duration_since=None):
         duration = round((t1 - duration_since).total_seconds(),3)
         print(now, pid, *things, "duration", duration, flush=True)
     else:
-        print(now, *things, flush=True)
+        print(now, pid, *things, flush=True)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
