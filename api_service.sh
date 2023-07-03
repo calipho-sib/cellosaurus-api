@@ -55,6 +55,10 @@ if [ "$action" == "start" ]; then
   echo "Started, API process has pid(s) $pretty_pids"
   echo done
 
+elif [ "$action" == "debug" ]; then
+  echo "Starting API mono worker, mode reload"
+  $mypython main.py -s $server -p $port -r $scope -l True
+
 elif [ "$action" == "status" ]; then
   pids=$(pgrep -f $pattern)
   if [ "$pids" == "" ]; then
