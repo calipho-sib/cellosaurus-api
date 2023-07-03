@@ -68,25 +68,64 @@ def get_json_object(el):
     return {el.tag: obj}
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def seen_as_list(tag):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # case 1: should be renamed to str-profile in the future for more clarity
+    if tag == "str-list" : return False
+    # case 2: general case
+    if tag.endswith("-list") : return True
+    # case 3: special cases
+    if tag in ["same-origin-as", "site", "derived-from"]: return True
+    # case 4: default
+    return False
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def get_items_prop_name(tag):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    if tag == "site": return "cv-term-list"
+    return "items"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def build_jsonable_object(el):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # create object, add attributes and text node as obj properties
+    obj = dict()
+    if el.text is not None:
+        txt = el.text.strip()
+        if len(txt) > 0: obj["value"]=txt
+    for attr in el.keys():
+        obj[attr]=el.get(attr)
+
     # XML elements containing a list of sub elements are expected to names ending with '-list'
-    # But as always there are some exceptions
-    if "-list" in el.tag or "same-origin-as" == el.tag:
-        obj = list()
+    # But as always there are some exceptions... which are handled in seen_as_list()
+    if seen_as_list(el.tag):
+
+        # Recursively add child objects in items list
+        items_prop = get_items_prop_name(el.tag)
+        obj[items_prop]= list()
         for child_el in el:
-            obj.append(build_jsonable_object(child_el))
+            # - - - - - -  - with object name encapsulation - - - - - - - (change 1)
+            #child_obj = dict()
+            #child_obj[child_el.tag]=build_jsonable_object(child_el)
+            # - - - - - - - - - - - -  or without - - - - - - - - - - - -
+            child_obj = build_jsonable_object(child_el)
+            # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            obj[items_prop].append(child_obj)
+            # Simplify list having only an "items" property (almost all the cases except for el "site")
+        if len(obj)==1 and "items" in obj: return obj["items"]
+
     else:
-        obj = dict()
-        #obj["_tag"] = el.tag
-        if el.text is not None:
-            txt = el.text.strip()
-            if len(txt) > 0: obj["value"]=txt
-        for attr in el.keys():
-            obj[attr]=el.get(attr)
+
+        # Recursively add child objects in object properties
         for child_el in el:
             obj[child_el.tag]=build_jsonable_object(child_el)
+        # Simplify object having only a "value" property - - - - - - - - (change 2)
+        if len(obj)==1 and "value" in obj: return obj["value"]
     return obj
+
+
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def wait_for_input(msg):
@@ -903,6 +942,33 @@ if __name__ == "__main__":
         t0 = datetime.now()
 
         rec_count = 0
+
+    # -------------------------------------------------------
+        if args[1]=="json":
+    # -------------------------------------------------------
+    #            <toto-list><toto>toto1</toto><toto>toto2</toto></toto-list>
+
+            xmlstr="""
+                <root>
+                    <family reputation="bad">Dalton
+                        <member-list complete="false">
+                            <member>jack</member>
+                            <member status="chief">jo</member>
+                        </member-list>
+                        <gun-list>
+                            <gun>rifle</gun>
+                            <gun>kalash</gun>
+                        </gun-list>
+                        <bank-attack-list year="1999" />
+                    </family>
+                    
+                </root>"""
+            node = etree.fromstring(xmlstr)
+            obj = get_json_object(node)
+            str = json.dumps(obj, indent=2, sort_keys=True)
+            #json.dumps(node, indent=2, sort_keys=True)
+            print(str)
+            sys.exit()
 
     # -------------------------------------------------------
         if args[1]=="release_info":
