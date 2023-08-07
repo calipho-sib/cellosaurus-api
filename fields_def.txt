@@ -5,7 +5,7 @@
 #
 # Fields must be declared in the following order:
 #
-# TG: Once.         tag.         Field identifier to be used in an API request in the value of parameter field or query
+# TG: Once.         Tag.         Field identifier to be used in an API request in the value of parameter field or query
 # DE: Once or more. Description. Describes the content of the field, Used in Help page for API users.
 # SH: Once.         Short tag.   Obsolete - Value to be used in an API request in the value of parameter field or query
 # NG: Once.         Long tag.    Obsolete - Value to be used in an API request in the value of parameter filed or query
@@ -357,7 +357,7 @@ DE   DrugBank, NCIt or UniProtKB.
 SH   CC-resistance
 NG   resistance
 PR   CC   Selected for resistance to
-XP   /cell-line/comment-list/comment[@category="Selected for resistance to"]
+XP   /cell-line/resistance-list/resistance
 //
 TG   senescence
 DE   When a finite cell line will senesce.
@@ -379,7 +379,7 @@ DE   (with a cross-reference to ChEBI) or a form of irradiation (with a cross-re
 SH   CC-transformant
 NG   transformant
 PR   CC   Transformant
-XP   /cell-line/comment-list/comment[@category="Transformant"]
+XP   /cell-line/transformant-list/transformant
 //
 TG   virology
 DE   Susceptibility of the cell line to viral infection, presence of integrated viruses or any other virology-related information.
