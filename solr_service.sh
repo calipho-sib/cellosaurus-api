@@ -14,5 +14,9 @@ echo "conf_file: $conf_file"
 
 signal=$1
 echo Sending $signal signal to solr on port $CELLAPI_SOLR_PORT
-./solr/bin/solr $signal -p $CELLAPI_SOLR_PORT
 
+if [ "$signal" == "start" ]; then
+  ./solr/bin/solr $signal -p $CELLAPI_SOLR_PORT
+else
+  ./solr/bin/solr $signal
+fi
