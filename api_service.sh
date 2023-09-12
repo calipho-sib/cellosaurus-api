@@ -18,7 +18,10 @@ port=$CELLAPI_PORT
 scope=$CELLAPI_ROOT_PATH
 workers=$CELLAPI_WORKERS
 mypython=$CELLAPI_PYTHON
-pattern="gunicorn.main:app"
+
+#pattern="gunicorn.main:app"
+pattern="gunicorn"
+
 
 if [ "$server" == "" ]; then
   server=$host
