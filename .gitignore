@@ -10,5 +10,7 @@ data_in
 data_in/
 data_in.downloaded/
 serial/
+solr-9.3.0/
+tmp/
 solr-8.11.1/
 solr_data/
