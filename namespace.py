@@ -1,17 +1,16 @@
-import uuid
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def getTtlPrefixDeclaration(prefix, baseurl):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     return "".join(["@prefix ", prefix, ": <", baseurl, "> ."])
 
-
-# blank node label random generator
-def getBlankNode():
-    return "_:BN" + uuid.uuid4().hex
 
 
 # namespace ancestor class 
 # handles prefix and base URL
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class BaseNamespace:
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self, prefix, baseurl):
         self.pfx = prefix
         self.url = baseurl
@@ -21,9 +20,10 @@ class BaseNamespace:
         return getTtlPrefixDeclaration(self.prefix(), self.baseurl())
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class XsdNamespace(BaseNamespace):
-    def __init__(self): 
-        super(XsdNamespace, self).__init__("xsd", "http://www.w3.org/2001/XMLSchema#")
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(XsdNamespace, self).__init__("xsd", "http://www.w3.org/2001/XMLSchema#")
     # string datatype with triple quotes allow escape chars like \n \t etc.
     def string(self, str): return "".join(["\"", str, "\"^^" + self.prefix() + ":string"])
     def string3(self, str): return "".join(["\"\"\"", str, "\"\"\"^^" + self.prefix() + ":string"])
@@ -31,13 +31,17 @@ class XsdNamespace(BaseNamespace):
     def integer(self, int): return str(int)
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class RdfNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(RdfNamespace, self).__init__("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
     def type(self): return "rdf:type"
     def Property(self): return "rdf:Property"
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class RdfsNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(RdfsNamespace, self).__init__("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
     def Class(self): return "rdfs:Class"
     def subClassOf(self): return "rdfs:subClassOf"
@@ -50,7 +54,9 @@ class RdfsNamespace(BaseNamespace):
     def isDefinedBy(self): return "rdfs:isDefinedBy"
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OwlNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(OwlNamespace, self).__init__("owl", "http://www.w3.org/2002/07/owl#")
     def Class(self): return "owl:Class"
     def DatatypeProperty(self): return "owl:DatatypeProperty"
@@ -63,7 +69,9 @@ class OwlNamespace(BaseNamespace):
     def unionOf(self): return "owl:unionOf"
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class SkosNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(SkosNamespace, self).__init__("skos", "http://www.w3.org/2004/02/skos/core#")
     def Concept(self): return "skos:Concept"
     def ConceptScheme(self): return "skos:ConceptScheme"
@@ -73,12 +81,17 @@ class SkosNamespace(BaseNamespace):
     def altLabel(self): return "skos:altLabel"
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class FoafNamespace(BaseNamespace):
-    def __init__(self): super(FoafNamespace, self).__init__("clo", "http://xmlns.com/foaf/0.1/")
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(FoafNamespace, self).__init__("foaf", "http://xmlns.com/foaf/0.1/")
     def Person(self): return "foaf:Person"
 
+
 # Cellosaurus ontology namespace
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class CloNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(CloNamespace, self).__init__("", "http://cellosaurus.org/rdf#")
     def CellLine(self): return ":CellLine"
     def accession(self): return ":accession"
@@ -86,10 +99,27 @@ class CloNamespace(BaseNamespace):
     def secondaryAccession(self): return ":secondaryAccession"
     def group(self): return ":group"
 
+
 # Cellosaurus cell-line instances namespace
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class CliNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(CliNamespace, self).__init__("cl", "http://cellosaurus.org/cl/")
     def IRI(self, primaryAccession): return "cl:" + primaryAccession
 
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class NamespaceRegistry:    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # instanciate namespaces
+    onto = CloNamespace()
+    inst = CliNamespace()
+    xsd  = XsdNamespace()
+    rdf = RdfNamespace()
+    rdfs = RdfsNamespace()
+    owl = OwlNamespace()
+    foaf = FoafNamespace()
+    namespaces = [onto, inst, xsd, rdf, rdfs, owl, foaf]
 
 

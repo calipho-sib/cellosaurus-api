@@ -17,9 +17,7 @@ import ApiCommon
 from ApiCommon import log_it
 from fields_utils import FldDef
 
-from rdfizer import BaseNamespace, CloNamespace, getBlankNode, XsdNamespace, OwlNamespace
-from rdfizer import RdfNamespace, RdfsNamespace, FoafNamespace, CliNamespace
-
+from rdf_builder import get_ttl_prefixes, get_ttl_for_cl
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -fRead cl_dict
 def get_solr_search_url(verbose=False):
@@ -821,26 +819,6 @@ def get_field_from_dt_line(line, fname):
     return None
 
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-def get_ttl_string(ac, cl_obj):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    print(cl_obj)
-    lines = list()
-    cl_iri = inst.IRI(ac)
-    line = " ".join([ cl_iri, rdf.type(), onto.CellLine(), ".\n" ])
-    lines.append(line)
-    cl_data = cl_obj["cell-line"]
-    for ac_obj in cl_data["accession-list"]:
-        some_ac = xsd.string(ac_obj["value"])
-        line = " ".join([ cl_iri, onto.accession(), some_ac, ".\n" ])
-        lines.append(line)
-        pred = onto.primaryAccession() if ac_obj["type"] == "primary" else onto.secondaryAccession()
-        line = " ".join([ cl_iri, pred, some_ac, ".\n" ])
-        lines.append(line)
-
-    return("".join(lines))
-
-
 # ===========================================================================================
 if __name__ == "__main__":
 # ===========================================================================================
@@ -867,15 +845,6 @@ if __name__ == "__main__":
         rf_xml_f_in = open(ApiCommon.RF_XML_FILE,"rb")
         fldDef = FldDef(ApiCommon.FLDDEF_FILE)
 
-        # INSTANCIATE NAMESPACES
-        onto = CloNamespace()
-        inst = CliNamespace()
-        xsd  = XsdNamespace()
-        rdf = RdfNamespace()
-        rdfs = RdfsNamespace()
-        owl = OwlNamespace()
-        foaf = FoafNamespace()
-
         out_dir = "rdf_data/"
         # create or clean output dir
         if not os.path.exists(out_dir): os.mkdir(out_dir)
@@ -896,13 +865,11 @@ if __name__ == "__main__":
                 file_index += 1
                 output_file = out_dir + "data" + str(file_index) + ".ttl"
                 f_out = open(output_file, "wb")
-                # write header with PREFIX declarations
-                for ns in [onto, inst, rdf, rdfs, owl, xsd, foaf]: 
-                    f_out.write(bytes(ns.getTtlPrefixDeclaration() + "\n", "utf-8"))
+                f_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
+
             cl_xml = get_xml_cell_line(ac, cl_dict, cl_xml_f_in)
             cl_obj = get_json_object(cl_xml)
-            str = get_ttl_string(ac, cl_obj)
-            
+            str = get_ttl_for_cl(ac, cl_obj)
             f_out.write(  bytes(str , "utf-8" ) )
 
             if num_doc % doc_per_file == 0:
