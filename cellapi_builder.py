@@ -17,6 +17,10 @@ import ApiCommon
 from ApiCommon import log_it
 from fields_utils import FldDef
 
+from rdfizer import BaseNamespace, CloNamespace, getBlankNode, XsdNamespace, OwlNamespace
+from rdfizer import RdfNamespace, RdfsNamespace, FoafNamespace, CliNamespace
+
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -fRead cl_dict
 def get_solr_search_url(verbose=False):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -817,6 +821,26 @@ def get_field_from_dt_line(line, fname):
     return None
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def get_ttl_string(ac, cl_obj):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    print(cl_obj)
+    lines = list()
+    cl_iri = inst.IRI(ac)
+    line = " ".join([ cl_iri, rdf.type(), onto.CellLine(), ".\n" ])
+    lines.append(line)
+    cl_data = cl_obj["cell-line"]
+    for ac_obj in cl_data["accession-list"]:
+        some_ac = xsd.string(ac_obj["value"])
+        line = " ".join([ cl_iri, onto.accession(), some_ac, ".\n" ])
+        lines.append(line)
+        pred = onto.primaryAccession() if ac_obj["type"] == "primary" else onto.secondaryAccession()
+        line = " ".join([ cl_iri, pred, some_ac, ".\n" ])
+        lines.append(line)
+
+    return("".join(lines))
+
+
 # ===========================================================================================
 if __name__ == "__main__":
 # ===========================================================================================
@@ -824,8 +848,74 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR or TEST")
 
-    if args[0]!="BUILD" and args[0]!= "SOLR" and args[0]!= "TEST": 
-        sys.exit("Invalid arg1, expected BUILD, SOLR or TEST")
+    if args[0]!="BUILD" and args[0]!= "RDF" and args[0]!= "SOLR" and args[0]!= "TEST": 
+        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF or TEST")
+
+
+    # -------------------------------------------------------
+    if args[0]=="RDF":
+    # -------------------------------------------------------
+
+        # be aware that
+        # here we use api data and indexes created when args0="BUILD"
+    
+        cl_dict = load_pickle(ApiCommon.CL_IDX_FILE)
+        rf_dict = load_pickle(ApiCommon.RF_IDX_FILE)
+        cl_txt_f_in = open(ApiCommon.CL_TXT_FILE,"rb")
+        rf_txt_f_in = open(ApiCommon.RF_TXT_FILE,"rb")
+        cl_xml_f_in = open(ApiCommon.CL_XML_FILE,"rb")
+        rf_xml_f_in = open(ApiCommon.RF_XML_FILE,"rb")
+        fldDef = FldDef(ApiCommon.FLDDEF_FILE)
+
+        # INSTANCIATE NAMESPACES
+        onto = CloNamespace()
+        inst = CliNamespace()
+        xsd  = XsdNamespace()
+        rdf = RdfNamespace()
+        rdfs = RdfsNamespace()
+        owl = OwlNamespace()
+        foaf = FoafNamespace()
+
+        out_dir = "rdf_data/"
+        # create or clean output dir
+        if not os.path.exists(out_dir): os.mkdir(out_dir)
+        os.system("rm " + out_dir + "*")
+
+        max_doc = 10000000    # enough for 10 millions cell lines, set small value for debugging
+        max_doc = 2000
+        
+        doc_per_file = 2000
+
+        num_doc = 0
+        file_index = 0
+        for ac in cl_dict:
+            num_doc += 1
+            if num_doc > max_doc: break
+
+            if num_doc % doc_per_file == 1:
+                file_index += 1
+                output_file = out_dir + "data" + str(file_index) + ".ttl"
+                f_out = open(output_file, "wb")
+                # write header with PREFIX declarations
+                for ns in [onto, inst, rdf, rdfs, owl, xsd, foaf]: 
+                    f_out.write(bytes(ns.getTtlPrefixDeclaration() + "\n", "utf-8"))
+            cl_xml = get_xml_cell_line(ac, cl_dict, cl_xml_f_in)
+            cl_obj = get_json_object(cl_xml)
+            str = get_ttl_string(ac, cl_obj)
+            
+            f_out.write(  bytes(str , "utf-8" ) )
+
+            if num_doc % doc_per_file == 0:
+                log_it("INFO:", "wrote " + output_file)
+                f_out.close()
+
+        if not f_out.closed:
+            log_it("INFO:", "wrote " + output_file)
+            f_out.close()
+
+        log_it("INFO:", "wrote cell lines solr documents, count", len(cl_dict))
+        log_it("INFO:", "end")
+
 
     # -------------------------------------------------------
     if args[0]=="SOLR":
