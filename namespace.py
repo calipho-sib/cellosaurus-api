@@ -1,9 +1,18 @@
+import re
+import hashlib
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def replace_non_alphanumeric(input_string):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Use a regular expression to replace non-alphanumeric characters with underscore
+    return re.sub(r'[^a-zA-Z0-9]', '_', input_string)
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def getTtlPrefixDeclaration(prefix, baseurl):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     return "".join(["@prefix ", prefix, ": <", baseurl, "> ."])
-
 
 
 # namespace ancestor class 
@@ -23,11 +32,25 @@ class BaseNamespace:
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class XsdNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(XsdNamespace, self).__init__("xsd", "http://www.w3.org/2001/XMLSchema#")
+    def __init__(self): 
+        super(XsdNamespace, self).__init__("xsd", "http://www.w3.org/2001/XMLSchema#")
+
+    def escape_string(self, str):
+        # escape backslashes with double backslashes (\ => \\)
+        str=str.replace("\\","\\\\")
+        # escape double-quotes (" => \")
+        str = str.replace("\"", "\\\"")
+        return str
+
     # string datatype with triple quotes allow escape chars like \n \t etc.
-    def string(self, str): return "".join(["\"", str, "\"^^" + self.prefix() + ":string"])
-    def string3(self, str): return "".join(["\"\"\"", str, "\"\"\"^^" + self.prefix() + ":string"])
+    def string(self, str):
+        return "".join(["\"", self.escape_string(str), "\"^^", self.prefix(), ":string"])
+
+    def string3(self, str): 
+        return "".join(["\"\"\"", self.escape_string(str), "\"\"\"^^", self.prefix(), ":string"])
+    
     def date(self, str): return "".join(["\"", str, "\"^^" + self.prefix() + ":date"])
+    
     def integer(self, int): return str(int)
 
 
@@ -90,36 +113,100 @@ class FoafNamespace(BaseNamespace):
 
 # Cellosaurus ontology namespace
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class CloNamespace(BaseNamespace):
+class OurOntologyNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(CloNamespace, self).__init__("", "http://cellosaurus.org/rdf#")
+    def __init__(self): super(OurOntologyNamespace, self).__init__("", "http://cellosaurus.org/rdf#")
+
+    # Classes
     def CellLine(self): return ":CellLine"
+    def CellLineName(self): return ":CellLineName"
+    def Organization(self): return ":Organization"
+    def Publication(self): return ":Publication"
+    def Xref(self): return ":Xref"
+
+    # Properties
     def accession(self): return ":accession"
     def primaryAccession(self): return ":primaryAccession"
     def secondaryAccession(self): return ":secondaryAccession"
+    
+    def name(self): return ":name"
+    def recommendedName(self): return ":recommendedName"
+    def alternativeName(self): return ":alternativeName"
+    def registeredName(self): return ":registeredName"
+    def misspellingName(self): return ":misspellingName"
+    def appearsIn(self): return ":appearsIn"
+
     def group(self): return ":group"
+    def source(self): return ":source"
 
 
 # Cellosaurus cell-line instances namespace
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class CliNamespace(BaseNamespace):
+class OurCellLineNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(CliNamespace, self).__init__("cl", "http://cellosaurus.org/cl/")
-    def IRI(self, primaryAccession): return "cl:" + primaryAccession
+    def __init__(self): super(OurCellLineNamespace, self).__init__("cvcl", "http://cellosaurus.org/cvcl/")
+    def IRI(self, primaryAccession): return "cvcl:" + primaryAccession
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class OurXrefNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    dbac_set = set()
+    def __init__(self): super(OurXrefNamespace, self).__init__("xref", "http://cellosaurus.org/xref/")
+    def IRI(self, db, ac):
+        # store requested db ac pairs fo which an IRI was requested so that we can describe Xref afterwards
+        OurXrefNamespace.dbac_set.add("".join([db, "|", ac]))
+        # TODO: review the IRI naming convention or use a MD5
+        # handle special characters in db:  " ", "/", "_", "-"
+        clean_db = replace_non_alphanumeric(db)
+        clean_ac = ac.replace(":", "_")
+        return "".join(["xref:", clean_db, "_", clean_ac])
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class OurPublicationNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    dbac_set = set()
+    def __init__(self): super(OurPublicationNamespace, self).__init__("pub", "http://cellosaurus.org/pub/")
+    def IRI(self, db, ac):
+        # store requested db ac pairs fo which an IRI was requested so that we can describe Xref afterwards
+        OurPublicationNamespace.dbac_set.add("".join([db, "|", ac]))
+        # TODO: review the IRI naming convention or use a MD5 especially for DOI accessions
+        return "".join(["pub:", db, "_", ac])
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class OurOrganizationNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # we store name, country, city, contact but multiple contact might arrive in same organization so
+    # the IRI for organization is based on name, city, country and does NOT include contact
+    nccc_set = set()
+    def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", "http://cellosaurus.org/orga/")
+    def IRI(self, name, city, country, contact):
+        # store requested db ac pairs fo which an IRI was requested so that we can describe Xref afterwards
+        OurOrganizationNamespace.nccc_set.add("".join([name, "|", city or '', "|", country or '', "|", contact or '']))
+        # TODO: review the IRI naming convention or use a MD5
+        org_key = "".join([name, "|", city or '', "|", country or ''])
+        org_md5 = hashlib.md5(org_key.encode('utf-8')).hexdigest()
+        org_iri = "".join(["orga:", org_md5])
+        return org_iri
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class NamespaceRegistry:    
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # instanciate namespaces
-    onto = CloNamespace()
-    inst = CliNamespace()
+    onto = OurOntologyNamespace()
+    cvcl = OurCellLineNamespace()
+    xref = OurXrefNamespace()
+    pub = OurPublicationNamespace()
+    orga = OurOrganizationNamespace()
     xsd  = XsdNamespace()
     rdf = RdfNamespace()
     rdfs = RdfsNamespace()
+    skos = SkosNamespace()
     owl = OwlNamespace()
     foaf = FoafNamespace()
-    namespaces = [onto, inst, xsd, rdf, rdfs, owl, foaf]
+    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf]
 
 

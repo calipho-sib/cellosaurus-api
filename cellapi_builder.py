@@ -851,9 +851,9 @@ if __name__ == "__main__":
         os.system("rm " + out_dir + "*")
 
         max_doc = 10000000    # enough for 10 millions cell lines, set small value for debugging
-        max_doc = 2000
+        max_doc = 20000
         
-        doc_per_file = 2000
+        doc_per_file = 20000
 
         num_doc = 0
         file_index = 0
