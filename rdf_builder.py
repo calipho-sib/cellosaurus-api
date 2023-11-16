@@ -101,6 +101,62 @@ def get_ttl_for_cl(ac, cl_obj):
         ww_iri = "".join(["<", ww, ">"])
         lines.append(get_triple(cl_IRI, ns.rdfs.seeAlso(), ww_iri))
 
+    # fields: CC, genome-ancestry
+    annot = cl_data.get("genome-ancestry")
+    if annot is not None:
+        annot_bn = get_blank_node()
+        lines.append(get_triple(cl_IRI, ns.onto.genomeAncestry(), annot_bn))
+        lines.append(get_triple(annot_bn, ns.rdf.type() ,ns.onto.GenomeAncestry()))
+        # ref can be publi or organization, but only publi in real data
+        ref = annot["genome-ancestry-source"].get("reference")
+        if ref is not None:
+            (db,ac) = ref["resource-internal-ref"].split("=")
+            ref_IRI = ns.pub.IRI(db,ac)
+            lines.append(get_triple(annot_bn, ns.onto.source(), ref_IRI))
+        else:
+            print("ERROR: reference of genome-ancestry-source is null: " + ac)
+        for pop in annot["population-list"]:
+            pop_bn = get_blank_node()
+            lines.append(get_triple(annot_bn, ns.onto.component(), pop_bn))
+            lines.append(get_triple(pop_bn, ns.rdf.type(), ns.onto.PopulationPercentage()))
+            pop_name = ns.xsd.string(pop["population-name"])
+            lines.append(get_triple(pop_bn, ns.onto.populationName(), pop_name))
+            percent = ns.xsd.float(pop["population-percentage"])
+            lines.append(get_triple(pop_bn, ns.onto.percentage(), percent))
+
+    # fields: hla
+    for annot in cl_data.get("hla-typing-list") or []:
+        annot_bn = get_blank_node()
+        lines.append(get_triple(cl_IRI, ns.onto.hlaTyping(), annot_bn))
+        lines.append(get_triple(annot_bn, ns.rdf.type() ,ns.onto.HLATyping()))
+        hts = annot.get("hla-typing-source")
+        if hts is not None:
+            xref = hts.get("xref")
+            if xref is not None:
+                ac = xref["accession"]
+                db = xref["database"]
+                xref_IRI = ns.xref.IRI(db,ac)
+                lines.append(get_triple(annot_bn, ns.onto.source(), xref_IRI))
+            ref = hts.get("reference")
+            if ref is not None:
+                (db,ac) = ref["resource-internal-ref"].split("=")
+                ref_IRI = ns.pub.IRI(db,ac)
+                lines.append(get_triple(annot_bn, ns.onto.source(), ref_IRI))
+            src = hts.get("source")
+            if src is not None:
+                src_IRI = ns.src.IRI(src) if src == "Direct_author_submission" else ns.orga.IRI(src, "", "", "")
+                lines.append(get_triple(annot_bn, ns.onto.source(), src_IRI))
+        for gall in annot["hla-gene-alleles-list"]:
+            gall_bn = get_blank_node()
+            lines.append(get_triple(annot_bn, ns.onto.geneAlleles(), gall_bn))
+            lines.append(get_triple(gall_bn, ns.rdf.type(), ns.onto.GeneAlleles()))
+            gene_bn = get_blank_node()
+            lines.append(get_triple(gall_bn, ns.onto.gene(), gene_bn))
+            lines.append(get_triple(gene_bn, ns.rdf.type(), ns.onto.Gene()))
+            gene_name = ns.xsd.string(gall["gene"])
+            lines.append(get_triple(gene_bn, ns.rdfs.label(), gene_name))
+            alleles = ns.xsd.string(gall["alleles"])            
+            lines.append(get_triple(gall_bn, ns.onto.alleles(), alleles))
 
     return("".join(lines))
 

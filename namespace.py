@@ -44,14 +44,14 @@ class XsdNamespace(BaseNamespace):
 
     # string datatype with triple quotes allow escape chars like \n \t etc.
     def string(self, str):
-        return "".join(["\"", self.escape_string(str), "\"^^", self.prefix(), ":string"])
+        return "".join(["\"", self.escape_string(str), "\"^^xsd:string"])
 
     def string3(self, str): 
-        return "".join(["\"\"\"", self.escape_string(str), "\"\"\"^^", self.prefix(), ":string"])
+        return "".join(["\"\"\"", self.escape_string(str), "\"\"\"^^xsd:string"])
     
-    def date(self, str): return "".join(["\"", str, "\"^^" + self.prefix() + ":date"])
-    
-    def integer(self, int): return str(int)
+    def date(self, str): return "".join(["\"", str, "\"^^xsd:date"])
+    def integer(self, int_number): return str(int_number)
+    def float(self, float_number): return "".join(["\"", str(float_number), "\"^^xsd:float"])
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -123,6 +123,12 @@ class OurOntologyNamespace(BaseNamespace):
     def Organization(self): return ":Organization"
     def Publication(self): return ":Publication"
     def Xref(self): return ":Xref"
+    def GenomeAncestry(self): return ":GenomeAncestry"
+    def PopulationPercentage(self): return ":PopulationPercentage"
+    def HLATyping(self): return ":HLATyping"
+    def GeneAlleles(self): return ":GeneAlleles"
+    def Gene(self): return ":Gene"
+    def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision)
 
     # Properties
     def accession(self): return ":accession"
@@ -134,11 +140,21 @@ class OurOntologyNamespace(BaseNamespace):
     def alternativeName(self): return ":alternativeName"
     def registeredName(self): return ":registeredName"
     def misspellingName(self): return ":misspellingName"
+
     def appearsIn(self): return ":appearsIn"
     def source(self): return ":source"
     def xref(self): return ":xref"
     def reference(self): return ":reference"
-    
+
+    def genomeAncestry(self): return ":genomeAncestry"
+    def component(self): return ":component" # component object = population percentage of geome ancestry
+    def percentage(self): return ":percentage"
+    def populationName(self): return ":populationName" # as sub property of rdfs:label
+
+    def hlaTyping(self): return ":hlaTyping"
+    def geneAlleles(self): return ":geneAlleles"
+    def gene(self): return ":gene"
+    def alleles(self): return ":alleles"
 
 
 # Cellosaurus cell-line instances namespace
@@ -184,13 +200,26 @@ class OurOrganizationNamespace(BaseNamespace):
     nccc_set = set()
     def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", "http://cellosaurus.org/orga/")
     def IRI(self, name, city, country, contact):
-        # store requested db ac pairs fo which an IRI was requested so that we can describe Xref afterwards
+        # store name, city, country, contact tuples for which an IRI was requested so that we can describe Organizazion afterwards
         OurOrganizationNamespace.nccc_set.add("".join([name, "|", city or '', "|", country or '', "|", contact or '']))
-        # TODO: review the IRI naming convention or use a MD5
         org_key = "".join([name, "|", city or '', "|", country or ''])
         org_md5 = hashlib.md5(org_key.encode('utf-8')).hexdigest()
         org_iri = "".join(["orga:", org_md5])
         return org_iri
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class OurSourceNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # we store name, country, city, contact but multiple contact might arrive in same organization so
+    # the IRI for organization is based on name, city, country and does NOT include contact
+    name_set = set()
+    def __init__(self): super(OurSourceNamespace, self).__init__("src", "http://cellosaurus.org/src/")
+    def IRI(self, name):
+        # store names for which an IRI was requested so that we can describe Source afterwards
+        OurSourceNamespace.name_set.add(name)
+        src_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
+        src_iri = "".join(["src:", src_md5])
+        return src_iri
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,12 +231,13 @@ class NamespaceRegistry:
     xref = OurXrefNamespace()
     pub = OurPublicationNamespace()
     orga = OurOrganizationNamespace()
+    src = OurSourceNamespace()
     xsd  = XsdNamespace()
     rdf = RdfNamespace()
     rdfs = RdfsNamespace()
     skos = SkosNamespace()
     owl = OwlNamespace()
     foaf = FoafNamespace()
-    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf]
+    namespaces = [onto, cvcl, xref, pub, orga, src, xsd, rdf, rdfs, skos, owl, foaf]
 
 
