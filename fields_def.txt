@@ -314,14 +314,14 @@ DE   Monoclonal antibody isotype. Examples: IgG2a, kappa; IgM, lambda.
 SH   CC-mAb-isotype
 NG   mab-isotype
 PR   CC   Monoclonal antibody isotype
-XP   /cell-line/comment-list/comment[@category="Monoclonal antibody isotype"]
+XP   /cell-line/monoclonal-antibody-isotype-list/monoclonal-antibody-isotype
 //
 TG   mab-target
 DE   Monoclonal antibody target molecule. Generally a specific protein or chemical compound.
 SH   CC-mAb-target
 NG   mab-target
 PR   CC   Monoclonal antibody target
-XP   /cell-line/comment-list/comment[@category="Monoclonal antibody target"]
+XP   /cell-line/monoclonal-antibody-target-list/monoclonal-antibody-target
 //
 TG   omics
 DE   "Omics" study(ies) carried out on the cell line.
