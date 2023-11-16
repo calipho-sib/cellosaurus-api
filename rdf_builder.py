@@ -32,12 +32,14 @@ def get_ttl_for_cl(ac, cl_obj):
     lines.append(get_triple(cl_IRI, ns.rdf.type(), ns.onto.CellLine()))
     cl_data = cl_obj["cell-line"]
 
+    # fields: AC, AS, ACAS
     for ac_obj in cl_data["accession-list"]:
         some_ac = ns.xsd.string(ac_obj["value"])
         lines.append(get_triple(cl_IRI, ns.onto.accession(), some_ac))
         pred = ns.onto.primaryAccession() if ac_obj["type"] == "primary" else ns.onto.secondaryAccession()        
         lines.append(get_triple(cl_IRI, pred, some_ac))
 
+    # fields: ID, SY, IDSY
     for name_obj in cl_data["name-list"]:
         # blank node for name
         name_bn = get_blank_node()
@@ -49,6 +51,7 @@ def get_ttl_for_cl(ac, cl_obj):
         pred = ns.onto.recommendedName() if ac_obj["type"] == "identifier" else ns.onto.alternativeName()
         lines.append(get_triple(cl_IRI, pred, name_bn))
     
+    # fields: CC, registration
     for reg_obj in cl_data.get("registration-list") or []:
         name_bn = get_blank_node()
         lines.append(get_triple(name_bn, ns.rdf.type(), ns.onto.CellLineName()))        
@@ -60,6 +63,7 @@ def get_ttl_for_cl(ac, cl_obj):
         lines.append(get_triple(cl_IRI, ns.onto.name(), name_bn))
         lines.append(get_triple(cl_IRI, ns.onto.registeredName(), name_bn))
 
+    # fields: CC, misspelling
     for msp_obj in cl_data.get("misspelling-list") or []:
         name_bn = get_blank_node()
         lines.append(get_triple(name_bn, ns.rdf.type(), ns.onto.CellLineName()))        
@@ -78,6 +82,24 @@ def get_ttl_for_cl(ac, cl_obj):
             lines.append(get_triple(name_bn, ns.onto.appearsIn(), xref_IRI))
         lines.append(get_triple(cl_IRI, ns.onto.name(), name_bn))
         lines.append(get_triple(cl_IRI, ns.onto.misspellingName(), name_bn))
+
+    # fields: DR
+    for xref in cl_data.get("xref-list") or []:
+        ac = xref["accession"]
+        db = xref["database"]
+        xref_IRI = ns.xref.IRI(db,ac)
+        lines.append(get_triple(cl_IRI, ns.onto.xref(), xref_IRI))
+        
+    # fields: RX
+    for rx in cl_data.get("reference-list") or []:
+        (db,ac) = rx["resource-internal-ref"].split("=")
+        rx_IRI = ns.pub.IRI(db,ac)
+        lines.append(get_triple(cl_IRI, ns.onto.reference(), rx_IRI))
+
+    # fields: WW
+    for ww in cl_data.get("web-page-list") or []:
+        ww_iri = "".join(["<", ww, ">"])
+        lines.append(get_triple(cl_IRI, ns.rdfs.seeAlso(), ww_iri))
 
 
     return("".join(lines))

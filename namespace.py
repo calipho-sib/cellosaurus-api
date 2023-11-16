@@ -135,9 +135,10 @@ class OurOntologyNamespace(BaseNamespace):
     def registeredName(self): return ":registeredName"
     def misspellingName(self): return ":misspellingName"
     def appearsIn(self): return ":appearsIn"
-
-    def group(self): return ":group"
     def source(self): return ":source"
+    def xref(self): return ":xref"
+    def reference(self): return ":reference"
+    
 
 
 # Cellosaurus cell-line instances namespace
