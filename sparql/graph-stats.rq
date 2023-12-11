@@ -1,0 +1,3 @@
+SELECT ?graph (COUNT(*) as ?tripleCount)
+WHERE { GRAPH ?graph { ?s ?p ?o } }
+GROUP BY ?graph

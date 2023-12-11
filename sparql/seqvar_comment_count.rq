@@ -1,0 +1,25 @@
+PREFIX : <http://cellosaurus.org/rdf#> 
+PREFIX cvcl: <http://cellosaurus.org/cvcl/> 
+PREFIX xref: <http://cellosaurus.org/xref/> 
+PREFIX pub: <http://cellosaurus.org/pub/> 
+PREFIX orga: <http://cellosaurus.org/orga/> 
+PREFIX src: <http://cellosaurus.org/src/> 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#> 
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+
+select (sum(?cnt) as ?seqvar_comment_count) where {
+select ?svc ?status ?has_src (count(distinct ?annot) as ?cnt) where {
+  ?cl a :CellLine ; :sequenceVariationComment ?annot .
+  ?annot a :SequenceVariationComment .
+ optional { ?annot :sequenceVariation ?sv . ?sv a ?svc  }
+ optional { ?annot  :variationStatus ?status }
+ optional { ?annot  :source ?src }
+ bind( if (bound(?src), 1, 0) as ?has_src)
+}
+group by ?svc ?status ?has_src
+order by ?svc ?status ?has_src
+}

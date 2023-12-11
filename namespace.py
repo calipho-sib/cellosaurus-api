@@ -14,6 +14,11 @@ def getTtlPrefixDeclaration(prefix, baseurl):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     return "".join(["@prefix ", prefix, ": <", baseurl, "> ."])
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def getSparqlPrefixDeclaration(prefix, baseurl):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    return "".join(["PREFIX ", prefix, ": <", baseurl, "> "])
+
 
 # namespace ancestor class 
 # handles prefix and base URL
@@ -27,6 +32,8 @@ class BaseNamespace:
     def baseurl(self): return self.url
     def getTtlPrefixDeclaration(self): 
         return getTtlPrefixDeclaration(self.prefix(), self.baseurl())
+    def getSparqlPrefixDeclaration(self): 
+        return getSparqlPrefixDeclaration(self.prefix(), self.baseurl())
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,6 +59,7 @@ class XsdNamespace(BaseNamespace):
     def date(self, str): return "".join(["\"", str, "\"^^xsd:date"])
     def integer(self, int_number): return str(int_number)
     def float(self, float_number): return "".join(["\"", str(float_number), "\"^^xsd:float"])
+    def boolean(self, boolean_value): return str(boolean_value).lower() 
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,7 +136,24 @@ class OurOntologyNamespace(BaseNamespace):
     def HLATyping(self): return ":HLATyping"
     def GeneAlleles(self): return ":GeneAlleles"
     def Gene(self): return ":Gene"
-    def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision)
+    def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
+
+    def SequenceVariation(self): return ":SequenceVariation"
+    def GeneAmplification(self): return ":GeneAmplification"
+    def GeneDuplication(self): return ":GeneDuplication"
+    def GeneTriplication(self): return ":GeneTriplication"
+    def GeneQuarduplication(self): return ":GeneQuadruplication"
+    def GeneExtensiveAmplification(self): return ":GeneExtensiveAmplification"
+    def GeneDeletion(self): return ":GeneDeletion"
+    def GeneFusion(self): return ":GeneFusion"
+    def GeneMutation(self): return ":GeneMutation"
+    def RepeatExpansion(self): return ":RepeatExpansion"
+    def SimpleMutation(self): return ":SimpleMutation"
+    def UnexplicitMutation(self): return ":UnexplicitMutation"
+    def SequenceVariationComment(self): return ":SequenceVariationComment"
+
+    def Xxx(self): ":xxx"
+    
 
     # Properties
     def accession(self): return ":accession"
@@ -156,6 +181,19 @@ class OurOntologyNamespace(BaseNamespace):
     def gene(self): return ":gene"
     def alleles(self): return ":alleles"
 
+    def _from(self): return ":from" # cannot use function name "from" (is python reserved word)
+    
+    def sequenceVariation(self): return ":sequenceVariation"
+    def zygosity(self): return ":zygosity"
+    def hgvs(self): return ":hgvs"
+    def noneReported(self): return ":noneReported"
+    def sequenceVariationComment(self): return ":sequenceVariationComment"
+    def variationStatus(self): return ":variationStatus"
+
+    def yyy(self): ":yyy"
+
+    
+
 
 # Cellosaurus cell-line instances namespace
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -171,14 +209,12 @@ class OurXrefNamespace(BaseNamespace):
     dbac_set = set()
     def __init__(self): super(OurXrefNamespace, self).__init__("xref", "http://cellosaurus.org/xref/")
     def IRI(self, db, ac):
+        xref_key = "".join([db,"|", ac])
         # store requested db ac pairs fo which an IRI was requested so that we can describe Xref afterwards
-        OurXrefNamespace.dbac_set.add("".join([db, "|", ac]))
-        # TODO: review the IRI naming convention or use a MD5
-        # handle special characters in db:  " ", "/", "_", "-"
-        clean_db = replace_non_alphanumeric(db)
-        clean_ac = ac.replace(":", "_")
-        return "".join(["xref:", clean_db, "_", clean_ac])
-
+        OurXrefNamespace.dbac_set.add(xref_key)
+        # build a md5 based IRI from dbac key
+        xref_md5 = hashlib.md5(xref_key.encode('utf-8')).hexdigest()
+        return "".join(["xref:", db, "_", xref_md5])
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurPublicationNamespace(BaseNamespace):
@@ -186,10 +222,11 @@ class OurPublicationNamespace(BaseNamespace):
     dbac_set = set()
     def __init__(self): super(OurPublicationNamespace, self).__init__("pub", "http://cellosaurus.org/pub/")
     def IRI(self, db, ac):
+        pub_key = "".join([db, "|", ac])
         # store requested db ac pairs fo which an IRI was requested so that we can describe Xref afterwards
-        OurPublicationNamespace.dbac_set.add("".join([db, "|", ac]))
-        # TODO: review the IRI naming convention or use a MD5 especially for DOI accessions
-        return "".join(["pub:", db, "_", ac])
+        OurPublicationNamespace.dbac_set.add(pub_key)
+        pub_md5 = hashlib.md5(pub_key.encode('utf-8')).hexdigest()
+        return "".join(["pub:", db, "_", pub_md5])
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
