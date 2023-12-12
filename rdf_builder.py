@@ -264,7 +264,7 @@ def get_ttl_for_sequence_variation(cl_IRI, annot):
             for hgvs in hgvs_list: triples.append(seqvar_BN, ns.onto.hgvs(), ns.xsd.string(hgvs))
         for xref in annot.get("xref-list"):
             db = xref["database"]
-            if db in ["HGNC", "MGI", "RGD", "VGNC"]:
+            if db in ["HGNC", "MGI", "RGD", "VGNC", "UniProtKB"]:
                 triples.append(seqvar_BN, ns.onto.gene(), get_xref_IRI(xref)) # gene(s) related to the variation
             elif db in ["ClinVar", "dbSNP"]:
                 triples.append(seqvar_BN, ns.onto.reference(), get_xref_IRI(xref)) # reference of the variant desciption
