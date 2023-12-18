@@ -149,13 +149,22 @@ class OurOntologyNamespace(BaseNamespace):
     def RepeatExpansion(self): return ":RepeatExpansion"
     def SimpleMutation(self): return ":SimpleMutation"
     def UnexplicitMutation(self): return ":UnexplicitMutation"
+    def StructuredComment(self): return ":StructuredComment"# a superclass for structured comments / annotations
     def SequenceVariationComment(self): return ":SequenceVariationComment"
+    def SiteComment(self): return ":SiteComment"
+    def AnatomicalElement(self): return ":AnotomicalElement"
+    def FreeTextComment(self): return ":FreeTextComment" # a superclass for text-only comments (with or without source)
     def CellLineCollection(self): return ":CellLineCollection"
-    def Breed(self): return ":Breed"
+    def Breed(self): return ":BreedComment"
+    def AnecdotalComment(self): return ":AnecdotalComment"
+    def CharacteristicsComment(self): return ":CharacteristicsComment"
+    def BiotechnologyComment(self): return ":BiotechnologyComment"
+    def CautionComment(self): return ":CautionComment"
+
     
 
 
-    def Xxx(self): ":xxx"
+    def Xxx(self): return ":xxx"
     
 
     # Properties
@@ -191,11 +200,22 @@ class OurOntologyNamespace(BaseNamespace):
     def zygosity(self): return ":zygosity"
     def hgvs(self): return ":hgvs"
     def noneReported(self): return ":noneReported"
-    def sequenceVariationComment(self): return ":sequenceVariationComment"
     def variationStatus(self): return ":variationStatus"
     def breed(self): return ":breed"
+    def structuredComment(self): return ":structuredComment"    # super property for compex, structured comments
+    def sequenceVariationComment(self): return ":sequenceVariationComment"
+    def derivedFromSiteComment(self): return ":derivedFromSiteComment"
+    def sampledFromSiteComment(self): return ":sampledFromSiteComment" # TODO: to be used if we define :Sample and connect it to a :SiteComment
+    def freeTextComment(self): return ":freeTextComment"        # super property for text based comments (with or without source)
+    def anecdotalComment(self): return ":anecdotalComment"
+    def characteristicsComment(self): return ":characteristicsComment"
+    def biotechnologyComment(self): return ":biotechnologyComment"
+    def cautionComment(self): return ":cautionComment"
+    def site(self): return ":site"
+    def siteType(self): return ":siteType"
 
-    def yyy(self): ":yyy"
+
+    def yyy(self): return ":yyy"
 
     
 
@@ -213,11 +233,11 @@ class OurXrefNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     dbac_set = set()
     def __init__(self): super(OurXrefNamespace, self).__init__("xref", "http://cellosaurus.org/xref/")
-    def IRI(self, db, ac):
+    def IRI(self, db, ac, name=None):
+        # store requested db ac pairs (and optional name) for which an IRI was requested so that we can describe Xref afterwards
+        OurXrefNamespace.dbac_set.add("".join([db,"|", ac, "|", name or '']))
+        # build a md5 based IRI from db and ac only 
         xref_key = "".join([db,"|", ac])
-        # store requested db ac pairs fo which an IRI was requested so that we can describe Xref afterwards
-        OurXrefNamespace.dbac_set.add(xref_key)
-        # build a md5 based IRI from dbac key
         xref_md5 = hashlib.md5(xref_key.encode('utf-8')).hexdigest()
         return "".join(["xref:", db, "_", xref_md5])
 

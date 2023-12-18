@@ -59,9 +59,11 @@ def get_pub_IRI(ref):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_xref_IRI(xref):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # works for both xref and cv-term
     ac = xref["accession"]
-    db = xref["database"]
-    return ns.xref.IRI(db,ac)
+    db = xref.get("database") or xref.get("terminology") # terminology is for cv-term
+    name = xref.get("value") # we have a label in cv-term
+    return ns.xref.IRI(db,ac, name)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -187,6 +189,10 @@ def get_ttl_for_cl(ac, cl_obj):
     for annot in cl_data.get("sequence-variation-list") or []:
         triples.extend(get_ttl_for_sequence_variation(cl_IRI, annot))
 
+    # fields: derived-from-site
+    for annot in cl_data.get("derived-from-site-list") or []:
+        triples.extend(get_ttl_for_derived_from_site(cl_IRI, annot))
+
 
     # fields: CC from, ...
     for cc in cl_data.get("comment-list") or []:
@@ -197,6 +203,14 @@ def get_ttl_for_cl(ac, cl_obj):
             triples.extend(get_ttl_for_cc_part_of(cl_IRI, cc))
         elif categ == "Breed/subspecies":
             triples.extend(get_ttl_for_cc_breed(cl_IRI, cc))
+        elif categ == "Anecdotal":
+            triples.extend(get_ttl_for_cc_anecdotal(cl_IRI, cc))
+        elif categ == "Biotechnology":
+            triples.extend(get_ttl_for_cc_biotechnology(cl_IRI, cc))
+        elif categ == "Characteristics":
+            triples.extend(get_ttl_for_cc_characteristics(cl_IRI, cc))
+        elif categ == "Caution":
+            triples.extend(get_ttl_for_cc_caution(cl_IRI, cc))
 
     return("".join(triples.lines))
 
@@ -351,4 +365,75 @@ def get_ttl_for_cc_breed(cl_IRI, cc):
     triples.append(cl_IRI, ns.onto.breed(), inst_IRI)
     triples.append(inst_IRI, ns.rdf.type(), ns.onto.Breed())
     triples.append(inst_IRI, ns.rdfs.label(), ns.xsd.string(label))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_characteristics(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.characteristicsComment(), inst_BN)
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.CharacteristicsComment())
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_caution(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.cautionComment(), inst_BN)
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.CautionComment())
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_biotechnology(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.biotechnologyComment(), inst_BN)
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.BiotechnologyComment())
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_anecdotal(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.anecdotalComment(), inst_BN)
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.AnecdotalComment())
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_derived_from_site(cl_IRI, annot):    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    annot_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.derivedFromSiteComment(), annot_BN)
+    triples.append(annot_BN, ns.rdf.type(), ns.onto.SiteComment())
+    note = annot.get("site-note")
+    if note is not None:
+        triples.append(annot_BN, ns.rdfs.comment(), ns.xsd.string(note))
+    site = annot["site"]
+    site_BN = get_blank_node()
+    triples.append(annot_BN, ns.onto.site(), site_BN)
+    triples.append(site_BN, ns.rdf.type(), ns.onto.AnatomicalElement())
+    site_type = site["site-type"]
+    triples.append(site_BN, ns.onto.siteType(), ns.xsd.string(site_type))
+    label = site["value"]
+    triples.append(site_BN, ns.rdfs.label(), ns.xsd.string(label))
+    for cv in site.get("cv-term-list") or []:
+        triples.append(site_BN, ns.onto.xref(), get_xref_IRI(cv))
     return triples
