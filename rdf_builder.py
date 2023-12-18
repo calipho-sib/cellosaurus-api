@@ -195,6 +195,8 @@ def get_ttl_for_cl(ac, cl_obj):
             triples.extend(get_ttl_for_cc_from(cl_IRI, cc))
         elif categ == "Part of":
             triples.extend(get_ttl_for_cc_part_of(cl_IRI, cc))
+        elif categ == "Breed/subspecies":
+            triples.extend(get_ttl_for_cc_breed(cl_IRI, cc))
 
     return("".join(triples.lines))
 
@@ -338,4 +340,15 @@ def get_ttl_for_cc_part_of(cl_IRI, cc):
     triples.append(cl_IRI, ns.onto.partOf(), coll_IRI)
     triples.append(coll_IRI, ns.rdf.type(), ns.onto.CellLineCollection())
     triples.append(coll_IRI, ns.rdfs.label(), ns.xsd.string(label))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_breed(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    label = cc["value"]
+    inst_IRI = ns.breed.IRI(label)
+    triples.append(cl_IRI, ns.onto.breed(), inst_IRI)
+    triples.append(inst_IRI, ns.rdf.type(), ns.onto.Breed())
+    triples.append(inst_IRI, ns.rdfs.label(), ns.xsd.string(label))
     return triples
