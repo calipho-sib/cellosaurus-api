@@ -137,7 +137,7 @@ class OurOntologyNamespace(BaseNamespace):
     def GeneAlleles(self): return ":GeneAlleles"
     def Gene(self): return ":Gene"
     def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
-
+    def CellLineCollection(self): return ":CellLineCollection"
     def SequenceVariation(self): return ":SequenceVariation"
     def GeneAmplification(self): return ":GeneAmplification"
     def GeneDuplication(self): return ":GeneDuplication"
@@ -151,6 +151,7 @@ class OurOntologyNamespace(BaseNamespace):
     def SimpleMutation(self): return ":SimpleMutation"
     def UnexplicitMutation(self): return ":UnexplicitMutation"
     def SequenceVariationComment(self): return ":SequenceVariationComment"
+
 
     def Xxx(self): ":xxx"
     
@@ -180,6 +181,7 @@ class OurOntologyNamespace(BaseNamespace):
     def geneAlleles(self): return ":geneAlleles"
     def gene(self): return ":gene"
     def alleles(self): return ":alleles"
+    def partOf(self): return ":partOf"
 
     def _from(self): return ":from" # cannot use function name "from" (is python reserved word)
     
@@ -258,6 +260,20 @@ class OurSourceNamespace(BaseNamespace):
         src_iri = "".join(["src:", src_md5])
         return src_iri
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class OurCellLineCollectionNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # the IRI for cell line collection is based on their label
+    name_set = set()
+    def __init__(self): super(OurCellLineCollectionNamespace, self).__init__("coll", "http://cellosaurus.org/coll/")
+    def IRI(self, name):
+        # store names for which an IRI was requested so that we can describe Source afterwards
+        OurCellLineCollectionNamespace.name_set.add(name)
+        src_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
+        src_iri = "".join(["coll:", src_md5])
+        return src_iri
+
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class NamespaceRegistry:    
@@ -269,12 +285,13 @@ class NamespaceRegistry:
     pub = OurPublicationNamespace()
     orga = OurOrganizationNamespace()
     src = OurSourceNamespace()
+    coll = OurCellLineCollectionNamespace()
     xsd  = XsdNamespace()
     rdf = RdfNamespace()
     rdfs = RdfsNamespace()
     skos = SkosNamespace()
     owl = OwlNamespace()
     foaf = FoafNamespace()
-    namespaces = [onto, cvcl, xref, pub, orga, src, xsd, rdf, rdfs, skos, owl, foaf]
+    namespaces = [onto, cvcl, xref, pub, orga, src, coll, xsd, rdf, rdfs, skos, owl, foaf]
 
 

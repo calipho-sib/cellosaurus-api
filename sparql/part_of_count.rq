@@ -11,9 +11,12 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#> 
 PREFIX owl: <http://www.w3.org/2002/07/owl#> 
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
-
-select (count(*) as ?accession_count)  where {
-  ?cl a :CellLine.
- ?cl :accession ?ac.
+select (sum(?cnt) as ?part_of_count) where {
+  select ?coll ?label (count(*) as ?cnt) where {
+    ?cl a :CellLine .
+    ?cl :partOf ?coll.
+    ?coll a ?collClass .
+    ?coll rdfs:label ?label .
+  }
+  group by ?coll ?label
 }
-

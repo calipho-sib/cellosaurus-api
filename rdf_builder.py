@@ -193,7 +193,8 @@ def get_ttl_for_cl(ac, cl_obj):
         categ = cc["category"]
         if categ == "From": 
             triples.extend(get_ttl_for_cc_from(cl_IRI, cc))
-            
+        elif categ == "Part of":
+            triples.extend(get_ttl_for_cc_part_of(cl_IRI, cc))
 
     return("".join(triples.lines))
 
@@ -328,3 +329,13 @@ def get_ttl_for_cc_from(cl_IRI, cc):
     triples.append(cl_IRI, ns.onto._from(), orga_IRI)
     return triples
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_part_of(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    label = cc["value"]
+    coll_IRI = ns.coll.IRI(label)
+    triples.append(cl_IRI, ns.onto.partOf(), coll_IRI)
+    triples.append(coll_IRI, ns.rdf.type(), ns.onto.CellLineCollection())
+    triples.append(coll_IRI, ns.rdfs.label(), ns.xsd.string(label))
+    return triples
