@@ -149,22 +149,18 @@ class OurOntologyNamespace(BaseNamespace):
     def RepeatExpansion(self): return ":RepeatExpansion"
     def SimpleMutation(self): return ":SimpleMutation"
     def UnexplicitMutation(self): return ":UnexplicitMutation"
+    def Breed(self): return ":BreedComment"
     def StructuredComment(self): return ":StructuredComment"# a superclass for structured comments / annotations
     def SequenceVariationComment(self): return ":SequenceVariationComment"
     def AnatomicalElement(self): return ":AnotomicalElement"
     def FreeTextComment(self): return ":FreeTextComment" # a superclass for text-only comments (with or without source)
     def CellLineCollection(self): return ":CellLineCollection"
-    def Breed(self): return ":BreedComment"
     def AnecdotalComment(self): return ":AnecdotalComment"
     def CharacteristicsComment(self): return ":CharacteristicsComment"
     def BiotechnologyComment(self): return ":BiotechnologyComment"
+    def DonorInfoComment(self): return ":DonorInfoComment"
     def CautionComment(self): return ":CautionComment"
-
-    
-
-
-    def Xxx(self): return ":xxx"
-    
+    def CellType(self): return ":CellType"    
 
     # Properties
     def accession(self): return ":accession"
@@ -211,10 +207,9 @@ class OurOntologyNamespace(BaseNamespace):
     def siteType(self): return ":siteType"
     def sampledFromSite(self): return ":sampledFromSite" # TODO: to be used if we define :Sample and connect it to a :AnatomicalEntity
     def derivedFromSite(self): return ":derivedFromSite" 
+    def cellType(self): return ":cellType" 
+    def donorInfoComment(self): return ":donorInfoComment"
 
-    def yyy(self): return ":yyy"
-
-    
 
 
 # Cellosaurus cell-line instances namespace

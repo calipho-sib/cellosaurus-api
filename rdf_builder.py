@@ -193,6 +193,9 @@ def get_ttl_for_cl(ac, cl_obj):
     for annot in cl_data.get("derived-from-site-list") or []:
         triples.extend(get_ttl_for_derived_from_site(cl_IRI, annot))
 
+    ct_annot = cl_data.get("cell-type")
+    if ct_annot is not None:
+        triples.extend(get_ttl_for_cell_type(cl_IRI, ct_annot))
 
     # fields: CC from, ...
     for cc in cl_data.get("comment-list") or []:
@@ -211,6 +214,8 @@ def get_ttl_for_cl(ac, cl_obj):
             triples.extend(get_ttl_for_cc_characteristics(cl_IRI, cc))
         elif categ == "Caution":
             triples.extend(get_ttl_for_cc_caution(cl_IRI, cc))
+        elif categ == "Donor information":
+            triples.extend(get_ttl_for_cc_donor_info(cl_IRI, cc))
 
     return("".join(triples.lines))
 
@@ -415,6 +420,18 @@ def get_ttl_for_cc_anecdotal(cl_IRI, cc):
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
     return triples
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_donor_info(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.donorInfoComment(), inst_BN)
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.DonorInfoComment())
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_ttl_for_derived_from_site(cl_IRI, annot):    
@@ -433,4 +450,19 @@ def get_ttl_for_derived_from_site(cl_IRI, annot):
         triples.append(site_BN, ns.rdfs.comment(), ns.xsd.string(note)) 
     for cv in site.get("cv-term-list") or []: 
         triples.append(site_BN, ns.onto.xref(), get_xref_IRI(cv))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cell_type(cl_IRI, annot):    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    ct_BN = get_blank_node()
+    if isinstance(annot, str):  # when we have free text only without a cv-term
+        label, cv = (annot, None)
+    else:
+        label, cv = (annot["value"], annot.get("cv-term"))
+    triples.append(cl_IRI, ns.onto.cellType(), ct_BN)
+    triples.append(ct_BN, ns.rdf.type(), ns.onto.CellType())
+    triples.append(ct_BN, ns.rdfs.label(), ns.xsd.string(label))
+    if cv is not None: triples.append(ct_BN, ns.onto.xref(), get_xref_IRI(cv))
     return triples
