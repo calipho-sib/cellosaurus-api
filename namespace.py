@@ -225,9 +225,10 @@ class OurXrefNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     dbac_set = set()
     def __init__(self): super(OurXrefNamespace, self).__init__("xref", "http://cellosaurus.org/xref/")
-    def IRI(self, db, ac, name=None):
+    def IRI(self, db, ac, props=None):
+        # we expect to get props like: "name=Joe&discontinued=probable"
         # store requested db ac pairs (and optional name) for which an IRI was requested so that we can describe Xref afterwards
-        OurXrefNamespace.dbac_set.add("".join([db,"|", ac, "|", name or '']))
+        OurXrefNamespace.dbac_set.add("".join([db,"|", ac, "|", props or '']))
         # build a md5 based IRI from db and ac only 
         xref_key = "".join([db,"|", ac])
         xref_md5 = hashlib.md5(xref_key.encode('utf-8')).hexdigest()

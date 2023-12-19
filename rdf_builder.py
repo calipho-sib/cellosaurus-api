@@ -62,8 +62,28 @@ def get_xref_IRI(xref):
     # works for both xref and cv-term
     ac = xref["accession"]
     db = xref.get("database") or xref.get("terminology") # terminology is for cv-term
-    name = xref.get("value") # we have a label in cv-term
-    return ns.xref.IRI(db,ac, name)
+    # get optional properties attached to the xref
+    prop_dict = dict()
+    # get a label in cv-term 
+    name = xref.get("value") 
+    if name is not None: prop_dict["name"] = name
+    # get other xref properties (Discontinued, ...)
+    for p in xref.get("property-list") or []:
+        key = p["name"].lower()
+        value = p["value"]
+        if key == "gene/protein designation": key = "name"
+        prop_dict[key] = value
+    # we sort the key in a list
+    key_list = list(prop_dict.keys())
+    key_list.sort()
+    prop_list = list()
+    # we build an ordered list of name=value pairs
+    for k in key_list: prop_list.append("=".join([k, prop_dict[k]]))
+    # join them with &
+    props = "&".join(prop_list)
+    if len(props)==0: props = None
+    #if props is not None: print("DEBUG props:", props)
+    return ns.xref.IRI(db,ac, props)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -216,6 +236,11 @@ def get_ttl_for_cl(ac, cl_obj):
             triples.extend(get_ttl_for_cc_caution(cl_IRI, cc))
         elif categ == "Donor information":
             triples.extend(get_ttl_for_cc_donor_info(cl_IRI, cc))
+
+
+        # NOTE: discontined annotations are represented as xref properties in json
+        # elif categ == "Discontinued":
+            
 
     return("".join(triples.lines))
 
