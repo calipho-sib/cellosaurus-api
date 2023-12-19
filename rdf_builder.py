@@ -420,20 +420,17 @@ def get_ttl_for_cc_anecdotal(cl_IRI, cc):
 def get_ttl_for_derived_from_site(cl_IRI, annot):    
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     triples = TripleList()
-    annot_BN = get_blank_node()
-    triples.append(cl_IRI, ns.onto.derivedFromSiteComment(), annot_BN)
-    triples.append(annot_BN, ns.rdf.type(), ns.onto.SiteComment())
-    note = annot.get("site-note")
-    if note is not None:
-        triples.append(annot_BN, ns.rdfs.comment(), ns.xsd.string(note))
-    site = annot["site"]
     site_BN = get_blank_node()
-    triples.append(annot_BN, ns.onto.site(), site_BN)
-    triples.append(site_BN, ns.rdf.type(), ns.onto.AnatomicalElement())
+    note = annot.get("site-note")
+    site = annot["site"]
     site_type = site["site-type"]
-    triples.append(site_BN, ns.onto.siteType(), ns.xsd.string(site_type))
     label = site["value"]
+    triples.append(cl_IRI, ns.onto.derivedFromSite(), site_BN)
+    triples.append(site_BN, ns.rdf.type(), ns.onto.AnatomicalElement())
+    triples.append(site_BN, ns.onto.siteType(), ns.xsd.string(site_type))
     triples.append(site_BN, ns.rdfs.label(), ns.xsd.string(label))
-    for cv in site.get("cv-term-list") or []:
+    if note is not None:
+        triples.append(site_BN, ns.rdfs.comment(), ns.xsd.string(note)) 
+    for cv in site.get("cv-term-list") or []: 
         triples.append(site_BN, ns.onto.xref(), get_xref_IRI(cv))
     return triples

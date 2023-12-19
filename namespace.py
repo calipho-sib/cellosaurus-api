@@ -151,7 +151,6 @@ class OurOntologyNamespace(BaseNamespace):
     def UnexplicitMutation(self): return ":UnexplicitMutation"
     def StructuredComment(self): return ":StructuredComment"# a superclass for structured comments / annotations
     def SequenceVariationComment(self): return ":SequenceVariationComment"
-    def SiteComment(self): return ":SiteComment"
     def AnatomicalElement(self): return ":AnotomicalElement"
     def FreeTextComment(self): return ":FreeTextComment" # a superclass for text-only comments (with or without source)
     def CellLineCollection(self): return ":CellLineCollection"
@@ -204,16 +203,14 @@ class OurOntologyNamespace(BaseNamespace):
     def breed(self): return ":breed"
     def structuredComment(self): return ":structuredComment"    # super property for compex, structured comments
     def sequenceVariationComment(self): return ":sequenceVariationComment"
-    def derivedFromSiteComment(self): return ":derivedFromSiteComment"
-    def sampledFromSiteComment(self): return ":sampledFromSiteComment" # TODO: to be used if we define :Sample and connect it to a :SiteComment
     def freeTextComment(self): return ":freeTextComment"        # super property for text based comments (with or without source)
     def anecdotalComment(self): return ":anecdotalComment"
     def characteristicsComment(self): return ":characteristicsComment"
     def biotechnologyComment(self): return ":biotechnologyComment"
     def cautionComment(self): return ":cautionComment"
-    def site(self): return ":site"
     def siteType(self): return ":siteType"
-
+    def sampledFromSite(self): return ":sampledFromSite" # TODO: to be used if we define :Sample and connect it to a :AnatomicalEntity
+    def derivedFromSite(self): return ":derivedFromSite" 
 
     def yyy(self): return ":yyy"
 
