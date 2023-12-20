@@ -217,13 +217,19 @@ def get_ttl_for_cl(ac, cl_obj):
     if ct_annot is not None:
         triples.extend(get_ttl_for_cell_type(cl_IRI, ct_annot))
 
+    # fields: CC sequence-variation
+    for annot in cl_data.get("doubling-time-list") or []:
+        triples.extend(get_ttl_for_doubling_time(cl_IRI, annot))
+
     # fields: CC from, ...
     for cc in cl_data.get("comment-list") or []:
         categ = cc["category"]
         if categ == "From": 
             triples.extend(get_ttl_for_cc_from(cl_IRI, cc))
         elif categ == "Part of":
-            triples.extend(get_ttl_for_cc_part_of(cl_IRI, cc))
+            triples.extend(get_ttl_for_cc_part_of(cl_IRI, cc))            
+        elif categ == "Group":
+            triples.extend(get_ttl_for_cc_in_group(cl_IRI, cc))
         elif categ == "Breed/subspecies":
             triples.extend(get_ttl_for_cc_breed(cl_IRI, cc))
         elif categ == "Anecdotal":
@@ -387,6 +393,17 @@ def get_ttl_for_cc_part_of(cl_IRI, cc):
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_in_group(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    label = cc["value"]
+    grp_IRI = ns.grp.IRI(label)
+    triples.append(cl_IRI, ns.onto.group(), grp_IRI)
+    triples.append(grp_IRI, ns.rdf.type(), ns.onto.CellLineGroup())
+    triples.append(grp_IRI, ns.rdfs.label(), ns.xsd.string(label))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_ttl_for_cc_breed(cl_IRI, cc):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     triples = TripleList()
@@ -490,4 +507,25 @@ def get_ttl_for_cell_type(cl_IRI, annot):
     triples.append(ct_BN, ns.rdf.type(), ns.onto.CellType())
     triples.append(ct_BN, ns.rdfs.label(), ns.xsd.string(label))
     if cv is not None: triples.append(ct_BN, ns.onto.xref(), get_xref_IRI(cv))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_doubling_time(cl_IRI, annot):    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    annot_BN = get_blank_node()
+    duration = annot["doubling-time-value"]
+    comment = annot.get("doubling-time-note")
+    sources = annot.get("doubling-time-sources") or {} # yes, sources is a dictionary of list
+    triples.append(cl_IRI, ns.onto.doublingTimeComment(), annot_BN)
+    triples.append(annot_BN, ns.rdf.type(), ns.onto.DoublingTimeComment())
+    triples.append(annot_BN, ns.onto.duration(), ns.xsd.string(duration))
+    if comment is not None: triples.append(annot_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    for xref in sources.get("xref-list") or []: 
+        triples.append(annot_BN, ns.onto.source(), get_xref_IRI(xref))
+    for ref in sources.get("reference-list") or []:
+        triples.append(annot_BN, ns.onto.source(), get_pub_IRI(ref))
+    for src in sources.get("source-list") or []:
+        src_IRI = ns.src.IRI(src) if src == "Direct_author_submission" else ns.orga.IRI(src, "", "", "")
+        triples.append(annot_BN, ns.onto.source(), src_IRI)
     return triples

@@ -150,17 +150,22 @@ class OurOntologyNamespace(BaseNamespace):
     def SimpleMutation(self): return ":SimpleMutation"
     def UnexplicitMutation(self): return ":UnexplicitMutation"
     def Breed(self): return ":BreedComment"
+    def AnatomicalElement(self): return ":AnotomicalElement"
+    def CellType(self): return ":CellType"    
+    def CellLineCollection(self): return ":CellLineCollection"
+    def CellLineGroup(self): return ":CellLineGroup"
     def StructuredComment(self): return ":StructuredComment"# a superclass for structured comments / annotations
     def SequenceVariationComment(self): return ":SequenceVariationComment"
-    def AnatomicalElement(self): return ":AnotomicalElement"
+    def DoublingTimeComment(self): return ":DoublingTimeComment"
+
     def FreeTextComment(self): return ":FreeTextComment" # a superclass for text-only comments (with or without source)
-    def CellLineCollection(self): return ":CellLineCollection"
     def AnecdotalComment(self): return ":AnecdotalComment"
     def CharacteristicsComment(self): return ":CharacteristicsComment"
     def BiotechnologyComment(self): return ":BiotechnologyComment"
     def DonorInfoComment(self): return ":DonorInfoComment"
     def CautionComment(self): return ":CautionComment"
-    def CellType(self): return ":CellType"    
+    def DoublingTimeComment(self): return ":DoublingTimeComment"
+
 
     # Properties
     def accession(self): return ":accession"
@@ -209,6 +214,9 @@ class OurOntologyNamespace(BaseNamespace):
     def derivedFromSite(self): return ":derivedFromSite" 
     def cellType(self): return ":cellType" 
     def donorInfoComment(self): return ":donorInfoComment"
+    def doublingTimeComment(self): return ":doublingTimeComment"
+    def duration(self): return ":duration"
+    def group(self): return ":group"
 
 
 
@@ -285,9 +293,22 @@ class OurCellLineCollectionNamespace(BaseNamespace):
     def IRI(self, name):
         # store names for which an IRI was requested so that we can describe Source afterwards
         OurCellLineCollectionNamespace.name_set.add(name)
-        src_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
-        src_iri = "".join(["coll:", src_md5])
-        return src_iri
+        some_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
+        some_iri = "".join(["coll:", some_md5])
+        return some_iri
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class OurCellLineGroupNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # the IRI for cell line group is based on their label
+    name_set = set()
+    def __init__(self): super(OurCellLineGroupNamespace, self).__init__("grp", "http://cellosaurus.org/grp/")
+    def IRI(self, name):
+        # store names for which an IRI was requested so that we can describe Source afterwards
+        OurCellLineGroupNamespace.name_set.add(name)
+        some_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
+        some_iri = "".join(["grp:", some_md5])
+        return some_iri
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurBreedNamespace(BaseNamespace):
@@ -316,6 +337,7 @@ class NamespaceRegistry:
     orga = OurOrganizationNamespace()
     src = OurSourceNamespace()
     coll = OurCellLineCollectionNamespace()
+    grp = OurCellLineGroupNamespace()
     breed = OurBreedNamespace()
     xsd  = XsdNamespace()
     rdf = RdfNamespace()
@@ -323,6 +345,6 @@ class NamespaceRegistry:
     skos = SkosNamespace()
     owl = OwlNamespace()
     foaf = FoafNamespace()
-    namespaces = [onto, cvcl, xref, pub, orga, src, coll, breed, xsd, rdf, rdfs, skos, owl, foaf]
+    namespaces = [onto, cvcl, xref, pub, orga, src, coll, grp, breed, xsd, rdf, rdfs, skos, owl, foaf]
 
 
