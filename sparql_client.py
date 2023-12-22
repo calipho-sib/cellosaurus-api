@@ -231,8 +231,11 @@ if __name__ == '__main__' :
             cols = list()
             for cn in col_names:
                 col = row.get(cn)
-                colval = col.get("value")
-                if col.get("type") == "uri": colval = client.apply_prefixes(colval)
+                if col is None:
+                    colval = "(none)"
+                else:
+                    colval = col.get("value")
+                    if col.get("type") == "uri": colval = client.apply_prefixes(colval)
                 cols.append(colval)
             print("ROWS\t" +"\t".join(cols))
         

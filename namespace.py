@@ -154,9 +154,11 @@ class OurOntologyNamespace(BaseNamespace):
     def CellType(self): return ":CellType"    
     def CellLineCollection(self): return ":CellLineCollection"
     def CellLineGroup(self): return ":CellLineGroup"
+
     def StructuredComment(self): return ":StructuredComment"# a superclass for structured comments / annotations
     def SequenceVariationComment(self): return ":SequenceVariationComment"
     def DoublingTimeComment(self): return ":DoublingTimeComment"
+    def DiscontinuationRecord(self): return ":DiscontinuationRecord"
 
     def FreeTextComment(self): return ":FreeTextComment" # a superclass for text-only comments (with or without source)
     def AnecdotalComment(self): return ":AnecdotalComment"
@@ -218,6 +220,9 @@ class OurOntologyNamespace(BaseNamespace):
     def duration(self): return ":duration"
     def group(self): return ":group"
 
+    def discontinued(self): return ":discontinued"
+    def provider(self): return ":provider"
+    def productId(self): return ":productId"
 
 
 # Cellosaurus cell-line instances namespace

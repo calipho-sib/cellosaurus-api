@@ -56,6 +56,16 @@ def get_pub_IRI(ref):
     (db,ac) = ref["resource-internal-ref"].split("=")
     return ns.pub.IRI(db,ac)
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_xref_prop(xref, prop_name):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    props = xref.get("property-list")
+    if props is None: return None
+    for p in props:
+        if p["name"]==prop_name: return p["value"]
+    return None
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_xref_IRI(xref):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -143,8 +153,11 @@ def get_ttl_for_cl(ac, cl_obj):
 
     # fields: DR
     for xref in cl_data.get("xref-list") or []:
-        triples.append(cl_IRI, ns.onto.xref(), get_xref_IRI(xref))
-        
+        xref_IRI = get_xref_IRI(xref)
+        triples.append(cl_IRI, ns.onto.xref(), xref_IRI)
+        if get_xref_prop(xref, "Discontinued"):
+            triples.extend(get_ttl_for_cc_discontinued(cl_IRI, xref["database"], xref["accession"], xref_IRI))        
+
     # fields: RX
     for rx in cl_data.get("reference-list") or []:
         triples.append(cl_IRI, ns.onto.reference(), get_pub_IRI(rx))
@@ -242,12 +255,10 @@ def get_ttl_for_cl(ac, cl_obj):
             triples.extend(get_ttl_for_cc_caution(cl_IRI, cc))
         elif categ == "Donor information":
             triples.extend(get_ttl_for_cc_donor_info(cl_IRI, cc))
-
-
-        # NOTE: discontined annotations are represented as xref properties in json
-        # elif categ == "Discontinued":
+        elif categ == "Discontinued":
+            provider, product_id = cc["value"].split("; ")
+            triples.extend(get_ttl_for_cc_discontinued(cl_IRI, provider, product_id))
             
-
     return("".join(triples.lines))
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -507,6 +518,19 @@ def get_ttl_for_cell_type(cl_IRI, annot):
     triples.append(ct_BN, ns.rdf.type(), ns.onto.CellType())
     triples.append(ct_BN, ns.rdfs.label(), ns.xsd.string(label))
     if cv is not None: triples.append(ct_BN, ns.onto.xref(), get_xref_IRI(cv))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_discontinued(cl_IRI, provider, product_id, xref_IRI=None):    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    annot_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.discontinued(), annot_BN)
+    triples.append(annot_BN, ns.rdf.type(), ns.onto.DiscontinuationRecord())
+    triples.append(annot_BN, ns.onto.provider(), ns.xsd.string(provider))
+    triples.append(annot_BN, ns.onto.productId(), ns.xsd.string(product_id))
+    if xref_IRI is not None:
+        triples.append(annot_BN, ns.onto.xref(), xref_IRI)
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
