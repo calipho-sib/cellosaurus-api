@@ -156,7 +156,7 @@ def get_ttl_for_cl(ac, cl_obj):
         xref_IRI = get_xref_IRI(xref)
         triples.append(cl_IRI, ns.onto.xref(), xref_IRI)
         if get_xref_prop(xref, "Discontinued"):
-            triples.extend(get_ttl_for_cc_discontinued(cl_IRI, xref["database"], xref["accession"], xref_IRI))        
+            triples.extend(get_ttl_for_cc_discontinued(cl_IRI, xref["database"], xref["accession"], xref_IRI)) # also used for "CC   Discontinued: " lines       
 
     # fields: RX
     for rx in cl_data.get("reference-list") or []:
@@ -257,7 +257,17 @@ def get_ttl_for_cl(ac, cl_obj):
             triples.extend(get_ttl_for_cc_donor_info(cl_IRI, cc))
         elif categ == "Discontinued":
             provider, product_id = cc["value"].split("; ")
-            triples.extend(get_ttl_for_cc_discontinued(cl_IRI, provider, product_id))
+            triples.extend(get_ttl_for_cc_discontinued(cl_IRI, provider, product_id)) # also used in DR lines
+        elif categ == "Karyotypic information":
+            triples.extend(get_ttl_for_cc_karyotypic_info(cl_IRI, cc))
+        elif categ == "Miscellaneous":
+            triples.extend(get_ttl_for_cc_miscellaneous_info(cl_IRI, cc))
+        elif categ == "Senescence":
+            triples.extend(get_ttl_for_cc_senescence_info(cl_IRI, cc))
+        elif categ == "Virology":
+            triples.extend(get_ttl_for_cc_virology_info(cl_IRI, cc))
+        elif categ == "Knockout cell":
+            triples.extend(get_ttl_for_cc_knockout_cell(cl_IRI, cc))
             
     return("".join(triples.lines))
 
@@ -483,6 +493,74 @@ def get_ttl_for_cc_donor_info(cl_IRI, cc):
     triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
     triples.append(inst_BN, ns.rdf.type(), ns.onto.DonorInfoComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_karyotypic_info(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.karyotypicInfoComment(), inst_BN)
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.KaryotypicInfoComment())
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_miscellaneous_info(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.miscellaneousInfoComment(), inst_BN)
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.MiscellaneousInfoComment())
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_senescence_info(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.senescenceComment(), inst_BN)
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.SenescenceComment())
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_virology_info(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.virologyComment(), inst_BN)
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.VirologyComment())
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_knockout_cell(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc.get("value") # optional
+    method = cc.get("method")
+    xref_list = cc.get("xref-list")
+    xref = None if xref_list is None or len(xref_list)==0 else xref_list[0]
+    if method is None or xref is None:
+        print(f"WARN, missing method or gene xref in knockout comment {cl_IRI}")
+    else:
+        inst_BN = get_blank_node()
+        triples.append(cl_IRI, ns.onto.knockout(), inst_BN)
+        triples.append(inst_BN, ns.rdf.type(), ns.onto.KnockoutComment())
+        triples.append(inst_BN, ns.onto.method(), ns.xsd.string(method))
+        triples.append(inst_BN, ns.onto.gene(), get_xref_IRI(xref))
+        if comment is not None: 
+            triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
     return triples
 
 

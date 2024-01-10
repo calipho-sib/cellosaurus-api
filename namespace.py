@@ -159,6 +159,7 @@ class OurOntologyNamespace(BaseNamespace):
     def SequenceVariationComment(self): return ":SequenceVariationComment"
     def DoublingTimeComment(self): return ":DoublingTimeComment"
     def DiscontinuationRecord(self): return ":DiscontinuationRecord"
+    def KnockoutComment(self): return ":KnockoutComment"
 
     def FreeTextComment(self): return ":FreeTextComment" # a superclass for text-only comments (with or without source)
     def AnecdotalComment(self): return ":AnecdotalComment"
@@ -166,8 +167,10 @@ class OurOntologyNamespace(BaseNamespace):
     def BiotechnologyComment(self): return ":BiotechnologyComment"
     def DonorInfoComment(self): return ":DonorInfoComment"
     def CautionComment(self): return ":CautionComment"
-    def DoublingTimeComment(self): return ":DoublingTimeComment"
-
+    def KaryotypicInfoComment(self): return ":KaryotypicInfoComment"
+    def MiscellaneousInfoComment(self): return ":MiscellaneousInfoComment"
+    def SenescenceComment(self): return ":SenescenceComment"
+    def VirologyComment(self): return ":VirologyComment"
 
     # Properties
     def accession(self): return ":accession"
@@ -219,6 +222,12 @@ class OurOntologyNamespace(BaseNamespace):
     def doublingTimeComment(self): return ":doublingTimeComment"
     def duration(self): return ":duration"
     def group(self): return ":group"
+    def karyotypicInfoComment(self): return ":karyotypicInfoComment"
+    def miscellaneousInfoComment(self): return ":miscellaneousInfoComment"
+    def senescenceComment(self): return ":senescenceComment"
+    def virologyComment(self): return ":virologyComment"
+    def knockout(self): return ":knockout"
+    def method(self): return ":method"
 
     def discontinued(self): return ":discontinued"
     def provider(self): return ":provider"
