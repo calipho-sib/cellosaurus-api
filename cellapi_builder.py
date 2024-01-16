@@ -532,14 +532,30 @@ def append_filtered_xml(trg_xml_root, some_xml_root, path_list):
     for path in path_list:
         nodes = some_xml_root.xpath(path)
         if len(nodes)>0:
-            path_items = path.split("/")[1:]           # the '' before first / is irrelevant
+            # the '' before first / is irrelevant
+            # e.g: /cell-line/xref-list/xref/property-list/property[@name="Discontinued"]/../..
+            path_items = path.split("/")[1:]           
+            # ->:  "cell-line" "xref-list" "xref" "property-list" "property[@name="Discontinued"]" ".." ".."
+            # find parent elements of nodes we retrieved from xpath expression:
+            # a) remove and count '..' path elements from the right side (if any)
+            # e.g: ".." ".." in "cell-line" "xref-list" "xref" "property-list" "property[@name="Discontinued"]" ".." ".."
+            back_num = 0
+            while path_items[-1]=='..': 
+                back_num += 1
+                path_items.pop()
+            # b) remove elements of the xpath expression used as a selection criterion that are children of the nodes retrieved
+            # e.g:  "property-list" "property[@name="Discontinued"]" in "cell-line" "xref-list" "xref" "property-list" "property[@name="Discontinued"]"
+            if back_num != 0: path_items = path_items[0: - back_num]
+            # c) finally remove the tag of the nodes we retrieved from the xpath expression
             parent_tags = path_items[0:-1]
             current_parent = trg_xml_root
+            # now create an xml element for each parent of the nodes we retrieved
             for tag in parent_tags:
                 node = current_parent.find(tag)
                 if node is None: node = etree.SubElement(current_parent, tag)
                 current_parent = node
             last_item = path_items[-1]
+            # add retrieved attribute or element nodes as children of closest parent element
             if last_item.startswith("attribute"):      # i.e. attribute::category
                 attr_name = last_item.split(":")[2]
                 attr_value = nodes[0]                  # we get an attribute value in nodes[0]

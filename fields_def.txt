@@ -252,6 +252,7 @@ SH   CC-discontinued
 NG   discontinued
 PR   CC   Discontinued
 XP   /cell-line/comment-list/comment[@category="Discontinued"]
+XP   /cell-line/xref-list/xref/property-list/property[@name="Discontinued"]/../..
 //
 TG   doubling-time
 DE   Population doubling-time of the cell line.
