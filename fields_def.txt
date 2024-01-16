@@ -15,6 +15,7 @@
 #
 
 
+
 TG   id
 DE   Recommended name. Most frequently the name of the cell line as provided in the original publication.
 SH   ID
@@ -293,7 +294,7 @@ DE   Microsatellite instability degree.
 SH   CC-MSI
 NG   msi
 PR   CC   Microsatellite instability
-XP   /cell-line/comment-list/comment[@category="Microsatellite instability"]
+XP   /cell-line/microsatellite-instability-list/microsatellite-instability
 //
 TG   miscellaneous
 DE   Miscellaneous remarks about the cell line.
