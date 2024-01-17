@@ -172,6 +172,8 @@ class OurOntologyNamespace(BaseNamespace):
     def SenescenceComment(self): return ":SenescenceComment"
     def VirologyComment(self): return ":VirologyComment"
     def MicrosatelliteInstability(self): return ":MicrosatelliteInstability"
+    def MabIsotype(self): return ":MabIsotype"
+    def Antigen(self): return ":Antigen"
 
 
     # Properties
@@ -236,6 +238,12 @@ class OurOntologyNamespace(BaseNamespace):
     def productId(self): return ":productId"
     def microsatelliteInstability(self): return ":microsatelliteInstability"
     def msiValue(self): return ":msiValue"
+    def mabIsotype(self): return ":mabIsotype"
+    def mabTarget(self): return ":mabTarget"
+    def heavyChain(self): return ":heavyChain"
+    def lightChain(self): return ":lightChain"
+    
+    
 
 # Cellosaurus cell-line instances namespace
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

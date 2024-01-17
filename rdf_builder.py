@@ -238,6 +238,10 @@ def get_ttl_for_cl(ac, cl_obj):
     for annot in cl_data.get("microsatellite-instability-list") or []:
         triples.extend(get_ttl_for_msi(cl_IRI, annot))
 
+    # fields: CC monoclonal-antibody-isotype
+    for annot in cl_data.get("monoclonal-antibody-isotype-list") or []:
+        triples.extend(get_ttl_for_mab_isotype(cl_IRI, annot))
+
     # fields: CC from, ...
     for cc in cl_data.get("comment-list") or []:
         categ = cc["category"]
@@ -648,6 +652,28 @@ def get_ttl_for_msi(cl_IRI, annot):
     triples.append(annot_BN, ns.rdf.type(), ns.onto.MicrosatelliteInstability())
     triples.append(annot_BN, ns.onto.msiValue(), ns.xsd.string(value))
     if comment is not None: triples.append(annot_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    for xref in sources.get("xref-list") or []: 
+        triples.append(annot_BN, ns.onto.source(), get_xref_IRI(xref))
+    for ref in sources.get("reference-list") or []:
+        triples.append(annot_BN, ns.onto.source(), get_pub_IRI(ref))
+    for src in sources.get("source-list") or []:
+        src_IRI = ns.src.IRI(src) if src == "Direct_author_submission" else ns.orga.IRI(src, "", "", "")
+        triples.append(annot_BN, ns.onto.source(), src_IRI)
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_mab_isotype(cl_IRI, annot):    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    annot_BN = get_blank_node()
+    heavy = annot["heavy-chain"]
+    light = annot.get("light-chain")
+    sources = annot.get("monoclonal-antibody-isotype-sources") or {} # yes, sources is a dictionary of list
+    triples.append(cl_IRI, ns.onto.mabIsotype(), annot_BN)
+    triples.append(annot_BN, ns.rdf.type(), ns.onto.MabIsotype())
+    triples.append(annot_BN, ns.onto.heavyChain(), ns.xsd.string(heavy))
+    if light is not None: 
+        triples.append(annot_BN, ns.onto.lightChain(), ns.xsd.string(light))
     for xref in sources.get("xref-list") or []: 
         triples.append(annot_BN, ns.onto.source(), get_xref_IRI(xref))
     for ref in sources.get("reference-list") or []:
