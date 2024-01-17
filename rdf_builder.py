@@ -67,6 +67,20 @@ def get_xref_prop(xref, prop_name):
     return None
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_xref_label(xref):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # works for both xref and cv-term
+    # for cv-term:
+    name = xref.get("value")
+    if name is not None: return name
+    # for xref:
+    for p in xref.get("property-list") or []:
+        key = p["name"].lower()
+        if key == "gene/protein designation": return p["value"]
+    # might occur
+    return None
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_xref_IRI(xref):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     # works for both xref and cv-term
@@ -241,6 +255,10 @@ def get_ttl_for_cl(ac, cl_obj):
     # fields: CC monoclonal-antibody-isotype
     for annot in cl_data.get("monoclonal-antibody-isotype-list") or []:
         triples.extend(get_ttl_for_mab_isotype(cl_IRI, annot))
+
+    # fields: CC monoclonal-antibody-target
+    for annot in cl_data.get("monoclonal-antibody-target-list") or []:
+        triples.extend(get_ttl_for_mab_target(cl_IRI, annot))
 
     # fields: CC from, ...
     for cc in cl_data.get("comment-list") or []:
@@ -681,4 +699,31 @@ def get_ttl_for_mab_isotype(cl_IRI, annot):
     for src in sources.get("source-list") or []:
         src_IRI = ns.src.IRI(src) if src == "Direct_author_submission" else ns.orga.IRI(src, "", "", "")
         triples.append(annot_BN, ns.onto.source(), src_IRI)
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_mab_target(cl_IRI, annot):    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    annot_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.mabTarget(), annot_BN)
+    triples.append(annot_BN, ns.rdf.type(), ns.onto.Antigen())
+    # we might get a simple string in annot (the name of the antigen)
+    if type(annot) == str:
+        triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(annot))
+        return triples
+    # or more often we get a dict object
+    comment = annot.get("monoclonal-antibody-target-note")
+    if comment is not None:
+        triples.append(annot_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    # we might get just a name and a comment
+    name = annot.get("value")
+    xref_IRI = None
+    xref = annot.get("xref") or annot.get("cv-term")
+    # or the name is in the xref / cv-term
+    if xref is not None:
+        name = get_xref_label(xref)
+        xref_IRI = get_xref_IRI(xref)
+        triples.append(annot_BN, ns.onto.xref(), xref_IRI)
+    triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(name))
     return triples
