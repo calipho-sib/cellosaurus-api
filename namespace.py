@@ -175,7 +175,8 @@ class OurOntologyNamespace(BaseNamespace):
     def PopulationComment(self) : return ":PopulationComment"
     def MicrosatelliteInstability(self): return ":MicrosatelliteInstability"
     def MabIsotype(self): return ":MabIsotype"
-    def Antigen(self): return ":Antigen"
+    def Antigen(self): return ":Antigen" # uniprot, chebi (+free text)
+    def ChemicalAgent(self): return ":ChemicalAgent" # drugbank, uniprot, ncit, chebi (+free text)
 
 
     # Properties
@@ -247,6 +248,7 @@ class OurOntologyNamespace(BaseNamespace):
     def mabTarget(self): return ":mabTarget"
     def heavyChain(self): return ":heavyChain"
     def lightChain(self): return ":lightChain"
+    def resistance(self): return ":resistance"
     
     
 

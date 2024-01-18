@@ -248,17 +248,21 @@ def get_ttl_for_cl(ac, cl_obj):
     for annot in cl_data.get("doubling-time-list") or []:
         triples.extend(get_ttl_for_doubling_time(cl_IRI, annot))
 
-    # fields: CC microsatellite-instability
+    # fields: CC msi
     for annot in cl_data.get("microsatellite-instability-list") or []:
         triples.extend(get_ttl_for_msi(cl_IRI, annot))
 
-    # fields: CC monoclonal-antibody-isotype
+    # fields: CC mab-isotype
     for annot in cl_data.get("monoclonal-antibody-isotype-list") or []:
         triples.extend(get_ttl_for_mab_isotype(cl_IRI, annot))
 
-    # fields: CC monoclonal-antibody-target
+    # fields: CC mab-target
     for annot in cl_data.get("monoclonal-antibody-target-list") or []:
         triples.extend(get_ttl_for_mab_target(cl_IRI, annot))
+
+    # fields: CC resistance
+    for annot in cl_data.get("resistance-list") or []:
+        triples.extend(get_ttl_for_resistance(cl_IRI, annot))
 
     # fields: CC from, ...
     for cc in cl_data.get("comment-list") or []:
@@ -756,4 +760,24 @@ def get_ttl_for_mab_target(cl_IRI, annot):
         xref_IRI = get_xref_IRI(xref)
         triples.append(annot_BN, ns.onto.xref(), xref_IRI)
     triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(name))
+    return triples
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_resistance(cl_IRI, annot):    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    annot_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.resistance(), annot_BN)
+    triples.append(annot_BN, ns.rdf.type(), ns.onto.ChemicalAgent())
+    # we might get a simple string in annot (the name of the chemical)
+    if type(annot) == str:
+        triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(annot))
+    # or more often we get a dict object
+    else:
+        xref = annot.get("xref") or annot.get("cv-term")
+        name = get_xref_label(xref)
+        xref_IRI = get_xref_IRI(xref)
+        triples.append(annot_BN, ns.onto.xref(), xref_IRI)
+        triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(name))
     return triples
