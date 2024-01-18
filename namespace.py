@@ -171,6 +171,8 @@ class OurOntologyNamespace(BaseNamespace):
     def MiscellaneousInfoComment(self): return ":MiscellaneousInfoComment"
     def SenescenceComment(self): return ":SenescenceComment"
     def VirologyComment(self): return ":VirologyComment"
+    def OmicsComment(self) : return ":OmicsComment"
+    def PopulationComment(self) : return ":PopulationComment"
     def MicrosatelliteInstability(self): return ":MicrosatelliteInstability"
     def MabIsotype(self): return ":MabIsotype"
     def Antigen(self): return ":Antigen"
@@ -230,6 +232,9 @@ class OurOntologyNamespace(BaseNamespace):
     def miscellaneousInfoComment(self): return ":miscellaneousInfoComment"
     def senescenceComment(self): return ":senescenceComment"
     def virologyComment(self): return ":virologyComment"
+    def omicsComment(self) : return ":omicsComment"
+    def populationComment(self) : return ":populationComment"
+
     def knockout(self): return ":knockout"
     def method(self): return ":method"
 

@@ -294,7 +294,11 @@ def get_ttl_for_cl(ac, cl_obj):
             triples.extend(get_ttl_for_cc_virology_info(cl_IRI, cc))
         elif categ == "Knockout cell":
             triples.extend(get_ttl_for_cc_knockout_cell(cl_IRI, cc))
-            
+        elif categ == "Omics":
+            triples.extend(get_ttl_for_cc_omics_info(cl_IRI, cc))
+        elif categ == "Population":
+            triples.extend(get_ttl_for_cc_population_info(cl_IRI, cc))
+
     return("".join(triples.lines))
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -588,6 +592,32 @@ def get_ttl_for_cc_knockout_cell(cl_IRI, cc):
         if comment is not None: 
             triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
     return triples
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_omics_info(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.omicsComment(), inst_BN)
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.OmicsComment())
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_cc_population_info(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    comment = cc["value"]
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.populationComment(), inst_BN)
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.PopulationComment())
+    triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
