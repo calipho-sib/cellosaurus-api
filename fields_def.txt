@@ -288,7 +288,7 @@ DE   Gene(s) knocked-out in the cell line and method to obtain the KO.
 SH   CC-KO
 NG   knockout
 PR   CC   Knockout cell
-XP   /cell-line/comment-list/comment[@category="Knockout cell"]
+XP   /cell-line/knockout-cell-list/knockout-cell
 //
 TG   msi
 DE   Microsatellite instability degree.

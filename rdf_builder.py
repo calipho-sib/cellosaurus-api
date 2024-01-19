@@ -264,6 +264,11 @@ def get_ttl_for_cl(ac, cl_obj):
     for annot in cl_data.get("resistance-list") or []:
         triples.extend(get_ttl_for_resistance(cl_IRI, annot))
 
+    # fields: CC knockout
+    for annot in cl_data.get("knockout-cell-list") or []:
+        triples.extend(get_ttl_for_cc_knockout_cell(cl_IRI, annot))
+
+
     # fields: CC from, ...
     for cc in cl_data.get("comment-list") or []:
         categ = cc["category"]
@@ -296,8 +301,6 @@ def get_ttl_for_cl(ac, cl_obj):
             triples.extend(get_ttl_for_cc_senescence_info(cl_IRI, cc))
         elif categ == "Virology":
             triples.extend(get_ttl_for_cc_virology_info(cl_IRI, cc))
-        elif categ == "Knockout cell":
-            triples.extend(get_ttl_for_cc_knockout_cell(cl_IRI, cc))
         elif categ == "Omics":
             triples.extend(get_ttl_for_cc_omics_info(cl_IRI, cc))
         elif categ == "Population":
@@ -581,12 +584,11 @@ def get_ttl_for_cc_virology_info(cl_IRI, cc):
 def get_ttl_for_cc_knockout_cell(cl_IRI, cc):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     triples = TripleList()
-    comment = cc.get("value") # optional
-    method = cc.get("method")
-    xref_list = cc.get("xref-list")
-    xref = None if xref_list is None or len(xref_list)==0 else xref_list[0]
+    method = cc.get("knockout-method")
+    comment = cc.get("knockout-cell-note") # optional
+    xref = cc.get("xref")
     if method is None or xref is None:
-        print(f"WARN, missing method or gene xref in knockout comment {cl_IRI}")
+        print(f"WARN, missing method or gene xref in knockout comment in {cl_IRI}")
     else:
         inst_BN = get_blank_node()
         triples.append(cl_IRI, ns.onto.knockout(), inst_BN)
