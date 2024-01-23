@@ -248,6 +248,10 @@ def get_ttl_for_cl(ac, cl_obj):
     for annot in cl_data.get("doubling-time-list") or []:
         triples.extend(get_ttl_for_doubling_time(cl_IRI, annot))
 
+    # fields: CC transformant
+    for annot in cl_data.get("transformant-list") or []:
+        triples.extend(get_ttl_for_transformant(cl_IRI, annot))
+
     # fields: CC msi
     for annot in cl_data.get("microsatellite-instability-list") or []:
         triples.extend(get_ttl_for_msi(cl_IRI, annot))
@@ -783,3 +787,33 @@ def get_ttl_for_resistance(cl_IRI, annot):
         triples.append(annot_BN, ns.onto.xref(), xref_IRI)
         triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(name))
     return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_transformant(cl_IRI, cc):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    inst_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.transformant(), inst_BN)
+    triples.append(inst_BN, ns.rdf.type(), ns.onto.TransformantAgent())
+
+    # we might get a simple string in annot (the name of the chemical)
+    if type(cc) == str:
+        triples.append(inst_BN, ns.rdfs.label(), ns.xsd.string(cc))
+    # or more often we get a dict object
+    else:
+        comment = cc.get("transformant-note") # optional
+        term = cc.get("cv-term") # optional too
+        inst_BN = get_blank_node()
+        triples.append(cl_IRI, ns.onto.transformant(), inst_BN)
+        triples.append(inst_BN, ns.rdf.type(), ns.onto.TransformantAgent())
+        if term is not None:
+            triples.append(inst_BN, ns.onto.xref(), get_xref_IRI(term))
+            label = get_xref_label(term)
+            triples.append(inst_BN, ns.rdfs.label(), ns.xsd.string(label))
+        else:
+            label = cc["value"] 
+            triples.append(inst_BN, ns.rdfs.label(), ns.xsd.string(label))
+        if comment is not None: 
+            triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    return triples
+
