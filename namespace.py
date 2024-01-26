@@ -155,6 +155,7 @@ class OurOntologyNamespace(BaseNamespace):
     def CellType(self): return ":CellType"    
     def CellLineCollection(self): return ":CellLineCollection"
     def CellLineGroup(self): return ":CellLineGroup"
+    def Disease(self): return ":Disease"
 
 
     def StructuredComment(self): return ":StructuredComment"# a superclass for structured comments / annotations
@@ -181,6 +182,7 @@ class OurOntologyNamespace(BaseNamespace):
     def ChemicalAgent(self): return ":ChemicalAgent" # drugbank, uniprot, ncit, chebi (+free text)
     def TransformantAgent(self): return ":TransformantAgent" # ChEBI, NCBI_TaxID, NCIt, DrugBank (+free text)
     def ShortTandemRepeatProfile(self): return ":ShortTandemRepeatProfile"
+    def Species(self): return ":Species"
 
     # Properties
     def accession(self): return ":accession"
@@ -257,7 +259,8 @@ class OurOntologyNamespace(BaseNamespace):
     def transformant(self): return ":transformant"
     def shortTandemRepeatProfile(self): return ":shortTandemRepeatProfile"
     def conflict(self): return ":conflict"
-    
+    def disease(self): return ":disease"
+    def species(self): return ":species"
 
 # Cellosaurus cell-line instances namespace
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

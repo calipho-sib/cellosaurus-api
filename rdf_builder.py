@@ -237,6 +237,14 @@ def get_ttl_for_cl(ac, cl_obj):
     if annot is not None:
         triples.extend(get_ttl_for_short_tandem_repeat(cl_IRI, annot))
 
+    # fields: di
+    for annot in cl_data.get("disease-list") or []:
+        triples.extend(get_ttl_for_disease(cl_IRI, annot))
+
+    # fields: ox
+    for annot in cl_data.get("species-list") or []:
+        triples.extend(get_ttl_for_species(cl_IRI, annot))
+
     # fields: CC sequence-variation
     for annot in cl_data.get("sequence-variation-list") or []:
         triples.extend(get_ttl_for_sequence_variation(cl_IRI, annot))
@@ -853,4 +861,31 @@ def get_ttl_for_short_tandem_repeat(cl_IRI, annot):
                 elif type(src) == list: # we expect 0 to 1 list of publication references in source list
                     for ref in src: # the list may contain 1 to N publication references 
                         triples.append(marker_BN, ns.onto.source(), get_pub_IRI(ref))
+    return triples
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_disease(cl_IRI, cvterm):    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    annot_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.disease(), annot_BN)
+    triples.append(annot_BN, ns.rdf.type(), ns.onto.Disease())
+    name = get_xref_label(cvterm)
+    xref_IRI = get_xref_IRI(cvterm)
+    triples.append(annot_BN, ns.onto.xref(), xref_IRI)
+    triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(name))
+    return triples
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_species(cl_IRI, cvterm):    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    annot_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.species(), annot_BN)
+    triples.append(annot_BN, ns.rdf.type(), ns.onto.Species())
+    name = get_xref_label(cvterm)
+    xref_IRI = get_xref_IRI(cvterm)
+    triples.append(annot_BN, ns.onto.xref(), xref_IRI)
+    triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(name))
     return triples
