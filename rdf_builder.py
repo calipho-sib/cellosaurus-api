@@ -232,6 +232,11 @@ def get_ttl_for_cl(ac, cl_obj):
             triples.append(gall_BN, ns.onto.alleles(), alleles)
 
 
+    # fields: CC str, WARNING: str-list is not a list !!!
+    annot = cl_data.get("str-list")
+    if annot is not None:
+        triples.extend(get_ttl_for_short_tandem_repeat(cl_IRI, annot))
+
     # fields: CC sequence-variation
     for annot in cl_data.get("sequence-variation-list") or []:
         triples.extend(get_ttl_for_sequence_variation(cl_IRI, annot))
@@ -817,3 +822,35 @@ def get_ttl_for_transformant(cl_IRI, cc):
             triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
     return triples
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_short_tandem_repeat(cl_IRI, annot):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    annot_BN = get_blank_node()
+    triples.append(cl_IRI, ns.onto.shortTandemRepeatProfile(), annot_BN)
+    triples.append(annot_BN, ns.rdf.type(), ns.onto.ShortTandemRepeatProfile())
+    for src in annot["source-list"]:
+        if type(src) == str:  # we expect 0 to 1 organization in source list
+            triples.append(annot_BN, ns.onto.source(), ns.src.IRI(src))
+        elif type(src) == list: # we expect 0 to 1 list of publication references in source list
+            for ref in src: # the list may contain 1 to N publication references 
+                triples.append(annot_BN, ns.onto.source(), get_pub_IRI(ref))
+
+    for marker in annot["marker-list"]:
+        marker_id = marker["id"]
+        conflict = marker["conflict"]
+        for data in marker["marker-data-list"]:
+            marker_BN = get_blank_node()
+            alleles = data["marker-alleles"]
+            triples.append(annot_BN, ns.onto.markerAlleles(), marker_BN)
+            triples.append(marker_BN, ns.rdf.type(), ns.onto.MarkerAlleles())
+            triples.append(marker_BN, ns.onto.markerId(), ns.xsd.string(marker_id))
+            triples.append(marker_BN, ns.onto.conflict(), ns.xsd.boolean(conflict))
+            triples.append(marker_BN, ns.onto.alleles(), ns.xsd.string(alleles))
+            for src in data.get("source-list") or []:
+                if type(src) == str:  # we expect 0 to 1 organization in source list
+                    triples.append(marker_BN, ns.onto.source(), ns.src.IRI(src))
+                elif type(src) == list: # we expect 0 to 1 list of publication references in source list
+                    for ref in src: # the list may contain 1 to N publication references 
+                        triples.append(marker_BN, ns.onto.source(), get_pub_IRI(ref))
+    return triples

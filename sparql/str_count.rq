@@ -1,0 +1,29 @@
+PREFIX : <http://cellosaurus.org/rdf#> 
+PREFIX cvcl: <http://cellosaurus.org/cvcl/> 
+PREFIX xref: <http://cellosaurus.org/xref/> 
+PREFIX pub: <http://cellosaurus.org/pub/> 
+PREFIX orga: <http://cellosaurus.org/orga/> 
+PREFIX src: <http://cellosaurus.org/src/> 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#> 
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+select (count(distinct ?cl) as ?str_count) where { 
+ select ?cl  ?ctClass  (count(distinct ?ps) as ?profile_src_count) (str(?id) as ?marker_id) (str(?al) as ?alleles) (str(?cfl) as ?conflict) (count(distinct ?ms) as ?marker_src_count)
+ where {
+  ?cl a :CellLine .
+  ?cl :shortTandemRepeatProfile ?profile.
+  ?profile a ?ctClass .
+  ?profile :source ?ps .
+  ?profile :markerAlleles ?marker .
+  ?marker :markerId ?id .
+  ?marker :alleles ?al . 
+  ?marker :conflict ?cfl .
+  optional { ?marker :source ?ms  }.
+# filter ( ?cfl)
+ }
+ group by ?cl ?ctClass ?id ?al ?cfl
+ order by ?cl ?ctClass ?id ?al ?cfl
+}

@@ -134,8 +134,9 @@ class OurOntologyNamespace(BaseNamespace):
     def GenomeAncestry(self): return ":GenomeAncestry"
     def PopulationPercentage(self): return ":PopulationPercentage"
     def HLATyping(self): return ":HLATyping"
-    def GeneAlleles(self): return ":GeneAlleles"
     def Gene(self): return ":Gene"
+    def GeneAlleles(self): return ":GeneAlleles"  # used in HLA
+    def MarkerAlleles(self): return ":MarkerAlleles"    # used in short repeat tandem
     def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
     def SequenceVariation(self): return ":SequenceVariation"
     def GeneAmplification(self): return ":GeneAmplification"
@@ -154,6 +155,7 @@ class OurOntologyNamespace(BaseNamespace):
     def CellType(self): return ":CellType"    
     def CellLineCollection(self): return ":CellLineCollection"
     def CellLineGroup(self): return ":CellLineGroup"
+
 
     def StructuredComment(self): return ":StructuredComment"# a superclass for structured comments / annotations
     def SequenceVariationComment(self): return ":SequenceVariationComment"
@@ -178,7 +180,7 @@ class OurOntologyNamespace(BaseNamespace):
     def Antigen(self): return ":Antigen" # uniprot, chebi (+free text)
     def ChemicalAgent(self): return ":ChemicalAgent" # drugbank, uniprot, ncit, chebi (+free text)
     def TransformantAgent(self): return ":TransformantAgent" # ChEBI, NCBI_TaxID, NCIt, DrugBank (+free text)
-
+    def ShortTandemRepeatProfile(self): return ":ShortTandemRepeatProfile"
 
     # Properties
     def accession(self): return ":accession"
@@ -203,8 +205,10 @@ class OurOntologyNamespace(BaseNamespace):
 
     def hlaTyping(self): return ":hlaTyping"
     def geneAlleles(self): return ":geneAlleles"
-    def gene(self): return ":gene"
+    def markerAlleles(self): return ":markerAlleles"
     def alleles(self): return ":alleles"
+    def markerId(self): return ":markerId"
+    def gene(self): return ":gene"
     def partOf(self): return ":partOf"
 
     def _from(self): return ":from" # cannot use function name "from" (is python reserved word)
@@ -251,6 +255,8 @@ class OurOntologyNamespace(BaseNamespace):
     def lightChain(self): return ":lightChain"
     def resistance(self): return ":resistance"
     def transformant(self): return ":transformant"
+    def shortTandemRepeatProfile(self): return ":shortTandemRepeatProfile"
+    def conflict(self): return ":conflict"
     
 
 # Cellosaurus cell-line instances namespace
@@ -356,6 +362,21 @@ class OurBreedNamespace(BaseNamespace):
         src_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
         src_iri = "".join(["breed:", src_md5])
         return src_iri
+
+
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# class OurStrMarkerNamespace(BaseNamespace):
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#     # the IRI for short tandem profile marker is based on their label
+#     name_set = set()
+#     def __init__(self): 
+#         super(OurStrMarkerNamespace, self).__init__("str", "http://cellosaurus.org/str/")
+#     def IRI(self, name):
+#         # store names for which an IRI was requested so that we can describe Source afterwards
+#         OurStrMarkerNamespace.name_set.add(name)
+#         src_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
+#         src_iri = "".join(["str:", src_md5])
+#         return src_iri
 
 
 
