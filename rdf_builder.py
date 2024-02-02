@@ -366,9 +366,11 @@ def get_ttl_for_sequence_variation(cl_IRI, annot):
         var_sources = annot.get("variation-sources") or {}
         for ref in var_sources.get("reference-list") or []:    
             triples.append(annot_BN, ns.onto.source(), get_pub_IRI(ref))
+        for xref in var_sources.get("xref-list") or []:
+            triples.append(annot_BN, ns.onto.source(), get_xref_IRI(xref))         
         src = var_sources.get("source")
         if src is not None: 
-            triples.append(annot_BN, ns.onto.source(), ns.src.IRI(src))
+            triples.append(annot_BN, ns.onto.source(), ns.src.IRI(src)) 
 
         seqvar_BN = get_blank_node()
         triples.append(annot_BN, ns.onto.sequenceVariation(), seqvar_BN)
