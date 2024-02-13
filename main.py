@@ -658,7 +658,8 @@ async def fullsearch_form(
     content = f.read()
     f.close()
 
-    content = content.replace("$q", q)
+    input_q = q.replace("\"", "&quot;")
+    content = content.replace("$q", input_q)
     content = content.replace("$fields", fields)
     content = content.replace("$sort", sort)
     content = content.replace("$rows", str(rows))
