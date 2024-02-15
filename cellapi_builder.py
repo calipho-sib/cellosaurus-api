@@ -28,8 +28,11 @@ def get_solr_search_url(verbose=False):
     return value
 
 
+
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-def get_solr_formatted(fldDef, q):
+# OBSOLETE
+def get_solr_formatted_old(fldDef, q):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # field_names must be low case
     # field names containing a '-' must be replaced with a '_'
@@ -44,9 +47,9 @@ def get_solr_formatted(fldDef, q):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def get_all_solr_params(fldDef, query="id:HeLa", fields="ac", sort="score desc", start=0, rows=1000):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    solr_q=get_solr_formatted(fldDef, query)
-    solr_fl = "" if fields is None  or len(fields.strip())==0 else get_solr_formatted(fldDef, fields)
-    solr_sort = "score desc" if sort is None or len(sort.strip())==0 else get_solr_formatted(fldDef, sort)
+    solr_q = fldDef.normalize_solr_q(query)
+    solr_fl = "" if fields is None  or len(fields.strip())==0 else fldDef.normalize_solr_fl(fields)
+    solr_sort = "score desc" if sort is None or len(sort.strip())==0 else fldDef.normalize_solr_sort(sort)
     params = {
         "fl":solr_fl, 
         "indent": True, 

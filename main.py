@@ -251,7 +251,7 @@ async def get_cell_line(
         fld: list[Fields] = Query(
             default = None,
             example="",
-            title = "Output fielfields",
+            title = "Output fields",
             description="""Optional list of fields to return in the response.
             All the fields are returned if undefined.
             Values passed in parameter <i>fld</i> takes precedence over values passed in parameter <i>fields</i>.
@@ -263,6 +263,7 @@ async def get_cell_line(
             example="id,sy,cc,rx",
             title = "Output fields (alternate syntax)",
             description="""Optional list of fields to return in the response.
+            <i>fields</i> value is a comma-separated list of field tags or field shortnames.
             All the fields are returned if undefined.
             Values passed in parameter <i>fld</i> takes precedence over values passed in parameter <i>fields</i>.
             More information on content of fields <a href="static/fields_help.html">here</a>.
@@ -272,6 +273,9 @@ async def get_cell_line(
         ):
 
     t0 = datetime.datetime.now()
+
+    # ensure we have tag names and no shortnames in fields
+    fields = fldDef.get_tags(fields)
 
     # precedence of fld over fields
     if fld is not None: fields = fld
@@ -416,7 +420,7 @@ async def search_cell_line(
             default = None,
             title = "Output fields",
             description="""Optional list of fields to return in the response.
-            All the fields are returned if undefined.
+            All the fields are returned in the response if undefined.
             Values passed in parameter <i>fld</i> takes precedence over values passed in parameter <i>fields</i>.
             More information on content of fields <a href="static/fields_help.html">here</a>.
             """
@@ -426,9 +430,10 @@ async def search_cell_line(
             example="id,ac,sy,cc",
             title = "Output fields (alternate syntax)",
             description="""Optional list of fields to return in the response.
+            <i>fields</i> value is a comma-separated list of field tags or field shortnames.
             All the fields are returned if undefined.
             Values passed in parameter <i>fld</i> takes precedence over values passed in parameter <i>fields</i>.
-            More information on content of fields <a href="static/fields_help.html">here</a>.
+            More information on fields <a href="static/fields_help.html">here</a>.
             """
             ),
         sort: str = Query(
@@ -446,15 +451,14 @@ async def search_cell_line(
 
     t0 = datetime.datetime.now()
 
+    # ensure we have tag names and no shortnames in fields
+    fields = fldDef.get_tags(fields)
+
     # precedence of fld over fields
     if fld is not None: fields = fld
 
     # precedence of format over request headers
     if format is None: format = get_format_from_headers(request.headers)
-
-    # solr_q = api.get_solr_formatted(q)
-    # solr_sort = "score desc"
-    # if sort is not None: solr_sort = app.get_solr_formatted(sort)
 
     # call solr service
     url = api.get_solr_search_url()
@@ -635,7 +639,7 @@ async def fullsearch_form(
         numFound = obj["response"]["numFound"]
         resultRows = list()
         # build table column headers by iterating on solr fields names
-        # INFO: remember field names may differ from user known fields (see api.get_solr_formatted() ) 
+        # INFO: remember field names may differ from user known fields (see fldDef.normalize_solr_*() ) 
         solr_fields=params["fl"] # get solr names of fields
         field_list = solr_fields.split(",")
         resultHeader=""
