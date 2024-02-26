@@ -209,7 +209,7 @@ async def get_release_info(
         log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data,media_type="text/plain")
     elif format == 'json':
-        obj = {"Cellosausus": {"header": {"release": release_info}}}
+        obj = {"Cellosaurus": {"header": {"release": release_info}}}
         data = json.dumps(obj, sort_keys=True, indent=2)
         log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data,media_type="application/json")
