@@ -612,9 +612,12 @@ async def fullsearch_form(
 
     # set default query criterion if none
     if q is None or q == "": q = "id:HeLa"
-    if fields is None or fields == "": fields = "id,ac,ox"
+    if fields is None or fields == "": fields = "ac,id,ox"
     if sort is None or sort == "": sort = "score desc"
     if rows is None or rows == 0: rows = 20
+
+    # make sure we have 'ac' field
+    if "ac" not in fields.lower(): fields = "ac," + fields
 
     # send request to solr
     url = api.get_solr_search_url()
@@ -649,11 +652,16 @@ async def fullsearch_form(
         # build table rows with results
         for doc in obj["response"]["docs"]: 
             columns = list()
-            for field in field_list:
+            for field in field_list:                    
                 value = doc.get(field.strip())
                 if value is None: value = "-"
                 if isinstance(value, list): value = " | ".join(value)
-                columns.append("<td>" + value + "</td>")
+                if field.strip() == "ac":
+                    lnk1 = "/cell-line/" + value + "?fields=" + fields + "&format=xml"
+                    #lnk2 = "/cell-line/" + value + "?fields=" + "&format=xml"
+                    columns.append(f"""<td><a target="_blank" href="{lnk1}">{value}</a></td>""")
+                else:
+                    columns.append("<td>" + value + "</td>")
             resultRows.append("<tr>" + "".join(columns) + "</tr>")
 
     # build response and send it
