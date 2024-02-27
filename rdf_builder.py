@@ -180,6 +180,41 @@ def get_ttl_for_cl(ac, cl_obj):
     for ww in cl_data.get("web-page-list") or []:
         ww_iri = "".join(["<", ww, ">"])
         triples.append(cl_IRI, ns.rdfs.seeAlso(), ww_iri)
+    
+    # fields: SX
+    sx = cl_data.get("sex")
+    if sx is not None and sx != "Sex unspecified":
+        triples.append(cl_IRI, ns.onto.sex(), ns.xsd.string(sx))
+
+    # fields: AG
+    ag = cl_data.get("age")
+    if ag is not None:
+        triples.append(cl_IRI, ns.onto.fromIndividualAtAge(), ns.xsd.string(ag))
+
+    # fields: OI
+    for oi in cl_data.get("same-origin-as") or []:
+        oi_iri = ns.cvcl.IRI(oi["accession"])
+        triples.append(cl_IRI, ns.onto.fromSameIndividualAs(), oi_iri)
+
+    # fields: HI
+    for hi in cl_data.get("derived-from") or []:
+        hi_iri = ns.cvcl.IRI(hi["accession"])
+        triples.append(cl_IRI, ns.onto.parentCellLine(), hi_iri)
+
+    # fields: CH
+    for ch in cl_data.get("child-list") or []:
+        ch_iri = ns.cvcl.IRI(ch["accession"]["value"])
+        triples.append(cl_IRI, ns.onto.childCellLine(), ch_iri)
+
+    # fields: CA
+    ca = cl_data["category"] # we expect one value for each cell line
+    if ca is not None:
+        triples.append(cl_IRI, ns.onto.category(), ns.xsd.string(ca))
+
+    # fields DT, dtc, dtu, dtv
+    triples.append(cl_IRI, ns.onto.cvclEntryCreated(), ns.xsd.date(cl_data["created"]))
+    triples.append(cl_IRI, ns.onto.cvclEntryLastUpdated(), ns.xsd.date(cl_data["last-updated"]))
+    triples.append(cl_IRI, ns.onto.cvclEntryVersion(), ns.xsd.integer(cl_data["entry-version"]))
 
     # fields: CC, genome-ancestry
     annot = cl_data.get("genome-ancestry")

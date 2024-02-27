@@ -259,8 +259,18 @@ class OurOntologyNamespace(BaseNamespace):
     def transformant(self): return ":transformant"
     def shortTandemRepeatProfile(self): return ":shortTandemRepeatProfile"
     def conflict(self): return ":conflict"
-    def disease(self): return ":disease"
-    def species(self): return ":species"
+    def disease(self): return ":disease" # renmae to :fromIndividualWithDisease ?
+    def species(self): return ":species" # rename to :fromIndividualFromSpecies ?
+    def sex(self): return ":sex"         # rename to :fromIndividualWithSex ?
+    def fromIndividualAtAge(self): return ":fromIndividualAtAge"
+    def fromSameIndividualAs(self): return ":fromSameIndividualAs" # OI field
+    def parentCellLine(self): return ":parentCellLine" # HI field
+    def childCellLine(self): return ":childCellLine" # CH field
+    def category(self): return ":category" # CA field
+    def cvclEntryCreated(self): return ":cvclEntryCreated" # dtc field
+    def cvclEntryLastUpdated(self): return ":cvclEntryLastUpdated" # dtu field
+    def cvclEntryVersion(self): return ":cvclEntryVersion" # dtv field
+
 
 # Cellosaurus cell-line instances namespace
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
