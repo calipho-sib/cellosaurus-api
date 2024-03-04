@@ -17,7 +17,7 @@ import ApiCommon
 from ApiCommon import log_it
 from fields_utils import FldDef
 
-from rdf_builder import get_ttl_prefixes, get_ttl_for_cl
+from rdf_builder import get_ttl_prefixes, get_ttl_for_cl, get_ttl_for_ref
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -fRead cl_dict
 def get_solr_search_url(verbose=False):
@@ -869,38 +869,35 @@ if __name__ == "__main__":
         if not os.path.exists(out_dir): os.mkdir(out_dir)
         os.system("rm " + out_dir + "*")
 
-        max_doc = 10000000    # enough for 10 millions cell lines, set small value for debugging
-        max_doc = 200000
-        
-        doc_per_file = 200000
-
-        num_doc = 0
-        file_index = 0
+        cl_out = open(out_dir + "cl.ttl", "wb")
+        cl_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
+        cl_cnt = 0
+        log_it("INFO:", f"serializing cl: {cl_cnt} / {len(cl_dict)}")
         for ac in cl_dict:
-            num_doc += 1
-            if num_doc > max_doc: break
-
-            if num_doc % doc_per_file == 1:
-                file_index += 1
-                output_file = out_dir + "data" + str(file_index) + ".ttl"
-                f_out = open(output_file, "wb")
-                f_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
-
+            cl_cnt += 1
+            #if cl_cnt > 10000: break
+            if cl_cnt % 10000 == 0: log_it("INFO:", f"serializing cl: {cl_cnt} / {len(cl_dict)}")
             cl_xml = get_xml_cell_line(ac, cl_dict, cl_xml_f_in)
             cl_obj = get_json_object(cl_xml)
-            str = get_ttl_for_cl(ac, cl_obj)
-            f_out.write(  bytes(str , "utf-8" ) )
+            cl_out.write(  bytes(get_ttl_for_cl(ac, cl_obj) , "utf-8" ) )
+        cl_out.close()
+        log_it("INFO:", f"serialized cl: {cl_cnt} / {len(cl_dict)}")
 
-            if num_doc % doc_per_file == 0:
-                log_it("INFO:", "wrote " + output_file)
-                f_out.close()
+        ref_out = open(out_dir + "ref.ttl", "wb")
+        ref_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
+        rf_cnt = 0
+        log_it("INFO:", f"serializing ref: {rf_cnt} / {len(rf_dict)}")
+        for rf_id in rf_dict:
+            rf_cnt += 1
+            if rf_cnt % 10000 == 0: log_it("INFO:", f"serializing ref: {rf_cnt} / {len(rf_dict)}")
+            rf_xml = get_xml_reference(rf_id, rf_dict, rf_xml_f_in)
+            rf_obj = get_json_object(rf_xml)
+            ref_out.write( bytes(get_ttl_for_ref(rf_obj), "utf-8") ) 
+        ref_out.close()
+        log_it("INFO:", f"serialized ref: {rf_cnt} / {len(rf_dict)}")
 
-        if not f_out.closed:
-            log_it("INFO:", "wrote " + output_file)
-            f_out.close()
-
-        log_it("INFO:", "wrote cell lines solr documents, count", len(cl_dict))
         log_it("INFO:", "end")
+
 
 
     # -------------------------------------------------------

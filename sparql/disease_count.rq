@@ -13,7 +13,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 select (count(*) as ?disease_count) where { 
 # select * where {
   ?cl a :CellLine .
-  ?cl :disease ?d.
+  ?cl :fromIndividualWithDisease ?d.
   ?d a ?ctClass .
   ?d rdfs:label ?label .
   ?d :xref ?xref.

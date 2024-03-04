@@ -1,6 +1,22 @@
 import uuid
 from namespace import NamespaceRegistry as ns
 
+mmm2mm = { "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", 
+           "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
+
+pubtype_clazz = {
+    "article": ns.onto.JournalArticle(),
+    "book chapter": ns.onto.BookChapter(), # will be refined
+    "patent": ns.onto.Patent(),
+    "thesis BSc": ns.onto.BachelorThesis(),
+    "thesis MD": ns.onto.MedicalDegreeThesis(),
+    "thesis MDSc": ns.onto.MedicalDegreeMasterThesis(),
+    "thesis MSc": ns.onto.MasterThesis(),
+    "thesis PD": ns.onto.PrivaDocentThesis(),
+    "thesis PhD": ns.onto.DoctoralThesis(),
+    "thesis VMD": ns.onto.VeterinaryMedicalDegreeThesis(),
+}
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class DataError(Exception): 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -51,9 +67,11 @@ def get_sparql_prefixes():
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_pub_IRI(ref):
+def get_pub_IRI(refOrPub):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    (db,ac) = ref["resource-internal-ref"].split("=")
+    dbac = refOrPub.get("resource-internal-ref")    # exists in reference-list items
+    if dbac is None: dbac = refOrPub["internal-id"] # exists in publication-list items 
+    (db,ac) = dbac.split("=")
     return ns.pub.IRI(db,ac)
 
 
@@ -109,6 +127,107 @@ def get_xref_IRI(xref):
     #if props is not None: print("DEBUG props:", props)
     return ns.xref.IRI(db,ac, props)
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ref_class(ref_data):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    typ = ref_data["type"]
+    clazz = pubtype_clazz.get(typ) 
+    if clazz is None:
+        ref_id = ref_data["internal-id"]
+        print("WARNING", f"unexpected publication type '{typ}' in {ref_id}")
+        clazz = ns.onto.Publication() # default, most generic
+    return clazz
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_ref(ref_obj):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    triples = TripleList()
+    ref_data = ref_obj["publication"]    
+    ref_IRI = get_pub_IRI(ref_data)
+
+    # class: article, thesis, patent, ... (mandatory)
+    ref_class = get_ref_class(ref_data)
+    triples.append(ref_IRI, ns.rdf.type(), ref_class)
+
+    # internal id (mandatory) for debug purpose
+    ref_id = ref_data["internal-id"]
+    triples.append(ref_IRI, ns.onto.hasInternalId(), ns.xsd.string(ref_id))    
+    #print("debug", ref_id)
+
+    # authors (mandatory)
+    for p in ref_data["author-list"]:
+        p_name = p["name"]
+        p_BN = get_blank_node()
+        triples.append(ref_IRI, ns.onto.creator(), p_BN)
+        triples.append(p_BN, ns.rdf.type(), ns.foaf.Person())
+        triples.append(p_BN, ns.onto.name(), ns.xsd.string(p_name))
+
+    # title (mandatory)
+    ttl = ref_data["title"]
+    triples.append(ref_IRI, ns.onto.title(), ns.xsd.string(ttl))
+
+    # date (mandatory)
+    dt = ref_data["date"]
+    year = dt[-4:]
+    triples.append(ref_IRI, ns.onto.hasPublicationYear(), ns.xsd.string(year))
+    if len(dt) > 4:
+        if len(dt) != 11: raise DataError("Publication", "Unexpecting date format in " + ref_id)
+        day = dt[0:2]
+        month = mmm2mm[dt[3:6]]
+        #print("mydate",year,month,day)
+        triples.append(ref_IRI, ns.onto.publicationDate(), ns.xsd.date("-".join([year, month, day])))
+
+    # xref-list (mandatory), we create and xref and a direct link to the url via rdfs:seeAlso
+    for xref in ref_data["xref-list"]:
+        xref_IRI = get_xref_IRI(xref)
+        triples.append(ref_IRI, ns.onto.xref(), xref_IRI)
+        # WARNING: escape to unicode is necessary for < and > and potentially for other characters...
+        # some DOIs contain weird chars like in : 
+        # https://dx.doi.org/10.1002/(SICI)1096-8652(199910)62:2<93::AID-AJH5>3.0.CO;2-7
+        url = xref["url"].replace("<", "\\u003C").replace(">","\\u003E")
+        url = "". join(["<", url, ">"])
+        triples.append(ref_IRI, ns.rdfs.seeAlso(), url )
+
+
+    # first page, last page, volume, journal (optional)
+    p1 = ref_data.get("first-page")
+    if p1 is not None: triples.append(ref_IRI, ns.onto.startingPage(), ns.xsd.string(p1))
+    p2 = ref_data.get("last-page")
+    if p2 is not None: triples.append(ref_IRI, ns.onto.endingPage(), ns.xsd.string(p2))
+    vol = ref_data.get("volume")
+    if vol is not None: triples.append(ref_IRI, ns.onto.volume(), ns.xsd.string(vol))
+    jou = ref_data.get("journal-name")
+    if jou is not None: triples.append(ref_IRI, ns.onto.hasISO4JournalTitleAbbreviation(), ns.xsd.string(jou))
+    
+    # country and institution (for theses)
+    # TODO: check after book chapter refactoring
+    country = ref_data.get("country")
+    institu = ref_data.get("institution")
+    if country is not None and institu is not None:
+        orga_IRI = ns.orga.IRI(institu, None, country, None)
+        triples.append(ref_IRI, ns.onto.publisher(), orga_IRI)
+    
+    # city and publisher (for book chapters,...)
+    # TODO: check after book chapter refactoring
+    city = ref_data.get("city")
+    publisher = ref_data.get("publisher")
+    if city is not None and publisher is not None:
+        orga_IRI = ns.orga.IRI(publisher, city, None, None)
+        triples.append(ref_IRI, ns.onto.publisher(), orga_IRI)
+
+    # editors (optional)
+    for p in ref_data.get("editor-list") or []:
+        p_name = p["name"]
+        p_BN = get_blank_node()
+        triples.append(ref_IRI, ns.onto.editor(), p_BN)
+        triples.append(p_BN, ns.rdf.type(), ns.foaf.Person())
+        triples.append(p_BN, ns.onto.name(), ns.xsd.string(p_name))
+
+
+    
+
+    return("".join(triples.lines))
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_ttl_for_cl(ac, cl_obj):
@@ -183,8 +302,8 @@ def get_ttl_for_cl(ac, cl_obj):
     
     # fields: SX
     sx = cl_data.get("sex")
-    if sx is not None and sx != "Sex unspecified":
-        triples.append(cl_IRI, ns.onto.sex(), ns.xsd.string(sx))
+    if sx is not None:
+        triples.append(cl_IRI, ns.onto.fromIndividualWithSex(), ns.xsd.string(sx))
 
     # fields: AG
     ag = cl_data.get("age")
@@ -906,7 +1025,7 @@ def get_ttl_for_disease(cl_IRI, cvterm):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     triples = TripleList()
     annot_BN = get_blank_node()
-    triples.append(cl_IRI, ns.onto.disease(), annot_BN)
+    triples.append(cl_IRI, ns.onto.fromIndividualWithDisease(), annot_BN)
     triples.append(annot_BN, ns.rdf.type(), ns.onto.Disease())
     name = get_xref_label(cvterm)
     xref_IRI = get_xref_IRI(cvterm)
@@ -919,7 +1038,7 @@ def get_ttl_for_species(cl_IRI, cvterm):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     triples = TripleList()
     annot_BN = get_blank_node()
-    triples.append(cl_IRI, ns.onto.species(), annot_BN)
+    triples.append(cl_IRI, ns.onto.fromIndividualBelongingToSpecies(), annot_BN)
     triples.append(annot_BN, ns.rdf.type(), ns.onto.Species())
     name = get_xref_label(cvterm)
     xref_IRI = get_xref_IRI(cvterm)

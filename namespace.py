@@ -125,11 +125,30 @@ class OurOntologyNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(OurOntologyNamespace, self).__init__("", "http://cellosaurus.org/rdf#")
 
-    # Classes
+    # --------
+    # CLASSES
+    # --------
     def CellLine(self): return ":CellLine"
     def CellLineName(self): return ":CellLineName"
     def Organization(self): return ":Organization"
+    
+    # publication-related classes
+    # see also https://sparontologies.github.io/fabio/current/fabio.html
+    # see also https://sibils.text-analytics.ch/doc/api/sparql/sibils-ontology.html
+
     def Publication(self): return ":Publication"
+    def Thesis(self): return ":Thesis"
+    def BachelorThesis(self): return ":BachelorThesis"
+    def MasterThesis(self): return ":MasterThesis"
+    def DoctoralThesis(self): return ":DoctoralThesis"
+    def MedicalDegreeThesis(self): return ":MedicalDegreeThesis"
+    def MedicalDegreeMasterThesis(self): return ":MedicalDegreeMasterThesis"
+    def PrivaDocentThesis(self): return ":PrivaDocentThesis"
+    def VeterinaryMedicalDegreeThesis(self): return ":VeterinaryMedicalDegreeThesis"
+    def Patent(self): return ":Patent"
+    def JournalArticle(self): return ":JournalArticle"
+    def BookChapter(self): return ":BookChapter"
+
     def Xref(self): return ":Xref"
     def GenomeAncestry(self): return ":GenomeAncestry"
     def PopulationPercentage(self): return ":PopulationPercentage"
@@ -157,7 +176,6 @@ class OurOntologyNamespace(BaseNamespace):
     def CellLineGroup(self): return ":CellLineGroup"
     def Disease(self): return ":Disease"
 
-
     def StructuredComment(self): return ":StructuredComment"# a superclass for structured comments / annotations
     def SequenceVariationComment(self): return ":SequenceVariationComment"
     def DoublingTimeComment(self): return ":DoublingTimeComment"
@@ -184,7 +202,32 @@ class OurOntologyNamespace(BaseNamespace):
     def ShortTandemRepeatProfile(self): return ":ShortTandemRepeatProfile"
     def Species(self): return ":Species"
 
+    # -----------
     # Properties
+    # -----------
+
+    # publication properties
+    # see also https://sparontologies.github.io/fabio/current/fabio.html
+    # see also https://sibils.text-analytics.ch/doc/api/sparql/sibils-ontology.html
+
+    def hasIdentifier(self): return ":hasIdentifier" # generic prop, parent of hasDOI, hssPubMedId
+    def hasInternalId(self): return ":hasInternalId"
+    def hasDOI(self): return ":hasDOI"
+    def hasPubMedId(self): return ":hasPubMedId"
+    def publicationDate(self): return ":publicationDate"
+    def hasPublicationYear(self): return ":hasPublicationYear"
+    def startingPage(self): return ":startingPage" 
+    def endingPage(self): return ":endingPage"
+    # journal abbreviation, see also:
+    # https://ftp.ncbi.nih.gov/pubmed/J_Medline.txt
+    # https://en.wikipedia.org/wiki/ISO_4
+    #def hasNLMJournalTitleAbbreviation(self): return ":hasNLMJournalTitleAbbreviation" # unused
+    def hasISO4JournalTitleAbbreviation(self): return ":hasISO4JournalTitleAbbreviation" # Amos uses abbreviation alos used b UniProt based on ISO4
+    def title(self): return ":title"
+    def volume(self): return ":volume"
+    def creator(self): return ":creator" # with range = foaf:Person (authors)
+    def editor(self): return ":editor" # with range = foaf:Person (editors)
+
     def accession(self): return ":accession"
     def primaryAccession(self): return ":primaryAccession"
     def secondaryAccession(self): return ":secondaryAccession"
@@ -259,9 +302,9 @@ class OurOntologyNamespace(BaseNamespace):
     def transformant(self): return ":transformant"
     def shortTandemRepeatProfile(self): return ":shortTandemRepeatProfile"
     def conflict(self): return ":conflict"
-    def disease(self): return ":disease" # renmae to :fromIndividualWithDisease ?
-    def species(self): return ":species" # rename to :fromIndividualFromSpecies ?
-    def sex(self): return ":sex"         # rename to :fromIndividualWithSex ?
+    def fromIndividualWithDisease(self): return ":fromIndividualWithDisease" # renamed: OK
+    def fromIndividualBelongingToSpecies(self): return "fromIndividualBelongingToSpecies" # renamd: OK
+    def fromIndividualWithSex(self): return ":fromIndividualWithSex"         # renamed OK
     def fromIndividualAtAge(self): return ":fromIndividualAtAge"
     def fromSameIndividualAs(self): return ":fromSameIndividualAs" # OI field
     def parentCellLine(self): return ":parentCellLine" # HI field
@@ -270,7 +313,7 @@ class OurOntologyNamespace(BaseNamespace):
     def cvclEntryCreated(self): return ":cvclEntryCreated" # dtc field
     def cvclEntryLastUpdated(self): return ":cvclEntryLastUpdated" # dtu field
     def cvclEntryVersion(self): return ":cvclEntryVersion" # dtv field
-
+    def publisher(self): return ":publisher" # links thesis -> universtities (orga)
 
 # Cellosaurus cell-line instances namespace
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

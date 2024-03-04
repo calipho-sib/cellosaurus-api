@@ -13,7 +13,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 select (count(*) as ?species_count) where { 
 # select * where {
   ?cl a :CellLine .
-  ?cl :species ?annot.
+  ?cl :fromIndividualBelongingToSpecies ?annot.
   ?annot a ?ctClass .
   ?annot rdfs:label ?label .
   ?annot :xref ?xref.

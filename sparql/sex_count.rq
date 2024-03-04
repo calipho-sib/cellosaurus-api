@@ -13,9 +13,9 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#> 
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
 
-select ?sex count(*) where {
+select (count(*) as ?cl_count) ?sex where {
   ?cl a :CellLine.
-  optional { ?cl :sex ?sex. }
+  optional { ?cl :fromIndividualWithSex ?sex. }
 } 
 group by ?sex
 order by ?sex
