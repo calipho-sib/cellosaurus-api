@@ -17,6 +17,11 @@ pubtype_clazz = {
     "thesis VMD": ns.onto.VeterinaryMedicalDegreeThesis(),
 }
 
+""" 
+TODO: review how we use ns.src (add choice with orga when not done or refactor choice elsewhere )
+
+"""
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class DataError(Exception): 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -76,57 +81,31 @@ def get_pub_IRI(refOrPub):
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_xref_prop(xref, prop_name):
+def get_xref_discontinued(xref):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    props = xref.get("property-list")
-    if props is None: return None
-    for p in props:
-        if p["name"]==prop_name: return p["value"]
-    return None
+    return xref.get("discontinued")
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_xref_label(xref):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # works for both xref and cv-term
-    # for cv-term:
-    name = xref.get("value")
-    if name is not None: return name
-    # for xref:
-    for p in xref.get("property-list") or []:
-        key = p["name"].lower()
-        if key == "gene/protein designation": return p["value"]
-    # might occur
-    return None
+    return xref.get("label")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_xref_IRI(xref):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # works for both xref and cv-term
+    # get mandatory fields
     ac = xref["accession"]
-    db = xref.get("database") or xref.get("terminology") # terminology is for cv-term
-    # get optional properties attached to the xref
-    prop_dict = dict()
-    # get a label in cv-term 
-    name = xref.get("value") 
-    if name is not None: prop_dict["name"] = name
-    # get other xref properties (Discontinued, ...)
-    for p in xref.get("property-list") or []:
-        key = p["name"].lower()
-        value = p["value"]
-        if key == "gene/protein designation": key = "name"
-        prop_dict[key] = value
-    # we sort the key in a list
-    key_list = list(prop_dict.keys())
-    key_list.sort()
-    prop_list = list()
-    # we build an ordered list of name=value pairs
-    for k in key_list: prop_list.append("=".join([k, prop_dict[k]]))
-    # join them with &
-    props = "&".join(prop_list)
-    if len(props)==0: props = None
+    db = xref["database"]
+    # get optional fields attached to the xref
+    label = xref.get("label") or ""
+    url = xref.get("url") or ""
+    discontinued = xref.get("discontinued") or ""
+    # the field separator chosen is "&" because "|" is used in ns.xref.INI()
+    props=f"label={label}&discontinued={discontinued}&url={url}"
+    if len(label)==0 and len(url)==0 and len(discontinued)==0: props = None
     #if props is not None: print("DEBUG props:", props)
     return ns.xref.IRI(db,ac, props)
-
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_ref_class(ref_data):
@@ -288,7 +267,7 @@ def get_ttl_for_cl(ac, cl_obj):
     for xref in cl_data.get("xref-list") or []:
         xref_IRI = get_xref_IRI(xref)
         triples.append(cl_IRI, ns.onto.xref(), xref_IRI)
-        if get_xref_prop(xref, "Discontinued"):
+        if get_xref_discontinued(xref):
             triples.extend(get_ttl_for_cc_discontinued(cl_IRI, xref["database"], xref["accession"], xref_IRI)) # also used for "CC   Discontinued: " lines       
 
     # fields: RX
@@ -518,13 +497,7 @@ def get_ttl_for_sequence_variation(cl_IRI, annot):
         if mut_type is not None and "corrected" in mut_type: variationStatus = "Corrected"
         triples.append(annot_BN, ns.onto.variationStatus(), ns.xsd.string(variationStatus))
         var_sources = annot.get("variation-sources") or {}
-        for ref in var_sources.get("reference-list") or []:    
-            triples.append(annot_BN, ns.onto.source(), get_pub_IRI(ref))
-        for xref in var_sources.get("xref-list") or []:
-            triples.append(annot_BN, ns.onto.source(), get_xref_IRI(xref))         
-        src = var_sources.get("source")
-        if src is not None: 
-            triples.append(annot_BN, ns.onto.source(), ns.src.IRI(src)) 
+        triples.extend(get_ttl_for_sources(annot_BN, var_sources))
 
         seqvar_BN = get_blank_node()
         triples.append(annot_BN, ns.onto.sequenceVariation(), seqvar_BN)
@@ -653,8 +626,9 @@ def get_ttl_for_cc_characteristics(cl_IRI, cc):
     inst_BN = get_blank_node()
     triples.append(cl_IRI, ns.onto.characteristicsComment(), inst_BN)
     triples.append(inst_BN, ns.rdf.type(), ns.onto.CharacteristicsComment())
-    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    triples.extend(get_ttl_for_sources(inst_BN, cc.get("comment-sources") or {}))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -667,6 +641,7 @@ def get_ttl_for_cc_caution(cl_IRI, cc):
     triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
     triples.append(inst_BN, ns.rdf.type(), ns.onto.CautionComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    triples.extend(get_ttl_for_sources(inst_BN, cc.get("comment-sources") or {}))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -679,6 +654,7 @@ def get_ttl_for_cc_biotechnology(cl_IRI, cc):
     triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
     triples.append(inst_BN, ns.rdf.type(), ns.onto.BiotechnologyComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    triples.extend(get_ttl_for_sources(inst_BN, cc.get("comment-sources") or {}))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -688,9 +664,10 @@ def get_ttl_for_cc_anecdotal(cl_IRI, cc):
     comment = cc["value"]
     inst_BN = get_blank_node()
     triples.append(cl_IRI, ns.onto.anecdotalComment(), inst_BN)
-    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
     triples.append(inst_BN, ns.rdf.type(), ns.onto.AnecdotalComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    triples.extend(get_ttl_for_sources(inst_BN, cc.get("comment-sources") or {}))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -700,9 +677,11 @@ def get_ttl_for_cc_donor_info(cl_IRI, cc):
     comment = cc["value"]
     inst_BN = get_blank_node()
     triples.append(cl_IRI, ns.onto.donorInfoComment(), inst_BN)
-    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
     triples.append(inst_BN, ns.rdf.type(), ns.onto.DonorInfoComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    triples.extend(get_ttl_for_sources(inst_BN, cc.get("comment-sources") or {}))
+
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -712,9 +691,10 @@ def get_ttl_for_cc_karyotypic_info(cl_IRI, cc):
     comment = cc["value"]
     inst_BN = get_blank_node()
     triples.append(cl_IRI, ns.onto.karyotypicInfoComment(), inst_BN)
-    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
     triples.append(inst_BN, ns.rdf.type(), ns.onto.KaryotypicInfoComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    triples.extend(get_ttl_for_sources(inst_BN, cc.get("comment-sources") or {}))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -724,9 +704,10 @@ def get_ttl_for_cc_miscellaneous_info(cl_IRI, cc):
     comment = cc["value"]
     inst_BN = get_blank_node()
     triples.append(cl_IRI, ns.onto.miscellaneousInfoComment(), inst_BN)
-    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
     triples.append(inst_BN, ns.rdf.type(), ns.onto.MiscellaneousInfoComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    triples.extend(get_ttl_for_sources(inst_BN, cc.get("comment-sources") or {}))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -736,9 +717,10 @@ def get_ttl_for_cc_senescence_info(cl_IRI, cc):
     comment = cc["value"]
     inst_BN = get_blank_node()
     triples.append(cl_IRI, ns.onto.senescenceComment(), inst_BN)
-    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
     triples.append(inst_BN, ns.rdf.type(), ns.onto.SenescenceComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    triples.extend(get_ttl_for_sources(inst_BN, cc.get("comment-sources") or {}))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -748,9 +730,10 @@ def get_ttl_for_cc_virology_info(cl_IRI, cc):
     comment = cc["value"]
     inst_BN = get_blank_node()
     triples.append(cl_IRI, ns.onto.virologyComment(), inst_BN)
-    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
     triples.append(inst_BN, ns.rdf.type(), ns.onto.VirologyComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+    triples.extend(get_ttl_for_sources(inst_BN, cc.get("comment-sources") or {}))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -780,7 +763,7 @@ def get_ttl_for_cc_omics_info(cl_IRI, cc):
     comment = cc["value"]
     inst_BN = get_blank_node()
     triples.append(cl_IRI, ns.onto.omicsComment(), inst_BN)
-    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
     triples.append(inst_BN, ns.rdf.type(), ns.onto.OmicsComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
     return triples
@@ -792,7 +775,7 @@ def get_ttl_for_cc_population_info(cl_IRI, cc):
     comment = cc["value"]
     inst_BN = get_blank_node()
     triples.append(cl_IRI, ns.onto.populationComment(), inst_BN)
-    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
+    triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
     triples.append(inst_BN, ns.rdf.type(), ns.onto.PopulationComment())
     triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
     return triples
@@ -814,7 +797,7 @@ def get_ttl_for_derived_from_site(cl_IRI, annot):
     triples.append(site_BN, ns.rdfs.label(), ns.xsd.string(label))
     if note is not None:
         triples.append(site_BN, ns.rdfs.comment(), ns.xsd.string(note)) 
-    for cv in site.get("cv-term-list") or []: 
+    for cv in site.get("xref-list") or []: 
         triples.append(site_BN, ns.onto.xref(), get_xref_IRI(cv))
     return triples
 
@@ -823,10 +806,10 @@ def get_ttl_for_cell_type(cl_IRI, annot):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     triples = TripleList()
     ct_BN = get_blank_node()
-    if isinstance(annot, str):  # when we have free text only without a cv-term
+    if isinstance(annot, str):  # when we have free text only without a xref
         label, cv = (annot, None)
     else:
-        label, cv = (annot["value"], annot.get("cv-term"))
+        label, cv = (annot["value"], annot.get("xref"))
     triples.append(cl_IRI, ns.onto.cellType(), ct_BN)
     triples.append(ct_BN, ns.rdf.type(), ns.onto.CellType())
     triples.append(ct_BN, ns.rdfs.label(), ns.xsd.string(label))
@@ -847,6 +830,22 @@ def get_ttl_for_cc_discontinued(cl_IRI, provider, product_id, xref_IRI=None):
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_ttl_for_sources(parentNode, sources):    
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # TODO: implement more specifically this function...
+    # TODO: use a source checker here or where we create the sources
+    triples = TripleList()
+    for xref in sources.get("xref-list") or []: 
+        triples.append(parentNode, ns.onto.source(), get_xref_IRI(xref))
+    for ref in sources.get("reference-list") or []:
+        triples.append(parentNode, ns.onto.source(), get_pub_IRI(ref))
+    for src in sources.get("source-list") or []:
+        src_IRI = ns.src.IRI(src) if src == "Direct_author_submission" else ns.orga.IRI(src, "", "", "")
+        triples.append(parentNode, ns.onto.source(), src_IRI)
+    return triples
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_ttl_for_doubling_time(cl_IRI, annot):    
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     triples = TripleList()
@@ -858,13 +857,7 @@ def get_ttl_for_doubling_time(cl_IRI, annot):
     triples.append(annot_BN, ns.rdf.type(), ns.onto.DoublingTimeComment())
     triples.append(annot_BN, ns.onto.duration(), ns.xsd.string(duration))
     if comment is not None: triples.append(annot_BN, ns.rdfs.comment(), ns.xsd.string(comment))
-    for xref in sources.get("xref-list") or []: 
-        triples.append(annot_BN, ns.onto.source(), get_xref_IRI(xref))
-    for ref in sources.get("reference-list") or []:
-        triples.append(annot_BN, ns.onto.source(), get_pub_IRI(ref))
-    for src in sources.get("source-list") or []:
-        src_IRI = ns.src.IRI(src) if src == "Direct_author_submission" else ns.orga.IRI(src, "", "", "")
-        triples.append(annot_BN, ns.onto.source(), src_IRI)
+    triples.extend(get_ttl_for_sources(annot_BN, sources))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -879,13 +872,7 @@ def get_ttl_for_msi(cl_IRI, annot):
     triples.append(annot_BN, ns.rdf.type(), ns.onto.MicrosatelliteInstability())
     triples.append(annot_BN, ns.onto.msiValue(), ns.xsd.string(value))
     if comment is not None: triples.append(annot_BN, ns.rdfs.comment(), ns.xsd.string(comment))
-    for xref in sources.get("xref-list") or []: 
-        triples.append(annot_BN, ns.onto.source(), get_xref_IRI(xref))
-    for ref in sources.get("reference-list") or []:
-        triples.append(annot_BN, ns.onto.source(), get_pub_IRI(ref))
-    for src in sources.get("source-list") or []:
-        src_IRI = ns.src.IRI(src) if src == "Direct_author_submission" else ns.orga.IRI(src, "", "", "")
-        triples.append(annot_BN, ns.onto.source(), src_IRI)
+    triples.extend(get_ttl_for_sources(annot_BN, sources))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -899,15 +886,8 @@ def get_ttl_for_mab_isotype(cl_IRI, annot):
     triples.append(cl_IRI, ns.onto.mabIsotype(), annot_BN)
     triples.append(annot_BN, ns.rdf.type(), ns.onto.MabIsotype())
     triples.append(annot_BN, ns.onto.heavyChain(), ns.xsd.string(heavy))
-    if light is not None: 
-        triples.append(annot_BN, ns.onto.lightChain(), ns.xsd.string(light))
-    for xref in sources.get("xref-list") or []: 
-        triples.append(annot_BN, ns.onto.source(), get_xref_IRI(xref))
-    for ref in sources.get("reference-list") or []:
-        triples.append(annot_BN, ns.onto.source(), get_pub_IRI(ref))
-    for src in sources.get("source-list") or []:
-        src_IRI = ns.src.IRI(src) if src == "Direct_author_submission" else ns.orga.IRI(src, "", "", "")
-        triples.append(annot_BN, ns.onto.source(), src_IRI)
+    if light is not None: triples.append(annot_BN, ns.onto.lightChain(), ns.xsd.string(light))
+    triples.extend(get_ttl_for_sources(annot_BN, sources))
     return triples
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -928,8 +908,8 @@ def get_ttl_for_mab_target(cl_IRI, annot):
     # we might get just a name and a comment
     name = annot.get("value")
     xref_IRI = None
-    xref = annot.get("xref") or annot.get("cv-term")
-    # or the name is in the xref / cv-term
+    xref = annot.get("xref")
+    # or the name is in the xref
     if xref is not None:
         name = get_xref_label(xref)
         xref_IRI = get_xref_IRI(xref)
@@ -950,7 +930,7 @@ def get_ttl_for_resistance(cl_IRI, annot):
         triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(annot))
     # or more often we get a dict object
     else:
-        xref = annot.get("xref") or annot.get("cv-term")
+        xref = annot.get("xref")
         name = get_xref_label(xref)
         xref_IRI = get_xref_IRI(xref)
         triples.append(annot_BN, ns.onto.xref(), xref_IRI)
@@ -971,7 +951,7 @@ def get_ttl_for_transformant(cl_IRI, cc):
     # or more often we get a dict object
     else:
         comment = cc.get("transformant-note") # optional
-        term = cc.get("cv-term") # optional too
+        term = cc.get("xref") # optional too
         inst_BN = get_blank_node()
         triples.append(cl_IRI, ns.onto.transformant(), inst_BN)
         triples.append(inst_BN, ns.rdf.type(), ns.onto.TransformantAgent())
@@ -993,13 +973,8 @@ def get_ttl_for_short_tandem_repeat(cl_IRI, annot):
     annot_BN = get_blank_node()
     triples.append(cl_IRI, ns.onto.shortTandemRepeatProfile(), annot_BN)
     triples.append(annot_BN, ns.rdf.type(), ns.onto.ShortTandemRepeatProfile())
-    for src in annot["source-list"]:
-        if type(src) == str:  # we expect 0 to 1 organization in source list
-            triples.append(annot_BN, ns.onto.source(), ns.src.IRI(src))
-        elif type(src) == list: # we expect 0 to 1 list of publication references in source list
-            for ref in src: # the list may contain 1 to N publication references 
-                triples.append(annot_BN, ns.onto.source(), get_pub_IRI(ref))
-
+    sources = annot["str-sources"]
+    triples.extend(get_ttl_for_sources(annot_BN, sources))
     for marker in annot["marker-list"]:
         marker_id = marker["id"]
         conflict = marker["conflict"]
@@ -1011,12 +986,8 @@ def get_ttl_for_short_tandem_repeat(cl_IRI, annot):
             triples.append(marker_BN, ns.onto.markerId(), ns.xsd.string(marker_id))
             triples.append(marker_BN, ns.onto.conflict(), ns.xsd.boolean(conflict))
             triples.append(marker_BN, ns.onto.alleles(), ns.xsd.string(alleles))
-            for src in data.get("source-list") or []:
-                if type(src) == str:  # we expect 0 to 1 organization in source list
-                    triples.append(marker_BN, ns.onto.source(), ns.src.IRI(src))
-                elif type(src) == list: # we expect 0 to 1 list of publication references in source list
-                    for ref in src: # the list may contain 1 to N publication references 
-                        triples.append(marker_BN, ns.onto.source(), get_pub_IRI(ref))
+            marker_sources = data.get("str-sources") or {}
+            triples.extend(get_ttl_for_sources(marker_BN, marker_sources))
     return triples
 
 

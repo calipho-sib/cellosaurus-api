@@ -346,22 +346,22 @@ CC   to get cell lines with a specific STR value for a marker lets do that in SP
 TG   di
 DE   Disease(s) suffered by the individual from which the cell line originated with its NCI Thesaurus or ORDO identifier.
 PR   DI
-XP   /cell-line/disease-list/cv-term
+XP   /cell-line/disease-list
 //
 TG   din
 DE   Disease(s) suffered by the individual from which the cell line originated, restricted to diseases having a NCI Thesaurus identifier.
 PR   DI   NCIt
-XP   /cell-line/disease-list/cv-term[@terminology="NCIt"]
+XP   /cell-line/disease-list/xref[@database="NCIt"]
 //
 TG   dio
 DE   Disease(s) suffered by the individual from which the cell line originated, restricted to diseases having an ORDO identifier.
 PR   DI   ORDO
-XP   /cell-line/disease-list/cv-term[@terminology="ORDO"]
+XP   /cell-line/disease-list/xref[@database="ORDO"]
 //
 TG   ox
 DE   Species of the individual from which the cell line originates with its NCBI taxon identifier.
 PR   OX
-XP   /cell-line/species-list/cv-term
+XP   /cell-line/species-list
 CC   Pam: we miss the attribute values in solr indexes
 //
 TG   sx

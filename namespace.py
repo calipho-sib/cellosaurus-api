@@ -170,7 +170,7 @@ class OurOntologyNamespace(BaseNamespace):
     def SimpleMutation(self): return ":SimpleMutation"
     def UnexplicitMutation(self): return ":UnexplicitMutation"
     def Breed(self): return ":BreedComment"
-    def AnatomicalElement(self): return ":AnotomicalElement"
+    def AnatomicalElement(self): return ":AnatomicalElement"
     def CellType(self): return ":CellType"    
     def CellLineCollection(self): return ":CellLineCollection"
     def CellLineGroup(self): return ":CellLineGroup"

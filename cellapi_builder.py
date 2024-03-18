@@ -87,7 +87,7 @@ def seen_as_list(tag):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def get_items_prop_name(tag):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    if tag == "site": return "cv-term-list"
+    if tag == "site": return "xref-list"
     return "items"
 
 
@@ -299,7 +299,7 @@ def save_xml_cell_lines(bigxml_root):
         cl_dict[ac] = rec
 
         # update parent cell line dictionary entry by adding current cl as a child
-        parent_list = cl.xpath("./derived-from/cv-term")
+        parent_list = cl.xpath("./derived-from/xref")
         for parent in parent_list:
             parent_ac = parent.get("accession")
             if parent_ac not in children_dict: children_dict[parent_ac] = list()
@@ -869,6 +869,7 @@ if __name__ == "__main__":
         if not os.path.exists(out_dir): os.mkdir(out_dir)
         os.system("rm " + out_dir + "*")
 
+        # create RDF for cell-line data
         cl_out = open(out_dir + "cl.ttl", "wb")
         cl_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
         cl_cnt = 0
@@ -883,6 +884,7 @@ if __name__ == "__main__":
         cl_out.close()
         log_it("INFO:", f"serialized cl: {cl_cnt} / {len(cl_dict)}")
 
+        # create RDF for publications
         ref_out = open(out_dir + "ref.ttl", "wb")
         ref_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
         rf_cnt = 0
@@ -895,6 +897,22 @@ if __name__ == "__main__":
             ref_out.write( bytes(get_ttl_for_ref(rf_obj), "utf-8") ) 
         ref_out.close()
         log_it("INFO:", f"serialized ref: {rf_cnt} / {len(rf_dict)}")
+
+
+        # # create RDF for organizations
+        # org_out = open(out_dir + "orga.ttl", "wb")
+        # org_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
+        # org_cnt = 0
+        # log_it("INFO:", f"serializing orga: {org_cnt} / {len(ns.orga)}")
+        # for rf_id in rf_dict:
+        #     rf_cnt += 1
+        #     if rf_cnt % 10000 == 0: log_it("INFO:", f"serializing ref: {rf_cnt} / {len(rf_dict)}")
+        #     rf_xml = get_xml_reference(rf_id, rf_dict, rf_xml_f_in)
+        #     rf_obj = get_json_object(rf_xml)
+        #     ref_out.write( bytes(get_ttl_for_ref(rf_obj), "utf-8") ) 
+        # ref_out.close()
+        # log_it("INFO:", f"serialized ref: {rf_cnt} / {len(rf_dict)}")
+
 
         log_it("INFO:", "end")
 
