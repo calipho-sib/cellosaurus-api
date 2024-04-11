@@ -244,7 +244,7 @@ class OurOntologyNamespace(BaseNamespace):
     def reference(self): return ":reference"
 
     def genomeAncestry(self): return ":genomeAncestry"
-    def component(self): return ":component" # component object = population percentage of geome ancestry
+    def component(self): return ":component" # component object = population percentage of genome ancestry
     def percentage(self): return ":percentage"
     def populationName(self): return ":populationName" # as sub property of rdfs:label
 

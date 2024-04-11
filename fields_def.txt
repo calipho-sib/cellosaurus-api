@@ -211,7 +211,7 @@ DE   Discontinuation status of the cell line in a cell line catalog.
 SH   disc
 PR   CC   Discontinued
 XP   /cell-line/comment-list/comment[@category="Discontinued"]
-XP   /cell-line/xref-list/xref/property-list/property[@name="Discontinued"]/../..
+XP   /cell-line/xref-list/xref/discontinued/..
 //
 TG   doubling-time
 DE   Population doubling-time of the cell line.

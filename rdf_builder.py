@@ -812,7 +812,7 @@ def get_ttl_for_cell_type(cl_IRI, annot):
         label, cv = (annot["value"], annot.get("xref"))
     triples.append(cl_IRI, ns.onto.cellType(), ct_BN)
     triples.append(ct_BN, ns.rdf.type(), ns.onto.CellType())
-    triples.append(ct_BN, ns.rdfs.label(), ns.xsd.string(label))
+    triples.append(ct_BN, ns.rdfs.label(), ns.xsd.string(label))    
     if cv is not None: triples.append(ct_BN, ns.onto.xref(), get_xref_IRI(cv))
     return triples
 
