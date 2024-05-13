@@ -202,6 +202,10 @@ class OurOntologyNamespace(BaseNamespace):
     def ShortTandemRepeatProfile(self): return ":ShortTandemRepeatProfile"
     def Species(self): return ":Species"
 
+    def Source(self): return ":Source"
+    def OnlineResource(self): return ":OnlineResource"
+    
+
     # -----------
     # Properties
     # -----------
@@ -315,6 +319,10 @@ class OurOntologyNamespace(BaseNamespace):
     def cvclEntryVersion(self): return ":cvclEntryVersion" # dtv field
     def publisher(self): return ":publisher" # links thesis -> universtities (orga)
 
+    def organization(self): return ":organization"
+    def database(self): return ":database"
+
+
 # Cellosaurus cell-line instances namespace
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurCellLineNamespace(BaseNamespace):
@@ -326,16 +334,40 @@ class OurCellLineNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurXrefNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    dbac_set = set()
+    dbac_dict = dict()
     def __init__(self): super(OurXrefNamespace, self).__init__("xref", "http://cellosaurus.org/xref/")
-    def IRI(self, db, ac, props=None):
-        # we expect to get props like: "name=Joe&discontinued=probable"
-        # store requested db ac pairs (and optional name) for which an IRI was requested so that we can describe Xref afterwards
-        OurXrefNamespace.dbac_set.add("".join([db,"|", ac, "|", props or '']))
+    def IRI(self, db, ac, props, store=True):
+        our_dict = OurXrefNamespace.dbac_dict
+        # we expect to get props as a string like: cat={cat}|lbl={lbl}|dis={dis}|url={url}
+        xref_key = "".join([db,"=", ac])
+        if store == True:
+            # store requested db ac pairs and optional props for which an IRI was requested 
+            # so that we can describe Xref afterwards
+            # we use a string to store props rather a dict for memory spare
+            if xref_key not in our_dict: our_dict[xref_key] = set()
+            # we want to store all distinct props for merging and debug purpose
+            our_dict[xref_key].add(props)
         # build a md5 based IRI from db and ac only 
-        xref_key = "".join([db,"|", ac])
         xref_md5 = hashlib.md5(xref_key.encode('utf-8')).hexdigest()
         return "".join(["xref:", db, "_", xref_md5])
+    
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class OurOrganizationNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # we store name, country, city, contact but multiple contacts might exist in same organization so
+    # the IRI for organization is based on name, city, country and does NOT include contact
+    nccc_set = set()
+    def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", "http://cellosaurus.org/orga/")
+    def IRI(self, name, city, country, contact):
+        # store name, city, country, contact tuples for which an IRI was requested 
+        # so that we can describe Organinazion afterwards
+        OurOrganizationNamespace.nccc_set.add("".join([name, "|", city or '', "|", country or '', "|", contact or '']))
+        org_key = "".join([name, "|", city or '', "|", country or ''])
+        org_md5 = hashlib.md5(org_key.encode('utf-8')).hexdigest()
+        org_iri = "".join(["orga:", org_md5])
+        return org_iri
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurPublicationNamespace(BaseNamespace):
@@ -351,42 +383,12 @@ class OurPublicationNamespace(BaseNamespace):
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class OurOrganizationNamespace(BaseNamespace):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # we store name, country, city, contact but multiple contact might arrive in same organization so
-    # the IRI for organization is based on name, city, country and does NOT include contact
-    nccc_set = set()
-    def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", "http://cellosaurus.org/orga/")
-    def IRI(self, name, city, country, contact):
-        # store name, city, country, contact tuples for which an IRI was requested so that we can describe Organizazion afterwards
-        OurOrganizationNamespace.nccc_set.add("".join([name, "|", city or '', "|", country or '', "|", contact or '']))
-        org_key = "".join([name, "|", city or '', "|", country or ''])
-        org_md5 = hashlib.md5(org_key.encode('utf-8')).hexdigest()
-        org_iri = "".join(["orga:", org_md5])
-        return org_iri
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class OurSourceNamespace(BaseNamespace):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # we store name, country, city, contact but multiple contact might arrive in same organization so
-    # the IRI for organization is based on name, city, country and does NOT include contact
-    name_set = set()
-    def __init__(self): super(OurSourceNamespace, self).__init__("src", "http://cellosaurus.org/src/")
-    def IRI(self, name):
-        # store names for which an IRI was requested so that we can describe Source afterwards
-        OurSourceNamespace.name_set.add(name)
-        src_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
-        src_iri = "".join(["src:", src_md5])
-        return src_iri
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurCellLineCollectionNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # the IRI for cell line collection is based on their label
     name_set = set()
     def __init__(self): super(OurCellLineCollectionNamespace, self).__init__("coll", "http://cellosaurus.org/coll/")
     def IRI(self, name):
-        # store names for which an IRI was requested so that we can describe Source afterwards
         OurCellLineCollectionNamespace.name_set.add(name)
         some_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
         some_iri = "".join(["coll:", some_md5])
@@ -399,7 +401,6 @@ class OurCellLineGroupNamespace(BaseNamespace):
     name_set = set()
     def __init__(self): super(OurCellLineGroupNamespace, self).__init__("grp", "http://cellosaurus.org/grp/")
     def IRI(self, name):
-        # store names for which an IRI was requested so that we can describe Source afterwards
         OurCellLineGroupNamespace.name_set.add(name)
         some_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
         some_iri = "".join(["grp:", some_md5])
@@ -413,26 +414,10 @@ class OurBreedNamespace(BaseNamespace):
     def __init__(self): 
         super(OurBreedNamespace, self).__init__("breed", "http://cellosaurus.org/breed/")
     def IRI(self, name):
-        # store names for which an IRI was requested so that we can describe Source afterwards
         OurBreedNamespace.name_set.add(name)
         src_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
         src_iri = "".join(["breed:", src_md5])
         return src_iri
-
-
-# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# class OurStrMarkerNamespace(BaseNamespace):
-# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#     # the IRI for short tandem profile marker is based on their label
-#     name_set = set()
-#     def __init__(self): 
-#         super(OurStrMarkerNamespace, self).__init__("str", "http://cellosaurus.org/str/")
-#     def IRI(self, name):
-#         # store names for which an IRI was requested so that we can describe Source afterwards
-#         OurStrMarkerNamespace.name_set.add(name)
-#         src_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
-#         src_iri = "".join(["str:", src_md5])
-#         return src_iri
 
 
 
@@ -445,7 +430,6 @@ class NamespaceRegistry:
     xref = OurXrefNamespace()
     pub = OurPublicationNamespace()
     orga = OurOrganizationNamespace()
-    src = OurSourceNamespace()
     coll = OurCellLineCollectionNamespace()
     grp = OurCellLineGroupNamespace()
     breed = OurBreedNamespace()
@@ -455,6 +439,6 @@ class NamespaceRegistry:
     skos = SkosNamespace()
     owl = OwlNamespace()
     foaf = FoafNamespace()
-    namespaces = [onto, cvcl, xref, pub, orga, src, coll, grp, breed, xsd, rdf, rdfs, skos, owl, foaf]
+    namespaces = [onto, cvcl, xref, pub, orga, coll, grp, breed, xsd, rdf, rdfs, skos, owl, foaf]
 
 

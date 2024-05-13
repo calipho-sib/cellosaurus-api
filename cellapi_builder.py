@@ -18,6 +18,8 @@ from ApiCommon import log_it
 from fields_utils import FldDef
 
 from rdf_builder import get_ttl_prefixes, get_ttl_for_cl, get_ttl_for_ref
+from rdf_builder import get_xref_dict, get_ttl_for_xref_key
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -fRead cl_dict
 def get_solr_search_url(verbose=False):
@@ -870,48 +872,49 @@ if __name__ == "__main__":
         os.system("rm " + out_dir + "*")
 
         # create RDF for cell-line data
-        cl_out = open(out_dir + "cl.ttl", "wb")
-        cl_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
-        cl_cnt = 0
-        log_it("INFO:", f"serializing cl: {cl_cnt} / {len(cl_dict)}")
+        file_out = open(out_dir + "cl.ttl", "wb")
+        file_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
+        item_cnt = 0
+        log_it("INFO:", f"serializing cl: {item_cnt} / {len(cl_dict)}")
         for ac in cl_dict:
-            cl_cnt += 1
-            #if cl_cnt > 10000: break
-            if cl_cnt % 10000 == 0: log_it("INFO:", f"serializing cl: {cl_cnt} / {len(cl_dict)}")
+            item_cnt += 1
+            #if item_cnt > 20000: break
+            if item_cnt % 10000 == 0: log_it("INFO:", f"serializing cl: {item_cnt} / {len(cl_dict)}")
             cl_xml = get_xml_cell_line(ac, cl_dict, cl_xml_f_in)
             cl_obj = get_json_object(cl_xml)
-            cl_out.write(  bytes(get_ttl_for_cl(ac, cl_obj) , "utf-8" ) )
-        cl_out.close()
-        log_it("INFO:", f"serialized cl: {cl_cnt} / {len(cl_dict)}")
+            file_out.write(  bytes(get_ttl_for_cl(ac, cl_obj) , "utf-8" ) )
+        file_out.close()
+        log_it("INFO:", f"serialized cl: {item_cnt} / {len(cl_dict)}")
 
         # create RDF for publications
-        ref_out = open(out_dir + "ref.ttl", "wb")
+        ref_out = open(out_dir + "refs.ttl", "wb")
         ref_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
-        rf_cnt = 0
-        log_it("INFO:", f"serializing ref: {rf_cnt} / {len(rf_dict)}")
+        item_cnt = 0
+        log_it("INFO:", f"serializing refs: {item_cnt} / {len(rf_dict)}")
         for rf_id in rf_dict:
-            rf_cnt += 1
-            if rf_cnt % 10000 == 0: log_it("INFO:", f"serializing ref: {rf_cnt} / {len(rf_dict)}")
+            item_cnt += 1
+            if item_cnt % 10000 == 0: log_it("INFO:", f"serializing ref: {item_cnt} / {len(rf_dict)}")
             rf_xml = get_xml_reference(rf_id, rf_dict, rf_xml_f_in)
             rf_obj = get_json_object(rf_xml)
             ref_out.write( bytes(get_ttl_for_ref(rf_obj), "utf-8") ) 
         ref_out.close()
-        log_it("INFO:", f"serialized ref: {rf_cnt} / {len(rf_dict)}")
+        log_it("INFO:", f"serialized refs: {item_cnt} / {len(rf_dict)}")
 
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # create RDF for xrefs
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        file_out = open(out_dir + "xrefs.ttl", "wb")
+        file_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
+        xr_dict = get_xref_dict()
+        item_cnt = 0
+        log_it("INFO:", f"serializing xrefs: {item_cnt} / {len(xr_dict)}")
+        for k in xr_dict:
+            item_cnt += 1
+            if item_cnt % 10000 == 0: log_it("INFO:", f"serializing xrefs: {item_cnt} / {len(xr_dict)}")
+            file_out.write( bytes(get_ttl_for_xref_key(k), "utf-8") ) 
+        file_out.close()
+        log_it("INFO:", f"serialized xrefs: {item_cnt} / {len(xr_dict)}")
 
-        # # create RDF for organizations
-        # org_out = open(out_dir + "orga.ttl", "wb")
-        # org_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
-        # org_cnt = 0
-        # log_it("INFO:", f"serializing orga: {org_cnt} / {len(ns.orga)}")
-        # for rf_id in rf_dict:
-        #     rf_cnt += 1
-        #     if rf_cnt % 10000 == 0: log_it("INFO:", f"serializing ref: {rf_cnt} / {len(rf_dict)}")
-        #     rf_xml = get_xml_reference(rf_id, rf_dict, rf_xml_f_in)
-        #     rf_obj = get_json_object(rf_xml)
-        #     ref_out.write( bytes(get_ttl_for_ref(rf_obj), "utf-8") ) 
-        # ref_out.close()
-        # log_it("INFO:", f"serialized ref: {rf_cnt} / {len(rf_dict)}")
 
 
         log_it("INFO:", "end")
