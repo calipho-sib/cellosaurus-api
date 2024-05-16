@@ -117,6 +117,7 @@ class FoafNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(FoafNamespace, self).__init__("foaf", "http://xmlns.com/foaf/0.1/")
     def Person(self): return "foaf:Person"
+    # def Organization(self): return "foaf:Organization" (defined in OurOntologyNamespace)
 
 
 # Cellosaurus ontology namespace
@@ -130,7 +131,10 @@ class OurOntologyNamespace(BaseNamespace):
     # --------
     def CellLine(self): return ":CellLine"
     def CellLineName(self): return ":CellLineName"
-    def Organization(self): return ":Organization"
+ 
+    # Organization could be a sublass of foaf:Organization or org:Organization
+    # see https://www.w3.org/ns/org#%5B4
+    def Organization(self): return ":Organization" 
     
     # publication-related classes
     # see also https://sparontologies.github.io/fabio/current/fabio.html
@@ -169,11 +173,8 @@ class OurOntologyNamespace(BaseNamespace):
     def RepeatExpansion(self): return ":RepeatExpansion"
     def SimpleMutation(self): return ":SimpleMutation"
     def UnexplicitMutation(self): return ":UnexplicitMutation"
-    def Breed(self): return ":BreedComment"
     def AnatomicalElement(self): return ":AnatomicalElement"
-    def CellType(self): return ":CellType"    
-    def CellLineCollection(self): return ":CellLineCollection"
-    def CellLineGroup(self): return ":CellLineGroup"
+    def CellType(self): return ":CellType"
     def Disease(self): return ":Disease"
 
     def StructuredComment(self): return ":StructuredComment"# a superclass for structured comments / annotations
@@ -237,6 +238,7 @@ class OurOntologyNamespace(BaseNamespace):
     def secondaryAccession(self): return ":secondaryAccession"
     
     def name(self): return ":name"
+    def shortname(self): return ":shortname"
     def recommendedName(self): return ":recommendedName"
     def alternativeName(self): return ":alternativeName"
     def registeredName(self): return ":registeredName"
@@ -321,6 +323,9 @@ class OurOntologyNamespace(BaseNamespace):
 
     def organization(self): return ":organization"
     def database(self): return ":database"
+    def memberOf(self): return ":memberOf" # defined in https://www.w3.org/ns/org#%5B4
+    def city(self): return ":city"
+    def country(self): return ":country"
 
 
 # Cellosaurus cell-line instances namespace
@@ -357,17 +362,19 @@ class OurOrganizationNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # we store name, country, city, contact but multiple contacts might exist in same organization so
     # the IRI for organization is based on name, city, country and does NOT include contact
-    nccc_set = set()
+    nccc_dict = dict()
     def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", "http://cellosaurus.org/orga/")
-    def IRI(self, name, city, country, contact):
+    def IRI(self, name, city, country, contact, store=True):
+        our_dict = OurOrganizationNamespace.nccc_dict
         # store name, city, country, contact tuples for which an IRI was requested 
-        # so that we can describe Organinazion afterwards
-        OurOrganizationNamespace.nccc_set.add("".join([name, "|", city or '', "|", country or '', "|", contact or '']))
-        org_key = "".join([name, "|", city or '', "|", country or ''])
+        # so that we can describe Organization afterwards
+        org_key = "".join([name, "|", city or '', "|", country or '', "|", contact or ''])
+        if store == True:
+            if org_key not in our_dict: our_dict[org_key] = 0
+            our_dict[org_key] += 1        
         org_md5 = hashlib.md5(org_key.encode('utf-8')).hexdigest()
         org_iri = "".join(["orga:", org_md5])
         return org_iri
-
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurPublicationNamespace(BaseNamespace):
@@ -382,44 +389,6 @@ class OurPublicationNamespace(BaseNamespace):
         return "".join(["pub:", db, "_", pub_md5])
 
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class OurCellLineCollectionNamespace(BaseNamespace):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # the IRI for cell line collection is based on their label
-    name_set = set()
-    def __init__(self): super(OurCellLineCollectionNamespace, self).__init__("coll", "http://cellosaurus.org/coll/")
-    def IRI(self, name):
-        OurCellLineCollectionNamespace.name_set.add(name)
-        some_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
-        some_iri = "".join(["coll:", some_md5])
-        return some_iri
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class OurCellLineGroupNamespace(BaseNamespace):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # the IRI for cell line group is based on their label
-    name_set = set()
-    def __init__(self): super(OurCellLineGroupNamespace, self).__init__("grp", "http://cellosaurus.org/grp/")
-    def IRI(self, name):
-        OurCellLineGroupNamespace.name_set.add(name)
-        some_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
-        some_iri = "".join(["grp:", some_md5])
-        return some_iri
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class OurBreedNamespace(BaseNamespace):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # the IRI for cell line collection is based on their label
-    name_set = set()
-    def __init__(self): 
-        super(OurBreedNamespace, self).__init__("breed", "http://cellosaurus.org/breed/")
-    def IRI(self, name):
-        OurBreedNamespace.name_set.add(name)
-        src_md5 = hashlib.md5(name.encode('utf-8')).hexdigest()
-        src_iri = "".join(["breed:", src_md5])
-        return src_iri
-
-
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class NamespaceRegistry:    
@@ -430,15 +399,12 @@ class NamespaceRegistry:
     xref = OurXrefNamespace()
     pub = OurPublicationNamespace()
     orga = OurOrganizationNamespace()
-    coll = OurCellLineCollectionNamespace()
-    grp = OurCellLineGroupNamespace()
-    breed = OurBreedNamespace()
     xsd  = XsdNamespace()
     rdf = RdfNamespace()
     rdfs = RdfsNamespace()
     skos = SkosNamespace()
     owl = OwlNamespace()
     foaf = FoafNamespace()
-    namespaces = [onto, cvcl, xref, pub, orga, coll, grp, breed, xsd, rdf, rdfs, skos, owl, foaf]
+    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf]
 
 

@@ -17,11 +17,12 @@ import ApiCommon
 from ApiCommon import log_it
 from fields_utils import FldDef
 
-from rdf_builder import get_ttl_prefixes, get_ttl_for_cl, get_ttl_for_ref
-from rdf_builder import get_xref_dict, get_ttl_for_xref_key
+from rdf_builder import RdfBuilder
+
+from organizations import KnownOrganizations, Organization
 
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -fRead cl_dict
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def get_solr_search_url(verbose=False):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     value = os.getenv("CELLAPI_SOLR_SEARCH_URL","http://localhost:8983/solr/pamcore1/select")
@@ -840,6 +841,9 @@ def get_field_from_dt_line(line, fname):
     return None
 
 
+
+
+
 # ===========================================================================================
 if __name__ == "__main__":
 # ===========================================================================================
@@ -850,6 +854,8 @@ if __name__ == "__main__":
     if args[0]!="BUILD" and args[0]!= "RDF" and args[0]!= "SOLR" and args[0]!= "TEST": 
         sys.exit("Invalid arg1, expected BUILD, SOLR, RDF or TEST")
 
+    input_dir = "data_in/"
+    if input_dir[-1] != "/" : input_dir + "/"
 
     # -------------------------------------------------------
     if args[0]=="RDF":
@@ -858,6 +864,12 @@ if __name__ == "__main__":
         # be aware that
         # here we use api data and indexes created when args0="BUILD"
     
+        known_orgs = KnownOrganizations()
+        known_orgs.loadInstitutions(input_dir + "institution_list")
+        known_orgs.loadOnlineResources(input_dir + "cellosaurus_xrefs.txt")
+
+        rb = RdfBuilder(known_orgs)
+
         cl_dict = load_pickle(ApiCommon.CL_IDX_FILE)
         rf_dict = load_pickle(ApiCommon.RF_IDX_FILE)
         cl_txt_f_in = open(ApiCommon.CL_TXT_FILE,"rb")
@@ -871,9 +883,11 @@ if __name__ == "__main__":
         if not os.path.exists(out_dir): os.mkdir(out_dir)
         os.system("rm " + out_dir + "*")
 
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # create RDF for cell-line data
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         file_out = open(out_dir + "cl.ttl", "wb")
-        file_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
+        file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         item_cnt = 0
         log_it("INFO:", f"serializing cl: {item_cnt} / {len(cl_dict)}")
         for ac in cl_dict:
@@ -882,21 +896,23 @@ if __name__ == "__main__":
             if item_cnt % 10000 == 0: log_it("INFO:", f"serializing cl: {item_cnt} / {len(cl_dict)}")
             cl_xml = get_xml_cell_line(ac, cl_dict, cl_xml_f_in)
             cl_obj = get_json_object(cl_xml)
-            file_out.write(  bytes(get_ttl_for_cl(ac, cl_obj) , "utf-8" ) )
+            file_out.write(  bytes(rb.get_ttl_for_cl(ac, cl_obj) , "utf-8" ) )
         file_out.close()
         log_it("INFO:", f"serialized cl: {item_cnt} / {len(cl_dict)}")
 
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # create RDF for publications
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         ref_out = open(out_dir + "refs.ttl", "wb")
-        ref_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
+        ref_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         item_cnt = 0
         log_it("INFO:", f"serializing refs: {item_cnt} / {len(rf_dict)}")
         for rf_id in rf_dict:
             item_cnt += 1
-            if item_cnt % 10000 == 0: log_it("INFO:", f"serializing ref: {item_cnt} / {len(rf_dict)}")
+            if item_cnt % 10000 == 0: log_it("INFO:", f"serializing refs: {item_cnt} / {len(rf_dict)}")
             rf_xml = get_xml_reference(rf_id, rf_dict, rf_xml_f_in)
             rf_obj = get_json_object(rf_xml)
-            ref_out.write( bytes(get_ttl_for_ref(rf_obj), "utf-8") ) 
+            ref_out.write( bytes(rb.get_ttl_for_ref(rf_obj), "utf-8") ) 
         ref_out.close()
         log_it("INFO:", f"serialized refs: {item_cnt} / {len(rf_dict)}")
 
@@ -904,16 +920,33 @@ if __name__ == "__main__":
         # create RDF for xrefs
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         file_out = open(out_dir + "xrefs.ttl", "wb")
-        file_out.write(bytes(get_ttl_prefixes() + "\n", "utf-8"))
-        xr_dict = get_xref_dict()
+        file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
+        xr_dict = rb.get_xref_dict()
         item_cnt = 0
         log_it("INFO:", f"serializing xrefs: {item_cnt} / {len(xr_dict)}")
         for k in xr_dict:
             item_cnt += 1
             if item_cnt % 10000 == 0: log_it("INFO:", f"serializing xrefs: {item_cnt} / {len(xr_dict)}")
-            file_out.write( bytes(get_ttl_for_xref_key(k), "utf-8") ) 
+            file_out.write( bytes(rb.get_ttl_for_xref_key(k), "utf-8") ) 
         file_out.close()
         log_it("INFO:", f"serialized xrefs: {item_cnt} / {len(xr_dict)}")
+
+
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # create RDF for organizations
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        file_out = open(out_dir + "orgs.ttl", "wb")
+        file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
+        orga_dict = rb.get_orga_dict()
+        item_cnt = 0
+        log_it("INFO:", f"serializing orgs: {item_cnt} / {len(orga_dict)}")
+        for data_key in sorted(orga_dict):
+            item_cnt += 1
+            if item_cnt % 10000 == 0: log_it("INFO:", f"serializing orgs: {item_cnt} / {len(orga_dict)}")
+            count = orga_dict[data_key]
+            file_out.write( bytes(rb.get_ttl_for_orga(data_key, count), "utf-8") ) 
+        file_out.close()
+        log_it("INFO:", f"serialized orgs: {item_cnt} / {len(orga_dict)}")
 
 
 
@@ -979,9 +1012,6 @@ if __name__ == "__main__":
     # -------------------------------------------------------
     elif args[0]=="BUILD":
     # -------------------------------------------------------
-        input_dir = "data_in/"
-    # -------------------------------------------------------
-        if input_dir[-1] != "/" : input_dir + "/"
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         # TXT stuff
