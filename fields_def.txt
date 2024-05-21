@@ -115,6 +115,11 @@ XP   /cell-line/reference-list/reference
 XP   /publication/attribute::type
 XP   /publication/attribute::date
 XP   /publication/attribute::journal-name
+XP   /publication/attribute::book-title
+XP   /publication/attribute::conference-title
+XP   /publication/attribute::document-title
+XP   /publication/attribute::document-serie-title
+XP   /publication/attribute::issn-13
 XP   /publication/attribute::volume
 XP   /publication/attribute::last-page
 XP   /publication/attribute::first-page
