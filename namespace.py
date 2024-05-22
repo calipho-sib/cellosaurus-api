@@ -152,6 +152,11 @@ class OurOntologyNamespace(BaseNamespace):
     def Patent(self): return ":Patent"
     def JournalArticle(self): return ":JournalArticle"
     def BookChapter(self): return ":BookChapter"
+    def Book(self): return ":Book"
+    def TechnicalDocument(self): return ":TechnicalDocument"
+    def MiscellaneousDocument(self): return ":MiscellaneousDocument"
+    def ConferencePublication(self): return ":ConferencePublication"
+    
 
     def Xref(self): return ":Xref"
     def GenomeAncestry(self): return ":GenomeAncestry"
@@ -326,6 +331,12 @@ class OurOntologyNamespace(BaseNamespace):
     def memberOf(self): return ":memberOf" # defined in https://www.w3.org/ns/org#%5B4
     def city(self): return ":city"
     def country(self): return ":country"
+
+    def issn13(self): return ":issn13"
+    def bookTitle(self): return ":bookTitle"
+    def conferenceTitle(self): return ":conferenceTitle"
+    def documentTitle(self): return ":documentTitle"
+    def documentSerieTitle(self): return ":documentSerieTitle"
 
 
 # Cellosaurus cell-line instances namespace

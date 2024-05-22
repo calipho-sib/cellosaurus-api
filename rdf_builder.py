@@ -44,6 +44,10 @@ class RdfBuilder:
             "thesis PD": ns.onto.PrivaDocentThesis(),
             "thesis PhD": ns.onto.DoctoralThesis(),
             "thesis VMD": ns.onto.VeterinaryMedicalDegreeThesis(),
+            "book": ns.onto.Book(),
+            "conference": ns.onto.ConferencePublication(),
+            "technical document": ns.onto.TechnicalDocument(),
+            "miscellaneous document": ns.onto.MiscellaneousDocument(),            
         }
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -300,21 +304,34 @@ class RdfBuilder:
         jou = ref_data.get("journal-name")
         if jou is not None: triples.append(ref_IRI, ns.onto.hasISO4JournalTitleAbbreviation(), ns.xsd.string(jou))
         
-        # country and institution (for theses)
-        # TODO: check after book chapter refactoring
+        # city, country, institution and publisher
+        city = ref_data.get("city")
         country = ref_data.get("country")
         institu = ref_data.get("institution")
-        if country is not None and institu is not None:
-            orga_IRI = ns.orga.IRI(institu, None, country, None)
-            triples.append(ref_IRI, ns.onto.publisher(), orga_IRI)
-        
-        # city and publisher (for book chapters,...)
-        # TODO: check after book chapter refactoring
-        city = ref_data.get("city")
+        if institu is not None:
+            orga_IRI = ns.orga.IRI(institu, city, country, None)
+            triples.append(ref_IRI, ns.onto.publisher(), orga_IRI)        
         publisher = ref_data.get("publisher")
-        if city is not None and publisher is not None:
-            orga_IRI = ns.orga.IRI(publisher, city, None, None)
+        if publisher is not None:
+            orga_IRI = ns.orga.IRI(publisher, city, country, None)
             triples.append(ref_IRI, ns.onto.publisher(), orga_IRI)
+
+        # issn13 and entity titles        
+        issn13 = ref_data.get("issn-13")
+        if issn13 is not None: 
+            triples.append(ref_IRI, ns.onto.issn13(), ns.xsd.string(issn13))
+        book_title = ref_data.get("book-title")
+        if book_title is not None: 
+            triples.append(ref_IRI, ns.onto.bookTitle(), ns.xsd.string(book_title))
+        doc_title = ref_data.get("document-title")
+        if doc_title is not None: 
+            triples.append(ref_IRI, ns.onto.documentTitle(), ns.xsd.string(doc_title))
+        doc_serie_title = ref_data.get("document-serie-title")
+        if doc_serie_title is not None: 
+            triples.append(ref_IRI, ns.onto.documentSerieTitle(), ns.xsd.string(doc_serie_title))
+        conf_title = ref_data.get("conference-title")
+        if conf_title is not None: 
+            triples.append(ref_IRI, ns.onto.conferenceTitle(), ns.xsd.string(conf_title))
 
         # editors (optional)
         for p in ref_data.get("editor-list") or []:
