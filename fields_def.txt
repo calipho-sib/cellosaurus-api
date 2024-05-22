@@ -125,11 +125,8 @@ XP   /publication/attribute::last-page
 XP   /publication/attribute::first-page
 XP   /publication/attribute::publisher
 XP   /publication/attribute::city
-XP   /publication/attribute::database
-XP   /publication/attribute::patent
 XP   /publication/attribute::institution
 XP   /publication/attribute::country
-XP   /publication/attribute::location
 XP   /publication/attribute::internal-id
 //
 TG   ww
