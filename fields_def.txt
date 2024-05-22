@@ -131,7 +131,6 @@ XP   /publication/attribute::institution
 XP   /publication/attribute::country
 XP   /publication/attribute::location
 XP   /publication/attribute::internal-id
-CC   TODO Pam: optimize this somehow
 //
 TG   ww
 DE   Web page related to the cell line
