@@ -504,6 +504,11 @@ class RdfBuilder:
         for annot in cl_data.get("species-list") or []:
             triples.extend(self.get_ttl_for_species(cl_IRI, annot))
 
+        # field: breed
+        breed_annot = cl_data.get("breed")
+        if breed_annot is not None:
+            triples.extend(self.get_ttl_for_breed(cl_IRI, breed_annot))
+
         # fields: CC sequence-variation
         for annot in cl_data.get("sequence-variation-list") or []:
             triples.extend(self.get_ttl_for_sequence_variation(cl_IRI, annot))
@@ -554,8 +559,8 @@ class RdfBuilder:
                 triples.extend(self.get_ttl_for_cc_part_of(cl_IRI, cc))            
             elif categ == "Group":
                 triples.extend(self.get_ttl_for_cc_in_group(cl_IRI, cc))
-            elif categ == "Breed/subspecies":
-                triples.extend(self.get_ttl_for_cc_breed(cl_IRI, cc))
+#            elif categ == "Breed/subspecies":
+#                triples.extend(self.get_ttl_for_cc_breed(cl_IRI, cc))
             elif categ == "Anecdotal":
                 triples.extend(self.get_ttl_for_cc_anecdotal(cl_IRI, cc))
             elif categ == "Biotechnology":
@@ -728,11 +733,20 @@ class RdfBuilder:
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_ttl_for_cc_breed(self, cl_IRI, cc):
+    def get_ttl_for_breed(self, cl_IRI, breed):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
-        label = cc["value"]
-        triples.append(cl_IRI, ns.onto.breed(), ns.xsd.string(label))
+        annot_BN = self.get_blank_node()
+        triples.append(cl_IRI, ns.onto.fromIndividualBelongingToBreed(), annot_BN)
+        triples.append(annot_BN, ns.rdf.type(), ns.onto.Breed())
+        if type(breed) == str:
+            label = breed
+            triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(label))
+        else:
+            label = breed["value"]
+            triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(label))
+            for xref in breed.get("xref-list") or []:
+                triples.append(annot_BN, ns.onto.xref(), self.get_xref_IRI(xref))
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

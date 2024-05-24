@@ -174,7 +174,7 @@ XP   /cell-line/comment-list/comment[@category="Biotechnology"]
 TG   breed
 DE   Breed or subspecies an animal cell line is derived from.
 PR   CC   Breed/subspecies
-XP   /cell-line/comment-list/comment[starts-with(@category,"Breed")]
+XP   /cell-line/breed
 CC   Pam: problem with slash in attribute name "Breed/subspecies", workaround by using starts-with() in XP
 //
 TG   caution

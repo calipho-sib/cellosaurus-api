@@ -209,7 +209,8 @@ class OurOntologyNamespace(BaseNamespace):
     def Species(self): return ":Species"
 
     def Source(self): return ":Source"
-    def OnlineResource(self): return ":OnlineResource"
+    def OnlineResource(self): return ":OnlineResource" # TODO: unused ?
+    def Breed(self): return ":Breed"
     
 
     # -----------
@@ -274,7 +275,7 @@ class OurOntologyNamespace(BaseNamespace):
     def hgvs(self): return ":hgvs"
     def noneReported(self): return ":noneReported"
     def variationStatus(self): return ":variationStatus"
-    def breed(self): return ":breed"
+    def fromIndividualBelongingToBreed(self): return ":fromIndividualBelongingToBreed"
     def structuredComment(self): return ":structuredComment"    # super property for compex, structured comments
     def sequenceVariationComment(self): return ":sequenceVariationComment"
     def freeTextComment(self): return ":freeTextComment"        # super property for text based comments (with or without source)
