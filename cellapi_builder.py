@@ -870,6 +870,8 @@ if __name__ == "__main__":
 
         rb = RdfBuilder(known_orgs)
 
+
+
         cl_dict = load_pickle(ApiCommon.CL_IDX_FILE)
         rf_dict = load_pickle(ApiCommon.RF_IDX_FILE)
         cl_txt_f_in = open(ApiCommon.CL_TXT_FILE,"rb")

@@ -194,27 +194,43 @@ class RdfBuilder:
         return ns.orga.nccc_dict
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_ttl_for_orga(self, data, count):
+    def get_org_merged_with_known_org(self, org: Organization):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # merge org data collected from annotations with known orgs when possible
-        (label, city, country, contact) = data.split("|")
-        if city == "": city = None
-        if country == "": country = None
-        if contact == "": contact = None
-        org = Organization(name=label, shortname=None, city=city, country=country, contact=contact)
-        korg : Organization = self.known_orgs.get(label)
+        # if we just have a name, try to merge with a known org 
+        # defined in institution_list and cellosaurus_xrefs.txt
+
+        korg = self.known_orgs.get(org.name) 
         if korg is not None: 
+            # if one of the following fields is not None or a non empty string, emit WARNING
+            if org.shortname or org.city or org.country or org.contact:
+                print(f"WARNING, we are merging\n{org}\nwith\n{korg}")
             # merge org with korg
             org.name = korg.name
             org.shortname = korg.shortname
+            org.city = korg.city
+            org.country = korg.country
+            org.contact = korg.contact
             org.isInstitute = korg.isInstitute
             org.isOnlineResource = korg.isOnlineResource
+        return org
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_orga(self, data, count):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # build an org object from data collected from annotations
+        (name, shortname, city, country, contact) = data.split("|")
+        if shortname == "": shortname = None
+        if city == "": city = None
+        if country == "": country = None
+        if contact == "": contact = None
+        org = Organization(name=name, shortname=shortname, city=city, country=country, contact=contact)
+
         #print("org",count, org)
         
         # build the triples and return them
         triples = TripleList()
 
-        orga_IRI = ns.orga.IRI(org.name, org.city, org.country, org.contact, store = False)
+        orga_IRI = ns.orga.IRI(org.name, org.shortname, org.city, org.country, org.contact, store = False)
         triples.append(orga_IRI, ns.rdf.type(), ns.onto.Organization())
         triples.append(orga_IRI, ns.rdfs.label(), ns.xsd.string(org.name))
 
@@ -309,11 +325,11 @@ class RdfBuilder:
         country = ref_data.get("country")
         institu = ref_data.get("institution")
         if institu is not None:
-            orga_IRI = ns.orga.IRI(institu, city, country, None)
+            orga_IRI = ns.orga.IRI(institu, None, city, country, None)
             triples.append(ref_IRI, ns.onto.publisher(), orga_IRI)        
         publisher = ref_data.get("publisher")
         if publisher is not None:
-            orga_IRI = ns.orga.IRI(publisher, city, country, None)
+            orga_IRI = ns.orga.IRI(publisher, None, city, country, None)
             triples.append(ref_IRI, ns.onto.publisher(), orga_IRI)
 
         # issn13 and entity titles        
@@ -378,7 +394,7 @@ class RdfBuilder:
             label = ns.xsd.string(reg_obj["registration-number"])
             triples.append(name_BN, ns.rdfs.label(), label)
             org_name = reg_obj["registry"]
-            org_IRI = ns.orga.IRI(org_name, "", "", "") # not yet split into name, city, country, contact
+            org_IRI = ns.orga.IRI(org_name, "", "", "", "") # not yet split into name, city, country, contact
             triples.append(name_BN, ns.onto.source(), org_IRI)
             triples.append(cl_IRI, ns.onto.name(), name_BN)
             triples.append(cl_IRI, ns.onto.registeredName(), name_BN)
@@ -712,7 +728,7 @@ class RdfBuilder:
             cl_ac = cl_IRI.split(":")[1]
             log_it("ERROR", f"expected 3-4 tokens in CC From comment '{value}' : {cl_ac}")
             return []
-        orga_IRI = ns.orga.IRI(elems[0], elems[1], elems[2], contact)
+        orga_IRI = ns.orga.IRI(elems[0], "", elems[1], elems[2], contact)
         triples.append(cl_IRI, ns.onto._from(), orga_IRI)
         return triples
 
@@ -983,7 +999,12 @@ class RdfBuilder:
             if src == "Direct_author_submission" or src.startswith("from inference of"):
                 triples.append(src_BN, ns.rdfs.label(), ns.xsd.string(src))
             else:
-                orga_IRI = ns.orga.IRI(src, "", "", "")
+                # build an org object from label 'src' and get 
+                # optional params from known orgs 
+                # BEFORE we build the IRI and store the params 
+                org = Organization(src, "", "", "", "")
+                org = self.get_org_merged_with_known_org(org)
+                orga_IRI = ns.orga.IRI(org.name, org.shortname, org.city, org.country, org.contact, store=True)
                 triples.append(src_BN, ns.onto.organization(), orga_IRI)
         return triples
 

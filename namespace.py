@@ -372,15 +372,14 @@ class OurXrefNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurOrganizationNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # we store name, country, city, contact but multiple contacts might exist in same organization so
-    # the IRI for organization is based on name, city, country and does NOT include contact
+    # we store name, shortname, country, city, contact
     nccc_dict = dict()
     def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", "http://cellosaurus.org/orga/")
-    def IRI(self, name, city, country, contact, store=True):
+    def IRI(self, name, shortname, city, country, contact, store=True):
         our_dict = OurOrganizationNamespace.nccc_dict
-        # store name, city, country, contact tuples for which an IRI was requested 
+        # store name, shortname, city, country, contact tuples for which an IRI was requested 
         # so that we can describe Organization afterwards
-        org_key = "".join([name, "|", city or '', "|", country or '', "|", contact or ''])
+        org_key = "".join([name, "|", shortname or '', "|", city or '', "|", country or '', "|", contact or ''])
         if store == True:
             if org_key not in our_dict: our_dict[org_key] = 0
             our_dict[org_key] += 1        

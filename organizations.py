@@ -34,6 +34,41 @@ class KnownOrganizations:
     def loadInstitutions(self, file):
 # - - - - - - - - - - - - - - - - - - - - - - 
         f_in = open(file) # we expect institution_list file here
+        lineNo = 0
+        while True:
+            line = f_in.readline()
+            if line == "": break
+            lineNo += 1
+            line = line.strip()
+            if line == "": continue # we skip empty lines
+            elems = line.split("; ")
+            if len(elems) < 3 or len(elems) > 4:
+                print(f"ERROR, unexpected number of fields, skipping line {lineNo}: {line}")
+                continue
+            name = elems[0]
+            city = elems[1]
+            if city == "-": city = ""
+            country = elems[2]
+            if country == "-": country = ""
+            shortname = ""
+            if len(elems)==4: shortname = elems[3][6:]
+            korg = Organization(name = name, shortname = shortname, city = city, country = country, isInstitute=True)
+
+            other_korg = None
+            if name in self.korg_dict: other_korg = self.korg_dict[name]
+            if shortname in self.korg_dict: other_korg = self.korg_dict[shortname]
+            if other_korg is None:
+                if name is not None and len(name)>0: self.korg_dict[name] = korg
+                if shortname is not None and len(shortname)>0: self.korg_dict[shortname] = korg
+            else:
+                print(f"WARNING: will not insert\n{korg}\nwhile\n{other_korg} already exists")
+                
+        f_in.close()
+
+# - - - - - - - - - - - - - - - - - - - - - - 
+    def loadInstitutions_old(self, file):
+# - - - - - - - - - - - - - - - - - - - - - - 
+        f_in = open(file) # we expect institution_list file here
         while True:
             line = f_in.readline()
             if line == "": break
