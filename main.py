@@ -21,7 +21,7 @@ import datetime
 from lxml import etree
 import cellapi_builder as api
 import ApiCommon
-from ApiCommon import log_it, get_search_result_txt_header, get_format_from_headers
+from ApiCommon import log_it, get_search_result_txt_header, get_search_result_txt_header_as_lines, get_format_from_headers
 #from ApiCommon import get_properties
 from fields_utils import FldDef
 from fields_enum import Fields
@@ -61,6 +61,13 @@ four_media_types_responses = { "description": "Successful response", "content" :
   "application/json": {},
   "text/plain": {},
   "application/xml": {},
+  "text/tab-separated-values": {}
+  }
+}
+
+three_media_types_responses = { "description": "Successful response", "content" : {
+  "application/json": {},
+  "text/plain": {},
   "text/tab-separated-values": {}
   }
 }
@@ -464,7 +471,8 @@ async def search_cell_line(
     url = api.get_solr_search_url()
     params = api.get_all_solr_params(fldDef, query=q, fields="ac", sort=sort, start=start, rows=rows)
     headers = { "Accept": "application/json" }
-
+    print("url...:", url)
+    print("params: ", params)
     response = requests.get(url, params=params, headers=headers)
     obj = response.json()
     if response.status_code != 200:
@@ -479,6 +487,7 @@ async def search_cell_line(
     # now handle successful response
     meta = dict()
     obj["responseHeader"]["params"]["q"]=q           # query typed by API user
+    meta["QTime"]=obj["responseHeader"]["QTime"]
     meta["query"]=obj["responseHeader"]["params"]
     meta["numFound"]=obj["response"]["numFound"]
     meta["sort"]=sort
@@ -517,6 +526,113 @@ async def search_cell_line(
         log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
         return responses.Response(content=data, media_type="application/xml")
 
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+@app.get("/fsearch/cell-line" , name="Quick search cell lines", tags=["Cell lines"], responses={"200":three_media_types_responses, "400": {"model": ErrorMessage}})
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def search_cell_line(
+        request: Request,
+        q: str = Query(
+            default="id:HeLa",
+            example="id:HeLa",
+            title="quick search query",
+            description="Quick search query string using Solr synax"
+            ),
+
+        rows: int = Query(
+            default=1000,
+            example=10,
+            title="rows",
+            description="Number of items to retrieve from the search result list. See also <i>rows</i> in Solr synax"
+            ),
+
+        format: Format = Query(
+            default= None,
+            example = "txt",
+            title="Response format",
+            description="""Use this parameter to choose the response output format.
+            Alternatively you can also use the HTTP Accept header of your
+            request and set it to either text/plain, text/tab-separated-values, application/xml, application/json.
+            If the format parameter is used, the accept header value is ignored.
+            If both the format parameter and the Accept header are undefined, then the response will use the json format."""
+            ),
+        ):
+
+    t0 = datetime.datetime.now()
+
+    # precedence of format over request headers
+    if format is None: format = get_format_from_headers(request.headers)
+
+    # call solr service
+    fields = "ac"
+    facet_field="idacox"
+    sort = "id asc"
+
+    # call solr service for quick facet search
+    url = api.get_solr_search_url()
+    params = api.get_all_solr_params(fldDef, query=q, fields="ac", sort=sort, start=0, rows=rows)
+    params["facet"] = "true"            # enables facet search
+    params["facet.field"] = facet_field # solr field which concats id,ac and ox values
+    params["facet.method"] = "fc"       # fastest method
+    params["facet.sort"] = "index"      # sort idacox alphabetically
+    params["facet.limit"] = rows        # same role as rows when we read facet value list
+    params["facet.mincount"] = 1        # to get only records matching query q
+    params["rows"] = 0                  # we don't need document list, we get result from facet_fields
+ 
+    # TODO
+    params["indent"] = "False"    # useful for performance ? try with test.py.
+
+    headers = { "Accept": "application/json" }
+    print("url...:", url)
+    print("params: ", params)
+    response = requests.get(url, params=params, headers=headers)
+    obj = response.json()
+    print(obj)
+    if response.status_code != 200:
+        error_msg = ""
+        solr_error = obj.get("error")
+        if solr_error is not None: error_msg = solr_error.get("msg")
+        obj = {"code": response.status_code, "message": error_msg}
+        data = json.dumps(obj, sort_keys=True, indent=2) + "\n"
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
+        return responses.Response(content=data, media_type="application/json", status_code=response.status_code)
+
+    # now handle successful response
+    meta = dict()
+    obj["responseHeader"]["params"]["q"]=q           # query typed by API user
+    meta["QTime"]=obj["responseHeader"]["QTime"]
+    meta["query"]=obj["responseHeader"]["params"]
+    meta["numFound"]=obj["response"]["numFound"]
+    meta["sort"]=sort
+    meta["fields"]=fields
+    meta["format"]=format
+
+    # read resul from facet fields
+    items = obj["facet_counts"]["facet_fields"].get(facet_field) or []
+    cnt = 0
+    # init lines with header
+    lines = get_search_result_txt_header_as_lines(meta) 
+    # add field values
+    for item in items:
+        # skip counts, just keep values
+        if cnt % 2 == 0: lines.append(item)  
+        cnt += 1   
+
+    # use api methods to retrieve full / partial records in multiple formats
+    if format == "tsv":
+        data = "\n".join(lines)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
+        return responses.Response(content=data,media_type="text/tab-separated-values")
+    elif format == 'txt':
+        data = "\n".join(lines)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
+        return responses.Response(content=data,media_type="text/plain")
+    elif format == 'json':
+        data={"response": "json not yet supported"}
+        data = json.dumps(obj, sort_keys=True, indent=2) + "\n"
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
+        return responses.Response(content=data,media_type="application/json")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

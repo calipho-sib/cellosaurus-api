@@ -780,6 +780,22 @@ def get_cell_line_fld_dic_from_text(cl_text, fld_list, fldDef):
                         result[fld] = value
     return result
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def get_idacox_value(lines):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    oxs = list()
+    for line in lines:
+        if line.startswith("ID"):
+            id = line[5:].rstrip()
+        elif line.startswith("AC"):
+            ac = line[5:].rstrip()
+        elif line.startswith("OX"):
+            taxid, ox = line.rstrip().split(" ! ")
+            oxs.append(ox)
+    elems = [id, ac, " / ".join(oxs)]
+    return "\t".join(elems)
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def get_cell_line_solr_xml_doc_from_text(text, fldDef):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -788,6 +804,11 @@ def get_cell_line_solr_xml_doc_from_text(text, fldDef):
     lines = text.split("\n")
     lines = merge_consecutive_prefix(lines, "RA")
     lines = merge_consecutive_prefix(lines, "RT")
+
+    fld = etree.SubElement(doc_node, "field")
+    fld.set("name", "idacox")
+    fld.text = get_idacox_value(lines)
+
     for k in fldDef.keys(): 
         fname = k.replace('-','_').lower()
         for line in lines:

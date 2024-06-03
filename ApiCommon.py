@@ -54,8 +54,27 @@ def get_properties(env):
     return props
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_search_result_txt_header_as_lines(meta):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    lines = list()
+    for k in meta["query"]: 
+        value = meta["query"][k]
+        if not isinstance(value,str): value = str(value)
+        lines.append("##   query." + k + ": " + value)
+    value =  meta["fields"]
+    if isinstance(value,list): value = ",".join(value)
+    elif value is None: value = "(None)"
+    lines.append("##   query.fields: " + value)
+    lines.append("##   query.format: "  + meta["format"])
+    lines.append("##   QTime: "  + str(meta["QTime"]))
+    lines.append("##   response.numFound: " + str(meta["numFound"]) )
+    lines.append("\n")
+    return lines
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_search_result_txt_header(meta):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    return "\n".join(get_search_result_txt_header_as_lines(meta))
     s = ""
     for k in meta["query"]: 
         value = meta["query"][k]
@@ -66,6 +85,7 @@ def get_search_result_txt_header(meta):
     elif value is None: value = "(None)"
     s += "##   query.fields: " + value + "\n"
     s += "##   query.format: "  + meta["format"] + "\n"
+    s += "##   QTime: "  + str(meta["QTime"]) + "\n"
     s += "##   response.numFound: " + str(meta["numFound"]) + "\n"
     s += "\n"
     
