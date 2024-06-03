@@ -71,25 +71,12 @@ def get_search_result_txt_header_as_lines(meta):
     lines.append("\n")
     return lines
 
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_search_result_txt_header(meta):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     return "\n".join(get_search_result_txt_header_as_lines(meta))
-    s = ""
-    for k in meta["query"]: 
-        value = meta["query"][k]
-        if not isinstance(value,str): value = str(value)
-        s += "##   query." + k + ": " + value + "\n"
-    value =  meta["fields"]
-    if isinstance(value,list): value = ",".join(value)
-    elif value is None: value = "(None)"
-    s += "##   query.fields: " + value + "\n"
-    s += "##   query.format: "  + meta["format"] + "\n"
-    s += "##   QTime: "  + str(meta["QTime"]) + "\n"
-    s += "##   response.numFound: " + str(meta["numFound"]) + "\n"
-    s += "\n"
-    
-    return s
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_format_from_headers(headers):

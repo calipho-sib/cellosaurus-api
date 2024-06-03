@@ -155,7 +155,7 @@ async def swagger_ui_redirect():
 async def startup_event():
 
     # load cellosaurus data
-    global cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in, cl_xml_f_in, rf_xml_f_in, fldDef , release_info
+    global cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in, cl_xml_f_in, rf_xml_f_in, fldDef , release_info, clid_dict
 
     t0 = datetime.datetime.now()
     release_info = api.load_pickle(ApiCommon.RI_FILE)
@@ -166,6 +166,7 @@ async def startup_event():
     cl_xml_f_in = open(ApiCommon.CL_XML_FILE,"rb")
     rf_xml_f_in = open(ApiCommon.RF_XML_FILE,"rb")
     fldDef = FldDef(ApiCommon.FLDDEF_FILE)
+    clid_dict = api.get_clid_dic(fldDef)
     
     # Customizing uvicorn native log is done below in __main__()
     # Note: log_it() is self-made, unrelated to fastAPI / uvicorn /gunicorn logging system
@@ -564,9 +565,8 @@ async def search_cell_line(
     # precedence of format over request headers
     if format is None: format = get_format_from_headers(request.headers)
 
-    # call solr service
     fields = "ac"
-    facet_field="idacox"
+    facet_field="id"
     sort = "id asc"
 
     # call solr service for quick facet search
@@ -575,20 +575,19 @@ async def search_cell_line(
     params["facet"] = "true"            # enables facet search
     params["facet.field"] = facet_field # solr field which concats id,ac and ox values
     params["facet.method"] = "fc"       # fastest method
-    params["facet.sort"] = "index"      # sort idacox alphabetically
+    params["facet.sort"] = "index"      # sort id alphabetically
     params["facet.limit"] = rows        # same role as rows when we read facet value list
     params["facet.mincount"] = 1        # to get only records matching query q
     params["rows"] = 0                  # we don't need document list, we get result from facet_fields
- 
-    # TODO
-    params["indent"] = "False"    # useful for performance ? try with test.py.
+    # value on next line does not seem to change performance
+    params["indent"] = "True"
 
     headers = { "Accept": "application/json" }
-    print("url...:", url)
-    print("params: ", params)
+    #print("url...:", url)
+    #print("params: ", params)
     response = requests.get(url, params=params, headers=headers)
     obj = response.json()
-    print(obj)
+    #print(obj)
     if response.status_code != 200:
         error_msg = ""
         solr_error = obj.get("error")
@@ -609,14 +608,15 @@ async def search_cell_line(
     meta["format"]=format
 
     # read resul from facet fields
-    items = obj["facet_counts"]["facet_fields"].get(facet_field) or []
+    cl_ids = obj["facet_counts"]["facet_fields"].get(facet_field) or []
     cnt = 0
     # init lines with header
     lines = get_search_result_txt_header_as_lines(meta) 
     # add field values
-    for item in items:
+    for clid in cl_ids:
         # skip counts, just keep values
-        if cnt % 2 == 0: lines.append(item)  
+        # each value is a string made of 3 values from ac, id and ox fields, separated with \t
+        if cnt % 2 == 0: lines.append(clid_dict[clid])  
         cnt += 1   
 
     # use api methods to retrieve full / partial records in multiple formats

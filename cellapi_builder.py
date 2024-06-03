@@ -12,6 +12,7 @@ from lxml import etree
 from io import StringIO, BytesIO
 import random
 from copy import deepcopy
+import requests
 
 import ApiCommon
 from ApiCommon import log_it
@@ -30,22 +31,6 @@ def get_solr_search_url(verbose=False):
         log_it("INFO:", "reading / getting default for env variable", "CELLAPI_SOLR_SEARCH_URL", value)
     return value
 
-
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# OBSOLETE
-def get_solr_formatted_old(fldDef, q):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # field_names must be low case
-    # field names containing a '-' must be replaced with a '_'
-    low_q = q.lower()
-    solr_q = q
-    for tag in fldDef.keys():
-        pos = low_q.find(tag)
-        if pos == -1: continue
-        solr_q = solr_q[:pos] + tag.replace("-","_") + solr_q[pos+len(tag):]
-    return solr_q
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def get_all_solr_params(fldDef, query="id:HeLa", fields="ac", sort="score desc", start=0, rows=1000):
@@ -782,21 +767,6 @@ def get_cell_line_fld_dic_from_text(cl_text, fld_list, fldDef):
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-def get_idacox_value(lines):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    oxs = list()
-    for line in lines:
-        if line.startswith("ID"):
-            id = line[5:].rstrip()
-        elif line.startswith("AC"):
-            ac = line[5:].rstrip()
-        elif line.startswith("OX"):
-            taxid, ox = line.rstrip().split(" ! ")
-            oxs.append(ox)
-    elems = [id, ac, " / ".join(oxs)]
-    return "\t".join(elems)
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def get_cell_line_solr_xml_doc_from_text(text, fldDef):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     doc_node = etree.Element("doc")
@@ -804,10 +774,6 @@ def get_cell_line_solr_xml_doc_from_text(text, fldDef):
     lines = text.split("\n")
     lines = merge_consecutive_prefix(lines, "RA")
     lines = merge_consecutive_prefix(lines, "RT")
-
-    fld = etree.SubElement(doc_node, "field")
-    fld.set("name", "idacox")
-    fld.text = get_idacox_value(lines)
 
     for k in fldDef.keys(): 
         fname = k.replace('-','_').lower()
@@ -861,8 +827,38 @@ def get_field_from_dt_line(line, fname):
         return version
     return None
 
-
-
+# - - - - - - - - - - - - - - 
+def get_clid_dic(fldDef):
+# - - - - - - - - - - - - - - 
+    # called by main at init time
+    # for subsequent efficient /fsearch 
+    t0 = datetime.now()
+    log_it("INFO:", "Building clid_dict...")
+    url = get_solr_search_url()
+    params = get_all_solr_params(fldDef, query="*:*", fields="ac,id,ox", sort="id asc", start=0, rows=1000000)
+    headers = { "Accept": "application/json" }
+    response = requests.get(url, params=params, headers=headers)
+    obj = response.json()
+    if response.status_code != 200:
+        error_msg = ""
+        solr_error = obj.get("error")
+        if solr_error is not None: error_msg = solr_error.get("msg")
+        log_it("ERROR:", "code:", response.status_code, error_msg )
+        log_it("ERROR:", "while building clid_dict, exiting !", duration_since=t0)
+        sys.exit(1)
+    clid_dict = dict()
+    items = obj["response"]["docs"]
+    for item in items:
+        fields = [item["ac"], item["id"]] # order for elisabeth ?
+        oxs = list()
+        for ox in item["ox"]:
+            _, label = ox.split(" ! ")
+            oxs.append(label) 
+        fields.append(" / ".join(oxs))
+        line = "\t".join(fields)     
+        clid_dict[item["id"]] = line
+    log_it("INFO:", "clid_dict size:", len(clid_dict), duration_since=t0)
+    return clid_dict
 
 
 # ===========================================================================================
@@ -974,7 +970,6 @@ if __name__ == "__main__":
 
 
         log_it("INFO:", "end")
-
 
 
     # -------------------------------------------------------

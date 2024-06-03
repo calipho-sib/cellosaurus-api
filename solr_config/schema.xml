@@ -458,8 +458,6 @@
   <!-- Pam: ac_str is a "string" type version of ac and is the unique field for solr -->
   <field name="ac_str" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
   <field name="acas" type="text_gen_sort"/>
-  <!-- Pam: 31.05.2024 idacox is a concat of id, ac and ox values used to get efficient search result from facet field -->   
-  <field name="idacox" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
   <field name="ag" type="text_gen_sort"/>
   <field name="anecdotal" type="text_gen_sort"/>
   <field name="biotechnology" type="text_gen_sort"/>
