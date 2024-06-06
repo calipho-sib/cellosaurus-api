@@ -565,20 +565,20 @@ async def search_cell_line(
     # precedence of format over request headers
     if format is None: format = get_format_from_headers(request.headers)
 
-    fields = "ac"
+    fields = "ac,id"
     facet_field="id"
-    sort = "id asc"
+    sort = "score desc" # sort order of response / docs
 
     # call solr service for quick facet search
     url = api.get_solr_search_url()
-    params = api.get_all_solr_params(fldDef, query=q, fields="ac", sort=sort, start=0, rows=rows)
+    params = api.get_all_solr_params(fldDef, query=q, fields=fields, sort=sort, start=0, rows=rows)
     params["facet"] = "true"            # enables facet search
     params["facet.field"] = facet_field # solr field which concats id,ac and ox values
     params["facet.method"] = "fc"       # fastest method
-    params["facet.sort"] = "index"      # sort id alphabetically
+    params["facet.sort"] = "index"      # sort order of id field: 'index' means alphabetically
     params["facet.limit"] = rows        # same role as rows when we read facet value list
     params["facet.mincount"] = 1        # to get only records matching query q
-    params["rows"] = 0                  # we don't need document list, we get result from facet_fields
+    params["rows"] = 1                  # we don't need document list, we get result from facet_fields
     # value on next line does not seem to change performance
     params["indent"] = "True"
 
@@ -607,17 +607,38 @@ async def search_cell_line(
     meta["fields"]=fields
     meta["format"]=format
 
-    # read resul from facet fields
-    cl_ids = obj["facet_counts"]["facet_fields"].get(facet_field) or []
-    cnt = 0
     # init lines with header
     lines = get_search_result_txt_header_as_lines(meta) 
-    # add field values
-    for clid in cl_ids:
-        # skip counts, just keep values
-        # each value is a string made of 3 values from ac, id and ox fields, separated with \t
-        if cnt % 2 == 0: lines.append(clid_dict[clid])  
-        cnt += 1   
+
+    # 1) have a look at response docs and see if we have an exact match on ac or id
+    exact_match = False
+    items = obj["response"]["docs"]
+    if len(items)==1:
+        item = items[0]
+        print("item", item)
+        ac = item["ac"].lower()
+        id = item["id"]
+        lowid = id.lower()
+        lowq = q.lower()
+        print("found first", "<" + ac + ">", "<" + id + ">")
+        print("q", "<" + lowq + ">")
+        if lowq == ac or lowq == "ac:" + ac or lowq == "as:" + ac or lowq == "acas:" + ac or lowq == "text:" + ac: exact_match = True
+        elif lowq == lowid or lowq == "id:" + lowid or lowq == "sy:" + lowid or lowq == "idsy:" + lowid or lowq == "text:" + lowid: exact_match = True
+        print("exact_match", exact_match)
+    if exact_match:
+        lines.append(clid_dict[id])
+
+    # 2) retrieve id field values from facets
+    items = obj["facet_counts"]["facet_fields"].get(facet_field) or []
+    if exact_match:
+        for idx in range(len(items)):
+            item = items[idx]
+            # skip item already set above in case of exact match
+            if idx % 2 == 0 and item != id: lines.append(clid_dict[item]) 
+    else:
+        for idx in range(len(items)):
+            item = items[idx]
+            if idx % 2 == 0: lines.append(clid_dict[item]) 
 
     # use api methods to retrieve full / partial records in multiple formats
     if format == "tsv":
