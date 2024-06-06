@@ -2,6 +2,7 @@ import uuid
 from namespace import NamespaceRegistry as ns
 from ApiCommon import log_it
 from organizations import Organization
+from ontologies import Term, Ontologies, Ontology
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class DataError(Exception): 
@@ -129,6 +130,55 @@ class RdfBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_cello_terminology_class(self):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        triples = TripleList()
+        triples.append(ns.onto.CelloTerminology(), ns.rdfs.subClassOf(), ns.skos.ConceptScheme())
+        triples.append(ns.onto.CelloTerminology(), ns.rdfs.label(), ns.xsd.string("Cellosaurus terminology"))
+        triples.append(ns.onto.CelloTerminology(), ns.rdfs.comment(), ns.xsd.string("Class of cellosaurus terminologies containing some concepts used for annotating cell lines."))
+        url = ns.onto.baseurl()
+        if url.endswith("#"): url = url[:-1]
+        triples.append(ns.onto.CelloTerminology(), ns.rdfs.isDefinedBy(), "<" + url + ">")
+        return "".join(triples.lines)
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_cello_terminology_individual(self, onto):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        triples = TripleList()
+        onto_IRI = self.get_ontology_IRI(onto.abbrev)
+        triples.append(onto_IRI, ns.rdf.type(), ns.onto.CelloTerminology())
+        triples.append(onto_IRI, ns.rdf.type(), ns.owl.NamedIndividual())
+        triples.append(onto_IRI, ns.rdfs.label(), ns.xsd.string(onto.name))
+        triples.append(onto_IRI, ns.onto.version(), ns.xsd.string(onto.version))
+        triples.append(onto_IRI, ns.rdfs.seeAlso(), "<" + onto.url + ">")
+        url = ns.onto.baseurl()
+        if url.endswith("#"): url = url[:-1]
+        triples.append(onto_IRI, ns.rdfs.isDefinedBy(), "<" + url + ">")
+        return "".join(triples.lines)
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_term(self, term):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        triples = TripleList()
+        # term IRI is built like xref IRI
+        # note that sometimes an IRI is both a :Xref and a:Concept 
+        db = term.scheme
+        ac = term.id
+        xr_IRI = ns.xref.IRI(db, ac, None, store=False)
+        triples.append(xr_IRI, ns.rdf.type(), ns.skos.Concept())
+        triples.append(xr_IRI, ns.skos.inScheme(), self.get_ontology_IRI(term.scheme))
+        triples.append(xr_IRI, ns.skos.prefLabel(), ns.xsd.string(term.prefLabel))
+        triples.append(xr_IRI, ns.skos.notation(), ns.xsd.string(term.id))
+        for alt in term.altLabelList:
+            triples.append(xr_IRI, ns.skos.altLabel(), ns.xsd.string(alt))
+        for parent_id in term.parentIdList:
+            parent_IRI = ns.xref.IRI(db, parent_id, None, store=False)
+            triples.append(xr_IRI, ns.onto.more_specific_than(), parent_IRI)
+
+        return("".join(triples.lines))
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_xref_key(self, xref_key):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # split all fields: db, ac, and props: cat(egory), lbl, url, dis(continued)
@@ -188,6 +238,11 @@ class RdfBuilder:
         return("".join(triples.lines))
         
 
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ontology_IRI(self, abbrev):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        return ":" + abbrev
+    
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_orga_dict(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

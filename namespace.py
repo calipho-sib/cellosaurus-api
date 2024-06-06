@@ -211,6 +211,8 @@ class OurOntologyNamespace(BaseNamespace):
     def Source(self): return ":Source"
     def OnlineResource(self): return ":OnlineResource" # TODO: unused ?
     def Breed(self): return ":Breed"
+
+    def CelloTerminology(self): return ":CelloTerminology"
     
 
     # -----------
@@ -338,6 +340,11 @@ class OurOntologyNamespace(BaseNamespace):
     def conferenceTitle(self): return ":conferenceTitle"
     def documentTitle(self): return ":documentTitle"
     def documentSerieTitle(self): return ":documentSerieTitle"
+    
+    def more_specific_than(self): return ":more_specific_than"
+
+    def version(self): return ":version"
+    
 
 
 # Cellosaurus cell-line instances namespace
