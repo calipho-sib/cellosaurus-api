@@ -583,8 +583,8 @@ async def search_cell_line(
     params["indent"] = "True"
 
     headers = { "Accept": "application/json" }
-    #print("url...:", url)
-    #print("params: ", params)
+    print("url...:", url)
+    print("params: ", params)
     response = requests.get(url, params=params, headers=headers)
     obj = response.json()
     #print(obj)
@@ -615,16 +615,15 @@ async def search_cell_line(
     items = obj["response"]["docs"]
     if len(items)==1:
         item = items[0]
-        print("item", item)
-        ac = item["ac"].lower()
+        #print("item", item)
         id = item["id"]
         lowid = id.lower()
+        lowac = item["ac"].lower()
         lowq = q.lower()
-        print("found first", "<" + ac + ">", "<" + id + ">")
-        print("q", "<" + lowq + ">")
-        if lowq == ac or lowq == "ac:" + ac or lowq == "as:" + ac or lowq == "acas:" + ac or lowq == "text:" + ac: exact_match = True
+        #print("found first", "<" + lowac + ">", "<" + lowid + ">", "lowq:", "<" + lowq + ">")
+        if lowq == lowac or lowq == "ac:" + lowac or lowq == "as:" + lowac or lowq == "acas:" + lowac or lowq == "text:" + lowac: exact_match = True
         elif lowq == lowid or lowq == "id:" + lowid or lowq == "sy:" + lowid or lowq == "idsy:" + lowid or lowq == "text:" + lowid: exact_match = True
-        print("exact_match", exact_match)
+        #print("exact_match", exact_match)
     if exact_match:
         lines.append(clid_dict[id])
 
@@ -761,7 +760,8 @@ async def fullsearch_form(
     params = api.get_all_solr_params(fldDef, query=q, fields=fields, sort=sort, rows=rows)
     headers = { "Accept": "application/json" }
 
-    print("url", url, "params", params)
+    print("url...:", url)
+    print("params:", params)
 
     # get response
     response = requests.get(url, params=params, headers=headers)
