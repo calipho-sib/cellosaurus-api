@@ -724,9 +724,15 @@ class RdfBuilder:
             for xref in annot.get("xref-list"):
                 db = xref["database"]
                 if db in ["HGNC", "MGI", "RGD", "VGNC", "UniProtKB"]:
-                    triples.append(seqvar_BN, ns.onto.gene(), self.get_xref_IRI(xref)) # gene(s) related to the variation
+                    gene_BN = self.get_blank_node()
+                    triples.append(seqvar_BN, ns.onto.gene(), gene_BN)
+                    triples.append(gene_BN, ns.rdf.type(), ns.onto.Gene())
+                    gene_label = xref.get("label")
+                    if gene_label is not None and len(gene_label) > 0:
+                        triples.append(gene_BN, ns.rdfs.label(), ns.xsd.string(gene_label))
+                    triples.append(gene_BN, ns.onto.xref(), self.get_xref_IRI(xref)) # gene(s) related to the variation
                 elif db in ["ClinVar", "dbSNP"]:
-                    triples.append(seqvar_BN, ns.onto.reference(), self.get_xref_IRI(xref)) # reference of the variant desciption
+                    triples.append(seqvar_BN, ns.onto.xref(), self.get_xref_IRI(xref)) # reference of the variant description
 
             #print(f"varmut-desc | {var_type} | {mut_type} | {label}")
             return triples
@@ -952,7 +958,13 @@ class RdfBuilder:
             triples.append(cl_IRI, ns.onto.knockout(), inst_BN)
             triples.append(inst_BN, ns.rdf.type(), ns.onto.KnockoutComment())
             triples.append(inst_BN, ns.onto.method(), ns.xsd.string(method))
-            triples.append(inst_BN, ns.onto.gene(), self.get_xref_IRI(xref))
+            gene_BN = self.get_blank_node()
+            triples.append(inst_BN, ns.onto.gene(), gene_BN)
+            triples.append(gene_BN, ns.rdf.type(), ns.onto.Gene())
+            triples.append(gene_BN, ns.onto.xref(), self.get_xref_IRI(xref))
+            gene_name = xref.get("label")
+            if gene_name is not None and len(gene_name)>0:
+                triples.append(gene_BN, ns.rdfs.label(), ns.xsd.string(gene_name))
             if comment is not None: 
                 triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         return triples

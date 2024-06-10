@@ -8,6 +8,9 @@ class Term:
         self.parentIdList = parentIdList
         self.scheme = scheme
 
+    def __str__(self):
+        return(f"Term({self.id}, {self.prefLabel}, parents: {self.parentIdList} )")
+
 # ------------------------
 class Ontology:
 # ------------------------
@@ -27,6 +30,9 @@ class Ontologies:
             "NCBI_TaxID", "NCBI taxonomy database", 
             "https://www.ncbi.nlm.nih.gov/taxonomy", "NcbiTaxid_Parser")
 
+        self.onto_dict["ChEBI"] = Ontology(
+            "ChEBI", "Chemical Entities of Biological Interest", 
+            "https://www.ebi.ac.uk/chebi/", "Chebi_Parser")
 
     # - - - - - - - - - - - - - - - - - - - - 
     def get(self, abbrev):

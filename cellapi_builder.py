@@ -17,11 +17,15 @@ import requests
 import ApiCommon
 from ApiCommon import log_it
 from fields_utils import FldDef
-from ncbi_taxid_parser import NcbiTaxid_Parser
 
 from rdf_builder import RdfBuilder
-from ontologies import Ontologies, Ontology
 from organizations import KnownOrganizations, Organization
+
+from ontologies import Ontologies, Ontology
+
+# called dynamically
+from ncbi_taxid_parser import NcbiTaxid_Parser
+from chebi_parser import Chebi_Parser
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -969,8 +973,12 @@ if __name__ == "__main__":
             log_it("INFO:", "Cited_set", k, len(cited_set))
             relevant_id_set = set()
             for id in cited_set:
-                parent_list = parser.get_path_to_root(id)
-                relevant_id_set.update(parent_list)
+                term = parser.get_term(id)
+                if term is None:
+                    log_it("ERROR:", f"Term/concept {id} not found in {k} ontology")
+                else:
+                    parent_list = parser.get_with_parent_list(id)
+                    relevant_id_set.update(parent_list)
             relevant_term_dic = dict()
             for id in relevant_id_set:
                 term = parser.get_term(id)

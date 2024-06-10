@@ -6,6 +6,8 @@ import os
 class NcbiTaxid_Parser:
 
     # - - - - - - - - - - - - - - - - - - 
+    # INTERFACE
+    # - - - - - - - - - - - - - - - - - - 
     def __init__(self, abbrev):
     # - - - - - - - - - - - - - - - - - - 
         self.abbrev = abbrev
@@ -14,6 +16,48 @@ class NcbiTaxid_Parser:
         self.parent_dict = dict()
         self.load_names()
         self.load_nodes()
+
+    # - - - - - - - - - - - - - - - - - - 
+    # INTERFACE
+    # - - - - - - - - - - - - - - - - - - 
+    def get_onto_version(self):
+    # - - - - - - - - - - - - - - - - - - 
+        file_path = self.term_dir + "names.dmp"
+        creation_time = os.path.getctime(file_path)
+        creation_date = datetime.fromtimestamp(creation_time).strftime("%Y-%m-%d")
+        return creation_date
+
+    # - - - - - - - - - - - - - - - - - - 
+    # INTERFACE
+    # - - - - - - - - - - - - - - - - - - 
+    def get_with_parent_list(self, some_id):
+    # - - - - - - - - - - - - - - - - - - 
+        path = [some_id]
+        child_id = some_id
+        while True:
+            parent_id = self.parent_dict.get(child_id)
+            if parent_id is None:
+                print("WARNING", "found no way to root", path)
+                return path
+            path.append(parent_id)
+            if parent_id == "1": break
+            child_id = parent_id
+        return path
+    
+    # - - - - - - - - - - - - - - - - - - 
+    # INTERFACE
+    # - - - - - - - - - - - - - - - - - - 
+    def get_term(self, id):
+    # - - - - - - - - - - - - - - - - - - 
+        pref = self.get_scientific_name(id)
+        if pref is None: return None
+        alt = self.get_alternate_names(id)
+        parent_id = self.parent_dict.get(id)
+        parent_ids = list()
+        if parent_id is not None: parent_ids.append(parent_id)
+        return Term(id, pref, alt, parent_ids, self.abbrev)
+
+
 
     # - - - - - - - - - - - - - - - - - - 
     def load_names(self):
@@ -63,29 +107,9 @@ class NcbiTaxid_Parser:
         log_it("INFO:", "Loaded", filename, duration_since=t0)
 
 
-    # - - - - - - - - - - - - - - - - - - 
-    def get_onto_version(self):
-    # - - - - - - - - - - - - - - - - - - 
-        file_path = self.term_dir + "names.dmp"
-        creation_time = os.path.getctime(file_path)
-        creation_date = datetime.fromtimestamp(creation_time).strftime("%Y-%m-%d")
-        return creation_date
     
 
-    # - - - - - - - - - - - - - - - - - - 
-    def get_path_to_root(self, some_id):
-    # - - - - - - - - - - - - - - - - - - 
-        path = [some_id]
-        child_id = some_id
-        while True:
-            parent_id = self.parent_dict.get(child_id)
-            if parent_id is None:
-                print("WARNING", "found no way to root", path)
-                return path
-            path.append(parent_id)
-            if parent_id == "1": break
-            child_id = parent_id
-        return path
+
 
     # - - - - - - - - - - - - - - - - - - 
     def get_scientific_name(self, id):
@@ -118,23 +142,14 @@ class NcbiTaxid_Parser:
             name_list.append(elems[idx+1])
         return name_list
 
-    # - - - - - - - - - - - - - - - - - - 
-    def get_term(self, id):
-    # - - - - - - - - - - - - - - - - - - 
-        pref = self.get_scientific_name(id)
-        if pref is None: return None
-        alt = self.get_alternate_names(id)
-        parent_id = self.parent_dict.get(id)
-        parent_ids = list()
-        if parent_id is not None: parent_ids.append(parent_id)
-        return Term(id, pref, alt, parent_ids, self.abbrev)
 
 
 # =======================================================
 if __name__ == '__main__':
 # =======================================================
+
     parser = NcbiTaxid_Parser("NCBI_TaxID")
-    path = parser.get_path_to_root("9606")
+    path = parser.get_with_parent_list("9606")
     for id in path:
         print(id, parser.get_scientific_name(id))
     print("------")

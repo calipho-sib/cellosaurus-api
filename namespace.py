@@ -51,6 +51,12 @@ class XsdNamespace(BaseNamespace):
 
     # string datatype with triple quotes allow escape chars like \n \t etc.
     def string(self, str):
+        if '"' in str:
+            return self.string3(str)
+        else:
+            return self.string1(str)
+
+    def string1(self, str):
         return "".join(["\"", self.escape_string(str), "\"^^xsd:string"])
 
     def string3(self, str): 
@@ -317,7 +323,7 @@ class OurOntologyNamespace(BaseNamespace):
     def shortTandemRepeatProfile(self): return ":shortTandemRepeatProfile"
     def conflict(self): return ":conflict"
     def fromIndividualWithDisease(self): return ":fromIndividualWithDisease" # renamed: OK
-    def fromIndividualBelongingToSpecies(self): return "fromIndividualBelongingToSpecies" # renamd: OK
+    def fromIndividualBelongingToSpecies(self): return "fromIndividualBelongingToSpecies" # renamed: OK
     def fromIndividualWithSex(self): return ":fromIndividualWithSex"         # renamed OK
     def fromIndividualAtAge(self): return ":fromIndividualAtAge"
     def fromSameIndividualAs(self): return ":fromSameIndividualAs" # OI field
