@@ -975,7 +975,7 @@ if __name__ == "__main__":
             for id in cited_set:
                 term = parser.get_term(id)
                 if term is None:
-                    log_it("ERROR:", f"Term/concept {id} not found in {k} ontology")
+                    log_it("ERROR:", f"Cited term/concept {id} not found in {k} ontology")
                 else:
                     parent_list = parser.get_with_parent_list(id)
                     relevant_id_set.update(parent_list)
@@ -983,7 +983,7 @@ if __name__ == "__main__":
             for id in relevant_id_set:
                 term = parser.get_term(id)
                 if term is None:
-                    log_it("ERROR:", f"Term/concept {id} not found in {k} ontology")
+                    log_it("ERROR:", f"Parent term/concept {id} not found in {k} ontology")
                 else:
                     file_out.write( bytes(rb.get_ttl_for_term(term), "utf-8") ) 
             file_out.close()

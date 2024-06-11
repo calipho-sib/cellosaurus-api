@@ -146,6 +146,8 @@ class Chebi_Parser:
 
         # now store isPartOf relationships based on hasPart relationships
         for id in self.term_dict:
+            term = self.term_dict[id]
+            if term.id != id: continue # we don't want to have secondary (alt) ids in the isPartOf relationships
             for child_id in self.term_dict[id].hasPartList:
                 self.term_dict[child_id].isPartOfSet.add(id)
 
