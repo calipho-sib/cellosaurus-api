@@ -1,0 +1,69 @@
+Abbrev: ChEBI
+Name  : Chemical Entities of Biological Interest
+Server: https://www.ebi.ac.uk/chebi/
+Db_URL: https://www.ebi.ac.uk/chebi/searchId.do?chebiId=%s
+Term. : Yes
+Use   : https://ftp.ebi.ac.uk/pub/databases/chebi/ontology/chebi_lite.obo.gz
+--
+Abbrev: CL
+Name  : Cell Ontology
+Server: https://obophenotype.github.io/cell-ontology/
+Db_URL: https://www.ebi.ac.uk/ols4/ontologies/cl/classes?iri=http://purl.obolibrary.org/obo/%s
+Term. : Yes
+Use   : https://github.com/obophenotype/cell-ontology/releases/latest ... redirected then then: cl-simple.obo
+Note  : cl-base.obo and cl-basic.obo are very similar with a bit of references to external terms
+Note  : cl-full.obo and cl.obo contain a lot of references to external terms
+--
+Abbrev: NCBI_TaxID
+Name  : NCBI taxonomy database
+Server: https://www.ncbi.nlm.nih.gov/taxonomy
+Db_URL: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=%s&lvl=3
+Term. : Yes
+Use:  : curl -o taxdump.tar.gz  https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
+--
+Abbrev: NCIt
+Name  : NCI thesaurus
+Server: https://ncit.nci.nih.gov/ncitbrowser
+Db_URL: https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=%s
+Term. : Yes
+--
+Abbrev: ORDO
+Name  : Orphanet Rare Disease Ontology
+Server: https://www.ebi.ac.uk/ols4/ontologies/ordo
+Db_URL: https://www.ebi.ac.uk/ols4/ontologies/ordo/classes?iri=http://www.orpha.net/ORDO/%s
+Term. : Yes
+--
+Abbrev: PO
+Name  : Plant Ontology
+Server: https://browser.planteome.org/amigo
+Db_URL: https://www.ebi.ac.uk/ols4/ontologies/po/classes/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252%s
+Term. : Yes
+Remark: ONLY 8 ACS
+--
+Abbrev: RS
+Name  : Rat Strain Ontology
+Server: https://github.com/rat-genome-database/RS-Rat-Strain-Ontology
+Db_URL: https://rgd.mcw.edu/rgdweb/ontology/view.html?acc_id=%s
+Term  : Yes
+Remark: with 47 distinct ACs
+--
+Abbrev: UBERON
+Name  : Uber-anatomy ontology
+Server: https://uberon.github.io/
+Db_URL: https://www.ebi.ac.uk/ols4/ontologies/uberon/classes/http://purl.obolibrary.org/obo/%s
+Term. : Yes
+Use   : https://github.com/obophenotype/uberon/releases/latest/download/uberon-simple.obo
+--
+Abbrev: UniProtKB
+Name  : UniProt knowledgebase
+Server  https://www.uniprot.org
+Db_URL: https://www.uniprot.org/uniprotkb/%s/entry
+Term. : Yes
+Remark: Use protein families ?
+--
+Abbrev: VBO
+Name  : Vertebrate Breed Ontology
+Server: https://monarch-initiative.github.io/vertebrate-breed-ontology/
+Db_URL: https://www.ebi.ac.uk/ols4/ontologies/vbo/classes/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252F%s
+Term. : Yes
+
