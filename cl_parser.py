@@ -5,9 +5,10 @@ from optparse import OptionParser
 import sys
 
 
-class ChebiTerm:
+class ClTerm:
     def __init__(self):
         self.id = None
+        self.update_instructions = ""
         self.altIdList = list()
         self.name = None
         self.isaList = list()
@@ -16,9 +17,9 @@ class ChebiTerm:
         self.obsolete = False
 
     def __str__(self):
-        return f"ChebiTerm({self.id} {self.name} - isa: {self.isaList} - isPartOf: {self.isPartOfSet} - altIds: {self.altIdList} - obsolete: {self.obsolete} )"
+        return f"ClTerm({self.id} {self.name} - isa: {self.isaList} - isPartOf: {self.isPartOfSet} - obsolete: {self.obsolete} - update: {self.update_instructions} - )"
 
-class Chebi_Parser:
+class Cl_Parser:
 
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
@@ -71,13 +72,21 @@ class Chebi_Parser:
     # - - - - - - - - - - - - - - - - - - 
         cterm = self.term_dict.get(id)
         if cterm is None: return None
-        if id != cterm.id:
+        if cterm.obsolete:
+            log_it("WARNING", f"term {id} is obsolete in {self.abbrev} {cterm.update_instructions}")
+            return None
+        if cterm.id != id:
             log_it("WARNING", f"term {id} is a secondary ID of {cterm.id} in {self.abbrev} ontology")
             return None
         parent_set = set(cterm.isaList)
         parent_set.update(cterm.isPartOfSet)
         return Term(id, cterm.name, [], list(parent_set), self.abbrev)
 
+
+    # - - - - - - - - - - - - - - - - - - 
+    def to_cellostyle(self, id):
+    # - - - - - - - - - - - - - - - - - - 
+        return id.replace("CL:", "CL_")
 
     # - - - - - - - - - - - - - - - - - - 
     def read_next_term(self, f_in):
@@ -91,19 +100,30 @@ class Chebi_Parser:
             if line == "": break
             if line == "[Typedef]": break            
             if line == "[Term]":
-                term = ChebiTerm()
+                term = ClTerm()
             elif line == "is_obsolete: true":
                 term.obsolete = True
             elif line.startswith("id: "): 
-                term.id = line[4:].rstrip()
-            elif line.startswith("alt_id: "): 
-                term.altIdList.append(line[8:].rstrip())
+                term.id = self.to_cellostyle(line[4:].rstrip())
+            elif line.startswith("alt_id: "):
+                altId = line[8:].strip()
+                altId = self.to_cellostyle(altId)
+                term.altIdList.append(altId)
+            elif line.startswith("replaced_by: "): 
+                term.update_instructions += self.to_cellostyle(line) + " "
+            elif line.startswith("consider: "): 
+                term.update_instructions += self.to_cellostyle(line) + " "
             elif line.startswith("name: "):
                 term.name = line[6:].rstrip()
             elif line.startswith("is_a: "):
-                term.isaList.append(line[6:].strip())
+                parentId = line[6:].split("!")[0].strip()       # i.e. "is_a: CL:0000422 ! mitogenic signaling cell"
+                parentId = parentId.replace("{is_inferred=\"true\"}", "").strip() # we also take inferred is_a relationship
+                parentId = self.to_cellostyle(parentId)
+                term.isaList.append(parentId)
             elif line.startswith("relationship: has_part "):
-                term.hasPartList.append(line[23:].strip())
+                childId = line[23:].split("!")[0].strip()       # i.e. "relationship: has_part CL:0017503 ! basophilic cytoplasm "
+                childId = self.to_cellostyle(childId)
+                term.hasPartList.append(childId)
         return term
 
 
@@ -129,7 +149,7 @@ class Chebi_Parser:
     def load(self):
     # - - - - - - - - - - - - - - - - - - 
         t0 = datetime.now()
-        filename = self.term_dir + "chebi_lite.obo"
+        filename = self.term_dir + "cl-simple.obo"
         log_it("INFO:", "Loading", filename)
         f_in = open(filename)
         self.find_data_version(f_in)
@@ -139,15 +159,17 @@ class Chebi_Parser:
             if term is None: break;
             term_cnt +=1
             #if term_cnt > 10: break
-            if term.obsolete: continue
+            #if term.obsolete: continue
             self.term_dict[term.id] = term
-            for alt_id in term.altIdList: self.term_dict[alt_id] = term
+            for alt_id in term.altIdList:
+                self.term_dict[alt_id] = term
         f_in.close()
 
         # now store isPartOf relationships based on hasPart relationships
         for id in self.term_dict:
             term = self.term_dict[id]
-            if term.id != id: continue # we don't want to have secondary (alt) ids in the isPartOf relationships
+            if term.id != id : continue  # we don't want to have a secondary ID in the isPartOf relationships
+            if term.obsolete:  continue  # we don't want to have obsolete ids in the isPartOf relationships
             for child_id in self.term_dict[id].hasPartList:
                 self.term_dict[child_id].isPartOfSet.add(id)
 
@@ -167,26 +189,15 @@ if __name__ == '__main__':
 
     (options, args) = OptionParser().parse_args()
 
-    parser = Chebi_Parser("ChEBI")
+    parser = Cl_Parser("CL")
     print(parser.get_onto_version())
 
     ac = args[0]
-
+    ac = parser.to_cellostyle(ac)
     print(parser.get_term(ac))
     print("with parents:")
     ids = parser.get_with_parent_list(ac)
     for id in ids:print(parser.term_dict[id])
     sys.exit(0)
 
-    print("------")
-    ids = parser.get_parents(set(), "CHEBI:78547")
-    for id in ids:print(parser.term_dict[id])
-    
-    print("------")
-    ids = parser.get_parents(set(), "CHEBI:36080")
-    for id in ids:print(parser.term_dict[id])
-    
-    print("------")
-    ids = parser.get_parents(set(), "CHEBI:87627")
-    for id in ids:print(parser.term_dict[id])
     

@@ -25,7 +25,9 @@ class Ontology:
 class Ontologies:
 # ------------------------
     def __init__(self):
+
         self.onto_dict = dict()
+
         self.onto_dict["NCBI_TaxID"] = Ontology(
             "NCBI_TaxID", "NCBI taxonomy database", 
             "https://www.ncbi.nlm.nih.gov/taxonomy", "NcbiTaxid_Parser")
@@ -33,6 +35,10 @@ class Ontologies:
         self.onto_dict["ChEBI"] = Ontology(
             "ChEBI", "Chemical Entities of Biological Interest", 
             "https://www.ebi.ac.uk/chebi/", "Chebi_Parser")
+
+        self.onto_dict["CL"] = Ontology(
+            "CL", "Cell Ontology", 
+            "https://obophenotype.github.io/cell-ontology/", "Cl_Parser")
 
     # - - - - - - - - - - - - - - - - - - - - 
     def get(self, abbrev):

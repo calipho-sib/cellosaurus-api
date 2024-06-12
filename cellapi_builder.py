@@ -26,6 +26,7 @@ from ontologies import Ontologies, Ontology
 # called dynamically
 from ncbi_taxid_parser import NcbiTaxid_Parser
 from chebi_parser import Chebi_Parser
+from cl_parser import Cl_Parser
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
