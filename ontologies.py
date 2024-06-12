@@ -40,6 +40,14 @@ class Ontologies:
             "CL", "Cell Ontology", 
             "https://obophenotype.github.io/cell-ontology/", "Cl_Parser")
 
+        self.onto_dict["UBERON"] = Ontology(
+            "UBERON", "Uber-anatomy ontology", 
+            "https://uberon.github.io/", "Uberon_Parser")
+
+        self.onto_dict["NCIt"] = Ontology(
+            "NCIt", "NCI thesaurus", 
+            "https://ncit.nci.nih.gov/ncitbrowser", "Ncit_Parser")
+
     # - - - - - - - - - - - - - - - - - - - - 
     def get(self, abbrev):
     # - - - - - - - - - - - - - - - - - - - - 

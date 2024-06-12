@@ -21,17 +21,26 @@ Db_URL: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=%s
 Term. : Yes
 Use:  : curl -o taxdump.tar.gz  https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz
 --
+Abbrev: UBERON
+Name  : Uber-anatomy ontology
+Server: https://uberon.github.io/
+Db_URL: https://www.ebi.ac.uk/ols4/ontologies/uberon/classes/http://purl.obolibrary.org/obo/%s
+Term. : Yes
+Use   : https://github.com/obophenotype/uberon/releases/latest/download/uberon-simple.obo
+--
 Abbrev: NCIt
 Name  : NCI thesaurus
 Server: https://ncit.nci.nih.gov/ncitbrowser
 Db_URL: https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=%s
 Term. : Yes
+Use   : https://purl.obolibrary.org/obo/ncit.obo
 --
 Abbrev: ORDO
 Name  : Orphanet Rare Disease Ontology
 Server: https://www.ebi.ac.uk/ols4/ontologies/ordo
 Db_URL: https://www.ebi.ac.uk/ols4/ontologies/ordo/classes?iri=http://www.orpha.net/ORDO/%s
 Term. : Yes
+Use   : 
 --
 Abbrev: PO
 Name  : Plant Ontology
@@ -46,13 +55,6 @@ Server: https://github.com/rat-genome-database/RS-Rat-Strain-Ontology
 Db_URL: https://rgd.mcw.edu/rgdweb/ontology/view.html?acc_id=%s
 Term  : Yes
 Remark: with 47 distinct ACs
---
-Abbrev: UBERON
-Name  : Uber-anatomy ontology
-Server: https://uberon.github.io/
-Db_URL: https://www.ebi.ac.uk/ols4/ontologies/uberon/classes/http://purl.obolibrary.org/obo/%s
-Term. : Yes
-Use   : https://github.com/obophenotype/uberon/releases/latest/download/uberon-simple.obo
 --
 Abbrev: UniProtKB
 Name  : UniProt knowledgebase

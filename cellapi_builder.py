@@ -27,7 +27,8 @@ from ontologies import Ontologies, Ontology
 from ncbi_taxid_parser import NcbiTaxid_Parser
 from chebi_parser import Chebi_Parser
 from cl_parser import Cl_Parser
-
+from uberon_parser import Uberon_Parser
+from ncit_parser import Ncit_Parser
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def get_solr_search_url(verbose=False):

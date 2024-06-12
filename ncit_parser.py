@@ -5,7 +5,7 @@ from optparse import OptionParser
 import sys
 
 
-class ClTerm:
+class NciTerm:
     def __init__(self):
         self.id = None
         self.update_instructions = ""
@@ -17,9 +17,9 @@ class ClTerm:
         self.obsolete = False
 
     def __str__(self):
-        return f"ClTerm({self.id} {self.name} - isa: {self.isaList} - isPartOf: {self.isPartOfSet} - obsolete: {self.obsolete} - update: {self.update_instructions} - )"
+        return f"NciTerm({self.id} {self.name} - isa: {self.isaList} - isPartOf: {self.isPartOfSet} - obsolete: {self.obsolete} - update: {self.update_instructions} - )"
 
-class Cl_Parser:
+class Ncit_Parser:
 
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
@@ -70,24 +70,24 @@ class Cl_Parser:
     # - - - - - - - - - - - - - - - - - - 
     def get_term(self, id):
     # - - - - - - - - - - - - - - - - - - 
-        cterm = self.term_dict.get(id)
-        if cterm is None: return None
-        if cterm.obsolete:
-            log_it("WARNING", f"term {id} is obsolete in {self.abbrev} {cterm.update_instructions}")
+        nci_term = self.term_dict.get(id)
+        if nci_term is None: return None
+        if nci_term.obsolete:
+            log_it("WARNING", f"term {id} is obsolete in {self.abbrev} {nci_term.update_instructions}")
             return None
-        if cterm.id != id:
-            log_it("WARNING", f"term {id} is a secondary ID of {cterm.id} in {self.abbrev} ontology")
+        if nci_term.id != id:
+            log_it("WARNING", f"term {id} is a secondary ID of {nci_term.id} in {self.abbrev} ontology")
             return None
-        parent_set = set(cterm.isaList)
-        parent_set.update(cterm.isPartOfSet)
-        return Term(id, cterm.name, [], list(parent_set), self.abbrev)
+        parent_set = set(nci_term.isaList)
+        parent_set.update(nci_term.isPartOfSet)
+        return Term(id, nci_term.name, [], list(parent_set), self.abbrev)
 
 
     # - - - - - - - - - - - - - - - - - - 
     def to_cellostyle(self, id):
     # - - - - - - - - - - - - - - - - - - 
-        return id.replace("CL:", "CL_")
-
+        # remove "NCIT:" prefix
+        return id[5:]
 
     # - - - - - - - - - - - - - - - - - - 
     def filter_out_braces(self, str):
@@ -113,30 +113,36 @@ class Cl_Parser:
             if line == "": break
             if line == "[Typedef]": break            
             if line == "[Term]":
-                term = ClTerm()
+                term = NciTerm()
             elif line == "is_obsolete: true":
                 term.obsolete = True
             elif line.startswith("id: "): 
                 term.id = self.to_cellostyle(line[4:].rstrip())
-            elif line.startswith("alt_id: "):
-                altId = line[8:].strip()
-                altId = self.to_cellostyle(altId)
-                term.altIdList.append(altId)
-            elif line.startswith("replaced_by: "): 
-                term.update_instructions += self.to_cellostyle(line) + " "
-            elif line.startswith("consider: "): 
-                term.update_instructions += self.to_cellostyle(line) + " "
             elif line.startswith("name: "):
                 term.name = line[6:].rstrip()
             elif line.startswith("is_a: "):
-                parentId = line[6:].split("!")[0].strip()       # i.e. "is_a: CL:0000422 ! mitogenic signaling cell"
+                parentId = line[6:].split("!")[0].strip()       
                 parentId = self.filter_out_braces(parentId)
                 parentId = self.to_cellostyle(parentId)
                 term.isaList.append(parentId)
-            elif line.startswith("relationship: has_part "):
-                childId = line[23:].split("!")[0].strip()       # i.e. "relationship: has_part CL:0017503 ! basophilic cytoplasm "
+            elif line.startswith("alt_id: "):               # not found in data
+                altId = line[8:].strip()
+                altId = self.to_cellostyle(altId)
+                term.altIdList.append(altId)
+            elif line.startswith("replaced_by: "):          # not found in data
+                term.update_instructions += self.to_cellostyle(line) + " "
+            elif line.startswith("consider: "):             # not found in data
+                term.update_instructions += self.to_cellostyle(line) + " "
+            elif line.startswith("relationship: has_part "):  # not found in data
+                childId = line[23:].split("!")[0].strip()      
+                childId = self.filter_out_braces(childId)
                 childId = self.to_cellostyle(childId)
                 term.hasPartList.append(childId)
+            elif line.startswith("relationship: part_of "):    # not found in data
+                childId = line[22:].split("!")[0].strip()       
+                childId = self.filter_out_braces(childId)
+                childId = self.to_cellostyle(childId)
+                term.isPartOfSet.add(childId)
         return term
 
 
@@ -162,7 +168,7 @@ class Cl_Parser:
     def load(self):
     # - - - - - - - - - - - - - - - - - - 
         t0 = datetime.now()
-        filename = self.term_dir + "cl-simple.obo"
+        filename = self.term_dir + "ncit.obo"
         log_it("INFO:", "Loading", filename)
         f_in = open(filename)
         self.find_data_version(f_in)
@@ -178,7 +184,8 @@ class Cl_Parser:
                 self.term_dict[alt_id] = term
         f_in.close()
 
-        # now store isPartOf relationships based on hasPart relationships
+        # now add isPartOf relationships based on hasPart relationships
+        # INFO: part_of is not found in data, so not useful so far
         for id in self.term_dict:
             term = self.term_dict[id]
             if term.id != id : continue  # we don't want to have a secondary ID in the isPartOf relationships
@@ -202,7 +209,7 @@ if __name__ == '__main__':
 
     (options, args) = OptionParser().parse_args()
 
-    parser = Cl_Parser("CL")
+    parser = Ncit_Parser("NCIt")
     print(parser.get_onto_version())
 
     ac = args[0]
