@@ -48,6 +48,10 @@ class Ontologies:
             "NCIt", "NCI thesaurus", 
             "https://ncit.nci.nih.gov/ncitbrowser", "Ncit_Parser")
 
+        self.onto_dict["ORDO"] = Ontology(
+            "ORDO", "Orphanet Rare Disease Ontology", 
+            "https://www.ebi.ac.uk/ols4/ontologies/ordo", "Ordo_Parser")
+
     # - - - - - - - - - - - - - - - - - - - - 
     def get(self, abbrev):
     # - - - - - - - - - - - - - - - - - - - - 

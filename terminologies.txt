@@ -40,14 +40,8 @@ Name  : Orphanet Rare Disease Ontology
 Server: https://www.ebi.ac.uk/ols4/ontologies/ordo
 Db_URL: https://www.ebi.ac.uk/ols4/ontologies/ordo/classes?iri=http://www.orpha.net/ORDO/%s
 Term. : Yes
-Use   : 
---
-Abbrev: PO
-Name  : Plant Ontology
-Server: https://browser.planteome.org/amigo
-Db_URL: https://www.ebi.ac.uk/ols4/ontologies/po/classes/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252%s
-Term. : Yes
-Remark: ONLY 8 ACS
+Use   : Link to latest OWL version from page https://bioportal.bioontology.org/ontologies/ORDO/?p=summary
+Use   : Example: https://data.bioontology.org/ontologies/ORDO/submissions/28/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
 --
 Abbrev: RS
 Name  : Rat Strain Ontology
@@ -55,6 +49,7 @@ Server: https://github.com/rat-genome-database/RS-Rat-Strain-Ontology
 Db_URL: https://rgd.mcw.edu/rgdweb/ontology/view.html?acc_id=%s
 Term  : Yes
 Remark: with 47 distinct ACs
+Use    : obo file exists (Amos)
 --
 Abbrev: UniProtKB
 Name  : UniProt knowledgebase
