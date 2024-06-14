@@ -63,4 +63,8 @@ Name  : Vertebrate Breed Ontology
 Server: https://monarch-initiative.github.io/vertebrate-breed-ontology/
 Db_URL: https://www.ebi.ac.uk/ols4/ontologies/vbo/classes/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252F%s
 Term. : Yes
+Use   : https://raw.githubusercontent.com/monarch-initiative/vertebrate-breed-ontology/master/vbo.obo
+Use   : redirected from http://purl.obolibrary.org/obo/vbo.owl
+Use   : info from https://github.com/monarch-initiative/vertebrate-breed-ontology
+
 

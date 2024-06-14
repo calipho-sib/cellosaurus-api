@@ -51,6 +51,12 @@ class Ontologies:
         self.onto_dict["ORDO"] = Ontology(
             "ORDO", "Orphanet Rare Disease Ontology", 
             "https://www.ebi.ac.uk/ols4/ontologies/ordo", "Ordo_Parser")
+        
+        self.onto_dict["VBO"] = Ontology(
+            "VBO", "Vertebrate Breed Ontology", 
+            "https://monarch-initiative.github.io/vertebrate-breed-ontology/", "Vbo_Parser")
+        
+        
 
     # - - - - - - - - - - - - - - - - - - - - 
     def get(self, abbrev):
