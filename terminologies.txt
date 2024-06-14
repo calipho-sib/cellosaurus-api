@@ -43,21 +43,6 @@ Term. : Yes
 Use   : Link to latest OWL version from page https://bioportal.bioontology.org/ontologies/ORDO/?p=summary
 Use   : Example: https://data.bioontology.org/ontologies/ORDO/submissions/28/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
 --
-Abbrev: RS
-Name  : Rat Strain Ontology
-Server: https://github.com/rat-genome-database/RS-Rat-Strain-Ontology
-Db_URL: https://rgd.mcw.edu/rgdweb/ontology/view.html?acc_id=%s
-Term  : Yes
-Remark: with 47 distinct ACs
-Use    : obo file exists (Amos)
---
-Abbrev: UniProtKB
-Name  : UniProt knowledgebase
-Server  https://www.uniprot.org
-Db_URL: https://www.uniprot.org/uniprotkb/%s/entry
-Term. : Yes
-Remark: Use protein families ?
---
 Abbrev: VBO
 Name  : Vertebrate Breed Ontology
 Server: https://monarch-initiative.github.io/vertebrate-breed-ontology/
@@ -66,5 +51,23 @@ Term. : Yes
 Use   : https://raw.githubusercontent.com/monarch-initiative/vertebrate-breed-ontology/master/vbo.obo
 Use   : redirected from http://purl.obolibrary.org/obo/vbo.owl
 Use   : info from https://github.com/monarch-initiative/vertebrate-breed-ontology
+--
+Abbrev: RS
+Name  : Rat Strain Ontology
+Server: https://github.com/rat-genome-database/RS-Rat-Strain-Ontology
+Db_URL: https://rgd.mcw.edu/rgdweb/ontology/view.html?acc_id=%s
+Term  : Yes
+Remark: with 47 distinct ACs
+Use   : From https://bioportal.bioontology.org/ontologies/RS
+Use   : OBO link with NO deprecation info: https://data.bioontology.org/ontologies/RS/submissions/267/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+Use   : Use RDF/XML link to OWL version with deprecation info: https://data.bioontology.org/ontologies/RS/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb&download_format=rdf
+--
+Abbrev: UniProtKB
+Name  : UniProt knowledgebase
+Server  https://www.uniprot.org
+Db_URL: https://www.uniprot.org/uniprotkb/%s/entry
+Term. : Yes
+Remark: Use protein families / domains ?
+--
 
 

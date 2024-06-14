@@ -56,6 +56,10 @@ class Ontologies:
             "VBO", "Vertebrate Breed Ontology", 
             "https://monarch-initiative.github.io/vertebrate-breed-ontology/", "Vbo_Parser")
         
+        self.onto_dict["RS"] = Ontology(
+            "RS", "Rat Strain Ontology", 
+            "https://github.com/rat-genome-database/RS-Rat-Strain-Ontology", "Rs_Parser")
+        
         
 
     # - - - - - - - - - - - - - - - - - - - - 
