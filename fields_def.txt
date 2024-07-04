@@ -76,7 +76,7 @@ CC   Pam: everything about publications and cell-line internal-id referencing th
 TG   rx
 DE   Publication cross-reference. A unique identifier allowing to access the publication online.
 DE   The cross-reference has two parts: 
-DE   the shorname of the online resource (i.e. PubMed, DOI, CLPUB or Patent) and an identifier used to locate the particular
+DE   the shortname of the online resource (i.e. PubMed, DOI, CLPUB or Patent) and an identifier used to locate the particular
 DE   publication (i.e. pmid) related to the cell line. 
 DE   For a formal description of all the resources referred to in the Cellosaurus, 
 DE   see <a target="_blank" href="https://ftp.expasy.org/databases/cellosaurus/cellosaurus_xrefs.txt">here</href> .
