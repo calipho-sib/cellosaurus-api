@@ -169,6 +169,7 @@ class OurOntologyNamespace(BaseNamespace):
     def PopulationPercentage(self): return ":PopulationPercentage"
     def HLATyping(self): return ":HLATyping"
     def Gene(self): return ":Gene"
+    def Protein(self): return ":Protein"
     def GeneAlleles(self): return ":GeneAlleles"  # used in HLA
     def MarkerAlleles(self): return ":MarkerAlleles"    # used in short repeat tandem
     def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
@@ -203,6 +204,7 @@ class OurOntologyNamespace(BaseNamespace):
     def KaryotypicInfoComment(self): return ":KaryotypicInfoComment"
     def MiscellaneousInfoComment(self): return ":MiscellaneousInfoComment"
     def SenescenceComment(self): return ":SenescenceComment"
+    def TransfectedComment(self): return ":TransfectedComment"
     def VirologyComment(self): return ":VirologyComment"
     def OmicsComment(self) : return ":OmicsComment"
     def PopulationComment(self) : return ":PopulationComment"
@@ -302,6 +304,7 @@ class OurOntologyNamespace(BaseNamespace):
     def karyotypicInfoComment(self): return ":karyotypicInfoComment"
     def miscellaneousInfoComment(self): return ":miscellaneousInfoComment"
     def senescenceComment(self): return ":senescenceComment"
+    def transfectedComment(self): return ":transfectedComment"
     def virologyComment(self): return ":virologyComment"
     def omicsComment(self) : return ":omicsComment"
     def populationComment(self) : return ":populationComment"

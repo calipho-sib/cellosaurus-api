@@ -1,4 +1,5 @@
 import uuid
+import unicodedata
 from namespace import NamespaceRegistry as ns
 from ApiCommon import log_it
 from organizations import Organization
@@ -167,10 +168,12 @@ class RdfBuilder:
         xr_IRI = ns.xref.IRI(db, ac, None, store=False)
         triples.append(xr_IRI, ns.rdf.type(), ns.skos.Concept())
         triples.append(xr_IRI, ns.skos.inScheme(), self.get_ontology_IRI(term.scheme))
-        triples.append(xr_IRI, ns.skos.prefLabel(), ns.xsd.string(term.prefLabel))
+        no_accent_label = self.remove_accents(term.prefLabel)
+        triples.append(xr_IRI, ns.skos.prefLabel(), ns.xsd.string(no_accent_label))
         triples.append(xr_IRI, ns.skos.notation(), ns.xsd.string(term.id))
         for alt in term.altLabelList:
-            triples.append(xr_IRI, ns.skos.altLabel(), ns.xsd.string(alt))
+            no_accent_label = self.remove_accents(alt)
+            triples.append(xr_IRI, ns.skos.altLabel(), ns.xsd.string(no_accent_label))
         for parent_id in term.parentIdList:
             parent_IRI = ns.xref.IRI(db, parent_id, None, store=False)
             triples.append(xr_IRI, ns.onto.more_specific_than(), parent_IRI)
@@ -299,13 +302,20 @@ class RdfBuilder:
             triples.append(orga_IRI, ns.onto.country(), ns.xsd.string(org.country))
 
         if org.contact is not None and len(org.contact)>0:
-            p_BN = self.get_blank_node()
-            triples.append(p_BN, ns.rdf.type(), ns.foaf.Person())
-            triples.append(p_BN, ns.onto.name(), ns.xsd.string(org.contact))
-            triples.append(p_BN, ns.onto.memberOf(), orga_IRI)
+            for name in org.contact.split(" and "):
+                p_BN = self.get_blank_node()
+                triples.append(p_BN, ns.rdf.type(), ns.foaf.Person())
+                triples.append(p_BN, ns.onto.name(), ns.xsd.string(name))
+                triples.append(p_BN, ns.onto.memberOf(), orga_IRI)
 
         return("".join(triples.lines))
         
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def remove_accents(self, input_str):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        nfkd_form = unicodedata.normalize('NFKD', input_str)
+        return u"".join([c for c in nfkd_form if not unicodedata.combining(c)])
 
 
 
@@ -336,11 +346,17 @@ class RdfBuilder:
 
         # authors (mandatory)
         for p in ref_data["author-list"]:
+            p_type = p.get("type")
             p_name = p["name"]
-            p_BN = self.get_blank_node()
-            triples.append(ref_IRI, ns.onto.creator(), p_BN)
-            triples.append(p_BN, ns.rdf.type(), ns.foaf.Person())
-            triples.append(p_BN, ns.onto.name(), ns.xsd.string(p_name))
+            if p_type == "consortium":
+                orga_IRI = ns.orga.IRI(p_name, None, None, None, None)
+                triples.append(ref_IRI, ns.onto.creator(), orga_IRI)
+            else:
+                for name in p_name.split(" and "):                
+                    p_BN = self.get_blank_node()
+                    triples.append(ref_IRI, ns.onto.creator(), p_BN)
+                    triples.append(p_BN, ns.rdf.type(), ns.foaf.Person())
+                    triples.append(p_BN, ns.onto.name(), ns.xsd.string(name))
 
         # title (mandatory)
         ttl = ref_data["title"]
@@ -407,10 +423,11 @@ class RdfBuilder:
         # editors (optional)
         for p in ref_data.get("editor-list") or []:
             p_name = p["name"]
-            p_BN = self.get_blank_node()
-            triples.append(ref_IRI, ns.onto.editor(), p_BN)
-            triples.append(p_BN, ns.rdf.type(), ns.foaf.Person())
-            triples.append(p_BN, ns.onto.name(), ns.xsd.string(p_name))
+            for name in p_name.split(" and "):
+                p_BN = self.get_blank_node()
+                triples.append(ref_IRI, ns.onto.editor(), p_BN)
+                triples.append(p_BN, ns.rdf.type(), ns.foaf.Person())
+                triples.append(p_BN, ns.onto.name(), ns.xsd.string(name))
 
         return("".join(triples.lines))
 
@@ -651,6 +668,8 @@ class RdfBuilder:
                 triples.extend(self.get_ttl_for_cc_miscellaneous_info(cl_IRI, cc))
             elif categ == "Senescence":
                 triples.extend(self.get_ttl_for_cc_senescence_info(cl_IRI, cc))
+            elif categ == "Transfected with":
+                triples.extend(self.get_ttl_for_cc_transfected(cl_IRI, cc))
             elif categ == "Virology":
                 triples.extend(self.get_ttl_for_cc_virology_info(cl_IRI, cc))
             elif categ == "Omics":
@@ -929,6 +948,18 @@ class RdfBuilder:
         triples.append(inst_BN, ns.rdf.type(), ns.onto.SenescenceComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
+        return triples
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_cc_transfected(self, cl_IRI, cc):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # TODO: update with link to :Gene + comment from Note= when it is ready in cellosaurus.txt
+        triples = TripleList()
+        comment = cc["value"]
+        inst_BN = self.get_blank_node()
+        triples.append(cl_IRI, ns.onto.transfectedComment(), inst_BN)
+        triples.append(inst_BN, ns.rdf.type(), ns.onto.TransfectedComment())
+        triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

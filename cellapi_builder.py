@@ -99,11 +99,13 @@ def build_jsonable_object(el):
         if len(txt) > 0: obj["value"]=txt
     for attr in el.keys():
         obj[attr]=el.get(attr)
+    # an author-list contains a choice of persons and consortia, the element tag is turned into the attribute "type"
+    if el.tag in ["person", "consortium"]:
+        obj["type"] = el.tag
 
     # XML elements containing a list of sub elements are expected to names ending with '-list'
     # But as always there are some exceptions... which are handled in seen_as_list()
     if seen_as_list(el.tag):
-
         # Recursively add child objects in items list
         items_prop = get_items_prop_name(el.tag)
         obj[items_prop]= list()
