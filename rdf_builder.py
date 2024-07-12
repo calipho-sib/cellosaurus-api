@@ -99,6 +99,11 @@ class RdfBuilder:
         return xref.get("label")
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_xref_db(self, xref):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        return xref.get("database")
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_xref_IRI(self, xref):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # get mandatory fields
@@ -1161,30 +1166,46 @@ class RdfBuilder:
         triples.extend(self.get_ttl_for_sources(annot_BN, sources))
         return triples
 
+
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_mab_target(self, cl_IRI, annot):    
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         annot_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.onto.mabTarget(), annot_BN)
-        triples.append(annot_BN, ns.rdf.type(), ns.onto.Antigen())
+        clazz = ns.onto.Antigen() # default when we have no xref
+
         # we might get a simple string in annot (the name of the antigen)
         if type(annot) == str:
+            triples.append(cl_IRI, ns.onto.mabTarget(), annot_BN)
+            triples.append(annot_BN, ns.rdf.type(), clazz)
             triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(annot))
             return triples
+
         # or more often we get a dict object
         comment = annot.get("monoclonal-antibody-target-note")
-        if comment is not None:
-            triples.append(annot_BN, ns.rdfs.comment(), ns.xsd.string(comment))
-        # we might get just a name and a comment
+        # we might get just a comment and a name
         name = annot.get("value")
-        xref = annot.get("xref")
         # or the name is in the xref
+        xref = annot.get("xref")
         if xref is not None:
             name = self.get_xref_label(xref)
             xref_IRI = self.get_xref_IRI(xref)
-            triples.append(annot_BN, ns.onto.xref(), xref_IRI)
+            db = self.get_xref_db(xref)
+            if db == "UniProtKB": 
+                clazz = ns.onto.Protein()
+            elif db == "ChEBI":
+                clazz = ns.onto.ChemicalAgent()
+            else:
+                raise DataError("Monoclonal antibody target", "Unexpected xref database: " + db)
+
+        triples.append(cl_IRI, ns.onto.mabTarget(), annot_BN)
+        triples.append(annot_BN, ns.rdf.type(), clazz)
         triples.append(annot_BN, ns.rdfs.label(), ns.xsd.string(name))
+        if comment is not None:
+            triples.append(annot_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+        if xref is not None:
+            triples.append(annot_BN, ns.onto.xref(), xref_IRI)
+
         return triples
 
 

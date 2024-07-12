@@ -155,6 +155,7 @@ class OurOntologyNamespace(BaseNamespace):
     def MedicalDegreeMasterThesis(self): return ":MedicalDegreeMasterThesis"
     def PrivaDocentThesis(self): return ":PrivaDocentThesis"
     def VeterinaryMedicalDegreeThesis(self): return ":VeterinaryMedicalDegreeThesis"
+
     def Patent(self): return ":Patent"
     def JournalArticle(self): return ":JournalArticle"
     def BookChapter(self): return ":BookChapter"
@@ -173,7 +174,9 @@ class OurOntologyNamespace(BaseNamespace):
     def GeneAlleles(self): return ":GeneAlleles"  # used in HLA
     def MarkerAlleles(self): return ":MarkerAlleles"    # used in short repeat tandem
     def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
-    def SequenceVariation(self): return ":SequenceVariation"
+
+    def SequenceVariation(self): return ":SequenceVariation" # most generic class
+
     def GeneAmplification(self): return ":GeneAmplification"
     def GeneDuplication(self): return ":GeneDuplication"
     def GeneTriplication(self): return ":GeneTriplication"
@@ -185,6 +188,7 @@ class OurOntologyNamespace(BaseNamespace):
     def RepeatExpansion(self): return ":RepeatExpansion"
     def SimpleMutation(self): return ":SimpleMutation"
     def UnexplicitMutation(self): return ":UnexplicitMutation"
+
     def AnatomicalElement(self): return ":AnatomicalElement"
     def CellType(self): return ":CellType"
     def Disease(self): return ":Disease"
@@ -217,7 +221,7 @@ class OurOntologyNamespace(BaseNamespace):
     def Species(self): return ":Species"
 
     def Source(self): return ":Source"
-    def OnlineResource(self): return ":OnlineResource" # TODO: unused ?
+    # def OnlineResource(self): return ":OnlineResource" # TODO: unused ?
     def Breed(self): return ":Breed"
 
     def CelloTerminology(self): return ":CelloTerminology"

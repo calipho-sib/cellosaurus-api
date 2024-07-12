@@ -136,11 +136,24 @@ class EndpointClient:
  
     
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def build_label(self, class_name):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        chars = list()
+        for ch in class_name:
+            if ch.isupper() and len(chars)>0:
+                chars.append(" ")
+                chars.append(ch.lower())
+            else:
+                chars.append(ch)
+        return "".join(chars)
+    
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def apply_prefixes(self, uri):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         for (k,v) in self.prefixes.items():
-            if colval.startswith(v):
-                return k + colval[(len(v)):]
+            if uri.startswith(v):
+                return k + uri[(len(v)):]
         return uri
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -214,6 +227,32 @@ if __name__ == '__main__' :
         response = client.run_query(query)
         response["query_template"] = "parents of term query"
 
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    elif sys.argv[1]== "onto_classes":
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        lines = [ "#", "# Cellosaurus ontology Classes", "#" ]
+        for method in dir(ns_reg.onto):
+            if callable(getattr(ns_reg.onto, method)):
+                if method[0].isupper():
+                    class_name = method
+                    lines.append(":" + class_name)
+                    lines.append(f"    rdf:type owl:Class ;")
+                    class_label =  ns_reg.xsd.string(client.build_label(class_name))
+                    lines.append(f"    rdfs:label {class_label} ;")
+                    class_comment =  ns_reg.xsd.string(client.build_label(""))
+                    lines.append(f"    rdfs:comment {class_comment} ;")
+                    onto_url = ns_reg.onto.baseurl()
+                    if onto_url.endswith("#"): onto_url = onto_url[:-1]
+                    onto_url = "<" + onto_url + ">"
+                    lines.append(f"    rdfs:isDefinedBy {onto_url} ;")
+                    lines.append("    .")
+                    lines.append("")
+        for line in lines:
+            print(line)
+        sys.exit()
+
+
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     elif sys.argv[1]=="query":
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -221,7 +260,9 @@ if __name__ == '__main__' :
         response = client.query_from_file(query_file_name)
 
 
-
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # print response
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     if response.get("success"):
 
         col_names = response.get("head").get("vars")
