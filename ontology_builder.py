@@ -1,17 +1,19 @@
 from namespace import NamespaceRegistry as ns_reg
 from sparql_client import EndpointClient
 import sys
+from ApiCommon import log_it
 
 
 #-------------------------------------------------
 class OntologyBuilder:
 #-------------------------------------------------
 
+
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def __init__(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         lines = list()
-        for ns in ns_reg.namespaces: lines.append(ns.getSparqlPrefixDeclaration())        
+        for ns in ns_reg.namespaces: lines.append(ns.getSparqlPrefixDeclaration())
         prefixes = "\n".join(lines)
 
         self.client = EndpointClient("http://localhost:8890/sparql")
@@ -105,6 +107,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         lines = list()
         for ns in ns_reg.namespaces: lines.append(ns.getTtlPrefixDeclaration())
+
         lines.append("")
         onto_url = "<" + self.get_onto_url() + ">"
         descr = """The Cellosaurus ontology describes the concepts used to build the Cellosaurus knowledge resource on cell lines. 
@@ -190,12 +193,13 @@ class OntologyBuilder:
                     #if prop_count > 10: break
                     prop_count += 1
 
+                    log_it("DEBUG", "querying prop_name", prop_name, "domains")
                     domains = dict()
                     domain_query = self.domain_query_template.replace("$prop", prop_name)
                     response = self.client.run_query(domain_query)
                     if not response.get("success"):
-                        print("ERROR", response.get("error_type"))
-                        print(response.get("error_msg"))
+                        log_it("ERROR", response.get("error_type"))
+                        log_it(response.get("error_msg"))
                         sys.exit(2)
                     rows = response.get("results").get("bindings")
                     for row in rows:
@@ -203,12 +207,13 @@ class OntologyBuilder:
                         count = int(row.get("count").get("value"))
                         domains[value]=count
 
+                    log_it("DEBUG", "querying prop_name", prop_name, "ranges")
                     ranges = dict()
                     range_query = self.range_query_template.replace("$prop", prop_name)
                     response = self.client.run_query(range_query)
                     if not response.get("success"):
-                        print("ERROR", response.get("error_type"))
-                        print(response.get("error_msg"))
+                        log_it("ERROR", response.get("error_type"))
+                        log_it(response.get("error_msg"))
                         sys.exit(2)
                     rows = response.get("results").get("bindings")
                     for row in rows:

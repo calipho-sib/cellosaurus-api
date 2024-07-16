@@ -130,7 +130,7 @@ class FoafNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurOntologyNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(OurOntologyNamespace, self).__init__("", "http://cellosaurus.org/rdf#")
+    def __init__(self): super(OurOntologyNamespace, self).__init__("", "http://cellosaurus.org/rdf/ontology#")
 
     # --------
     # CLASSES
@@ -364,15 +364,29 @@ class OurOntologyNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurCellLineNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(OurCellLineNamespace, self).__init__("cvcl", "http://cellosaurus.org/cvcl/")
+    def __init__(self): super(OurCellLineNamespace, self).__init__("cvcl", "http://cellosaurus.org/rdf/cvcl/")
     def IRI(self, primaryAccession): return "cvcl:" + primaryAccession
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class DctermsNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(DctermsNamespace, self).__init__("dcterms", "http://purl.org/dc/terms/")
+    def created(self): return "dcterms:created"
+    def modified(self): return "dcterms:modified"
+    def description(self): return "dcterms:description"
+    def license(self): return "dcterms:license"
+    def title(self): return "dcterms:title"
+    def versionInfo(self): return "dcterms:versionInfo"
+
+
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurXrefNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     dbac_dict = dict()
-    def __init__(self): super(OurXrefNamespace, self).__init__("xref", "http://cellosaurus.org/xref/")
+    def __init__(self): super(OurXrefNamespace, self).__init__("xref", "http://cellosaurus.org/rdf/xref/")
     def IRI(self, db, ac, props, store=True):
         our_dict = OurXrefNamespace.dbac_dict
         # we expect to get props as a string like: cat={cat}|lbl={lbl}|dis={dis}|url={url}
@@ -394,7 +408,7 @@ class OurOrganizationNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # we store name, shortname, country, city, contact
     nccc_dict = dict()
-    def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", "http://cellosaurus.org/orga/")
+    def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", "http://cellosaurus.org/rdf/orga/")
     def IRI(self, name, shortname, city, country, contact, store=True):
         our_dict = OurOrganizationNamespace.nccc_dict
         # store name, shortname, city, country, contact tuples for which an IRI was requested 
@@ -411,7 +425,7 @@ class OurOrganizationNamespace(BaseNamespace):
 class OurPublicationNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     dbac_set = set()
-    def __init__(self): super(OurPublicationNamespace, self).__init__("pub", "http://cellosaurus.org/pub/")
+    def __init__(self): super(OurPublicationNamespace, self).__init__("pub", "http://cellosaurus.org/rdf/pub/")
     def IRI(self, db, ac):
         pub_key = "".join([db, "|", ac])
         # store requested db ac pairs fo which an IRI was requested so that we can describe Xref afterwards
@@ -436,6 +450,7 @@ class NamespaceRegistry:
     skos = SkosNamespace()
     owl = OwlNamespace()
     foaf = FoafNamespace()
-    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf]
+    dcterms = DctermsNamespace()
+    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms]
 
 

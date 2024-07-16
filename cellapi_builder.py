@@ -13,6 +13,7 @@ from io import StringIO, BytesIO
 import random
 from copy import deepcopy
 import requests
+import subprocess
 
 import ApiCommon
 from ApiCommon import log_it
@@ -22,6 +23,7 @@ from rdf_builder import RdfBuilder
 from organizations import KnownOrganizations, Organization
 
 from ontologies import Ontologies, Ontology
+from ontology_builder import OntologyBuilder
 
 # called dynamically
 from ncbi_taxid_parser import NcbiTaxid_Parser
@@ -878,10 +880,10 @@ if __name__ == "__main__":
 # ===========================================================================================
     parser = OptionParser()
     (options, args) = parser.parse_args()
-    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR or TEST")
+    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO or TEST")
 
-    if args[0]!="BUILD" and args[0]!= "RDF" and args[0]!= "SOLR" and args[0]!= "TEST": 
-        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF or TEST")
+    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "TEST" ]: 
+        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO or TEST")
 
     input_dir = "data_in/"
     if input_dir[-1] != "/" : input_dir + "/"
@@ -917,7 +919,7 @@ if __name__ == "__main__":
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # create RDF for cell-line data
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        file_out = open(out_dir + "cl.ttl", "wb")
+        file_out = open(out_dir + "data_cell_lines.ttl", "wb")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         item_cnt = 0
         log_it("INFO:", f"serializing cl: {item_cnt} / {len(cl_dict)}")
@@ -934,7 +936,7 @@ if __name__ == "__main__":
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # create RDF for publications
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        ref_out = open(out_dir + "refs.ttl", "wb")
+        ref_out = open(out_dir + "data_refs.ttl", "wb")
         ref_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         item_cnt = 0
         log_it("INFO:", f"serializing refs: {item_cnt} / {len(rf_dict)}")
@@ -971,7 +973,7 @@ if __name__ == "__main__":
         for k in ontologies.onto_dict:
             onto: Ontology = ontologies.get(k)
             log_it("INFO:", f"Serializing ontology {k} ...")
-            file_out = open(out_dir + onto.abbrev + ".ttl", "wb")
+            file_out = open(out_dir + "data_" + onto.abbrev + ".ttl", "wb")
             file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
             parser = getattr(__import__("__main__"), onto.parser_name)(k)
             # we get version from parser, will be used in RDF defining ontologies as NamedIndividual
@@ -999,7 +1001,7 @@ if __name__ == "__main__":
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # create RDF for xrefs
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        file_out = open(out_dir + "xrefs.ttl", "wb")
+        file_out = open(out_dir + "data_xrefs.ttl", "wb")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         xr_dict = rb.get_xref_dict()
         item_cnt = 0
@@ -1016,7 +1018,7 @@ if __name__ == "__main__":
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # create RDF for organizations
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        file_out = open(out_dir + "orgs.ttl", "wb")
+        file_out = open(out_dir + "data_orgs.ttl", "wb")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         orga_dict = rb.get_orga_dict()
         item_cnt = 0
@@ -1032,7 +1034,7 @@ if __name__ == "__main__":
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # create OWL definitions for ontologies
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        file_out = open(out_dir + "terminologies.ttl", "wb")
+        file_out = open(out_dir + "data_terminologies.ttl", "wb")
         log_it("INFO:", f"serializing OWL for terminologies")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         file_out.write(bytes(rb.get_ttl_for_cello_terminology_class() + "\n", "utf-8"))
@@ -1040,9 +1042,50 @@ if __name__ == "__main__":
             onto: Ontology = ontologies.get(k)
             file_out.write(bytes(rb.get_ttl_for_cello_terminology_individual(onto) + "\n", "utf-8"))
         log_it("INFO:", f"serialized OWL for terminologies")
-
-
         log_it("INFO:", "end")
+
+
+    # -------------------------------------------------------
+    if args[0]=="LOAD_RDF":
+    # -------------------------------------------------------
+        if args[1].lower() == "data":
+            result = subprocess.run(['bash', './private/scripts/reload_rdf_data.sh'], capture_output=True, text=True)
+            log_it("LOADED data, status", result.stdout)
+        elif args[1].lower() == "onto":
+            result = subprocess.run(['bash', './private/scripts/reload_rdf_onto.sh'], capture_output=True, text=True)
+            log_it("LOADED onto, status", result.stdout)
+        else:
+            log_it("Invalid argument after LOAD, expected rdf_data or rdf_onto")
+            sys.exit(10)
+
+    # -------------------------------------------------------
+    if args[0]=="ONTO":
+    # -------------------------------------------------------
+
+        # create OWL cellosaurus ontology
+        # NOTE: property range & domain info is inferred from RDF data
+        # so you need to first generate RDF, lpoad the files and then only
+        # use this task to build the ontology and load
+
+        out_dir = "rdf_data/"
+        file_out = open(out_dir + "ontology.ttl", "wb")
+        log_it("INFO:", f"serializing OWL cellosaurus ontology")
+        builder = OntologyBuilder()
+        lines = list()
+        log_it("INFO:", f"adding cellosaurus ontology header")
+        lines.extend(builder.get_onto_header())
+        log_it("INFO:", f"adding cellosaurus ontology classes")
+        lines.extend(builder.get_classes())
+        log_it("INFO:", f"adding cellosaurus ontology properties")
+        lines.extend(builder.get_props())
+        count = 0
+        for line in lines:
+            count += 1
+            if count % 500 == 0: log_it(f"writing line {count} / {len(lines)}")
+            file_out.write(bytes(line + "\n", "utf-8"))
+        log_it("INFO", f"writing line {count} / {len(lines)}")
+
+        log_it("INFO:", f"serialized OWL cellosaurus ontology")
 
 
     # -------------------------------------------------------
