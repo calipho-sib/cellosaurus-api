@@ -98,6 +98,14 @@ python3.9 cellapi_builder.py SOLR
 ./solr/bin/post -c pamcore1 solr_data/data*.xml
 ```
 
+## How to build RDF data
+
+python3.9 cellapi_builder.py RDF
+python3.9 cellapi_builder.py LOAD_RDF data
+python3.9 cellapi_builder.py ONTO
+python3.9 cellapi_builder.py LOAD_RDF onto
+
+
 ## How to restart services
 
 ```shell
