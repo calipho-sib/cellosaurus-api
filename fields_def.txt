@@ -308,11 +308,11 @@ SH   sen
 PR   CC   Senescence
 XP   /cell-line/comment-list/comment[@category="Senescence"]
 //
-TG   transfected
-DE   Transfected genetic element(s) in the cell line: gene name and identifier in UniProtKB, HGNC, MGI, RGD, VGNC and FlyBase.
+TG   integrated
+DE   Genetic element(s) integrated in the cell line: gene name and identifier in UniProtKB, HGNC, MGI, RGD, VGNC, FPbase and FlyBase.
 SH   int
-PR   CC   Transfected with
-XP   /cell-line/comment-list/comment[@category="Transfected with"]
+PR   CC   Genetic integration
+XP   /cell-line/genetic-integration-list/genetic-integration
 //
 TG   transformant
 DE   What caused the cell line to be transformed: generally a virus (with a cross-reference to NCBI taxon identifier), a chemical compound

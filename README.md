@@ -100,11 +100,12 @@ python3.9 cellapi_builder.py SOLR
 
 ## How to build RDF data
 
+```shell
 python3.9 cellapi_builder.py RDF
 python3.9 cellapi_builder.py LOAD_RDF data
 python3.9 cellapi_builder.py ONTO
 python3.9 cellapi_builder.py LOAD_RDF onto
-
+```
 
 ## How to restart services
 

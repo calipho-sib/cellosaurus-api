@@ -512,7 +512,7 @@
   <field name="str" type="text_gen_sort"/>
   <field name="sx" type="text_gen_sort"/>
   <field name="sy" type="text_gen_sort"/>
-  <field name="transfected" type="text_gen_sort"/>
+  <field name="integrated" type="text_gen_sort"/>
   <field name="transformant" type="text_gen_sort"/>
   <field name="virology" type="text_gen_sort"/>
   <field name="ww" type="text_gen_sort"/>
@@ -586,7 +586,7 @@
   <copyField source="str" dest="text"/>
   <copyField source="sx" dest="text"/>
   <copyField source="sy" dest="text"/>
-  <copyField source="transfected" dest="text"/>
+  <copyField source="integrated" dest="text"/>
   <copyField source="transformant" dest="text"/>
   <copyField source="virology" dest="text"/>
   <copyField source="ww" dest="text"/>

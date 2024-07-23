@@ -1,5 +1,5 @@
 #
-# Generated : 2024-07-04 11:34:31
+# Generated : 2024-07-22 15:28:59
 #
 
 from enum import Enum
@@ -46,7 +46,7 @@ class Fields(str, Enum):
 	PROBLEMATIC = "problematic"
 	RESISTANCE = "resistance"
 	SENESCENCE = "senescence"
-	TRANSFECTED = "transfected"
+	INTEGRATED = "integrated"
 	TRANSFORMANT = "transformant"
 	VIROLOGY = "virology"
 	CC = "cc"
