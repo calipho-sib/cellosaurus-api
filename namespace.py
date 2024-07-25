@@ -116,6 +116,8 @@ class SkosNamespace(BaseNamespace):
     def notation(self): return "skos:notation"
     def prefLabel(self): return "skos:prefLabel"
     def altLabel(self): return "skos:altLabel"
+    def broader(self): return "skos:broader"
+    
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,6 +126,16 @@ class FoafNamespace(BaseNamespace):
     def __init__(self): super(FoafNamespace, self).__init__("foaf", "http://xmlns.com/foaf/0.1/")
     def Person(self): return "foaf:Person"
     # def Organization(self): return "foaf:Organization" (defined in OurOntologyNamespace)
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class FabioNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(FabioNamespace, self).__init__("fabio", "http://purl.org/spar/fabio/")
+    def hasPubMedCentralId(self): return "fabio:hasPubMedCentralId"
+    def hasPubMedId(self): return "fabio:hasPubMedId"
+    
+
 
 
 # Cellosaurus ontology namespace
@@ -208,7 +220,7 @@ class OurOntologyNamespace(BaseNamespace):
     def KaryotypicInfoComment(self): return ":KaryotypicInfoComment"
     def MiscellaneousInfoComment(self): return ":MiscellaneousInfoComment"
     def SenescenceComment(self): return ":SenescenceComment"
-    def TransfectedComment(self): return ":TransfectedComment"
+    def GeneticIntegration(self): return ":GeneticIntegration"
     def VirologyComment(self): return ":VirologyComment"
     def OmicsComment(self) : return ":OmicsComment"
     def PopulationComment(self) : return ":PopulationComment"
@@ -235,10 +247,11 @@ class OurOntologyNamespace(BaseNamespace):
     # see also https://sparontologies.github.io/fabio/current/fabio.html
     # see also https://sibils.text-analytics.ch/doc/api/sparql/sibils-ontology.html
 
-    def hasIdentifier(self): return ":hasIdentifier" # generic prop, parent of hasDOI, hssPubMedId
+    #def hasIdentifier(self): return ":hasIdentifier" # generic prop, parent of hasDOI, hasPubMedId # we use the  as an ancestor
     def hasInternalId(self): return ":hasInternalId"
     def hasDOI(self): return ":hasDOI"
-    def hasPubMedId(self): return ":hasPubMedId"
+    def hasPubMedId(self): return ":hasPubMed_Identifier"
+    def hasPMCId(self): return ":has_PMC_Identifier"
     def publicationDate(self): return ":publicationDate"
     def hasPublicationYear(self): return ":hasPublicationYear"
     def startingPage(self): return ":startingPage" 
@@ -308,13 +321,13 @@ class OurOntologyNamespace(BaseNamespace):
     def karyotypicInfoComment(self): return ":karyotypicInfoComment"
     def miscellaneousInfoComment(self): return ":miscellaneousInfoComment"
     def senescenceComment(self): return ":senescenceComment"
-    def transfectedComment(self): return ":transfectedComment"
+    def geneticIntegration(self): return ":geneticIntegration"
     def virologyComment(self): return ":virologyComment"
     def omicsComment(self) : return ":omicsComment"
     def populationComment(self) : return ":populationComment"
 
     def knockout(self): return ":knockout"
-    def method(self): return ":method"
+    def genomeEditingMethod(self): return ":genomeEditingMethod"
 
     def discontinued(self): return ":discontinued"
     def provider(self): return ":provider"
@@ -378,6 +391,8 @@ class DctermsNamespace(BaseNamespace):
     def license(self): return "dcterms:license"
     def title(self): return "dcterms:title"
     def versionInfo(self): return "dcterms:versionInfo"
+    def creator(self): return "dcterms:creator"
+    def identifier(self): return "dcterms:identifier"
 
 
 

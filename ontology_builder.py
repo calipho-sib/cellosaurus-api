@@ -32,11 +32,14 @@ class OntologyBuilder:
             \n    values ?prop { $prop }
             \n    ?s ?prop ?o .
             \n    optional { ?o rdf:type ?cl . }
-            \n    BIND( IF (isIRI(?o), 'rdfs:Resource', IF (isLiteral(?o), datatype(?o), ?cl)) AS ?value)
+            \n    BIND(
+            \n    IF (bound(?cl) , ?cl,  IF ( isIRI(?o), 'rdfs:Resource', datatype(?o))
+            \n    ) as ?value)
             \n}
             \ngroup by ?prop ?value
             """
 
+        # sub class relationships
         self.rdfs_subClassOf = dict()
 
         # publication classes
@@ -73,16 +76,57 @@ class OntologyBuilder:
         self.rdfs_subClassOf[ns_reg.onto.GeneExtensiveAmplification()] = ns_reg.onto.GeneAmplification()
         self.rdfs_subClassOf[ns_reg.onto.GeneDeletion()] = ns_reg.onto.SequenceVariation()
 
+        self.rdfs_subClassOf[ns_reg.onto.CelloTerminology()] = ns_reg.skos.ConceptScheme()
+        
+
+        # sub property relationships
+        self.rdfs_subPropertyOf = dict()
+        self.rdfs_subPropertyOf[ns_reg.onto.creator()] = ns_reg.dcterms.creator()
+
+        self.rdfs_subPropertyOf[ns_reg.onto.title()] = ns_reg.dcterms.title()        
+        self.rdfs_subPropertyOf[ns_reg.onto.bookTitle()] = ns_reg.dcterms.title()
+        self.rdfs_subPropertyOf[ns_reg.onto.documentTitle()] = ns_reg.dcterms.title()
+        self.rdfs_subPropertyOf[ns_reg.onto.conferenceTitle()] = ns_reg.dcterms.title()
+        self.rdfs_subPropertyOf[ns_reg.onto.documentSerieTitle()] = ns_reg.dcterms.title()
+
+        self.rdfs_subPropertyOf[ns_reg.onto.hasDOI()] = ns_reg.dcterms.identifier()
+        self.rdfs_subPropertyOf[ns_reg.onto.hasPubMedId()] = ns_reg.dcterms.identifier()
+        
+
+        self.rdfs_subPropertyOf[ns_reg.onto.more_specific_than()] = ns_reg.skos.broader()
+
+
+
         self.rdfs_comment = dict()
         # comments for classes
         self.rdfs_comment[ns_reg.onto.CellLine()] = "Cell line as defined in the Cellosaurus"
         # comments for props
         self.rdfs_comment[ns_reg.onto.recommendedName()] = "Most frequently the name of the cell line as provided in the original publication"
         self.rdfs_comment[ns_reg.onto.alternativeName()] = "Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms"
+        self.rdfs_comment[ns_reg.onto.more_specific_than()] = "Links two concepts. The subject concept is more specific than the object concept. The semantics is the similar to the skos:broader property but its label less ambiguous."
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def build_label(self, str):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        chars = list()
+        wasupper = False
+        for ch in str:
+            if ch.isupper() and not wasupper and len(chars)>0:
+                chars.append(" ")
+                chars.append(ch)
+            elif ch == "_":
+                chars.append(" ")
+            else:
+                chars.append(ch)
+            wasupper = ch.isupper()
+
+
+
+        return "".join(chars)
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def build_label(self, class_name):
+    def build_label_old(self, class_name):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         chars = list()
         for ch in class_name:
@@ -184,11 +228,12 @@ class OntologyBuilder:
         for method in dir(ns_reg.onto):
             if callable(getattr(ns_reg.onto, method)):
                 if method[0].islower():
-                    # skip those below are not ontology terms but helper functions of the super class
+                    # skip those below, they are not ontology terms but helper functions of the super class
                     if method in ["prefix", "baseurl", "getTtlPrefixDeclaration", "getSparqlPrefixDeclaration"]: continue 
                     prop_name = ":" + method
                     prop_label =  ns_reg.xsd.string(self.build_label(method))
                     prop_comment = self.rdfs_comment.get(prop_name)
+                    parent_prop = self.rdfs_subPropertyOf.get(prop_name)
 
                     #if prop_count > 10: break
                     prop_count += 1
@@ -235,6 +280,9 @@ class OntologyBuilder:
                     for typ in prop_types:
                         lines.append("    a " + typ + " ;")
 
+                    if parent_prop is not None:
+                        lines.append(f"    rdfs:subPropertyOf " + parent_prop + " ;")
+
                     lines.append(f"    rdfs:label {prop_label} ;")
 
                     if prop_comment is not None:
@@ -263,7 +311,7 @@ class OntologyBuilder:
                         lines.append("        )")
                         lines.append("    ] ;")                             
 
-                    if len(ranges)==1:
+                    if len(ranges)>1:
                         sr = self.get_simplified_classes(ranges)
                         if sr != ranges:
                             #lines.append("# SIMPLIFIED ranges")
@@ -274,7 +322,6 @@ class OntologyBuilder:
                         tmp = "    rdfs:range " + name + " ;"
                         line = tmp.ljust(60) + "# " + str(ranges[name]) + " instances"
                         lines.append(line)
-
                     elif len(ranges)>1:
                         lines.append("    rdfs:range [ a owl:Class ; owl:unionOf (")
                         for name in ranges:
@@ -295,6 +342,9 @@ if __name__ == '__main__':
 # --------------------------------------------
 
     builder = OntologyBuilder()
+
+    #print(builder.build_label("HiJOHN_howDoesItFeel IAm happy"))
+    #sys.exit()
     lines = list()
     lines.extend(builder.get_onto_header())
     lines.extend(builder.get_classes())

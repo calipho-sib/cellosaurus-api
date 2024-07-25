@@ -37,7 +37,7 @@ class RdfBuilder:
 
         self.pubtype_clazz = {
             "article": ns.onto.JournalArticle(),
-            "book chapter": ns.onto.BookChapter(), # will be refined
+            "book chapter": ns.onto.BookChapter(),
             "patent": ns.onto.Patent(),
             "thesis BSc": ns.onto.BachelorThesis(),
             "thesis MD": ns.onto.MedicalDegreeThesis(),
@@ -82,7 +82,7 @@ class RdfBuilder:
     def get_pub_IRI(self, refOrPub):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         dbac = refOrPub.get("resource-internal-ref")    # exists in reference-list items
-        if dbac is None: dbac = refOrPub["internal-id"] # exists in publication-list items 
+        if dbac is None: dbac = refOrPub["internal-id"] # exists in publication-list items
         (db,ac) = dbac.split("=")
         return ns.pub.IRI(db,ac)
 
@@ -380,6 +380,10 @@ class RdfBuilder:
 
         # xref-list (mandatory), we create and xref and a direct link to the url via rdfs:seeAlso
         for xref in ref_data["xref-list"]:
+            accession = xref["accession"]
+            if self.get_xref_db(xref) == "PubMed": triples.append(ref_IRI, ns.onto.hasPubMedId(), ns.xsd.string(accession))
+            elif self.get_xref_db(xref) == "DOI": triples.append(ref_IRI, ns.onto.hasDOI(), ns.xsd.string3(accession))
+            elif self.get_xref_db(xref) == "PMCID": triples.append(ref_IRI, ns.onto.hasPMCId(), ns.xsd.string(accession))
             xref_IRI = self.get_xref_IRI(xref)
             triples.append(ref_IRI, ns.onto.xref(), xref_IRI)
             url = "". join(["<", self.encode_url(xref["url"]), ">"])
@@ -642,6 +646,9 @@ class RdfBuilder:
         for annot in cl_data.get("knockout-cell-list") or []:
             triples.extend(self.get_ttl_for_cc_knockout_cell(cl_IRI, annot))
 
+        # fields: CC integration
+        for annot in cl_data.get("genetic-integration-list") or []:
+            triples.extend(self.get_ttl_for_cc_genetic_integration(cl_IRI, annot))
 
         # fields: CC from, ...
         for cc in cl_data.get("comment-list") or []:
@@ -673,8 +680,6 @@ class RdfBuilder:
                 triples.extend(self.get_ttl_for_cc_miscellaneous_info(cl_IRI, cc))
             elif categ == "Senescence":
                 triples.extend(self.get_ttl_for_cc_senescence_info(cl_IRI, cc))
-            elif categ == "Transfected with":
-                triples.extend(self.get_ttl_for_cc_transfected(cl_IRI, cc))
             elif categ == "Virology":
                 triples.extend(self.get_ttl_for_cc_virology_info(cl_IRI, cc))
             elif categ == "Omics":
@@ -751,7 +756,7 @@ class RdfBuilder:
                     gene_BN = self.get_blank_node()
                     triples.append(seqvar_BN, ns.onto.gene(), gene_BN)
                     triples.append(gene_BN, ns.rdf.type(), ns.onto.Gene())
-                    gene_label = xref.get("label")
+                    gene_label =  self.get_xref_label(xref)
                     if gene_label is not None and len(gene_label) > 0:
                         triples.append(gene_BN, ns.rdfs.label(), ns.xsd.string(gene_label))
                     triples.append(gene_BN, ns.onto.xref(), self.get_xref_IRI(xref)) # gene(s) related to the variation
@@ -956,15 +961,29 @@ class RdfBuilder:
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_ttl_for_cc_transfected(self, cl_IRI, cc):
+    def get_ttl_for_cc_genetic_integration(self, cl_IRI, cc):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # TODO: update with link to :Gene + comment from Note= when it is ready in cellosaurus.txt
         triples = TripleList()
-        comment = cc["value"]
+        method = cc.get("method")
+        note = cc.get("genetic-integration-note")
+        xref = cc.get("xref")
+        nameonly = cc.get("value")
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.onto.transfectedComment(), inst_BN)
-        triples.append(inst_BN, ns.rdf.type(), ns.onto.TransfectedComment())
-        triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
+        triples.append(cl_IRI, ns.onto.geneticIntegration(), inst_BN)
+        triples.append(inst_BN, ns.rdf.type(), ns.onto.GeneticIntegration())
+        triples.append(inst_BN, ns.onto.genomeEditingMethod(), ns.xsd.string(method))
+        if note is not None: 
+            triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(note))
+        gene_BN = self.get_blank_node()
+        triples.append(inst_BN, ns.onto.gene(), gene_BN)
+        triples.append(gene_BN, ns.rdf.type(), ns.onto.Gene())
+        if nameonly is not None:
+            triples.append(gene_BN, ns.rdfs.label(), ns.xsd.string(nameonly))
+        else:
+            triples.append(gene_BN, ns.onto.xref(), self.get_xref_IRI(xref))
+            gene_name =  self.get_xref_label(xref)
+            if gene_name is not None and len(gene_name)>0:
+                triples.append(gene_BN, ns.rdfs.label(), ns.xsd.string(gene_name))
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -984,7 +1003,7 @@ class RdfBuilder:
     def get_ttl_for_cc_knockout_cell(self, cl_IRI, cc):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
-        method = cc.get("knockout-method")
+        method = cc.get("method")
         comment = cc.get("knockout-cell-note") # optional
         xref = cc.get("xref")
         if method is None or xref is None:
@@ -993,12 +1012,12 @@ class RdfBuilder:
             inst_BN = self.get_blank_node()
             triples.append(cl_IRI, ns.onto.knockout(), inst_BN)
             triples.append(inst_BN, ns.rdf.type(), ns.onto.KnockoutComment())
-            triples.append(inst_BN, ns.onto.method(), ns.xsd.string(method))
+            triples.append(inst_BN, ns.onto.genomeEditingMethod(), ns.xsd.string(method))
             gene_BN = self.get_blank_node()
             triples.append(inst_BN, ns.onto.gene(), gene_BN)
             triples.append(gene_BN, ns.rdf.type(), ns.onto.Gene())
             triples.append(gene_BN, ns.onto.xref(), self.get_xref_IRI(xref))
-            gene_name = xref.get("label")
+            gene_name =  self.get_xref_label(xref)
             if gene_name is not None and len(gene_name)>0:
                 triples.append(gene_BN, ns.rdfs.label(), ns.xsd.string(gene_name))
             if comment is not None: 
@@ -1191,7 +1210,7 @@ class RdfBuilder:
             name = self.get_xref_label(xref)
             xref_IRI = self.get_xref_IRI(xref)
             db = self.get_xref_db(xref)
-            if db == "UniProtKB": 
+            if db in [ "UniProtKB", "FPbase" ]: 
                 clazz = ns.onto.Protein()
             elif db == "ChEBI":
                 clazz = ns.onto.ChemicalAgent()
