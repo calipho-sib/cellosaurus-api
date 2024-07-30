@@ -42,44 +42,66 @@ class OntologyBuilder:
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # sub class relationships
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
         self.rdfs_subClassOf = dict()
 
         # publication classes
-        self.rdfs_subClassOf[ns_reg.onto.Thesis()] = ns_reg.onto.Publication()
-        self.rdfs_subClassOf[ns_reg.onto.BachelorThesis()] = ns_reg.onto.Thesis()
-        self.rdfs_subClassOf[ns_reg.onto.MasterThesis()] = ns_reg.onto.Thesis()
-        self.rdfs_subClassOf[ns_reg.onto.DoctoralThesis()] = ns_reg.onto.Thesis()
-        self.rdfs_subClassOf[ns_reg.onto.MedicalDegreeMasterThesis()] = ns_reg.onto.Thesis()
-        self.rdfs_subClassOf[ns_reg.onto.MedicalDegreeThesis()] = ns_reg.onto.Thesis()
-        self.rdfs_subClassOf[ns_reg.onto.PrivaDocentThesis()] = ns_reg.onto.Thesis()
-        self.rdfs_subClassOf[ns_reg.onto.VeterinaryMedicalDegreeThesis()] = ns_reg.onto.Thesis()
+        self.rdfs_subClassOf[ns_reg.onto.Thesis()] = ns_reg.onto.Publication() 
+        self.rdfs_subClassOf[ns_reg.onto.BachelorThesis()] = ns_reg.onto.Thesis() 
+        self.rdfs_subClassOf[ns_reg.onto.MasterThesis()] = ns_reg.onto.Thesis() 
+        self.rdfs_subClassOf[ns_reg.onto.DoctoralThesis()] = ns_reg.onto.Thesis() 
+        self.rdfs_subClassOf[ns_reg.onto.MedicalDegreeMasterThesis()] = ns_reg.onto.Thesis() 
+        self.rdfs_subClassOf[ns_reg.onto.MedicalDegreeThesis()] = ns_reg.onto.Thesis()  
+        self.rdfs_subClassOf[ns_reg.onto.PrivaDocentThesis()] = ns_reg.onto.Thesis()  
+        self.rdfs_subClassOf[ns_reg.onto.VeterinaryMedicalDegreeThesis()] = ns_reg.onto.Thesis() 
         self.rdfs_subClassOf[ns_reg.onto.Patent()] = ns_reg.onto.Publication()
-        self.rdfs_subClassOf[ns_reg.onto.JournalArticle()] = ns_reg.onto.Publication()
-        self.rdfs_subClassOf[ns_reg.onto.Book()] = ns_reg.onto.Publication()
+        self.rdfs_subClassOf[ns_reg.onto.JournalArticle()] = ns_reg.onto.Publication() 
+        self.rdfs_subClassOf[ns_reg.onto.Book()] = ns_reg.onto.Publication() 
         self.rdfs_subClassOf[ns_reg.onto.BookChapter()] = ns_reg.onto.Publication()
         self.rdfs_subClassOf[ns_reg.onto.TechnicalDocument()] = ns_reg.onto.Publication()
-        self.rdfs_subClassOf[ns_reg.onto.MiscellaneousDocument()] = ns_reg.onto.Publication()
+        self.rdfs_subClassOf[ns_reg.onto.MiscellaneousDocument()] = ns_reg.onto.Publication() 
         self.rdfs_subClassOf[ns_reg.onto.ConferencePublication()] = ns_reg.onto.Publication()
 
         # antigen classes
-        self.rdfs_subClassOf[ns_reg.onto.Protein()] = ns_reg.onto.Antigen()
-        self.rdfs_subClassOf[ns_reg.onto.ChemicalAgent()] = ns_reg.onto.Antigen()
+        self.rdfs_subClassOf[ns_reg.onto.Protein()] = ns_reg.onto.Antigen() 
+        self.rdfs_subClassOf[ns_reg.onto.ChemicalAgent()] = ns_reg.onto.Antigen() 
 
         # sequence variation classes
-        self.rdfs_subClassOf[ns_reg.onto.GeneMutation()] = ns_reg.onto.SequenceVariation()
-        self.rdfs_subClassOf[ns_reg.onto.RepeatExpansion()] = ns_reg.onto.GeneMutation()
-        self.rdfs_subClassOf[ns_reg.onto.SimpleMutation()] = ns_reg.onto.GeneMutation()
-        self.rdfs_subClassOf[ns_reg.onto.UnexplicitMutation()] = ns_reg.onto.GeneMutation()
-        self.rdfs_subClassOf[ns_reg.onto.GeneFusion()] = ns_reg.onto.SequenceVariation()
-        self.rdfs_subClassOf[ns_reg.onto.GeneAmplification()] = ns_reg.onto.SequenceVariation()
-        self.rdfs_subClassOf[ns_reg.onto.GeneDuplication()] = ns_reg.onto.GeneAmplification()
-        self.rdfs_subClassOf[ns_reg.onto.GeneTriplication()] = ns_reg.onto.GeneAmplification()
-        self.rdfs_subClassOf[ns_reg.onto.GeneQuarduplication()] = ns_reg.onto.GeneAmplification()
-        self.rdfs_subClassOf[ns_reg.onto.GeneExtensiveAmplification()] = ns_reg.onto.GeneAmplification()
-        self.rdfs_subClassOf[ns_reg.onto.GeneDeletion()] = ns_reg.onto.SequenceVariation()
+        self.rdfs_subClassOf[ns_reg.onto.GeneMutation()] = ns_reg.onto.SequenceVariation() 
+        self.rdfs_subClassOf[ns_reg.onto.RepeatExpansion()] = ns_reg.onto.GeneMutation() 
+        self.rdfs_subClassOf[ns_reg.onto.SimpleMutation()] = ns_reg.onto.GeneMutation() 
+        self.rdfs_subClassOf[ns_reg.onto.UnexplicitMutation()] = ns_reg.onto.GeneMutation() 
+        self.rdfs_subClassOf[ns_reg.onto.GeneFusion()] = ns_reg.onto.SequenceVariation() 
+        self.rdfs_subClassOf[ns_reg.onto.GeneAmplification()] = ns_reg.onto.SequenceVariation() 
+        self.rdfs_subClassOf[ns_reg.onto.GeneDuplication()] = ns_reg.onto.GeneAmplification() 
+        self.rdfs_subClassOf[ns_reg.onto.GeneTriplication()] = ns_reg.onto.GeneAmplification() 
+        self.rdfs_subClassOf[ns_reg.onto.GeneQuarduplication()] = ns_reg.onto.GeneAmplification() 
+        self.rdfs_subClassOf[ns_reg.onto.GeneExtensiveAmplification()] = ns_reg.onto.GeneAmplification() 
+        self.rdfs_subClassOf[ns_reg.onto.GeneDeletion()] = ns_reg.onto.SequenceVariation() 
 
         self.rdfs_subClassOf[ns_reg.onto.CelloTerminology()] = ns_reg.skos.ConceptScheme()
-        
+
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # additional sub class relationships ignored by self.
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+        self.more_rdfs_subClassOf = dict()
+        self.more_rdfs_subClassOf[ns_reg.onto.Publication()] = ns_reg.fabio.Expression()
+        self.more_rdfs_subClassOf[ns_reg.onto.Thesis()] = ns_reg.fabio.Thesis() 
+        self.more_rdfs_subClassOf[ns_reg.onto.BachelorThesis()] = ns_reg.fabio.BachelorsThesis() 
+        self.more_rdfs_subClassOf[ns_reg.onto.MasterThesis()] = ns_reg.fabio.MastersThesis() 
+        self.more_rdfs_subClassOf[ns_reg.onto.DoctoralThesis()] = ns_reg.fabio.DoctoralThesis() 
+        self.more_rdfs_subClassOf[ns_reg.onto.MedicalDegreeMasterThesis()] = ns_reg.fabio.Thesis()  
+        self.more_rdfs_subClassOf[ns_reg.onto.MedicalDegreeThesis()] = ns_reg.fabio.Thesis()  
+        self.more_rdfs_subClassOf[ns_reg.onto.PrivaDocentThesis()] = ns_reg.fabio.Thesis()  
+        self.more_rdfs_subClassOf[ns_reg.onto.VeterinaryMedicalDegreeThesis()] = ns_reg.fabio.Thesis() 
+        self.more_rdfs_subClassOf[ns_reg.onto.Patent()] = ns_reg.fabio.Patent()
+        self.more_rdfs_subClassOf[ns_reg.onto.JournalArticle()] = ns_reg.fabio.JournalArticle() 
+        self.more_rdfs_subClassOf[ns_reg.onto.Book()] = ns_reg.fabio.Book() 
+        self.more_rdfs_subClassOf[ns_reg.onto.BookChapter()] = ns_reg.fabio.BookChapter() 
+        self.more_rdfs_subClassOf[ns_reg.onto.TechnicalDocument()] = ns_reg.fabio.TechnicalReport() 
+        self.more_rdfs_subClassOf[ns_reg.onto.ConferencePublication()] = ns_reg.fabio.ConferencePaper() 
+
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # sub property relationships
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -91,17 +113,52 @@ class OntologyBuilder:
         self.rdfs_subPropertyOf[ns_reg.onto.documentTitle()] = ns_reg.dcterms.title()
         self.rdfs_subPropertyOf[ns_reg.onto.conferenceTitle()] = ns_reg.dcterms.title()
         self.rdfs_subPropertyOf[ns_reg.onto.documentSerieTitle()] = ns_reg.dcterms.title()
+        
+        self.rdfs_subPropertyOf[ns_reg.onto.more_specific_than()] = ns_reg.skos.broader()
 
+        self.rdfs_subPropertyOf[ns_reg.onto.productId()] = ns_reg.dcterms.identifier()
+        self.rdfs_subPropertyOf[ns_reg.onto.issn13()] = ns_reg.dcterms.identifier()
         self.rdfs_subPropertyOf[ns_reg.onto.hasDOI()] = ns_reg.dcterms.identifier()
-        self.rdfs_subPropertyOf[ns_reg.onto.hasPubMedId()] = ns_reg.dcterms.identifier()
+        self.rdfs_subPropertyOf[ns_reg.onto.hasInternalId()] = ns_reg.dcterms.identifier()
+        self.rdfs_subPropertyOf[ns_reg.onto.hasPMCId()] = ns_reg.fabio.hasPubMedCentralId()
+        self.rdfs_subPropertyOf[ns_reg.onto.hasPubMedId()] = ns_reg.fabio.hasPubMedId()
+        self.rdfs_subPropertyOf[ns_reg.onto.volume()] = ns_reg.up.volume()
+        
+        self.rdfs_subPropertyOf[ns_reg.onto.primaryAccession()] = ns_reg.onto.accession()
+        self.rdfs_subPropertyOf[ns_reg.onto.secondaryAccession()] = ns_reg.onto.accession()
+        self.rdfs_subPropertyOf[ns_reg.onto.accession()] = ns_reg.dcterms.identifier()
+        
+        self.rdfs_subPropertyOf[ns_reg.onto.name()] = ns_reg.rdfs.label()
+        self.rdfs_subPropertyOf[ns_reg.onto.populationName()] = ns_reg.onto.name()
+        self.rdfs_subPropertyOf[ns_reg.onto.recommendedName()] = ns_reg.onto.name()
+        self.rdfs_subPropertyOf[ns_reg.onto.alternativeName()] = ns_reg.onto.name()
+        self.rdfs_subPropertyOf[ns_reg.onto.shortname()] = ns_reg.onto.name()
+        self.rdfs_subPropertyOf[ns_reg.onto.misspellingName()] = ns_reg.onto.name()
+        self.rdfs_subPropertyOf[ns_reg.onto.registeredName()] = ns_reg.onto.name()
+        self.rdfs_subPropertyOf[ns_reg.onto.CellLineName()] = ns_reg.onto.name()
+        
+        
+        
         
 
-        self.rdfs_subPropertyOf[ns_reg.onto.more_specific_than()] = ns_reg.skos.broader()
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # domain / ranges to remove
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        self.rdfs_domain_to_remove = dict()
+        self.rdfs_domain_to_remove[ns_reg.onto.accession()] = ns_reg.skos.Concept() 
+        self.rdfs_domain_to_remove[ns_reg.onto.category()] = ns_reg.skos.Concept() 
+        self.rdfs_domain_to_remove[ns_reg.onto.database()] = ns_reg.skos.Concept() 
+        self.rdfs_domain_to_remove[ns_reg.onto.version()] = ns_reg.owl.NamedIndividual()
+        self.rdfs_domain_to_remove[ns_reg.onto.more_specific_than()] = ns_reg.onto.Xref() 
+
+        self.rdfs_range_to_remove = dict()
+        self.rdfs_range_to_remove[ns_reg.onto.xref()] = ns_reg.skos.Concept() 
+        self.rdfs_range_to_remove[ns_reg.onto.more_specific_than()] = ns_reg.onto.Xref() 
 
 
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # non default labels
+        # non default labels for classes and properties
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         self.rdfs_label = dict()
         self.rdfs_label[ns_reg.onto.HLATyping()] = "HLA typing"
@@ -237,6 +294,9 @@ class OntologyBuilder:
                     parent_class = self.rdfs_subClassOf.get(class_name)
                     if parent_class is not None:
                         lines.append(f"    rdfs:subClassOf " + parent_class + " ;")
+                    parent_class = self.more_rdfs_subClassOf.get(class_name)
+                    if parent_class is not None:
+                        lines.append(f"    rdfs:subClassOf " + parent_class + " ;")
                     class_comment = self.rdfs_comment.get(class_name)
                     if class_comment is not None:
                         class_comment =  ns_reg.xsd.string(class_comment)
@@ -246,6 +306,33 @@ class OntologyBuilder:
                     lines.append("")
         return lines
         
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def set_contains_local_parent(self, some_set):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        for el in some_set:
+            if el.startswith(":"): return True
+        return False
+
+    # # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # def get_root_ancestors(self, some_class):
+    # # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    #     parents = self.rdfs_subClassOf.get(some_class) or []
+    #     if len(parents)==0:
+    #         return { some_class }
+    #     else: 
+    #         ancestors = set()
+    #         for parent in parents:
+    #             all_ancestors = self.get_root_ancestors(parent)
+    #             has_local_parent = self.set_contains_local_parent(all_ancestors)
+    #             for anc in all_ancestors:
+    #                 if not has_local_parent or anc.startsWith(":"):
+    #                     ancestors.add(anc)
+    #                     print("added", anc)
+    #             #ancestors.update(self.get_root_ancestors(parent))
+    #                 else:
+    #                     print("NOT added", anc)
+    #         return ancestors
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_root_ancestor(self, some_class):
@@ -304,6 +391,8 @@ class OntologyBuilder:
                         count = int(row.get("count").get("value"))
                         domains[value]=count
 
+                    
+
                     log_it("DEBUG", "querying prop_name", prop_name, "ranges")
                     ranges = dict()
                     range_query = self.range_query_template.replace("$prop", prop_name)
@@ -349,6 +438,9 @@ class OntologyBuilder:
                             #lines.append("# SIMPLIFIED domains")
                             domains = sd
 
+                    domain_to_remove = self.rdfs_domain_to_remove.get(prop_name)
+                    if domain_to_remove is not None and domain_to_remove in domains: del domains[domain_to_remove]
+
                     if len(domains)==1:
                         name = list(domains.keys())[0]
                         tmp = "    rdfs:domain " + name + " ;"
@@ -368,6 +460,9 @@ class OntologyBuilder:
                         if sr != ranges:
                             #lines.append("# SIMPLIFIED ranges")
                             ranges = sr
+
+                    range_to_remove = self.rdfs_range_to_remove.get(prop_name)
+                    if range_to_remove is not None and range_to_remove in ranges: del ranges[range_to_remove]
 
                     if len(ranges)==1:
                         name = list(ranges.keys())[0]
@@ -404,7 +499,11 @@ if __name__ == '__main__':
         print(builder.build_label(ns_reg.onto.HLATyping()))
         print(builder.build_label(ns_reg.onto.AnecdotalComment()))
         print(builder.build_label(ns_reg.onto.anecdotalComment()))
-        
+
+        print(builder.get_root_ancestor(ns_reg.onto.Publication()))
+        print(builder.get_root_ancestor(ns_reg.onto.MedicalDegreeMasterThesis()))
+        print(builder.get_root_ancestor(ns_reg.onto.AnecdotalComment()))
+
     # real ontology generation
     else:  
         lines = list()

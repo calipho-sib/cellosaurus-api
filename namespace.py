@@ -134,6 +134,24 @@ class FabioNamespace(BaseNamespace):
     def __init__(self): super(FabioNamespace, self).__init__("fabio", "http://purl.org/spar/fabio/")
     def hasPubMedCentralId(self): return "fabio:hasPubMedCentralId"
     def hasPubMedId(self): return "fabio:hasPubMedId"
+    def Expression(self): return "fabio:Expression"
+    def Thesis(self): return "fabio:Thesis"
+    def BachelorsThesis(self): return "fabio:BachelorsThesis"
+    def MastersThesis(self): return "fabio:MastersThesis"
+    def DoctoralThesis(self): return "fabio:DoctoralThesis"
+    def Patent(self): return "fabio:Patent"
+    def JournalArticle(self): return "fabio:JournalArticle"
+    def Book(self): return "fabio:Book"
+    def BookChapter(self): return "fabio:BookChapter"
+    def ConferencePaper(self): return "fabio:ConferencePaper"
+    def TechnicalReport(self): return "fabio:TechnicalReport"
+    def hasPubMedCentralId(self): return "fabio:hasPubMedCentralId"
+    def hasPubMedId(self): return "fabio:hasPubMedId"
+    def hasPubMedId(self): return "fabio:hasPubMedId"
+    
+    
+    
+    
     
 
 
@@ -392,6 +410,11 @@ class DctermsNamespace(BaseNamespace):
     def identifier(self): return "dcterms:identifier"
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class UniProtCoreNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(UniProtCoreNamespace, self).__init__("up", "http://purl.uniprot.org/core/")
+    def volume(self): return "up:volume"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -463,6 +486,8 @@ class NamespaceRegistry:
     owl = OwlNamespace()
     foaf = FoafNamespace()
     dcterms = DctermsNamespace()
-    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms]
+    fabio = FabioNamespace()
+    up = UniProtCoreNamespace()
+    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up]
 
 
