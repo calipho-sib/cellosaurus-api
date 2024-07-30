@@ -39,7 +39,9 @@ class OntologyBuilder:
             \ngroup by ?prop ?value
             """
 
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # sub class relationships
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         self.rdfs_subClassOf = dict()
 
         # publication classes
@@ -78,8 +80,9 @@ class OntologyBuilder:
 
         self.rdfs_subClassOf[ns_reg.onto.CelloTerminology()] = ns_reg.skos.ConceptScheme()
         
-
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # sub property relationships
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         self.rdfs_subPropertyOf = dict()
         self.rdfs_subPropertyOf[ns_reg.onto.creator()] = ns_reg.dcterms.creator()
 
@@ -97,6 +100,31 @@ class OntologyBuilder:
 
 
 
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # non default labels
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        self.rdfs_label = dict()
+        self.rdfs_label[ns_reg.onto.HLATyping()] = "HLA typing (not default)"
+        self.rdfs_label[ns_reg.onto.hlaTyping()] = "has HLA typing (not default)"
+        self.rdfs_label[ns_reg.onto.MabIsotype()] = "Monoclonal antibody isotype"
+        self.rdfs_label[ns_reg.onto.mabIsotype()] = "has monomlonal antibody isotype"
+        self.rdfs_label[ns_reg.onto.mabTarget()] = "has monoclonal antibody target"
+        self.rdfs_label[ns_reg.onto.cvclEntryCreated()] = "cellosaurus cell line record creation date"
+        self.rdfs_label[ns_reg.onto.cvclEntryLastUpdated()] = "cellosaurus cell line record last update"
+        self.rdfs_label[ns_reg.onto.cvclEntryVersion()] = "cellosaurus cell line record version"
+        self.rdfs_label[ns_reg.onto.hasPMCId()] = "has PMC identifier"
+        self.rdfs_label[ns_reg.onto.hasPubMedId()] = "has PubMed identifier"
+        self.rdfs_label[ns_reg.onto.hasDOI()] = "has DOI identifier"
+        self.rdfs_label[ns_reg.onto.msiValue()] = "has microsatellite instability value"
+        self.rdfs_label[ns_reg.onto.productId()] = "product identifier"
+        self.rdfs_label[ns_reg.onto.xref()] = "has cross-reference"
+        self.rdfs_label[ns_reg.onto.Xref()] = "Cross-reference"
+
+
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # comments
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
         self.rdfs_comment = dict()
         # comments for classes
         self.rdfs_comment[ns_reg.onto.CellLine()] = "Cell line as defined in the Cellosaurus"
@@ -105,9 +133,25 @@ class OntologyBuilder:
         self.rdfs_comment[ns_reg.onto.alternativeName()] = "Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms"
         self.rdfs_comment[ns_reg.onto.more_specific_than()] = "Links two concepts. The subject concept is more specific than the object concept. The semantics is the similar to the skos:broader property but its label less ambiguous."
 
+
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def build_label(self, str):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        if str in self.rdfs_label:
+            return self.rdfs_label[str]
+        else:
+            return self.build_default_label(str)
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def build_default_label(self, prefixed_name):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        if ":" in prefixed_name:
+            str = prefixed_name.split(":")[1]
+        else:
+            str = prefixed_name
+            
+        # 1) insert space instead of "_" and on case change  
         chars = list()
         wasupper = False
         for ch in str:
@@ -119,23 +163,26 @@ class OntologyBuilder:
             else:
                 chars.append(ch)
             wasupper = ch.isupper()
+        sentence = "".join(chars).replace("  ", " ")
+        words = sentence.split(" ")
 
-
-
-        return "".join(chars)
-
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def build_label_old(self, class_name):
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        chars = list()
-        for ch in class_name:
-            if ch.isupper() and len(chars)>0:
-                chars.append(" ")
-                chars.append(ch.lower())
+        # 2) lower all words except first and those having all chars uppercase
+        first = True
+        new_words = list()
+        for w in words:
+            if first:
+                first = False
+                new_words.append(w)
             else:
-                chars.append(ch)
-        return "".join(chars)
+                allUpper = True
+                for ch in w:
+                    if ch.islower(): allUpper = False
+                if allUpper:
+                    new_words.append(w)
+                else:
+                    new_words.append(w.lower())
+
+        return " ".join(new_words)
     
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -175,18 +222,21 @@ class OntologyBuilder:
         lines = [ "#", "# Cellosaurus ontology Classes", "#" , "" ]
         onto_url = self.get_onto_url()
         onto_url = "<" + onto_url + ">"
-        for method in dir(ns_reg.onto):
-            if callable(getattr(ns_reg.onto, method)):
-                if method[0].isupper():
-                    class_name = method
-                    lines.append(":" + class_name)
+        for method_name in dir(ns_reg.onto):
+            if callable(getattr(ns_reg.onto, method_name)):
+                if method_name[0].isupper():
+                    #print("method name", method_name)
+                    method = getattr(ns_reg.onto, method_name)
+                    class_name = method()
+                    #print("class_name", class_name)
+                    lines.append(class_name)
                     lines.append(f"    rdf:type owl:Class ;")
                     class_label =  ns_reg.xsd.string(self.build_label(class_name))
                     lines.append(f"    rdfs:label {class_label} ;")
-                    parent_class = self.rdfs_subClassOf.get(":" + class_name)
+                    parent_class = self.rdfs_subClassOf.get(class_name)
                     if parent_class is not None:
                         lines.append(f"    rdfs:subClassOf " + parent_class + " ;")
-                    class_comment = self.rdfs_comment.get(":" + class_name)
+                    class_comment = self.rdfs_comment.get(class_name)
                     if class_comment is not None:
                         class_comment =  ns_reg.xsd.string(class_comment)
                         lines.append(f"    rdfs:comment {class_comment} ;")
@@ -225,13 +275,14 @@ class OntologyBuilder:
         onto_url = self.get_onto_url()
         onto_url = "<" + onto_url + ">"
         prop_count = 0
-        for method in dir(ns_reg.onto):
-            if callable(getattr(ns_reg.onto, method)):
-                if method[0].islower():
+        for method_name in dir(ns_reg.onto):
+            if callable(getattr(ns_reg.onto, method_name)):
+                if method_name[0].islower():
                     # skip those below, they are not ontology terms but helper functions of the super class
-                    if method in ["prefix", "baseurl", "getTtlPrefixDeclaration", "getSparqlPrefixDeclaration"]: continue 
-                    prop_name = ":" + method
-                    prop_label =  ns_reg.xsd.string(self.build_label(method))
+                    if method_name in ["prefix", "baseurl", "getTtlPrefixDeclaration", "getSparqlPrefixDeclaration"]: continue 
+                    method = getattr(ns_reg.onto, method_name)
+                    prop_name = method()
+                    prop_label =  ns_reg.xsd.string(self.build_label(prop_name))
                     prop_comment = self.rdfs_comment.get(prop_name)
                     parent_prop = self.rdfs_subPropertyOf.get(prop_name)
 
@@ -342,11 +393,21 @@ if __name__ == '__main__':
 # --------------------------------------------
 
     builder = OntologyBuilder()
-
-    #print(builder.build_label("HiJOHN_howDoesItFeel IAm happy"))
-    #sys.exit()
-    lines = list()
-    lines.extend(builder.get_onto_header())
-    lines.extend(builder.get_classes())
-    lines.extend(builder.get_props())
-    for line in lines: print(line)
+    # tests
+    if 1==2:
+        print(builder.build_label("this_is_DNA"))
+        print(builder.build_label(ns_reg.onto.mabIsotype()))
+        print(builder.build_label(ns_reg.onto.hasDOI()))
+        print(builder.build_label(ns_reg.onto.cvclEntryCreated()))
+        print(builder.build_label(ns_reg.onto.hlaTyping()))
+        print(builder.build_label(ns_reg.onto.HLATyping()))
+        print(builder.build_label(ns_reg.onto.AnecdotalComment()))
+        print(builder.build_label(ns_reg.onto.anecdotalComment()))
+        
+    # real ontology generation
+    else:  
+        lines = list()
+        lines.extend(builder.get_onto_header())
+        lines.extend(builder.get_classes())
+        lines.extend(builder.get_props())
+        for line in lines: print(line)

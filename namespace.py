@@ -205,7 +205,6 @@ class OurOntologyNamespace(BaseNamespace):
     def CellType(self): return ":CellType"
     def Disease(self): return ":Disease"
 
-    def StructuredComment(self): return ":StructuredComment"# a superclass for structured comments / annotations
     def SequenceVariationComment(self): return ":SequenceVariationComment"
     def DoublingTimeComment(self): return ":DoublingTimeComment"
     def DiscontinuationRecord(self): return ":DiscontinuationRecord"
@@ -250,8 +249,8 @@ class OurOntologyNamespace(BaseNamespace):
     #def hasIdentifier(self): return ":hasIdentifier" # generic prop, parent of hasDOI, hasPubMedId # we use the  as an ancestor
     def hasInternalId(self): return ":hasInternalId"
     def hasDOI(self): return ":hasDOI"
-    def hasPubMedId(self): return ":hasPubMed_Identifier"
-    def hasPMCId(self): return ":has_PMC_Identifier"
+    def hasPubMedId(self): return ":hasPubMedId"
+    def hasPMCId(self): return ":hasPMCId"
     def publicationDate(self): return ":publicationDate"
     def hasPublicationYear(self): return ":hasPublicationYear"
     def startingPage(self): return ":startingPage" 
@@ -303,7 +302,6 @@ class OurOntologyNamespace(BaseNamespace):
     def noneReported(self): return ":noneReported"
     def variationStatus(self): return ":variationStatus"
     def fromIndividualBelongingToBreed(self): return ":fromIndividualBelongingToBreed"
-    def structuredComment(self): return ":structuredComment"    # super property for compex, structured comments
     def sequenceVariationComment(self): return ":sequenceVariationComment"
     def freeTextComment(self): return ":freeTextComment"        # super property for text based comments (with or without source)
     def anecdotalComment(self): return ":anecdotalComment"
@@ -311,7 +309,6 @@ class OurOntologyNamespace(BaseNamespace):
     def biotechnologyComment(self): return ":biotechnologyComment"
     def cautionComment(self): return ":cautionComment"
     def siteType(self): return ":siteType"
-    def sampledFromSite(self): return ":sampledFromSite" # TODO: to be used if we define :Sample and connect it to a :AnatomicalEntity
     def derivedFromSite(self): return ":derivedFromSite" 
     def cellType(self): return ":cellType" 
     def donorInfoComment(self): return ":donorInfoComment"
@@ -343,7 +340,7 @@ class OurOntologyNamespace(BaseNamespace):
     def shortTandemRepeatProfile(self): return ":shortTandemRepeatProfile"
     def conflict(self): return ":conflict"
     def fromIndividualWithDisease(self): return ":fromIndividualWithDisease" # renamed: OK
-    def fromIndividualBelongingToSpecies(self): return "fromIndividualBelongingToSpecies" # renamed: OK
+    def fromIndividualBelongingToSpecies(self): return ":fromIndividualBelongingToSpecies" # renamed: OK
     def fromIndividualWithSex(self): return ":fromIndividualWithSex"         # renamed OK
     def fromIndividualAtAge(self): return ":fromIndividualAtAge"
     def fromSameIndividualAs(self): return ":fromSameIndividualAs" # OI field
