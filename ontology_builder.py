@@ -104,8 +104,8 @@ class OntologyBuilder:
         # non default labels
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         self.rdfs_label = dict()
-        self.rdfs_label[ns_reg.onto.HLATyping()] = "HLA typing (not default)"
-        self.rdfs_label[ns_reg.onto.hlaTyping()] = "has HLA typing (not default)"
+        self.rdfs_label[ns_reg.onto.HLATyping()] = "HLA typing"
+        self.rdfs_label[ns_reg.onto.hlaTyping()] = "has HLA typing"
         self.rdfs_label[ns_reg.onto.MabIsotype()] = "Monoclonal antibody isotype"
         self.rdfs_label[ns_reg.onto.mabIsotype()] = "has monomlonal antibody isotype"
         self.rdfs_label[ns_reg.onto.mabTarget()] = "has monoclonal antibody target"
@@ -119,6 +119,7 @@ class OntologyBuilder:
         self.rdfs_label[ns_reg.onto.productId()] = "product identifier"
         self.rdfs_label[ns_reg.onto.xref()] = "has cross-reference"
         self.rdfs_label[ns_reg.onto.Xref()] = "Cross-reference"
+        self.rdfs_label[ns_reg.onto.CelloTerminology()] = "Cellosaurus terminology"
 
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -150,7 +151,7 @@ class OntologyBuilder:
             str = prefixed_name.split(":")[1]
         else:
             str = prefixed_name
-            
+
         # 1) insert space instead of "_" and on case change  
         chars = list()
         wasupper = False
