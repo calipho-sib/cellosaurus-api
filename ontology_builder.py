@@ -1,7 +1,8 @@
 from namespace import NamespaceRegistry as ns_reg
+from ApiCommon import log_it
 from sparql_client import EndpointClient
 import sys
-from ApiCommon import log_it
+from datetime import datetime
 
 
 #-------------------------------------------------
@@ -252,23 +253,24 @@ class OntologyBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_onto_header(self):
+    def get_onto_header(self, version="alpha"):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         lines = list()
         for ns in ns_reg.namespaces: lines.append(ns.getTtlPrefixDeclaration())
-
         lines.append("")
+        now = datetime.now()
+        date_string = now.strftime("%Y-%m-%d")
         onto_url = "<" + self.get_onto_url() + ">"
         descr = """The Cellosaurus ontology describes the concepts used to build the Cellosaurus knowledge resource on cell lines. 
         The Cellosaurus attempts to describe all cell lines used in biomedical research."""
         lines.append(onto_url)
         lines.append("    a owl:Ontology ;")
         lines.append("    dcterms:created " + ns_reg.xsd.date("2022-11-21") + " ;")
-        lines.append("    dcterms:modified " + ns_reg.xsd.date("2024-07-11") + " ;")
+        lines.append("    dcterms:modified " + ns_reg.xsd.date(date_string) + " ;")
         lines.append("    dcterms:description " + ns_reg.xsd.string3(descr) + " ;")
         lines.append("    dcterms:license <http://creativecommons.org/licenses/by/4.0> ;")
         lines.append("    dcterms:title " + ns_reg.xsd.string("Cellosaurus ontology") + " ;")
-        lines.append("    dcterms:versionInfo " + ns_reg.xsd.string("1.0") + " ;")
+        lines.append("    dcterms:versionInfo " + ns_reg.xsd.string(version) + " ;")
         lines.append("    .")
         lines.append("")
         return lines
@@ -507,7 +509,7 @@ if __name__ == '__main__':
     # real ontology generation
     else:  
         lines = list()
-        lines.extend(builder.get_onto_header())
+        lines.extend(builder.get_onto_header(version="1.0"))
         lines.extend(builder.get_classes())
         lines.extend(builder.get_props())
         for line in lines: print(line)

@@ -1067,13 +1067,16 @@ if __name__ == "__main__":
         # so you need to first generate RDF, lpoad the files and then only
         # use this task to build the ontology and load
 
+        version = "1.0"
+        if len(args)>1: version = args[1]
+
         out_dir = "rdf_data/"
         file_out = open(out_dir + "ontology.ttl", "wb")
         log_it("INFO:", f"serializing OWL cellosaurus ontology")
         builder = OntologyBuilder()
         lines = list()
         log_it("INFO:", f"adding cellosaurus ontology header")
-        lines.extend(builder.get_onto_header())
+        lines.extend(builder.get_onto_header(version=version))
         log_it("INFO:", f"adding cellosaurus ontology classes")
         lines.extend(builder.get_classes())
         log_it("INFO:", f"adding cellosaurus ontology properties")
