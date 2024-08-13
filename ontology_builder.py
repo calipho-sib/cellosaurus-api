@@ -165,7 +165,7 @@ class OntologyBuilder:
         self.rdfs_label[ns_reg.onto.HLATyping()] = "HLA typing"
         self.rdfs_label[ns_reg.onto.hlaTyping()] = "has HLA typing"
         self.rdfs_label[ns_reg.onto.MabIsotype()] = "Monoclonal antibody isotype"
-        self.rdfs_label[ns_reg.onto.mabIsotype()] = "has monomlonal antibody isotype"
+        self.rdfs_label[ns_reg.onto.mabIsotype()] = "has monoclonal antibody isotype"
         self.rdfs_label[ns_reg.onto.mabTarget()] = "has monoclonal antibody target"
         self.rdfs_label[ns_reg.onto.cvclEntryCreated()] = "cellosaurus cell line record creation date"
         self.rdfs_label[ns_reg.onto.cvclEntryLastUpdated()] = "cellosaurus cell line record last update"
@@ -256,21 +256,45 @@ class OntologyBuilder:
     def get_onto_header(self, version="alpha"):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         lines = list()
+
+        # append prefixes fefined in our namespace
         for ns in ns_reg.namespaces: lines.append(ns.getTtlPrefixDeclaration())
         lines.append("")
+
+        # set last modification date for ontology
         now = datetime.now()
         date_string = now.strftime("%Y-%m-%d")
+        
+        # set ontology URL
         onto_url = "<" + self.get_onto_url() + ">"
-        descr = """The Cellosaurus ontology describes the concepts used to build the Cellosaurus knowledge resource on cell lines. 
+        
+        # set ontology description
+        onto_descr = """The Cellosaurus ontology describes the concepts used to build the Cellosaurus knowledge resource on cell lines. 
         The Cellosaurus attempts to describe all cell lines used in biomedical research."""
+        
+        # set ontology abstract
+        onto_abstract = onto_descr
+
+        # set preferred prefix for ontology
+        onto_prefix = "cls" 
+
+        # set ontology introduction
+        onto_intro = onto_descr
+
+        # Note: all the prefixes are declared in namespace.py but not necessarily all the properties because used only once...
         lines.append(onto_url)
         lines.append("    a owl:Ontology ;")
+        lines.append("    " + ns_reg.rdfs.label() + " " + ns_reg.xsd.string("Cellosaurus ontology") + " ;")
         lines.append("    dcterms:created " + ns_reg.xsd.date("2022-11-21") + " ;")
         lines.append("    dcterms:modified " + ns_reg.xsd.date(date_string) + " ;")
-        lines.append("    dcterms:description " + ns_reg.xsd.string3(descr) + " ;")
+        lines.append("    dcterms:description " + ns_reg.xsd.string3(onto_descr) + " ;")
         lines.append("    dcterms:license <http://creativecommons.org/licenses/by/4.0> ;")
         lines.append("    dcterms:title " + ns_reg.xsd.string("Cellosaurus ontology") + " ;")
         lines.append("    dcterms:versionInfo " + ns_reg.xsd.string(version) + " ;")
+        lines.append("    dcterms:abstract " + ns_reg.xsd.string3(onto_abstract) + " ;")
+        lines.append("    vann:preferredNamespacePrefix " + ns_reg.xsd.string(onto_prefix) + " ;")
+        lines.append("    bibo:status <http://purl.org/ontology/bibo/status/published> ;")
+        lines.append("    widoco:introduction " + ns_reg.xsd.string3(onto_intro) + " ;")
         lines.append("    .")
         lines.append("")
         return lines

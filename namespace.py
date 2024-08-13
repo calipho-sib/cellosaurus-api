@@ -351,8 +351,8 @@ class OurOntologyNamespace(BaseNamespace):
     def msiValue(self): return ":msiValue"
     def mabIsotype(self): return ":mabIsotype"
     def mabTarget(self): return ":mabTarget"
-    def heavyChain(self): return ":heavyChain"
-    def lightChain(self): return ":lightChain"
+    def antibodyHeavyChain(self): return ":antibodyHeavyChain"
+    def antibodyLightChain(self): return ":antibodyLightChain"
     def resistance(self): return ":resistance"
     def transformant(self): return ":transformant"
     def shortTandemRepeatProfile(self): return ":shortTandemRepeatProfile"
@@ -408,6 +408,27 @@ class DctermsNamespace(BaseNamespace):
     def versionInfo(self): return "dcterms:versionInfo"
     def creator(self): return "dcterms:creator"
     def identifier(self): return "dcterms:identifier"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class VannNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(VannNamespace, self).__init__("vann", "http://purl.org/vocab/vann/")
+    def preferredNamespacePrefix(self): return "vann:preferredNamespacePrefix"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class BiboNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(BiboNamespace, self).__init__("bibo", "http://purl.org/ontology/bibo/")
+    def status(self): return "bibo:status"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class WidocoNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(WidocoNamespace, self).__init__("widoco", "https://w3id.org/widoco/vocab#")
+    def introduction(self): return "widoco:introduction"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -488,6 +509,9 @@ class NamespaceRegistry:
     dcterms = DctermsNamespace()
     fabio = FabioNamespace()
     up = UniProtCoreNamespace()
-    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up]
+    bibo = BiboNamespace()
+    widoco = WidocoNamespace()
+    vann = VannNamespace()
+    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann]
 
 
