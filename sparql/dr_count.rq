@@ -10,6 +10,11 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#> 
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
 PREFIX dcterms: <http://purl.org/dc/terms/> 
+PREFIX fabio: <http://purl.org/spar/fabio/> 
+PREFIX up: <http://purl.uniprot.org/core/> 
+PREFIX bibo: <http://purl.org/ontology/bibo/> 
+PREFIX widoco: <https://w3id.org/widoco/vocab#> 
+PREFIX vann: <http://purl.org/vocab/vann/> 
 
 select (count(*) as ?dr_count)  where {
   ?cl a :CellLine.
