@@ -1180,8 +1180,8 @@ class RdfBuilder:
         sources = annot.get("source-list") or []
         triples.append(cl_IRI, ns.onto.mabIsotype(), annot_BN)
         triples.append(annot_BN, ns.rdf.type(), ns.onto.MabIsotype())
-        triples.append(annot_BN, ns.onto.heavyChain(), ns.xsd.string(heavy))
-        if light is not None: triples.append(annot_BN, ns.onto.lightChain(), ns.xsd.string(light))
+        triples.append(annot_BN, ns.onto.antibodyHeavyChain(), ns.xsd.string(heavy))
+        if light is not None: triples.append(annot_BN, ns.onto.antibodyLightChain(), ns.xsd.string(light))
         triples.extend(self.get_ttl_for_sources(annot_BN, sources))
         return triples
 

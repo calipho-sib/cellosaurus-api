@@ -1055,7 +1055,7 @@ if __name__ == "__main__":
             result = subprocess.run(['bash', './private/scripts/reload_rdf_onto.sh'], capture_output=True, text=True)
             log_it("LOADED onto, status", result.stdout)
         else:
-            log_it("Invalid argument after LOAD, expected rdf_data or rdf_onto")
+            log_it("Invalid argument after LOAD, expected data or onto")
             sys.exit(10)
 
     # -------------------------------------------------------
