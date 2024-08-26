@@ -170,7 +170,7 @@ class OurOntologyNamespace(BaseNamespace):
  
     # Organization could be a sublass of foaf:Organization or org:Organization
     # see https://www.w3.org/ns/org#%5B4
-    def Organization(self): return ":Organization" 
+    def Organization(self): return ":Organization"
     
     # publication-related classes
     # see also https://sparontologies.github.io/fabio/current/fabio.html
@@ -202,11 +202,9 @@ class OurOntologyNamespace(BaseNamespace):
     def Gene(self): return ":Gene"
     def Protein(self): return ":Protein"
     def GeneAlleles(self): return ":GeneAlleles"  # used in HLA
-    def MarkerAlleles(self): return ":MarkerAlleles"    # used in short repeat tandem
-    def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
+    def MarkerAlleles(self): return ":MarkerAlleles"    # used in short tandem repeat
 
     def SequenceVariation(self): return ":SequenceVariation" # most generic class
-
     def GeneAmplification(self): return ":GeneAmplification"
     def GeneDuplication(self): return ":GeneDuplication"
     def GeneTriplication(self): return ":GeneTriplication"
@@ -249,7 +247,8 @@ class OurOntologyNamespace(BaseNamespace):
     def ShortTandemRepeatProfile(self): return ":ShortTandemRepeatProfile"
     def Species(self): return ":Species"
 
-    def Source(self): return ":Source"
+    def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
+
     # def OnlineResource(self): return ":OnlineResource" # TODO: unused ?
     def Breed(self): return ":Breed"
 

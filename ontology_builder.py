@@ -20,24 +20,24 @@ class OntologyBuilder:
         self.client = EndpointClient("http://localhost:8890/sparql")
 
         self.domain_query_template = prefixes + """
-            \nselect ?prop ?value (count(distinct ?s) as ?count) where {
-            \n    values ?prop { $prop }
-            \n    ?s ?prop ?o .
-            \n    ?s rdf:type ?value .
-            \n}
-            \ngroup by ?prop ?value
+            select ?prop ?value (count(distinct ?s) as ?count) where {
+                values ?prop { $prop }
+                ?s ?prop ?o .
+                ?s rdf:type ?value .
+            }
+            group by ?prop ?value
             """
         
         self.range_query_template = prefixes + """
-            \nselect  ?prop ?value (count(*) as ?count) where {
-            \n    values ?prop { $prop }
-            \n    ?s ?prop ?o .
-            \n    optional { ?o rdf:type ?cl . }
-            \n    BIND(
-            \n    IF (bound(?cl) , ?cl,  IF ( isIRI(?o), 'rdfs:Resource', datatype(?o))
-            \n    ) as ?value)
-            \n}
-            \ngroup by ?prop ?value
+            select  ?prop ?value (count(*) as ?count) where {
+                values ?prop { $prop }
+                ?s ?prop ?o .
+                optional { ?o rdf:type ?cl . }
+                BIND(
+                IF (bound(?cl) , ?cl,  IF ( isIRI(?o), 'rdfs:Resource', datatype(?o))
+                ) as ?value)
+            }
+            group by ?prop ?value
             """
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -83,7 +83,7 @@ class OntologyBuilder:
         self.rdfs_subClassOf[ns_reg.onto.CelloTerminology()] = ns_reg.skos.ConceptScheme()
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # additional sub class relationships ignored by self.
+        # additional sub class relationships
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
         self.more_rdfs_subClassOf = dict()
@@ -332,12 +332,12 @@ class OntologyBuilder:
                     lines.append("")
         return lines
         
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def set_contains_local_parent(self, some_set):
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        for el in some_set:
-            if el.startswith(":"): return True
-        return False
+    # # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # def set_contains_local_parent(self, some_set):
+    # # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    #     for el in some_set:
+    #         if el.startswith(":"): return True
+    #     return False
 
     # # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     # def get_root_ancestors(self, some_class):
