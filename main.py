@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from urllib.parse import urlencode
 import uvicorn
 from enum import Enum
+from namespace import NamespaceRegistry as ns_reg
 
 
 #import os
@@ -587,13 +588,24 @@ async def describe_cell_line(
     #print(">>>> format 3", format, format== RdfFormat.jsonld)
 
     # use api methods to retrieve full / partial records in multiple formats
+    # if format == RdfFormat.html and 2 == 1:
+    #     url = "https://www.cellosaurus.org/" + ac
+    #     log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
+    #     return responses.RedirectResponse(url=url, status_code=301) # 301: Permanent redirect
     if format == RdfFormat.html:
-        url = "https://www.cellosaurus.org/" + ac
+        url = "http://localhost:8890/sparql"
+        prefix_declaration = ns_reg.cvcl.getSparqlPrefixDeclaration()
+        query = f"""DEFINE sql:describe-mode "CBD" {prefix_declaration} describe cvcl:{ac}"""
+        payload = urlencode({"query": query, "format": "application/x-nice-microdata" })
+        mimetype = format2mimetype.get(format)
+        headers = { "Content-Type": "application/x-www-form-urlencoded" , "Accept" : mimetype }    
+        response = requests.post(url, data=payload, headers=headers)
         log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
-        return responses.RedirectResponse(url=url, status_code=301) # 301: Permanent redirect
+        return responses.Response(content=response.text, media_type=mimetype )
     else:
         url = "http://localhost:8890/sparql"
-        query = f"""DEFINE sql:describe-mode "CBD" PREFIX cvcl: <http://cellosaurus.org/rdf/cvcl/> describe cvcl:{ac}"""
+        prefix_declaration = ns_reg.cvcl.getSparqlPrefixDeclaration()
+        query = f"""DEFINE sql:describe-mode "CBD" {prefix_declaration} describe cvcl:{ac}"""
         payload = urlencode({"query": query})
         mimetype = format2mimetype.get(format)
         headers = { "Content-Type": "application/x-www-form-urlencoded" , "Accept" : mimetype }    

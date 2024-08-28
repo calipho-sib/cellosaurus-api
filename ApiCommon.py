@@ -34,6 +34,21 @@ def log_it(*things, duration_since=None):
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_rdf_graph_IRI():
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # CAREFUL if you change this:
+    # to be sync'ed with private/scripts/load_ttl_files.sh
+    return "https://www.cellosaurus.org/rdf/graphs/main"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_rdf_base_IRI():
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # no final "/", please !
+    return "https://www.cellosaurus.org/rdf"
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_properties(env):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     props = dict()

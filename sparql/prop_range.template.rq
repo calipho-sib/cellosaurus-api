@@ -1,8 +1,8 @@
-PREFIX : <http://cellosaurus.org/rdf/ontology#> 
-PREFIX cvcl: <http://cellosaurus.org/rdf/cvcl/> 
-PREFIX xref: <http://cellosaurus.org/rdf/xref/> 
-PREFIX pub: <http://cellosaurus.org/rdf/pub/> 
-PREFIX orga: <http://cellosaurus.org/rdf/orga/> 
+PREFIX : <https://www.cellosaurus.org/rdf/ontology/> 
+PREFIX cvcl: <https://www.cellosaurus.org/rdf/cvcl/> 
+PREFIX xref: <https://www.cellosaurus.org/rdf/xref/> 
+PREFIX pub: <https://www.cellosaurus.org/rdf/pub/> 
+PREFIX orga: <https://www.cellosaurus.org/rdf/orga/> 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 

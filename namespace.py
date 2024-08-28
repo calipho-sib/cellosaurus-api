@@ -1,6 +1,6 @@
 import re
 import hashlib
-
+from ApiCommon import get_rdf_base_IRI
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def replace_non_alphanumeric(input_string):
@@ -160,7 +160,8 @@ class FabioNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurOntologyNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(OurOntologyNamespace, self).__init__("", "http://cellosaurus.org/rdf/ontology#")
+    def __init__(self): 
+        super(OurOntologyNamespace, self).__init__("", get_rdf_base_IRI() + "/ontology/")
 
     # --------
     # CLASSES
@@ -391,7 +392,7 @@ class OurOntologyNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurCellLineNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(OurCellLineNamespace, self).__init__("cvcl", "http://cellosaurus.org/rdf/cvcl/")
+    def __init__(self): super(OurCellLineNamespace, self).__init__("cvcl", get_rdf_base_IRI() + "/cvcl/")
     def IRI(self, primaryAccession): return "cvcl:" + primaryAccession
 
 
@@ -441,7 +442,7 @@ class UniProtCoreNamespace(BaseNamespace):
 class OurXrefNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     dbac_dict = dict()
-    def __init__(self): super(OurXrefNamespace, self).__init__("xref", "http://cellosaurus.org/rdf/xref/")
+    def __init__(self): super(OurXrefNamespace, self).__init__("xref", get_rdf_base_IRI() + "/xref/")
     def IRI(self, db, ac, props, store=True):
         our_dict = OurXrefNamespace.dbac_dict
         # we expect to get props as a string like: cat={cat}|lbl={lbl}|dis={dis}|url={url}
@@ -463,7 +464,7 @@ class OurOrganizationNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # we store name, shortname, country, city, contact
     nccc_dict = dict()
-    def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", "http://cellosaurus.org/rdf/orga/")
+    def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", get_rdf_base_IRI() + "/orga/")
     def IRI(self, name, shortname, city, country, contact, store=True):
         our_dict = OurOrganizationNamespace.nccc_dict
         # store name, shortname, city, country, contact tuples for which an IRI was requested 
@@ -480,10 +481,10 @@ class OurOrganizationNamespace(BaseNamespace):
 class OurPublicationNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     dbac_set = set()
-    def __init__(self): super(OurPublicationNamespace, self).__init__("pub", "http://cellosaurus.org/rdf/pub/")
+    def __init__(self): super(OurPublicationNamespace, self).__init__("pub", get_rdf_base_IRI() + "/pub/")
     def IRI(self, db, ac):
         pub_key = "".join([db, "|", ac])
-        # store requested db ac pairs fo which an IRI was requested so that we can describe Xref afterwards
+        # store requested db ac pairs for which an IRI was requested so that we can describe Xref afterwards
         OurPublicationNamespace.dbac_set.add(pub_key)
         pub_md5 = hashlib.md5(pub_key.encode('utf-8')).hexdigest()
         return "".join(["pub:", db, "_", pub_md5])
@@ -514,3 +515,10 @@ class NamespaceRegistry:
     namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann]
 
 
+if __name__ == '__main__':
+    myonto = NamespaceRegistry.orga
+    print(myonto.getSparqlPrefixDeclaration())
+    print(myonto.prefix())
+    print(myonto.baseurl())
+    print(myonto.pfx)
+    print(myonto.url)
