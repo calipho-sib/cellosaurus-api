@@ -86,7 +86,7 @@ def get_format_from_headers(headers):
         if k.lower() == "accept":
             value_str = headers.get(k)
             break
-    if value_str is None: return "json" # our default
+    if value_str is None: return None
 
     value_list = value_str.split(",")
     for item in value_list:
@@ -95,9 +95,13 @@ def get_format_from_headers(headers):
         elif value == "application/xml": return "xml"
         elif value == "text/plain": return "txt"
         elif value == "text/tab-separated-values": return "tsv"
-        elif value.startswith("application/"): return "json"
-        elif value.startswith("text/"): return "txt"
 
-    return "json" # our default
+        elif value == "text/html": return "html"                 # for RDF description of entities, see enum RdfFormat
+        elif value == "text/turtle": return "ttl"                # for RDF description of entities, see enum RdfFormat
+        elif value == "application/rdf+xml": return "rdf"        # for RDF description of entities, see enum RdfFormat
+        elif value == "application/n-triples": return "n3"       # for RDF description of entities, see enum RdfFormat
+        elif value == "application/ld+json": return "jsonld"     # for RDF description of entities, see enum RdfFormat
+
+    return None
     
     

@@ -5,7 +5,7 @@ from typing import Optional
 #from typing import List
 from pydantic import BaseModel
 #from pydantic import Field as PydanticField
-
+from urllib.parse import urlencode
 import uvicorn
 from enum import Enum
 
@@ -56,7 +56,7 @@ class Format(str, Enum):
     tsv = "tsv"
 
 
-# simple multi media types resposne
+# simple multi media types response
 four_media_types_responses = { "description": "Successful response", "content" : {
   "application/json": {},
   "text/plain": {},
@@ -72,6 +72,29 @@ three_media_types_responses = { "description": "Successful response", "content" 
   }
 }
 
+class RdfFormat(str, Enum):
+    ttl = "ttl"
+    rdf = "rdf"
+    n3 = "n3"
+    jsonld = "jsonld"
+    html = "html"
+
+format2mimetype = {
+    "ttl": "text/turtle",
+    "rdf": "application/rdf+xml",
+    "n3": "application/n-triples",
+    "jsonld": "application/ld+json",
+    "html": "text/html"
+}
+
+rdf_media_types_responses = { "description": "Successful response", "content" : {
+    "text/turtle": {},
+    "application/rdf+xml": {},
+    "application/n-triples": {},
+    "application/ld+json": {},
+    "text/html": {},
+  }
+}
 
 # documentation for categories containng the API methods in the display, see also tags=["..."] below
 tags_metadata = [
@@ -199,6 +222,7 @@ async def get_release_info(
     t0 = datetime.datetime.now()
     # precedence of format over request headers
     if format is None: format = get_format_from_headers(request.headers)
+    if format is None: format = "json"
 
     # build and return response in appropriate format
     if format == "tsv":
@@ -290,7 +314,7 @@ async def get_cell_line(
 
     # precedence of format over request headers
     if format is None: format = get_format_from_headers(request.headers)
-
+    if format is None: format = "json"
 
     # check AC existence, see also parameter responses=... in the @app.get() annotation above
     if ac not in cl_dict:
@@ -467,6 +491,7 @@ async def search_cell_line(
 
     # precedence of format over request headers
     if format is None: format = get_format_from_headers(request.headers)
+    if format is None: format = "json"
 
     # call solr service
     url = api.get_solr_search_url()
@@ -530,9 +555,57 @@ async def search_cell_line(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/fsearch/cell-line" , name="Quick search cell lines", tags=["Cell lines"], responses={"200":three_media_types_responses, "400": {"model": ErrorMessage}})
+@app.get("/describe/cell-line/{ac}" , name="RDF description of a cell line", tags=["Cell lines"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-async def search_cell_line(
+async def describe_cell_line(
+        request: Request,
+        ac: str = Path(        
+            example="CVCL_S151",
+            title="Cell line accession number",
+            description="The accession number (field AC) is a unique identifier for cell-lines"
+            ),
+        format: RdfFormat = Query(
+            default= None,
+            example = "ttl",
+            title="Response format",
+            description="""Use this parameter to choose the response output format.
+            Alternatively you can also use the HTTP Accept header of your
+            request and set it to either text/turtle, application/rdf+xml, application/n-triples, application/ld+json.
+            If the format parameter is used, the accept header value is ignored.
+            If both the format parameter and the Accept header are undefined, then the response will use the ld+json format."""
+            )
+        ):
+
+    t0 = datetime.datetime.now()
+
+    # precedence of format over request headers (does NOT work from swagger page !!! but of from curl)
+    #print(">>>> format 1", format, format== RdfFormat.jsonld)
+    #print(request.headers)
+    if format is None: format = get_format_from_headers(request.headers)
+    #print(">>>> format 2", format, format== RdfFormat.jsonld)
+    if format is None: format = RdfFormat.jsonld
+    #print(">>>> format 3", format, format== RdfFormat.jsonld)
+
+    # use api methods to retrieve full / partial records in multiple formats
+    if format == RdfFormat.html:
+        url = "https://www.cellosaurus.org/" + ac
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
+        return responses.RedirectResponse(url=url, status_code=301) # 301: Permanent redirect
+    else:
+        url = "http://localhost:8890/sparql"
+        query = f"""DEFINE sql:describe-mode "CBD" PREFIX cvcl: <http://cellosaurus.org/rdf/cvcl/> describe cvcl:{ac}"""
+        payload = urlencode({"query": query})
+        mimetype = format2mimetype.get(format)
+        headers = { "Content-Type": "application/x-www-form-urlencoded" , "Accept" : mimetype }    
+        response = requests.post(url, data=payload, headers=headers)
+        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
+        return responses.Response(content=response.text, media_type=mimetype )
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+@app.get("/fsearch/cell-line" , name="Quick search cell lines", tags=["Cell lines"], responses={"200":three_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def fsearch_cell_line(
         request: Request,
         q: str = Query(
             default="id:HeLa",
@@ -564,6 +637,7 @@ async def search_cell_line(
 
     # precedence of format over request headers
     if format is None: format = get_format_from_headers(request.headers)
+    if format is None: format = "json"
 
     fields = "ac,id"
     facet_field="id"
