@@ -67,7 +67,7 @@ Name  : UniProt knowledgebase
 Server  https://www.uniprot.org
 Db_URL: https://www.uniprot.org/uniprotkb/%s/entry
 Term. : Yes
-Remark: Use protein families / domains ?
+Remark: Use protein families / domains ? NO, do not use it as terminology
 --
 
 
