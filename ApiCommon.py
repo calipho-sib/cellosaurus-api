@@ -44,7 +44,8 @@ def get_rdf_graph_IRI():
 def get_rdf_base_IRI():
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     # no final "/", please !
-    return "https://www.cellosaurus.org/rdf"
+    #return "https://www.cellosaurus.org/rdf"
+    return "http://localhost/rdf"
 
 
 

@@ -22,7 +22,7 @@ import datetime
 from lxml import etree
 import cellapi_builder as api
 import ApiCommon
-from ApiCommon import log_it, get_search_result_txt_header, get_search_result_txt_header_as_lines, get_format_from_headers
+from ApiCommon import log_it, get_search_result_txt_header, get_search_result_txt_header_as_lines, get_format_from_headers, get_rdf_base_IRI
 #from ApiCommon import get_properties
 from fields_utils import FldDef
 from fields_enum import Fields
@@ -66,12 +66,25 @@ four_media_types_responses = { "description": "Successful response", "content" :
   }
 }
 
+class ThreeFormat(str, Enum):
+    jsn = "json"
+    txt = "txt"
+    tsv = "tsv"
+
 three_media_types_responses = { "description": "Successful response", "content" : {
   "application/json": {},
   "text/plain": {},
   "text/tab-separated-values": {}
   }
 }
+
+subns_dict = dict()
+for ns in [ns_reg.cvcl, ns_reg.xref, ns_reg.orga, ns_reg.pub, ns_reg.onto ]:
+  subdir = ns.baseurl().split("/")[-2]
+  subns_dict[subdir] = subdir
+
+SubNs = Enum('SubNs', subns_dict)
+
 
 class RdfFormat(str, Enum):
     ttl = "ttl"
@@ -103,6 +116,8 @@ tags_metadata = [
         "description": "Get general information about the current Cellosaurus release",
     },{ "name": "Cell lines",
         "description": "Get all or part of the information related to cell lines",
+    },{ "name": "RDF",
+        "description": "RDF desciption of entities",
     }
 ]
 
@@ -210,8 +225,6 @@ async def get_release_info(
         request: Request,
         format: Format = Query(
             default= None,
-            #examples = ["txt", "json"],
-#            openapi_examples=["txt", "json"],
             description="""Use this parameter to choose the response output format.
             Alternatively you can also use the HTTP Accept header of your
             request and set it to either text/plain, text/tab-separated-values, application/xml, application/json.
@@ -267,13 +280,11 @@ async def get_release_info(
 async def get_cell_line(
         request: Request,
         ac: str = Path(        
-            example="CVCL_S151",
             title="Cell line accession number",
-            description="The accession number (field AC) is a unique identifier for cell-lines"
+            description="The accession number (field AC) is a unique identifier for cell-lines. Example: 'CVCL_S151'"
             ),
         format: Format = Query(
             default= None,
-            example = "txt",
             # title="Response format",
             description="""Use this parameter to choose the response output format.
             Alternatively you can also use the HTTP Accept header of your
@@ -283,7 +294,6 @@ async def get_cell_line(
             ),
         fld: list[Fields] = Query(
             default = None,
-            example="",
             title = "Output fields",
             description="""Optional list of fields to return in the response.
             All the fields are returned if undefined.
@@ -293,10 +303,10 @@ async def get_cell_line(
             ),
         fields: str = Query(
             default = None,
-            example="id,sy,cc,rx",
             title = "Output fields (alternate syntax)",
             description="""Optional list of fields to return in the response.
             <i>fields</i> value is a comma-separated list of field tags or field shortnames.
+            Examples: 'id,sy,cc,rx', 'id,ac,ox'.
             All the fields are returned if undefined.
             Values passed in parameter <i>fld</i> takes precedence over values passed in parameter <i>fields</i>.
             More information on content of fields <a href="static/fields_help.html">here</a>.
@@ -356,9 +366,8 @@ async def get_cell_line(
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def get_cellapi_cell_line_children_tsv(
         ac: str = Path(
-            example="CVCL_1922",
             title="Cell line accession number",
-            description="The accession number (field AC) is a unique identifier for cell-lines"
+            description="The accession number (field AC) is a unique identifier for cell-lines. Example: 'CVCL_1922'"
             )
         ):
     return get_cell_line_children(ac, "tsv")
@@ -368,9 +377,8 @@ async def get_cellapi_cell_line_children_tsv(
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def get_cell_line_children_tsv(
         ac: str = Path(
-            example="CVCL_1922",
             title="Cell line accession number",
-            description="The accession number (field AC) is a unique identifier for cell-lines"
+            description="The accession number (field AC) is a unique identifier for cell-lines. Example: 'CVCL_1922'"
             )
         ):
     return get_cell_line_children(ac, "tsv")
@@ -380,9 +388,8 @@ async def get_cell_line_children_tsv(
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def get_cell_line_children_txt(
         ac: str = Path(
-            example="CVCL_1922",
             title="Cell line accession number",
-            description="The accession number (field AC) is a unique identifier for cell-lines"
+            description="The accession number (field AC) is a unique identifier for cell-lines. Example: 'CVCL_1922'"
             )
         ):
     return get_cell_line_children(ac, "txt")
@@ -421,27 +428,23 @@ async def search_cell_line(
         request: Request,
         q: str = Query(
             default="id:HeLa",
-            example="id:HeLa",
             title="search query",
-            description="Search query string using Solr synax"
+            description="Search query string using Solr synax. Example: 'id:Hela'"
             ),
 
         start: int = Query(
             default=0,
-            example=0,
             title="start",
-            description="Index of first item to retrieve in the search result list. See also <i>start</i> parameter in Solr synax"
+            description="Index of first item to retrieve in the search result list. See also <i>start</i> parameter in Solr syntax."
             ),
 
         rows: int = Query(
             default=1000,
-            example=10,
             title="rows",
-            description="Number of items to retrieve from the search result list. See also <i>rows</i> in Solr synax"
+            description="Number of items to retrieve from the search result list. See also <i>rows</i> in Solr synax, Example: '10'"
             ),
         format: Format = Query(
             default= None,
-            example = "txt",
             title="Response format",
             description="""Use this parameter to choose the response output format.
             Alternatively you can also use the HTTP Accept header of your
@@ -460,10 +463,10 @@ async def search_cell_line(
             ),
         fields: str = Query(
             default = None,
-            example="id,ac,sy,cc",
             title = "Output fields (alternate syntax)",
             description="""Optional list of fields to return in the response.
             <i>fields</i> value is a comma-separated list of field tags or field shortnames.
+            Examples: 'id,ac,sy,cc', 'id,ac,ox'.
             All the fields are returned if undefined.
             Values passed in parameter <i>fld</i> takes precedence over values passed in parameter <i>fields</i>.
             More information on fields <a href="static/fields_help.html">here</a>.
@@ -471,11 +474,11 @@ async def search_cell_line(
             ),
         sort: str = Query(
             default=None,
-            example="group asc,derived-from-site desc",
             title = "Sort order",
             description = """Optional field(s) determining the sort order of the search result.
             Every field name must be followed with a space and the sort direction (ASCending or DESCending).
             When multiple fields are used as the value of this parameter, they must be separated by a comma.
+            Example: 'group asc,derived-from-site desc'
             All the fields described <a href="static/fields_help.html">here</a> in are sortable. 
             When this parameter is undefined, the search result rows are sorted by relevance.
             """
@@ -556,18 +559,20 @@ async def search_cell_line(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/cell-line/{ac}" , name="RDF description of a cell line", tags=["Cell lines"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
+@app.get("/describe/entity/{dir}/{ac}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_cell_line(
         request: Request,
+        dir: SubNs = Path(        
+            title="Namespace of the entity",
+            description="The namespace of the IRI"
+            ),
         ac: str = Path(        
-            example="CVCL_S151",
-            title="Cell line accession number",
-            description="The accession number (field AC) is a unique identifier for cell-lines"
+            title="Identifier of the entity",
+            description="The accession number (field AC) is a unique identifier for cell-lines. Example: 'CVCL_S151'"
             ),
         format: RdfFormat = Query(
             default= None,
-            example = "ttl",
             title="Response format",
             description="""Use this parameter to choose the response output format.
             Alternatively you can also use the HTTP Accept header of your
@@ -587,59 +592,51 @@ async def describe_cell_line(
     if format is None: format = RdfFormat.jsonld
     #print(">>>> format 3", format, format== RdfFormat.jsonld)
 
-    # use api methods to retrieve full / partial records in multiple formats
-    # if format == RdfFormat.html and 2 == 1:
+    # method to redirect to website in case of text/html Accept header
+    # using the virtuoso x-nice-microdata instead was chosen, see below.
+    # if format == RdfFormat.html:
     #     url = "https://www.cellosaurus.org/" + ac
     #     log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
     #     return responses.RedirectResponse(url=url, status_code=301) # 301: Permanent redirect
-    if format == RdfFormat.html:
-        url = "http://localhost:8890/sparql"
-        prefix_declaration = ns_reg.cvcl.getSparqlPrefixDeclaration()
-        query = f"""DEFINE sql:describe-mode "CBD" {prefix_declaration} describe cvcl:{ac}"""
-        payload = urlencode({"query": query, "format": "application/x-nice-microdata" })
-        mimetype = format2mimetype.get(format)
-        headers = { "Content-Type": "application/x-www-form-urlencoded" , "Accept" : mimetype }    
-        response = requests.post(url, data=payload, headers=headers)
-        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
-        return responses.Response(content=response.text, media_type=mimetype )
-    else:
-        url = "http://localhost:8890/sparql"
-        prefix_declaration = ns_reg.cvcl.getSparqlPrefixDeclaration()
-        query = f"""DEFINE sql:describe-mode "CBD" {prefix_declaration} describe cvcl:{ac}"""
-        payload = urlencode({"query": query})
-        mimetype = format2mimetype.get(format)
-        headers = { "Content-Type": "application/x-www-form-urlencoded" , "Accept" : mimetype }    
-        response = requests.post(url, data=payload, headers=headers)
-        log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
-        return responses.Response(content=response.text, media_type=mimetype )
+
+    url = "http://localhost:8890/sparql"
+    prefix_declaration = ns_reg.cvcl.getSparqlPrefixDeclaration()
+    #query = f"""DEFINE sql:describe-mode "CBD" {prefix_declaration} describe cvcl:{ac}"""
+    iri = f"<{get_rdf_base_IRI()}/{dir.value}/{ac}>"
+    query = f"""DEFINE sql:describe-mode "CBD" describe {iri}"""
+    print("query:", query)
+    payload = {"query": query}
+    if format == RdfFormat.html: payload["format"] = "application/x-nice-microdata"
+    mimetype = format2mimetype.get(format)
+    headers = { "Content-Type": "application/x-www-form-urlencoded" , "Accept" : mimetype }    
+    response = requests.post(url, data=urlencode(payload), headers=headers)
+    log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
+    return responses.Response(content=response.text, media_type=mimetype )
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/fsearch/cell-line" , name="Quick search cell lines", tags=["Cell lines"], responses={"200":three_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
+@app.get("/fsearch/cell-line" , name="Quick search cell lines", tags=["Cell lines"], responses={"200":three_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def fsearch_cell_line(
         request: Request,
         q: str = Query(
             default="id:HeLa",
-            example="id:HeLa",
-            title="quick search query",
+            title="Quick facet search query",
             description="Quick search query string using Solr synax"
             ),
 
         rows: int = Query(
             default=1000,
-            example=10,
             title="rows",
             description="Number of items to retrieve from the search result list. See also <i>rows</i> in Solr synax"
             ),
 
-        format: Format = Query(
-            default= None,
-            example = "txt",
+        format: ThreeFormat = Query(
+            default= "txt",
             title="Response format",
             description="""Use this parameter to choose the response output format.
             Alternatively you can also use the HTTP Accept header of your
-            request and set it to either text/plain, text/tab-separated-values, application/xml, application/json.
+            request and set it to either text/plain, text/tab-separated-values, application/json.
             If the format parameter is used, the accept header value is ignored.
             If both the format parameter and the Accept header are undefined, then the response will use the json format."""
             ),
@@ -763,7 +760,6 @@ async def basic_help(request: Request):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def search_form(request: Request, q: str = Query(
     default="id:HeLa",
-    example="id:HeLa",
     title="search query",
     description="Search query string using Solr synax"
     ),
