@@ -20,6 +20,7 @@ def getSparqlPrefixDeclaration(prefix, baseurl):
     return "".join(["PREFIX ", prefix, ": <", baseurl, "> "])
 
 
+
 # namespace ancestor class 
 # handles prefix and base URL
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -34,6 +35,22 @@ class BaseNamespace:
         return getTtlPrefixDeclaration(self.prefix(), self.baseurl())
     def getSparqlPrefixDeclaration(self): 
         return getSparqlPrefixDeclaration(self.prefix(), self.baseurl())
+    def getSQLforVirtuoso(self):
+        return f"insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('{self.pfx}', '{self.url}');"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class PubMedNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(PubMedNamespace, self).__init__("pubmed", "https://www.ncbi.nlm.nih.gov/pubmed/")
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class DOINamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(DOINamespace, self).__init__("doi", "https://doi.org/")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -512,7 +529,10 @@ class NamespaceRegistry:
     bibo = BiboNamespace()
     widoco = WidocoNamespace()
     vann = VannNamespace()
-    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann]
+    doi = DOINamespace()
+    pubmed = PubMedNamespace()
+
+    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann, doi, pubmed]
 
 
 if __name__ == '__main__':
@@ -522,3 +542,4 @@ if __name__ == '__main__':
     print(myonto.baseurl())
     print(myonto.pfx)
     print(myonto.url)
+    print(myonto.getSQLforVirtuoso())

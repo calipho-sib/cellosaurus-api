@@ -18,6 +18,7 @@ import subprocess
 import ApiCommon
 from ApiCommon import log_it
 from fields_utils import FldDef
+from namespace import NamespaceRegistry as ns_reg
 
 from rdf_builder import RdfBuilder
 from organizations import KnownOrganizations, Organization
@@ -874,6 +875,20 @@ def get_clid_dic(fldDef):
     log_it("INFO:", "clid_dict size:", len(clid_dict), duration_since=t0)
     return clid_dict
 
+# - - - - - - - - - - - - - - - - - - - - 
+def save_virtuoso_isql_setup_file(output_file):
+# - - - - - - - - - - - - - - - - - - - - 
+    lines = []
+    lines.append("""grant select on "DB.DBA.SPARQL_SINV_2" to "SPARQL";""")
+    lines.append("""grant execute on "DB.DBA.SPARQL_SINV_IMP" to "SPARQL";""")
+    lines.append("""GRANT SPARQL_SPONGE TO "SPARQL";""")
+    lines.append("""GRANT EXECUTE ON DB.DBA.L_O_LOOK TO "SPARQL";""")
+    for ns in ns_reg.namespaces:
+        lines.append(ns.getSQLforVirtuoso())
+    f_out = open(output_file, "w")
+    for line in lines: f_out.write(line + "\n")
+    f_out.close()
+
 
 # ===========================================================================================
 if __name__ == "__main__":
@@ -1049,11 +1064,14 @@ if __name__ == "__main__":
     if args[0]=="LOAD_RDF":
     # -------------------------------------------------------
         if args[1].lower() == "data":
+            setup_file = 'private/scripts/virtuoso_setup.sql'
+            save_virtuoso_isql_setup_file(setup_file)
+            log_it("INFO", "Created", setup_file )
             result = subprocess.run(['bash', './private/scripts/reload_rdf_data.sh'], capture_output=True, text=True)
             log_it("LOADED data, status", result.stdout)
         elif args[1].lower() == "onto":
             result = subprocess.run(['bash', './private/scripts/reload_rdf_onto.sh'], capture_output=True, text=True)
-            log_it("LOADED onto, status", result.stdout)
+            log_it("INFO", "LOADED (onto)logy, status", result.stdout)
         else:
             log_it("Invalid argument after LOAD, expected data or onto")
             sys.exit(10)
