@@ -46,11 +46,13 @@ class PubMedNamespace(BaseNamespace):
         super(PubMedNamespace, self).__init__("pubmed", "https://www.ncbi.nlm.nih.gov/pubmed/")
 
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class DOINamespace(BaseNamespace):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): 
-        super(DOINamespace, self).__init__("doi", "https://doi.org/")
+#
+# impossible because of weird chars and / in identifier
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# class DOINamespace(BaseNamespace):
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#     def __init__(self): 
+#         super(DOINamespace, self).__init__("doi", "https://doi.org/")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -473,7 +475,8 @@ class OurXrefNamespace(BaseNamespace):
             our_dict[xref_key].add(props)
         # build a md5 based IRI from db and ac only 
         xref_md5 = hashlib.md5(xref_key.encode('utf-8')).hexdigest()
-        return "".join(["xref:", db, "_", xref_md5])
+        clean_db = db.replace("/", "-") # necessary for db="IPD-IMGT/HLA" otherwise IRI contains SLASH which is forbidden
+        return "".join(["xref:", clean_db, "_", xref_md5])
     
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -529,10 +532,10 @@ class NamespaceRegistry:
     bibo = BiboNamespace()
     widoco = WidocoNamespace()
     vann = VannNamespace()
-    doi = DOINamespace()
+    #doi = DOINamespace()
     pubmed = PubMedNamespace()
 
-    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann, doi, pubmed]
+    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann, pubmed]
 
 
 if __name__ == '__main__':

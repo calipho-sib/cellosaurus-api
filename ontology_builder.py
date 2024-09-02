@@ -393,7 +393,7 @@ class OntologyBuilder:
             if callable(getattr(ns_reg.onto, method_name)):
                 if method_name[0].islower():
                     # skip those below, they are not ontology terms but helper functions of the super class
-                    if method_name in ["prefix", "baseurl", "getTtlPrefixDeclaration", "getSparqlPrefixDeclaration"]: continue 
+                    if method_name in ["prefix", "baseurl", "getTtlPrefixDeclaration", "getSparqlPrefixDeclaration", "getSQLforVirtuoso"]: continue 
                     method = getattr(ns_reg.onto, method_name)
                     prop_name = method()
                     prop_label =  ns_reg.xsd.string(self.build_label(prop_name))
