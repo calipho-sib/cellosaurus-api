@@ -34,6 +34,7 @@ class Tree:
     # - - - - - - - - - - - - - - - - - - - - - - - - - -
     def get_close_parent_set(self, node_set):
     # - - - - - - - - - - - - - - - - - - - - - - - - - -
+        if len(node_set) == 1: return set(node_set)
         old_set = set(node_set)   # copy of input set
         while True:
             #print("iter")
@@ -53,7 +54,9 @@ class Tree:
                         if node2 != parent: to_be_removed.add(node2)
                         new_set.add(parent)
                     #print(node1, node2, "=>", parent, ", new set:", new_set, ", will remove:", to_be_removed)
+            if len(new_set)==1: break
             new_set = new_set - to_be_removed
+            if len(new_set)==1: break
             if new_set == old_set: break  
             old_set = new_set
         return new_set
@@ -97,7 +100,8 @@ if __name__ == '__main__':
     test_close_parent_set(tree, {"a", "d1", "num"}, {"alpha", "num"})
     test_close_parent_set(tree, {"a1", "d1", "num"}, {"alpha", "num"})
     test_close_parent_set(tree, {"a", "num"}, {"a", "num"})
-    # print("---")
-    # test_close_parent_dic(tree, {"a":3, "d1":7, "num":5}, {"alpha":10, "num":5})
-    # test_close_parent_dic(tree, {"a1":4, "d1":7, "num":5}, {"alpha":11, "num":5})
-    # test_close_parent_dic(tree, {"a":3, "num":5}, {"a":3, "num":5})
+    test_close_parent_set(tree, {"a1", "a2"}, {"a"})
+    test_close_parent_set(tree, {"a1"}, {"a1"})
+    test_close_parent_set(tree, set(), set()) # careful: {} != set() !!!
+    
+

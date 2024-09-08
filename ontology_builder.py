@@ -477,12 +477,31 @@ if __name__ == '__main__':
 
     # print(ontodata)
     # builder = OntologyBuilder()
-    # c1 = ns.onto.BachelorThesis()
-    # c2 = ns.onto.Publication()
-    # c3 = ns.onto.AnatomicalElement()
-    # print(builder.tree.get_close_parent_set({c1,c2,c3}))    
-    #print("remote root if thesis", builder.get_root_ancestors(ns.onto.Thesis(), locality=False))
-    #sys.exit()
+    # node_set = {
+    #     #":GeneMutation",
+    #     #":Patent",
+    #     #":MedicalDegreeThesis", 
+    #     #":MedicalDegreeMasterThesis",
+    #     #":DoctoralThesis",
+    #     #":MasterThesis",
+    #     #":TechnicalDocument", 
+    #     #":BachelorThesis", 
+    #     #":VeterinaryMedicalDegreeThesis",
+    #     #":ConferencePublication",
+    #     #":BookChapter",
+    #     #":PrivaDocentThesis",
+    #     #":Book",
+    #     #":MiscellaneousDocument",
+    #     #":JournalArticle"
+    # }
+    # result = builder.tree.get_close_parent_set(node_set)
+    # print(result)
+    # # c1 = ns.onto.BachelorThesis()
+    # # c2 = ns.onto.Publication()
+    # # c3 = ns.onto.AnatomicalElement()
+    # # print(builder.tree.get_close_parent_set({c1,c2,c3}))    
+    # #print("remote root if thesis", builder.get_root_ancestors(ns.onto.Thesis(), locality=False))
+    # sys.exit()
 
     builder = OntologyBuilder()
     # tests
