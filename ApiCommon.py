@@ -21,6 +21,22 @@ CELLAPI_VERSION="1.0.3"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def split_string(text, max_length=80):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    result = []
+    while len(text) > max_length:
+        split_index = text[:max_length].rfind(' ')
+        if split_index == -1:
+            # If no space found, split at max_length
+            split_index = max_length
+        result.append(text[:split_index].strip())
+        text = text[split_index:].strip()
+    if text:
+        result.append(text)
+    return result
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def log_it(*things, duration_since=None):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     t1 = datetime.datetime.now()

@@ -458,42 +458,43 @@ class RdfBuilder:
 
         # fields: ID, SY, IDSY
         for name_obj in cl_data["name-list"]:
-            # blank node for name
-            name_BN = self.get_blank_node()
-            triples.append(name_BN, ns.rdf.type(), ns.onto.CellLineName())
-            label = ns.xsd.string(name_obj["value"])
-            triples.append(name_BN, ns.rdfs.label(), label)
-            # connect cell line to name entity
-            triples.append(cl_IRI, ns.onto.name(), name_BN)
+            name = ns.xsd.string(name_obj["value"])
+            triples.append(cl_IRI, ns.onto.name(), name)
             pred = ns.onto.recommendedName() if name_obj["type"] == "identifier" else ns.onto.alternativeName()
-            triples.append(cl_IRI, pred, name_BN)
+            triples.append(cl_IRI, pred, name)
         
         # fields: CC, registration
         for reg_obj in cl_data.get("registration-list") or []:
-            name_BN = self.get_blank_node()
-            triples.append(name_BN, ns.rdf.type(), ns.onto.CellLineName())      
-            label = ns.xsd.string(reg_obj["registration-number"])
-            triples.append(name_BN, ns.rdfs.label(), label)
+            
+            name = ns.xsd.string(reg_obj["registration-number"])
+            triples.append(cl_IRI, ns.onto.name(), name)
+            triples.append(cl_IRI, ns.onto.registeredName(), name)
+            
+            annot_BN = self.get_blank_node()
+            triples.append(cl_IRI, ns.onto.registration(), annot_BN)
+            triples.append(annot_BN, ns.rdf.type(), ns.onto.Registration())      
+            triples.append(annot_BN, ns.rdfs.label(), name)
             org_name = reg_obj["registry"]
-            org_IRI = ns.orga.IRI(org_name, "", "", "", "") # not yet split into name, city, country, contact
-            triples.append(name_BN, ns.onto.source(), org_IRI)
-            triples.append(cl_IRI, ns.onto.name(), name_BN)
-            triples.append(cl_IRI, ns.onto.registeredName(), name_BN)
-
+            org_IRI = ns.orga.IRI(org_name, "", "", "", "")
+            triples.append(annot_BN, ns.onto.source(), org_IRI)
+ 
         # fields: CC, misspelling
         for msp_obj in cl_data.get("misspelling-list") or []:
-            name_BN = self.get_blank_node()
-            triples.append(name_BN, ns.rdf.type(), ns.onto.CellLineName())        
-            label = ns.xsd.string(msp_obj["misspelling-name"])
-            triples.append(name_BN, ns.rdfs.label(), label)
+            
+            name = ns.xsd.string(msp_obj["misspelling-name"])
+            triples.append(cl_IRI, ns.onto.name(), name)
+            triples.append(cl_IRI, ns.onto.misspellingName(), name)
+
+            annot_BN = self.get_blank_node()
+            triples.append(cl_IRI, ns.onto.misspellingComment(), annot_BN)
+            triples.append(annot_BN, ns.rdf.type(), ns.onto.MisspellingComment())
+            triples.append(annot_BN, ns.rdfs.label(), name)
             note = msp_obj.get("misspelling-note")
-            if note is not None: triples.append(name_BN, ns.rdfs.comment(), ns.xsd.string(note))
+            if note is not None: triples.append(annot_BN, ns.rdfs.comment(), ns.xsd.string(note))
             for ref in msp_obj.get("reference-list") or []:
-                triples.append(name_BN, ns.onto.appearsIn(), self.get_pub_IRI(ref))
+                triples.append(annot_BN, ns.onto.appearsIn(), self.get_pub_IRI(ref))
             for xref in msp_obj.get("xref-list") or []:             
-                triples.append(name_BN, ns.onto.appearsIn(), self.get_xref_IRI(xref))
-            triples.append(cl_IRI, ns.onto.name(), name_BN)
-            triples.append(cl_IRI, ns.onto.misspellingName(), name_BN)
+                triples.append(annot_BN, ns.onto.appearsIn(), self.get_xref_IRI(xref))
 
         # fields: DR
         for xref in cl_data.get("xref-list") or []:
@@ -1090,7 +1091,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         annot_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.onto.discontinued(), annot_BN)
+        triples.append(cl_IRI, ns.onto.discontinuationRecord(), annot_BN)
         triples.append(annot_BN, ns.rdf.type(), ns.onto.DiscontinuationRecord())
         triples.append(annot_BN, ns.onto.provider(), ns.xsd.string(provider))
         triples.append(annot_BN, ns.onto.productId(), ns.xsd.string(product_id))

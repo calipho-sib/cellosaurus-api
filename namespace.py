@@ -85,6 +85,7 @@ class XsdNamespace(BaseNamespace):
     def integer(self, int_number): return str(int_number)
     def float(self, float_number): return "".join(["\"", str(float_number), "\"^^xsd:float"])
     def boolean(self, boolean_value): return str(boolean_value).lower() 
+    def dateDataType(self) : return "xsd:date"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -108,6 +109,8 @@ class RdfsNamespace(BaseNamespace):
     def range(self): return "rdfs:range"
     def seeAlso(self): return "rdfs:seeAlso"
     def isDefinedBy(self): return "rdfs:isDefinedBy"
+    def Literal(self): return "rdfs:Literal"
+    
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,6 +139,9 @@ class SkosNamespace(BaseNamespace):
     def prefLabel(self): return "skos:prefLabel"
     def altLabel(self): return "skos:altLabel"
     def broader(self): return "skos:broader"
+    def exactMatch(self): return "skos:exactMatch"
+    def closeMatch(self): return "skos:closeMatch"
+    def broadMatch(self): return "skos:broadMatch"
     
 
 
@@ -144,6 +150,8 @@ class FoafNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(FoafNamespace, self).__init__("foaf", "http://xmlns.com/foaf/0.1/")
     def Person(self): return "foaf:Person"
+    def name(self): return "foaf:name"
+    def Organization(self): return "foaf:Organization"
     # def Organization(self): return "foaf:Organization" (defined in OurOntologyNamespace)
 
 
@@ -186,7 +194,7 @@ class OurOntologyNamespace(BaseNamespace):
     # CLASSES
     # --------
     def CellLine(self): return ":CellLine"
-    def CellLineName(self): return ":CellLineName"
+    #def CellLineName(self): return ":CellLineName" osoleted
  
     # Organization could be a sublass of foaf:Organization or org:Organization
     # see https://www.w3.org/ns/org#%5B4
@@ -254,6 +262,8 @@ class OurOntologyNamespace(BaseNamespace):
     def CautionComment(self): return ":CautionComment"
     def KaryotypicInfoComment(self): return ":KaryotypicInfoComment"
     def MiscellaneousInfoComment(self): return ":MiscellaneousInfoComment"
+    def MisspellingComment(self): return ":MisspellingComment"
+    def Registration(self): return ":Registration"
     def SenescenceComment(self): return ":SenescenceComment"
     def GeneticIntegration(self): return ":GeneticIntegration"
     def VirologyComment(self): return ":VirologyComment"
@@ -261,6 +271,7 @@ class OurOntologyNamespace(BaseNamespace):
     def PopulationComment(self) : return ":PopulationComment"
     def MicrosatelliteInstability(self): return ":MicrosatelliteInstability"
     def MabIsotype(self): return ":MabIsotype"
+
     def Antigen(self): return ":Antigen" # uniprot, chebi (+free text)
     def ChemicalAgent(self): return ":ChemicalAgent" # drugbank, uniprot, ncit, chebi (+free text)
     def TransformantAgent(self): return ":TransformantAgent" # ChEBI, NCBI_TaxID, NCIt, DrugBank (+free text)
@@ -354,6 +365,8 @@ class OurOntologyNamespace(BaseNamespace):
     def group(self): return ":group"
     def karyotypicInfoComment(self): return ":karyotypicInfoComment"
     def miscellaneousInfoComment(self): return ":miscellaneousInfoComment"
+    def misspellingComment(self): return ":misspellingComment"
+    def registration(self): return ":registration"
     def senescenceComment(self): return ":senescenceComment"
     def geneticIntegration(self): return ":geneticIntegration"
     def virologyComment(self): return ":virologyComment"
@@ -364,6 +377,7 @@ class OurOntologyNamespace(BaseNamespace):
     def genomeEditingMethod(self): return ":genomeEditingMethod"
 
     def discontinued(self): return ":discontinued"
+    def discontinuationRecord(self): return ":discontinuationRecord"
     def provider(self): return ":provider"
     def productId(self): return ":productId"
     def microsatelliteInstability(self): return ":microsatelliteInstability"
@@ -441,6 +455,8 @@ class BiboNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(BiboNamespace, self).__init__("bibo", "http://purl.org/ontology/bibo/")
     def status(self): return "bibo:status"
+    def doi(self): return "bibo:doi"
+    
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -455,6 +471,12 @@ class UniProtCoreNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(UniProtCoreNamespace, self).__init__("up", "http://purl.uniprot.org/core/")
     def volume(self): return "up:volume"
+    def Citation(self): return "up:Citation"
+    def Published_Citation(self): return "up:Published_Citation"
+    def Thesis_Citation(self): return "up:Published_Citation"
+    def Book_Citation(self): return "up:Published_Citation"
+    def Journal_Citation(self): return "up:Published_Citation"
+    def Annotation(self): return "up:Annotation"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

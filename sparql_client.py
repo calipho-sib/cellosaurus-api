@@ -137,7 +137,22 @@ class EndpointClient:
     
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def apply_prefixes(self, uri):
+    def apply_prefixes(self, some_string):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        result = list()
+        for potential_uri in some_string.split():
+            found = False
+            for (k,v) in self.prefixes.items():
+                if potential_uri.startswith(v):
+                    result.append(k + potential_uri[(len(v)):])
+                    found = True
+                    break
+            if not found: 
+                result.append(potential_uri)
+        return " ".join(result)
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def apply_prefixes_old(self, uri):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         for (k,v) in self.prefixes.items():
             if uri.startswith(v):
@@ -174,6 +189,9 @@ if __name__ == '__main__' :
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
 
     client = EndpointClient("http://localhost:8890/sparql")
+
+    #print(client.apply_prefixes("http://purl.org/spar/fabio/Thesis, http://localhost/rdf/ontology/Thesis"))
+    #sys.exit()
 
 
     if len(sys.argv) < 2: client.show_usage_and_die()
@@ -239,7 +257,8 @@ if __name__ == '__main__' :
                     colval = "(none)"
                 else:
                     colval = col.get("value")
-                    if col.get("type") == "uri": colval = client.apply_prefixes(colval)
+                    #if col.get("type") == "uri": colval = client.apply_prefixes(colval)
+                    colval = client.apply_prefixes(colval)
                 cols.append(colval)
             print("ROWS\t" +"\t".join(cols))
         
