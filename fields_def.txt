@@ -172,7 +172,7 @@ PR   CC   Biotechnology
 XP   /cell-line/comment-list/comment[@category="Biotechnology"]
 //
 TG   breed
-DE   Breed or subspecies an animal cell line is derived from.
+DE   Breed or subspecies an animal cell line is derived from with breed identifiers from FlyBase_Strain, RS and VBO.
 PR   CC   Breed/subspecies
 XP   /cell-line/breed
 CC   Pam: problem with slash in attribute name "Breed/subspecies", workaround by using starts-with() in XP
@@ -309,7 +309,7 @@ PR   CC   Senescence
 XP   /cell-line/comment-list/comment[@category="Senescence"]
 //
 TG   integrated
-DE   Genetic element(s) integrated in the cell line: gene name and identifier in UniProtKB, HGNC, MGI, RGD, VGNC, FPbase and FlyBase.
+DE   Genetic element(s) integrated in the cell line: gene name and identifier in CGNC, FlyBase, FPbase, HGNC, MGI, RGD, UniProtKB, and VGNC.
 SH   int
 PR   CC   Genetic integration
 XP   /cell-line/genetic-integration-list/genetic-integration
