@@ -19,6 +19,48 @@ class OntologyBuilder:
 
         self.ontodata = {
 
+                ns.onto.Organization(): { ns.rdfs.subClassOf(): {ns.foaf.Agent()}, 
+                                        ns.owl.equivalentClass(): { ns.foaf.Organization() , ns.org.Organization() }},
+
+                ns.onto.city() : { ns.rdfs.subPropertyOf() : {ns.org.site() }},
+                ns.onto.country() : { ns.rdfs.subPropertyOf() : {ns.org.site() }},
+
+                ns.onto.Annotation(): { ns.rdfs.subClassOf(): {ns.oa.Annotation()}, 
+                                        ns.skos.closeMatch(): { ns.up.Annotation()}},
+
+
+                ns.onto.AnecdotalComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.AnatomicalElement() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.Antigen() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.BiotechnologyComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.Breed() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.CautionComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.CellType() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.CharacteristicsComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.ChemicalAgent() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.DiscontinuationRecord() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.Disease() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.DonorInfoComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.DoublingTimeComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.GeneticIntegration() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.GenomeAncestry() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.HLATyping() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.KaryotypicInfoComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.KnockoutComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.MabIsotype() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.MicrosatelliteInstability() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.MiscellaneousInfoComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.MisspellingComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.OmicsComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.PopulationComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.Protein() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.SenescenceComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.SequenceVariationComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.ShortTandemRepeatProfile() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.Species() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.TransformantAgent() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.VirologyComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},                
+
                 ns.onto.Publication(): { ns.rdfs.subClassOf() : { ns.fabio.Expression() },
                                         ns.skos.closeMatch() : { ns.up.Published_Citation()} },
                 ns.onto.Thesis(): { ns.rdfs.subClassOf() : { ns.onto.Publication(), ns.fabio.Thesis() },
@@ -66,8 +108,48 @@ class OntologyBuilder:
                 ns.onto.CelloTerminology() : { ns.rdfs.subClassOf() : { ns.skos.ConceptScheme() }},
 
 
+                ns.onto.annotation(): { ns.skos.closeMatch(): { ns.up.Annotation()}},
+
+                ns.onto.anecdotalComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.biotechnologyComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.cautionComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.cellType() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.characteristicsComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.derivedFromSite() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.discontinuationRecord() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.donorInfoComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.doublingTimeComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.fromIndividualAtAge() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.fromIndividualBelongingToBreed() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.fromIndividualBelongingToSpecies() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.fromIndividualWithDisease() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.fromIndividualWithSex() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.geneticIntegration() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.genomeAncestry() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.hlaTyping() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.karyotypicInfoComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.knockout() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.mabIsotype() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.mabTarget() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.microsatelliteInstability() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.miscellaneousInfoComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.misspellingComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.omicsComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.populationComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.registration() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.resistance() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.senescenceComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.sequenceVariationComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.shortTandemRepeatProfile() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.transformant() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.virologyComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+
+                ns.onto.publisher() : { ns.rdfs.subPropertyOf() : { ns.dcterms.publisher() }},
+                ns.onto.editor() : { ns.rdfs.subPropertyOf() : { ns.dcterms.contributor() }},
+                
                 ns.onto.accession(): { ns.rdfs.subPropertyOf() : { ns.dcterms.identifier() }},
-                ns.onto.primaryAccession(): { ns.rdfs.subPropertyOf() : { ns.onto.accession() }},
+                ns.onto.primaryAccession(): { ns.rdfs.subPropertyOf() : { ns.onto.accession() },
+                                              ns.owl.sameAs(): {ns.wdt.P3289_AC() }},
                 ns.onto.secondaryAccession(): { ns.rdfs.subPropertyOf() : { ns.onto.accession() }},
 
                 ns.onto.name() : { ns.rdfs.subPropertyOf() : { ns.foaf.name() }},
@@ -80,23 +162,30 @@ class OntologyBuilder:
 
                 ns.onto.creator() : { ns.rdfs.subPropertyOf() : { ns.dcterms.creator() }},
 
-                ns.onto.title() : { ns.rdfs.subPropertyOf() : { ns.dcterms.title()         }},
+                ns.onto.title() : { ns.rdfs.subPropertyOf() : { ns.dcterms.title() }, 
+                                    ns.skos.closeMatch(): { ns.up.title() }},
                 ns.onto.bookTitle() : { ns.rdfs.subPropertyOf() : { ns.dcterms.title() }},
                 ns.onto.documentTitle() : { ns.rdfs.subPropertyOf() : { ns.dcterms.title() }},
                 ns.onto.conferenceTitle() : { ns.rdfs.subPropertyOf() : { ns.dcterms.title() }},
                 ns.onto.documentSerieTitle() : { ns.rdfs.subPropertyOf() : { ns.dcterms.title() }},
                 
+                ns.onto.memberOf() : { ns.rdfs.subPropertyOf() : { ns.org.memberOf() }},
                 ns.onto.more_specific_than() : { ns.rdfs.subPropertyOf() : { ns.skos.broader() }},
 
+                ns.onto.hasPublicationYear() : { ns.rdfs.subPropertyOf(): { ns.fabio.hasPublicationYear() }},
                 ns.onto.productId() : { ns.rdfs.subPropertyOf() : { ns.dcterms.identifier() }},
                 ns.onto.issn13() : { ns.rdfs.subPropertyOf() : { ns.dcterms.identifier() }},
                 ns.onto.hasDOI() : { ns.rdfs.subPropertyOf() : { ns.dcterms.identifier(), ns.bibo.doi() }},
                 ns.onto.hasInternalId() : { ns.rdfs.subPropertyOf() : { ns.dcterms.identifier() }},
                 ns.onto.hasPMCId() : { ns.rdfs.subPropertyOf() : { ns.dcterms.identifier(), ns.fabio.hasPubMedCentralId() }},
                 ns.onto.hasPubMedId() : { ns.rdfs.subPropertyOf() : { ns.dcterms.identifier(), ns.fabio.hasPubMedId() }},
+                ns.onto.hgvs() : { ns.rdfs.subPropertyOf() : { ns.onto.name() }},
                 ns.onto.volume() : { ns.rdfs.subPropertyOf() : { ns.up.volume() }},
+
+                ns.onto.versionInfo() : { ns.rdfs.subPropertyOf(): { ns.dcterms.versionInfo() } , ns.skos.closeMatch(): { ns.up.version() }},
+                ns.onto.modified() : { ns.rdfs.subPropertyOf(): { ns.dcterms.modified() } , ns.skos.closeMatch(): { ns.up.modified() }},
+                ns.onto.created() : { ns.rdfs.subPropertyOf(): { ns.dcterms.created() } , ns.skos.closeMatch(): { ns.up.created() }},
                 
-                # ns.xsd.dateDataType() : { ns.rdfs.subClassOf() : { ns.rdfs.Literal() }}, hack not needed 
             }
 
         # build tree with local child - parent relationships based on rdfs:subClassOf()
@@ -145,7 +234,7 @@ class OntologyBuilder:
         self.rdfs_domain_to_remove[ns.onto.accession()] = ns.skos.Concept() 
         self.rdfs_domain_to_remove[ns.onto.category()] = ns.skos.Concept() 
         self.rdfs_domain_to_remove[ns.onto.database()] = ns.skos.Concept() 
-        self.rdfs_domain_to_remove[ns.onto.version()] = ns.owl.NamedIndividual()
+        self.rdfs_domain_to_remove[ns.onto.versionInfo()] = ns.owl.NamedIndividual()
         self.rdfs_domain_to_remove[ns.onto.more_specific_than()] = ns.onto.Xref() 
 
         self.rdfs_range_to_remove = dict()
@@ -163,9 +252,9 @@ class OntologyBuilder:
         self.rdfs_label[ns.onto.MabIsotype()] = "Monoclonal antibody isotype"
         self.rdfs_label[ns.onto.mabIsotype()] = "has monoclonal antibody isotype"
         self.rdfs_label[ns.onto.mabTarget()] = "has monoclonal antibody target"
-        self.rdfs_label[ns.onto.cvclEntryCreated()] = "cellosaurus cell line record creation date"
-        self.rdfs_label[ns.onto.cvclEntryLastUpdated()] = "cellosaurus cell line record last update"
-        self.rdfs_label[ns.onto.cvclEntryVersion()] = "cellosaurus cell line record version"
+        self.rdfs_label[ns.onto.created()] = "cellosaurus cell line record creation date"
+        self.rdfs_label[ns.onto.modified()] = "cellosaurus cell line record last update"
+        self.rdfs_label[ns.onto.versionInfo()] = "cellosaurus cell line record version"
         self.rdfs_label[ns.onto.hasPMCId()] = "has PMC identifier"
         self.rdfs_label[ns.onto.hasPubMedId()] = "has PubMed identifier"
         self.rdfs_label[ns.onto.hasDOI()] = "has DOI identifier"

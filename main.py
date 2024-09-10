@@ -116,8 +116,8 @@ tags_metadata = [
         "description": "Get general information about the current Cellosaurus release",
     },{ "name": "Cell lines",
         "description": "Get all or part of the information related to cell lines",
-    },{ "name": "RDF",
-        "description": "RDF desciption of entities",
+    # },{ "name": "RDF",
+    #     "description": "RDF desciption of entities",
     }
 ]
 
@@ -235,8 +235,11 @@ async def get_release_info(
 
     t0 = datetime.datetime.now()
     # precedence of format over request headers
-    if format is None: format = get_format_from_headers(request.headers)
-    if format is None: format = "json"
+    #print("format", format)
+    if format is None: format = get_format_from_headers(request.headers) # this might return "html" which is not suitable here
+    #print("format", format)
+    if format is None or format == "html": format = "json"
+    #print("format", format)
 
     # build and return response in appropriate format
     if format == "tsv":
@@ -325,7 +328,7 @@ async def get_cell_line(
 
     # precedence of format over request headers
     if format is None: format = get_format_from_headers(request.headers)
-    if format is None: format = "json"
+    if format is None or format == "html": format = "json"
 
     # check AC existence, see also parameter responses=... in the @app.get() annotation above
     if ac not in cl_dict:
@@ -495,7 +498,7 @@ async def search_cell_line(
 
     # precedence of format over request headers
     if format is None: format = get_format_from_headers(request.headers)
-    if format is None: format = "json"
+    if format is None or format=="html": format = "json"
 
     # call solr service
     url = api.get_solr_search_url()
@@ -559,7 +562,7 @@ async def search_cell_line(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/entity/{dir}/{ac}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
+@app.get("/describe/entity/{dir}/{ac}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_cell_line(
         request: Request,
@@ -615,7 +618,7 @@ async def describe_cell_line(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/fsearch/cell-line" , name="Quick search cell lines", tags=["Cell lines"], responses={"200":three_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
+@app.get("/fsearch/cell-line" , name="Quick search cell lines", tags=["Cell lines"], responses={"200":three_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def fsearch_cell_line(
         request: Request,

@@ -155,7 +155,7 @@ class RdfBuilder:
         triples.append(onto_IRI, ns.rdf.type(), ns.onto.CelloTerminology())
         triples.append(onto_IRI, ns.rdf.type(), ns.owl.NamedIndividual())
         triples.append(onto_IRI, ns.rdfs.label(), ns.xsd.string(onto.name))
-        triples.append(onto_IRI, ns.onto.version(), ns.xsd.string(onto.version))
+        triples.append(onto_IRI, ns.onto.versionInfo(), ns.xsd.string(onto.version))
         triples.append(onto_IRI, ns.rdfs.seeAlso(), "<" + onto.url + ">")
         url = ns.onto.baseurl()
         if url.endswith("#"): url = url[:-1]
@@ -543,9 +543,9 @@ class RdfBuilder:
             triples.append(cl_IRI, ns.onto.category(), ns.xsd.string(ca))
 
         # fields DT, dtc, dtu, dtv
-        triples.append(cl_IRI, ns.onto.cvclEntryCreated(), ns.xsd.date(cl_data["created"]))
-        triples.append(cl_IRI, ns.onto.cvclEntryLastUpdated(), ns.xsd.date(cl_data["last-updated"]))
-        triples.append(cl_IRI, ns.onto.cvclEntryVersion(), ns.xsd.integer(cl_data["entry-version"]))
+        triples.append(cl_IRI, ns.onto.created(), ns.xsd.date(cl_data["created"]))
+        triples.append(cl_IRI, ns.onto.modified(), ns.xsd.date(cl_data["last-updated"]))
+        triples.append(cl_IRI, ns.onto.versionInfo(), ns.xsd.integer(cl_data["entry-version"]))
 
         # fields: CC, genome-ancestry
         annot = cl_data.get("genome-ancestry")
@@ -864,7 +864,6 @@ class RdfBuilder:
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.characteristicsComment(), inst_BN)
         triples.append(inst_BN, ns.rdf.type(), ns.onto.CharacteristicsComment())
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
         return triples
@@ -876,7 +875,6 @@ class RdfBuilder:
         comment = cc["value"]
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.cautionComment(), inst_BN)
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
         triples.append(inst_BN, ns.rdf.type(), ns.onto.CautionComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -889,7 +887,6 @@ class RdfBuilder:
         comment = cc["value"]
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.biotechnologyComment(), inst_BN)
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent propery
         triples.append(inst_BN, ns.rdf.type(), ns.onto.BiotechnologyComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -902,7 +899,6 @@ class RdfBuilder:
         comment = cc["value"]
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.anecdotalComment(), inst_BN)
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
         triples.append(inst_BN, ns.rdf.type(), ns.onto.AnecdotalComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -915,7 +911,6 @@ class RdfBuilder:
         comment = cc["value"]
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.donorInfoComment(), inst_BN)
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
         triples.append(inst_BN, ns.rdf.type(), ns.onto.DonorInfoComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -929,7 +924,6 @@ class RdfBuilder:
         comment = cc["value"]
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.karyotypicInfoComment(), inst_BN)
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
         triples.append(inst_BN, ns.rdf.type(), ns.onto.KaryotypicInfoComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -942,7 +936,6 @@ class RdfBuilder:
         comment = cc["value"]
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.miscellaneousInfoComment(), inst_BN)
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
         triples.append(inst_BN, ns.rdf.type(), ns.onto.MiscellaneousInfoComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -955,7 +948,6 @@ class RdfBuilder:
         comment = cc["value"]
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.senescenceComment(), inst_BN)
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
         triples.append(inst_BN, ns.rdf.type(), ns.onto.SenescenceComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -994,7 +986,6 @@ class RdfBuilder:
         comment = cc["value"]
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.virologyComment(), inst_BN)
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
         triples.append(inst_BN, ns.rdf.type(), ns.onto.VirologyComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -1033,7 +1024,6 @@ class RdfBuilder:
         comment = cc["value"]
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.omicsComment(), inst_BN)
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
         triples.append(inst_BN, ns.rdf.type(), ns.onto.OmicsComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         return triples
@@ -1045,7 +1035,6 @@ class RdfBuilder:
         comment = cc["value"]
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.populationComment(), inst_BN)
-        triples.append(cl_IRI, ns.onto.freeTextComment(), inst_BN) # parent property
         triples.append(inst_BN, ns.rdf.type(), ns.onto.PopulationComment())
         triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(comment))
         return triples

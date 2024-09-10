@@ -126,6 +126,7 @@ class OwlNamespace(BaseNamespace):
     def allValuesFrom(self): return "owl:allValuesFrom"
     def sameAs(self): return "owl:sameAs"
     def unionOf(self): return "owl:unionOf"
+    def equivalentClass(self): return "owl:equivalentClass"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,11 +145,49 @@ class SkosNamespace(BaseNamespace):
     def broadMatch(self): return "skos:broadMatch"
     
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class WikidataWdtNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(WikidataWdtNamespace, self).__init__("wdt", "http://www.wikidata.org/prop/direct/")
+    def P3289_AC(self): return "wdt:P3289"
+    def P3289_OI(self): return "wdt:P3578"
+    
+#     def P3289_OI(self): return "wdt:P3578"
+#     def P3289_OI(self): return "wdt:P3578"
+#     def P3289_OI(self): return "wdt:P3578"
+#     def P3289_OI(self): return "wdt:P3578"
+    
+
+# Cellosaurus ID usage				= wdt:P3289	(usage, also defined as owl:DatatypeProperty)
+# Cellosaurus ID (P3289)                      AC
+
+# autologous cell line (P3578)                OI  = wdt:P3578	owl:ObjectProperty
+# derived from organism type (P9072)          OX  = wdt:P9072     (species)
+# established from medical condition (P5166)  DI  = wdt:P5166	(disease)
+# parent cell line (P3432)                    HI	...
+# sex or gender (P21)                         SX	...
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class OaNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(OaNamespace, self).__init__("oa", "http://www.w3.org/ns/oa#")
+    def Annotation(self): return "oa:Annotation"
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class W3OrgNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(W3OrgNamespace, self).__init__("org", "http://www.w3.org/ns/org#")
+    def site(self): return "org:site"
+    def Organization(self): return "org:Organization"
+    def memberOf(self): return "org:mermberOf"
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class FoafNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(FoafNamespace, self).__init__("foaf", "http://xmlns.com/foaf/0.1/")
+    def Agent(self): return "foaf:Agent"
     def Person(self): return "foaf:Person"
     def name(self): return "foaf:name"
     def Organization(self): return "foaf:Organization"
@@ -175,6 +214,7 @@ class FabioNamespace(BaseNamespace):
     def hasPubMedCentralId(self): return "fabio:hasPubMedCentralId"
     def hasPubMedId(self): return "fabio:hasPubMedId"
     def hasPubMedId(self): return "fabio:hasPubMedId"
+    def hasPublicationYear(self): return "fabio:hasPublicationYear"
     
     
     
@@ -254,7 +294,7 @@ class OurOntologyNamespace(BaseNamespace):
     def DiscontinuationRecord(self): return ":DiscontinuationRecord"
     def KnockoutComment(self): return ":KnockoutComment"
 
-    def FreeTextComment(self): return ":FreeTextComment" # a superclass for text-only comments (with or without source)
+    def Annotation(self): return ":Annotation" 
     def AnecdotalComment(self): return ":AnecdotalComment"
     def CharacteristicsComment(self): return ":CharacteristicsComment"
     def BiotechnologyComment(self): return ":BiotechnologyComment"
@@ -351,7 +391,7 @@ class OurOntologyNamespace(BaseNamespace):
     def variationStatus(self): return ":variationStatus"
     def fromIndividualBelongingToBreed(self): return ":fromIndividualBelongingToBreed"
     def sequenceVariationComment(self): return ":sequenceVariationComment"
-    def freeTextComment(self): return ":freeTextComment"        # super property for text based comments (with or without source)
+    def annotation(self): return ":annotation"
     def anecdotalComment(self): return ":anecdotalComment"
     def characteristicsComment(self): return ":characteristicsComment"
     def biotechnologyComment(self): return ":biotechnologyComment"
@@ -398,10 +438,11 @@ class OurOntologyNamespace(BaseNamespace):
     def parentCellLine(self): return ":parentCellLine" # HI field
     def childCellLine(self): return ":childCellLine" # CH field
     def category(self): return ":category" # CA field
-    def cvclEntryCreated(self): return ":cvclEntryCreated" # dtc field
-    def cvclEntryLastUpdated(self): return ":cvclEntryLastUpdated" # dtu field
-    def cvclEntryVersion(self): return ":cvclEntryVersion" # dtv field
     def publisher(self): return ":publisher" # links thesis -> universtities (orga)
+
+    def versionInfo(self): return ":versionInfo"
+    def created(self): return ":created"
+    def modified(self): return ":modified"
 
     def organization(self): return ":organization"
     def database(self): return ":database"
@@ -416,8 +457,6 @@ class OurOntologyNamespace(BaseNamespace):
     def documentSerieTitle(self): return ":documentSerieTitle"
     
     def more_specific_than(self): return ":more_specific_than"
-
-    def version(self): return ":version"
     
 
 
@@ -440,6 +479,8 @@ class DctermsNamespace(BaseNamespace):
     def title(self): return "dcterms:title"
     def versionInfo(self): return "dcterms:versionInfo"
     def creator(self): return "dcterms:creator"
+    def publisher(self): return "dcterms:publisher"
+    def contributor(self): return "dcterms:contributor"
     def identifier(self): return "dcterms:identifier"
 
 
@@ -477,6 +518,11 @@ class UniProtCoreNamespace(BaseNamespace):
     def Book_Citation(self): return "up:Published_Citation"
     def Journal_Citation(self): return "up:Published_Citation"
     def Annotation(self): return "up:Annotation"
+    def annotation(self): return "up:annotation"
+    def title(self): return "up:title"
+    def version(self): return "up:version"
+    def modified(self): return "up:modified"
+    def created(self): return "up:created"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -556,8 +602,12 @@ class NamespaceRegistry:
     vann = VannNamespace()
     #doi = DOINamespace()
     pubmed = PubMedNamespace()
+    oa = OaNamespace()
+    org = W3OrgNamespace()
+    wdt = WikidataWdtNamespace()
 
-    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann, pubmed]
+
+    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann, oa, org, wdt, pubmed]
 
 
 if __name__ == '__main__':
