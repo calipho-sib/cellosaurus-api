@@ -79,7 +79,7 @@ three_media_types_responses = { "description": "Successful response", "content" 
 }
 
 subns_dict = dict()
-for ns in [ns_reg.cvcl, ns_reg.xref, ns_reg.orga, ns_reg.pub, ns_reg.onto ]:
+for ns in [ns_reg.cvcl, ns_reg.xref, ns_reg.orga, ns_reg.pub, ns_reg.onto, ns_reg.db ]:
   subdir = ns.baseurl().split("/")[-2]
   subns_dict[subdir] = subdir
 
@@ -116,8 +116,8 @@ tags_metadata = [
         "description": "Get general information about the current Cellosaurus release",
     },{ "name": "Cell lines",
         "description": "Get all or part of the information related to cell lines",
-    # },{ "name": "RDF",
-    #     "description": "RDF desciption of entities",
+    },{ "name": "RDF",
+     "description": "RDF desciption of entities",
     }
 ]
 
@@ -562,15 +562,33 @@ async def search_cell_line(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/entity/{dir}/{ac}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
+@app.get("/describe/entity/ontology/" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-async def describe_cell_line(
+async def describe_onto(
+        request: Request,
+        format: RdfFormat = Query(
+            default= None,
+            title="Response format",
+            description="""Use this parameter to choose the response output format.
+            Alternatively you can also use the HTTP Accept header of your
+            request and set it to either text/turtle, application/rdf+xml, application/n-triples, application/ld+json.
+            If the format parameter is used, the accept header value is ignored.
+            If both the format parameter and the Accept header are undefined, then the response will use the ld+json format."""
+            )
+        ):
+    return describe_any(SubNs["ontology"], "", format, request)
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+@app.get("/describe/entity/{dir}/{ac}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def describe_entity(
         request: Request,
         dir: SubNs = Path(        
             title="Namespace of the entity",
-            description="The namespace of the IRI"
+            description="The namespace of the IRI"            
             ),
-        ac: str = Path(        
+        ac: str = Path(
             title="Identifier of the entity",
             description="The accession number (field AC) is a unique identifier for cell-lines. Example: 'CVCL_S151'"
             ),
@@ -584,8 +602,13 @@ async def describe_cell_line(
             If both the format parameter and the Accept header are undefined, then the response will use the ld+json format."""
             )
         ):
+    return describe_any(dir, ac, format, request)
 
+
+
+def describe_any(dir, ac, format, request):
     t0 = datetime.datetime.now()
+    print("dir", dir, "ac", ac)
 
     # precedence of format over request headers (does NOT work from swagger page !!! but of from curl)
     #print(">>>> format 1", format, format== RdfFormat.jsonld)

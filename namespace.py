@@ -1,6 +1,6 @@
 import re
 import hashlib
-from ApiCommon import get_rdf_base_IRI
+from ApiCommon import get_rdf_base_IRI, get_help_base_IRI
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def replace_non_alphanumeric(input_string):
@@ -127,6 +127,10 @@ class OwlNamespace(BaseNamespace):
     def sameAs(self): return "owl:sameAs"
     def unionOf(self): return "owl:unionOf"
     def equivalentClass(self): return "owl:equivalentClass"
+    def equivalentProperty(self): return "owl:equivalentProperty"
+    def versionInfo(self): return "owl:versionInfo"
+    def Ontology(self): return "owl:Ontology"
+    
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -145,27 +149,25 @@ class SkosNamespace(BaseNamespace):
     def broadMatch(self): return "skos:broadMatch"
     
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class WikidataWdNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(WikidataWdNamespace, self).__init__("wd", "http://www.wikidata.org/entity/")
+    def IRI(self, ac): return "wd:" + ac
+    def P3289_AC(self): return "wd:P3289" 
+    def P3578_OI(self): return "wd:P3578"    
+    def P9072_OX(self): return "wd:P9072"
+    def P5166_DI(self): return "wd:P5166"
+    def P3432_HI(self): return "wd:P3432"
+    def P21_SX(self):   return "wd:P21" # could not figure out how sex is related to cell lines in wikidata
+
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class WikidataWdtNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(WikidataWdtNamespace, self).__init__("wdt", "http://www.wikidata.org/prop/direct/")
-    def P3289_AC(self): return "wdt:P3289"
-    def P3289_OI(self): return "wdt:P3578"
-    
-#     def P3289_OI(self): return "wdt:P3578"
-#     def P3289_OI(self): return "wdt:P3578"
-#     def P3289_OI(self): return "wdt:P3578"
-#     def P3289_OI(self): return "wdt:P3578"
-    
-
-# Cellosaurus ID usage				= wdt:P3289	(usage, also defined as owl:DatatypeProperty)
-# Cellosaurus ID (P3289)                      AC
-
-# autologous cell line (P3578)                OI  = wdt:P3578	owl:ObjectProperty
-# derived from organism type (P9072)          OX  = wdt:P9072     (species)
-# established from medical condition (P5166)  DI  = wdt:P5166	(disease)
-# parent cell line (P3432)                    HI	...
-# sex or gender (P21)                         SX	...
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OaNamespace(BaseNamespace):
@@ -233,8 +235,10 @@ class OurOntologyNamespace(BaseNamespace):
     # --------
     # CLASSES
     # --------
+
+    def Database(self): return ":Database"
+
     def CellLine(self): return ":CellLine"
-    #def CellLineName(self): return ":CellLineName" osoleted
  
     # Organization could be a sublass of foaf:Organization or org:Organization
     # see https://www.w3.org/ns/org#%5B4
@@ -392,6 +396,8 @@ class OurOntologyNamespace(BaseNamespace):
     def fromIndividualBelongingToBreed(self): return ":fromIndividualBelongingToBreed"
     def sequenceVariationComment(self): return ":sequenceVariationComment"
     def annotation(self): return ":annotation"
+    def datatypeAnnotation(self): return ":datatypeAnnotation"
+    def objectAnnotation(self): return ":objectAnnotation"
     def anecdotalComment(self): return ":anecdotalComment"
     def characteristicsComment(self): return ":characteristicsComment"
     def biotechnologyComment(self): return ":biotechnologyComment"
@@ -440,7 +446,7 @@ class OurOntologyNamespace(BaseNamespace):
     def category(self): return ":category" # CA field
     def publisher(self): return ":publisher" # links thesis -> universtities (orga)
 
-    def versionInfo(self): return ":versionInfo"
+    def hasVersion(self): return ":hasVersion"
     def created(self): return ":created"
     def modified(self): return ":modified"
 
@@ -472,12 +478,13 @@ class OurCellLineNamespace(BaseNamespace):
 class DctermsNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(DctermsNamespace, self).__init__("dcterms", "http://purl.org/dc/terms/")
+    def abstract(self): return "dcterms:abstract"
     def created(self): return "dcterms:created"
     def modified(self): return "dcterms:modified"
     def description(self): return "dcterms:description"
     def license(self): return "dcterms:license"
     def title(self): return "dcterms:title"
-    def versionInfo(self): return "dcterms:versionInfo"
+    def hasVersion(self): return "dcterms:hasVersion"
     def creator(self): return "dcterms:creator"
     def publisher(self): return "dcterms:publisher"
     def contributor(self): return "dcterms:contributor"
@@ -505,6 +512,12 @@ class WidocoNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(WidocoNamespace, self).__init__("widoco", "https://w3id.org/widoco/vocab#")
     def introduction(self): return "widoco:introduction"
+    def rdfxmlSerialization(self): return "widoco:rdfxmlSerialization"
+    def turtleSerialization(self): return "widoco:turtleSerialization"
+    def ntSerialization(self): return "widoco:ntSerialization"
+    def jsonldSerialization(self): return "widoco:jsonldSerialization"
+
+
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -523,6 +536,8 @@ class UniProtCoreNamespace(BaseNamespace):
     def version(self): return "up:version"
     def modified(self): return "up:modified"
     def created(self): return "up:created"
+    def Database(self): return "up:Database"
+
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -530,6 +545,8 @@ class OurXrefNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     dbac_dict = dict()
     def __init__(self): super(OurXrefNamespace, self).__init__("xref", get_rdf_base_IRI() + "/xref/")
+    def cleanDb(self, db):
+        return db.replace("/", "-") # necessary for db="IPD-IMGT/HLA" otherwise IRI contains SLASH which is forbidden
     def IRI(self, db, ac, props, store=True):
         our_dict = OurXrefNamespace.dbac_dict
         # we expect to get props as a string like: cat={cat}|lbl={lbl}|dis={dis}|url={url}
@@ -543,8 +560,7 @@ class OurXrefNamespace(BaseNamespace):
             our_dict[xref_key].add(props)
         # build a md5 based IRI from db and ac only 
         xref_md5 = hashlib.md5(xref_key.encode('utf-8')).hexdigest()
-        clean_db = db.replace("/", "-") # necessary for db="IPD-IMGT/HLA" otherwise IRI contains SLASH which is forbidden
-        return "".join(["xref:", clean_db, "_", xref_md5])
+        return "".join(["xref:", self.cleanDb(db), "_", xref_md5])
     
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -564,6 +580,29 @@ class OurOrganizationNamespace(BaseNamespace):
         org_md5 = hashlib.md5(org_key.encode('utf-8')).hexdigest()
         org_iri = "".join(["orga:", org_md5])
         return org_iri
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class CelloWebsiteNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(CelloWebsiteNamespace, self).__init__("cello", "https://www.cellosaurus.org/")
+    def IRI(self, primaryAccession): return "cello:" + primaryAccession
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class HelpNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(HelpNamespace, self).__init__("help", get_help_base_IRI() + "/")
+    def IRI(self, page): return "help:" + page
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class OurDatabaseAndTerminologyNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(OurDatabaseAndTerminologyNamespace, self).__init__("db", get_rdf_base_IRI() + "/db/")
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurPublicationNamespace(BaseNamespace):
@@ -588,6 +627,7 @@ class NamespaceRegistry:
     xref = OurXrefNamespace()
     pub = OurPublicationNamespace()
     orga = OurOrganizationNamespace()
+    db = OurDatabaseAndTerminologyNamespace()
     xsd  = XsdNamespace()
     rdf = RdfNamespace()
     rdfs = RdfsNamespace()
@@ -605,9 +645,11 @@ class NamespaceRegistry:
     oa = OaNamespace()
     org = W3OrgNamespace()
     wdt = WikidataWdtNamespace()
+    wd = WikidataWdNamespace()
+    cello = CelloWebsiteNamespace()
+    help = HelpNamespace()
 
-
-    namespaces = [onto, cvcl, xref, pub, orga, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann, oa, org, wdt, pubmed]
+    namespaces = [onto, cvcl, xref, pub, orga, db, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann, oa, org, wdt, wd, cello, help, pubmed]
 
 
 if __name__ == '__main__':

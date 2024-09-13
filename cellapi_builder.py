@@ -25,6 +25,7 @@ from organizations import KnownOrganizations, Organization
 
 from ontologies import Ontologies, Ontology
 from ontology_builder import OntologyBuilder
+from databases import Database, Databases
 
 # called dynamically
 from ncbi_taxid_parser import NcbiTaxid_Parser
@@ -1052,11 +1053,23 @@ if __name__ == "__main__":
         file_out = open(out_dir + "data_terminologies.ttl", "wb")
         log_it("INFO:", f"serializing OWL for terminologies")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
-        file_out.write(bytes(rb.get_ttl_for_cello_terminology_class() + "\n", "utf-8"))
         for k in ontologies.onto_dict:
             onto: Ontology = ontologies.get(k)
             file_out.write(bytes(rb.get_ttl_for_cello_terminology_individual(onto) + "\n", "utf-8"))
         log_it("INFO:", f"serialized OWL for terminologies")
+        log_it("INFO:", "end")
+
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # create OWL definitions for databases
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        file_out = open(out_dir + "data_databases.ttl", "wb")
+        log_it("INFO:", f"serializing OWL for databases")
+        file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
+        databases = Databases()
+        for k in databases.keys():
+            db: Database = databases.get(k)
+            file_out.write(bytes(rb.get_ttl_for_cello_database_individual(db) + "\n", "utf-8"))
+        log_it("INFO:", f"serialized OWL for databases")
         log_it("INFO:", "end")
 
 
@@ -1095,6 +1108,8 @@ if __name__ == "__main__":
         lines = list()
         log_it("INFO:", f"adding cellosaurus ontology header")
         lines.extend(builder.get_onto_header(version=version))
+        log_it("INFO:", f"adding some useful external terms")
+        lines.extend(builder.get_imported_terms())
         log_it("INFO:", f"adding cellosaurus ontology classes")
         lines.extend(builder.get_classes())
         log_it("INFO:", f"adding cellosaurus ontology properties")

@@ -4,6 +4,7 @@ from namespace import NamespaceRegistry as ns
 from ApiCommon import log_it
 from organizations import Organization
 from ontologies import Term, Ontologies, Ontology
+from databases import Database, Databases
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class DataError(Exception): 
@@ -99,6 +100,11 @@ class RdfBuilder:
         return xref.get("label")
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_xref_url(self, xref):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        return xref.get("url")
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_xref_db(self, xref):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         return xref.get("database")
@@ -136,30 +142,37 @@ class RdfBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_ttl_for_cello_terminology_class(self):
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        triples = TripleList()
-        triples.append(ns.onto.CelloTerminology(), ns.rdfs.subClassOf(), ns.skos.ConceptScheme())
-        triples.append(ns.onto.CelloTerminology(), ns.rdfs.label(), ns.xsd.string("Cellosaurus terminology"))
-        triples.append(ns.onto.CelloTerminology(), ns.rdfs.comment(), ns.xsd.string("Class of cellosaurus terminologies containing some concepts used for annotating cell lines."))
-        url = ns.onto.baseurl()
-        if url.endswith("#"): url = url[:-1]
-        triples.append(ns.onto.CelloTerminology(), ns.rdfs.isDefinedBy(), "<" + url + ">")
-        return "".join(triples.lines)
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_cello_terminology_individual(self, onto):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # Note: some databases are also declared as terminologies
         triples = TripleList()
-        onto_IRI = self.get_ontology_IRI(onto.abbrev)
+        onto_IRI = self.get_ontology_or_database_IRI(onto.abbrev)
         triples.append(onto_IRI, ns.rdf.type(), ns.onto.CelloTerminology())
         triples.append(onto_IRI, ns.rdf.type(), ns.owl.NamedIndividual())
         triples.append(onto_IRI, ns.rdfs.label(), ns.xsd.string(onto.name))
-        triples.append(onto_IRI, ns.onto.versionInfo(), ns.xsd.string(onto.version))
+        triples.append(onto_IRI, ns.onto.shortname(), ns.xsd.string(onto.abbrev))
+        triples.append(onto_IRI, ns.onto.hasVersion(), ns.xsd.string(onto.version))
         triples.append(onto_IRI, ns.rdfs.seeAlso(), "<" + onto.url + ">")
         url = ns.onto.baseurl()
         if url.endswith("#"): url = url[:-1]
         triples.append(onto_IRI, ns.rdfs.isDefinedBy(), "<" + url + ">")
+        return "".join(triples.lines)
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_cello_database_individual(self, db: Database):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # Note: some databases are also declared as terminologies
+        triples = TripleList()
+        db_IRI = self.get_ontology_or_database_IRI(db.rdf_id)
+        triples.append(db_IRI, ns.rdf.type(), ns.onto.Database())
+        triples.append(db_IRI, ns.rdf.type(), ns.owl.NamedIndividual())
+        triples.append(db_IRI, ns.rdfs.label(), ns.xsd.string(db.name))
+        triples.append(db_IRI, ns.onto.shortname(), ns.xsd.string(db.abbrev))
+        triples.append(db_IRI, ns.onto.category(), ns.xsd.string(db.cat))
+        triples.append(db_IRI, ns.rdfs.seeAlso(), "<" + db.url + ">")
+        url = ns.onto.baseurl()
+        if url.endswith("#"): url = url[:-1]
+        triples.append(db_IRI, ns.rdfs.isDefinedBy(), "<" + url + ">")
         return "".join(triples.lines)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -172,7 +185,7 @@ class RdfBuilder:
         ac = term.id
         xr_IRI = ns.xref.IRI(db, ac, None, store=False)
         triples.append(xr_IRI, ns.rdf.type(), ns.skos.Concept())
-        triples.append(xr_IRI, ns.skos.inScheme(), self.get_ontology_IRI(term.scheme))
+        triples.append(xr_IRI, ns.skos.inScheme(), self.get_ontology_or_database_IRI(term.scheme))
         no_accent_label = self.remove_accents(term.prefLabel)
         triples.append(xr_IRI, ns.skos.prefLabel(), ns.xsd.string(no_accent_label))
         triples.append(xr_IRI, ns.skos.notation(), ns.xsd.string(term.id))
@@ -184,6 +197,11 @@ class RdfBuilder:
             triples.append(xr_IRI, ns.onto.more_specific_than(), parent_IRI)
 
         return("".join(triples.lines))
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ontology_or_database_IRI(self, abbrev):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        return  "db:" + abbrev
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -222,16 +240,18 @@ class RdfBuilder:
         xr_IRI = ns.xref.IRI(db, ac, None, store=False)
         triples.append(xr_IRI, ns.rdf.type(), ns.onto.Xref())
         triples.append(xr_IRI, ns.onto.accession(), ns.xsd.string(ac))
-        triples.append(xr_IRI, ns.onto.database(), ns.xsd.string(db)) 
 
-        #TODO: represent db as a :OnlineResource and link it to xref ?
+        # TODO: represent db as a :OnlineResource and link it to xref ?
         # wait to see how xrefs are represented in other RDFs at SIB
-        
+        # triples.append(xr_IRI, ns.onto.database(), ns.xsd.string(db))
+        # if "cat" in prop_dict:
+        #     for value in prop_dict["cat"]: break
+        #     triples.append(xr_IRI, ns.onto.category(), ns.xsd.string(value)) 
+        # DONE
+        triples.append(xr_IRI, ns.onto.database(),  self.get_ontology_or_database_IRI(ns.xref.cleanDb(db))) 
+
         # we usually expect one item in the set associated to each key of prop_dict
         # if we get more than one item, we take the first as the prop value
-        if "cat" in prop_dict:
-            for value in prop_dict["cat"]: break
-            triples.append(xr_IRI, ns.onto.category(), ns.xsd.string(value)) 
         if "lbl" in prop_dict:
             for value in prop_dict["lbl"]: break
             triples.append(xr_IRI, ns.rdfs.label(), ns.xsd.string(value)) 
@@ -246,10 +266,6 @@ class RdfBuilder:
         return("".join(triples.lines))
         
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_ontology_IRI(self, abbrev):
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        return ":" + abbrev
     
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_orga_dict(self):
@@ -447,6 +463,7 @@ class RdfBuilder:
         triples = TripleList()
         cl_IRI = ns.cvcl.IRI(ac)
         triples.append(cl_IRI, ns.rdf.type(), ns.onto.CellLine())
+        triples.append(cl_IRI, ns.rdfs.seeAlso(), ns.cello.IRI(ac))
         cl_data = cl_obj["cell-line"]
 
         # fields: AC, AS, ACAS
@@ -500,9 +517,12 @@ class RdfBuilder:
         for xref in cl_data.get("xref-list") or []:
             xref_IRI = self.get_xref_IRI(xref)
             triples.append(cl_IRI, ns.onto.xref(), xref_IRI)
+            if self.get_xref_db(xref)=="Wikidata":
+                triples.append(cl_IRI, ns.owl.equivalentClass(), ns.wd.IRI(xref["accession"]))
             if self.get_xref_discontinued(xref):
-                triples.extend(self.get_ttl_for_cc_discontinued(cl_IRI, xref["database"], xref["accession"], xref_IRI)) # also used for "CC   Discontinued: " lines       
-
+                # also used for "CC   Discontinued: " lines       
+                triples.extend(self.get_ttl_for_cc_discontinued(cl_IRI, xref["database"], xref["accession"], xref_IRI)) 
+                
         # fields: RX
         for rx in cl_data.get("reference-list") or []:
             triples.append(cl_IRI, ns.onto.reference(), self.get_pub_IRI(rx))
@@ -545,7 +565,7 @@ class RdfBuilder:
         # fields DT, dtc, dtu, dtv
         triples.append(cl_IRI, ns.onto.created(), ns.xsd.date(cl_data["created"]))
         triples.append(cl_IRI, ns.onto.modified(), ns.xsd.date(cl_data["last-updated"]))
-        triples.append(cl_IRI, ns.onto.versionInfo(), ns.xsd.integer(cl_data["entry-version"]))
+        triples.append(cl_IRI, ns.onto.hasVersion(), ns.xsd.string(cl_data["entry-version"]))
 
         # fields: CC, genome-ancestry
         annot = cl_data.get("genome-ancestry")

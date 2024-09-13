@@ -7,7 +7,6 @@ from tree_functions import Tree
 
 
 
-
 #-------------------------------------------------
 class OntologyBuilder:
 #-------------------------------------------------
@@ -17,7 +16,50 @@ class OntologyBuilder:
     def __init__(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+        # Note
+        # we must declare in pur ontology file the external entities that are used 
+        # as object of owl:equivalentProperty 
+        # otherwise they are not displayed by widoco
+        # we also declare claases used as object of owl:equivalentClass to be consistent
+
+        self.imported_terms = {
+            ns.wd.P3289_AC(): { ns.rdf.type(): { ns.rdf.Property(), ns.owl.DatatypeProperty()} ,
+                                ns.rdfs.label() : { ns.xsd.string("wd:P3289")} ,
+                                ns.rdfs.isDefinedBy() : { f"{ns.wd.prefix()}:" }} ,
+            ns.wd.P9072_OX(): { ns.rdf.type(): { ns.rdf.Property(), ns.owl.ObjectProperty()} ,
+                                ns.rdfs.label() : { ns.xsd.string("wd:P9072")} ,
+                                ns.rdfs.isDefinedBy() : { f"{ns.wd.prefix()}:" }} ,
+            ns.wd.P3578_OI(): { ns.rdf.type(): { ns.rdf.Property(), ns.owl.ObjectProperty()} ,
+                                ns.rdfs.label() : { ns.xsd.string("wd:P3578")} ,
+                                ns.rdfs.isDefinedBy() : { f"{ns.wd.prefix()}:" }} ,
+            ns.wd.P5166_DI(): { ns.rdf.type(): { ns.rdf.Property(), ns.owl.ObjectProperty()} ,
+                                ns.rdfs.label() : { ns.xsd.string("wd:P5166" )} ,
+                                ns.rdfs.isDefinedBy() : { f"{ns.wd.prefix()}:" }} ,
+            ns.wd.P3432_HI(): { ns.rdf.type(): { ns.rdf.Property(), ns.owl.ObjectProperty()} ,
+                                ns.rdfs.label() : { ns.xsd.string("wd:P3432")} ,
+                                ns.rdfs.isDefinedBy() : { f"{ns.wd.prefix()}:" }} ,
+            ns.wd.P21_SX(): { ns.rdf.type(): { ns.rdf.Property(), ns.owl.ObjectProperty()} ,
+                                ns.rdfs.label() : { ns.xsd.string("wd:P21")} ,
+                                ns.rdfs.isDefinedBy() : { f"{ns.wd.prefix()}:" }} ,
+            ns.org.Organization(): { ns.rdf.type(): { ns.owl.Class()} ,
+                                ns.rdfs.label() : { ns.xsd.string("org:Organization")} ,
+                                ns.rdfs.isDefinedBy() : { f"{ns.org.prefix()}:" }} ,
+            ns.foaf.Organization(): { ns.rdf.type(): { ns.owl.Class()} ,
+                                ns.rdfs.label() : { ns.xsd.string("foaf:Organization")} ,
+                                ns.rdfs.isDefinedBy() : { f"{ns.foaf.prefix()}:" }} ,
+        }
+
         self.ontodata = {
+
+                ns.onto.Database(): { ns.skos.closeMatch(): { ns.up.Database()}},
+                ns.onto.CelloTerminology() : { ns.rdfs.subClassOf() : { ns.skos.ConceptScheme() }},
+
+                
+
+                ns.onto.CellLine(): { ns.skos.closeMatch(): { "<http://purl.obolibrary.org/obo/CLO_0000031>", 
+                                                             "<http://id.nlm.nih.gov/mesh/D002460>",
+                                                             "<https://www.wikidata.org/wiki/Q21014462>"},
+                                      ns.rdfs.seeAlso(): { "<https://www.cellosaurus.org/>"}},
 
                 ns.onto.Organization(): { ns.rdfs.subClassOf(): {ns.foaf.Agent()}, 
                                         ns.owl.equivalentClass(): { ns.foaf.Organization() , ns.org.Organization() }},
@@ -27,7 +69,6 @@ class OntologyBuilder:
 
                 ns.onto.Annotation(): { ns.rdfs.subClassOf(): {ns.oa.Annotation()}, 
                                         ns.skos.closeMatch(): { ns.up.Annotation()}},
-
 
                 ns.onto.AnecdotalComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.AnatomicalElement() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
@@ -71,7 +112,7 @@ class OntologyBuilder:
                                             ns.skos.broadMatch() : { ns.up.Thesis_Citation() }},
                 ns.onto.DoctoralThesis(): { ns.rdfs.subClassOf() : {ns.onto.Thesis(), ns.fabio.DoctoralThesis()  },
                                             ns.skos.broadMatch() : { ns.up.Thesis_Citation() }},
-                ns.onto.MedicalDegreeMasterThesis(): { ns.rdfs.subClassOf() : {ns.onto.Thesis(), ns.fabio.Thesis() },
+                ns.onto.MedicalDegreeMasterThesis(): { ns.rdfs.subClassOf() : {ns.onto.Thesis(), ns.fabio.MastersThesis() },
                                             ns.skos.broadMatch() : { ns.up.Thesis_Citation() }}, 
                 ns.onto.MedicalDegreeThesis(): { ns.rdfs.subClassOf() : {ns.onto.Thesis(), ns.fabio.Thesis()   },
                                             ns.skos.broadMatch() : { ns.up.Thesis_Citation() }},
@@ -105,51 +146,56 @@ class OntologyBuilder:
                 ns.onto.GeneExtensiveAmplification() : { ns.rdfs.subClassOf() : { ns.onto.GeneAmplification() }}, 
                 ns.onto.GeneDeletion() : { ns.rdfs.subClassOf() : { ns.onto.SequenceVariation()  }},
 
-                ns.onto.CelloTerminology() : { ns.rdfs.subClassOf() : { ns.skos.ConceptScheme() }},
 
+                ns.onto.datatypeAnnotation() : { ns.rdf.type(): {ns.owl.DatatypeProperty() }},
+                ns.onto.objectAnnotation() : { ns.rdf.type(): {ns.owl.ObjectProperty()}},
 
-                ns.onto.annotation(): { ns.skos.closeMatch(): { ns.up.Annotation()}},
-
-                ns.onto.anecdotalComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.biotechnologyComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.cautionComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.cellType() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.characteristicsComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.derivedFromSite() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.discontinuationRecord() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.donorInfoComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.doublingTimeComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.fromIndividualAtAge() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.fromIndividualBelongingToBreed() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.fromIndividualBelongingToSpecies() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.fromIndividualWithDisease() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.fromIndividualWithSex() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.geneticIntegration() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.genomeAncestry() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.hlaTyping() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.karyotypicInfoComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.knockout() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.mabIsotype() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.mabTarget() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.microsatelliteInstability() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.miscellaneousInfoComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.misspellingComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.omicsComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.populationComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.registration() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.resistance() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.senescenceComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.sequenceVariationComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.shortTandemRepeatProfile() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.transformant() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
-                ns.onto.virologyComment() : { ns.rdfs.subPropertyOf() : { ns.onto.annotation() }},
+                ns.onto.anecdotalComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.biotechnologyComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.cautionComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.cellType() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.characteristicsComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.derivedFromSite() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.discontinuationRecord() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.donorInfoComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.doublingTimeComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.fromIndividualAtAge() : { ns.rdfs.subPropertyOf() : { ns.onto.datatypeAnnotation() }},
+                ns.onto.fromIndividualBelongingToBreed() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.fromIndividualBelongingToSpecies() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() },
+                                                               ns.owl.equivalentProperty() : { ns.wd.P9072_OX() }},
+                ns.onto.fromIndividualWithDisease() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() },
+                                                        ns.owl.equivalentProperty() :{ ns.wd.P5166_DI()} },
+                ns.onto.fromIndividualWithSex() : { ns.rdfs.subPropertyOf() : { ns.onto.datatypeAnnotation() }},
+                ns.onto.fromSameIndividualAs() : { ns.owl.equivalentProperty(): { ns.wd.P3578_OI()}},
+                
+                ns.onto.geneticIntegration() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.genomeAncestry() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.hlaTyping() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.karyotypicInfoComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.knockout() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.mabIsotype() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.mabTarget() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.microsatelliteInstability() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.miscellaneousInfoComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.misspellingComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.omicsComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.parentCellLine() : { ns.owl.equivalentProperty() : { ns.wd.P3432_HI()}},
+                ns.onto.populationComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.registration() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.resistance() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.senescenceComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.sequenceVariationComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.shortTandemRepeatProfile() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.transformant() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
+                ns.onto.virologyComment() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
 
                 ns.onto.publisher() : { ns.rdfs.subPropertyOf() : { ns.dcterms.publisher() }},
                 ns.onto.editor() : { ns.rdfs.subPropertyOf() : { ns.dcterms.contributor() }},
                 
-                ns.onto.accession(): { ns.rdfs.subPropertyOf() : { ns.dcterms.identifier() }},
+                ns.onto.accession(): { ns.rdfs.subPropertyOf() : { ns.dcterms.identifier(), 
+                                                                   ns.skos.notation() }},
                 ns.onto.primaryAccession(): { ns.rdfs.subPropertyOf() : { ns.onto.accession() },
-                                              ns.owl.sameAs(): {ns.wdt.P3289_AC() }},
+                                              ns.owl.equivalentProperty(): {ns.wd.P3289_AC() }},
                 ns.onto.secondaryAccession(): { ns.rdfs.subPropertyOf() : { ns.onto.accession() }},
 
                 ns.onto.name() : { ns.rdfs.subPropertyOf() : { ns.foaf.name() }},
@@ -182,7 +228,7 @@ class OntologyBuilder:
                 ns.onto.hgvs() : { ns.rdfs.subPropertyOf() : { ns.onto.name() }},
                 ns.onto.volume() : { ns.rdfs.subPropertyOf() : { ns.up.volume() }},
 
-                ns.onto.versionInfo() : { ns.rdfs.subPropertyOf(): { ns.dcterms.versionInfo() } , ns.skos.closeMatch(): { ns.up.version() }},
+                ns.onto.hasVersion() : { ns.rdfs.subPropertyOf(): { ns.dcterms.hasVersion() } , ns.skos.closeMatch(): { ns.up.version() }},
                 ns.onto.modified() : { ns.rdfs.subPropertyOf(): { ns.dcterms.modified() } , ns.skos.closeMatch(): { ns.up.modified() }},
                 ns.onto.created() : { ns.rdfs.subPropertyOf(): { ns.dcterms.created() } , ns.skos.closeMatch(): { ns.up.created() }},
                 
@@ -231,15 +277,17 @@ class OntologyBuilder:
         # domain / ranges to remove
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         self.rdfs_domain_to_remove = dict()
-        self.rdfs_domain_to_remove[ns.onto.accession()] = ns.skos.Concept() 
-        self.rdfs_domain_to_remove[ns.onto.category()] = ns.skos.Concept() 
-        self.rdfs_domain_to_remove[ns.onto.database()] = ns.skos.Concept() 
-        self.rdfs_domain_to_remove[ns.onto.versionInfo()] = ns.owl.NamedIndividual()
-        self.rdfs_domain_to_remove[ns.onto.more_specific_than()] = ns.onto.Xref() 
+        self.rdfs_domain_to_remove[ns.onto.accession()] = { ns.skos.Concept() }
+        self.rdfs_domain_to_remove[ns.onto.category()] = { ns.skos.Concept(), ns.owl.NamedIndividual()  }
+        self.rdfs_domain_to_remove[ns.onto.database()] = { ns.skos.Concept()  }
+        self.rdfs_domain_to_remove[ns.onto.hasVersion()] = { ns.owl.NamedIndividual() }
+        self.rdfs_domain_to_remove[ns.onto.shortname()] = { ns.owl.NamedIndividual() }
+        self.rdfs_domain_to_remove[ns.onto.more_specific_than()] = { ns.onto.Xref()  }
 
         self.rdfs_range_to_remove = dict()
-        self.rdfs_range_to_remove[ns.onto.xref()] = ns.skos.Concept() 
-        self.rdfs_range_to_remove[ns.onto.more_specific_than()] = ns.onto.Xref() 
+        self.rdfs_range_to_remove[ns.onto.xref()] = { ns.skos.Concept() }
+        self.rdfs_range_to_remove[ns.onto.more_specific_than()] = { ns.onto.Xref() } 
+        self.rdfs_range_to_remove[ns.onto.database()] = { ns.owl.NamedIndividual(), ns.onto.CelloTerminology() } 
 
 
 
@@ -252,9 +300,6 @@ class OntologyBuilder:
         self.rdfs_label[ns.onto.MabIsotype()] = "Monoclonal antibody isotype"
         self.rdfs_label[ns.onto.mabIsotype()] = "has monoclonal antibody isotype"
         self.rdfs_label[ns.onto.mabTarget()] = "has monoclonal antibody target"
-        self.rdfs_label[ns.onto.created()] = "cellosaurus cell line record creation date"
-        self.rdfs_label[ns.onto.modified()] = "cellosaurus cell line record last update"
-        self.rdfs_label[ns.onto.versionInfo()] = "cellosaurus cell line record version"
         self.rdfs_label[ns.onto.hasPMCId()] = "has PMC identifier"
         self.rdfs_label[ns.onto.hasPubMedId()] = "has PubMed identifier"
         self.rdfs_label[ns.onto.hasDOI()] = "has DOI identifier"
@@ -276,6 +321,7 @@ class OntologyBuilder:
         self.rdfs_comment[ns.onto.recommendedName()] = "Most frequently the name of the cell line as provided in the original publication"
         self.rdfs_comment[ns.onto.alternativeName()] = "Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms"
         self.rdfs_comment[ns.onto.more_specific_than()] = "Links two concepts. The subject concept is more specific than the object concept. The semantics is the similar to the skos:broader property but its label less ambiguous."
+        self.rdfs_comment[ns.onto.CelloTerminology()] = "Class of cellosaurus terminologies containing some concepts used for annotating cell lines."
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -338,6 +384,25 @@ class OntologyBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_imported_terms(self):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        lines = list()
+        lines.append("#")
+        lines.append("# External terms used as equivalent class or property in this ontology")
+        lines.append("#")
+        lines.append("")
+        for s in self.imported_terms:
+            lines.append(s)
+            s_data = self.imported_terms[s]
+            for p in s_data:
+                p_data = s_data[p]
+                for o in p_data:
+                    lines.append(f"    {p} {o} ;")
+            lines.append("    .")
+            lines.append("")
+        return lines
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_onto_header(self, version="alpha"):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         lines = list()
@@ -368,18 +433,24 @@ class OntologyBuilder:
 
         # Note: all the prefixes are declared in namespace.py but not necessarily all the properties because used only once...
         lines.append(onto_url)
-        lines.append("    a owl:Ontology ;")
+        lines.append("    a " + ns.owl.Ontology() + " ;")
         lines.append("    " + ns.rdfs.label() + " " + ns.xsd.string("Cellosaurus ontology") + " ;")
-        lines.append("    dcterms:created " + ns.xsd.date("2024-07-30") + " ;")
-        lines.append("    dcterms:modified " + ns.xsd.date(date_string) + " ;")
-        lines.append("    dcterms:description " + ns.xsd.string3(onto_descr) + " ;")
-        lines.append("    dcterms:license <http://creativecommons.org/licenses/by/4.0> ;")
-        lines.append("    dcterms:title " + ns.xsd.string("Cellosaurus ontology") + " ;")
-        lines.append("    dcterms:versionInfo " + ns.xsd.string(version) + " ;")
-        lines.append("    dcterms:abstract " + ns.xsd.string3(onto_abstract) + " ;")
-        lines.append("    vann:preferredNamespacePrefix " + ns.xsd.string(onto_prefix) + " ;")
-        lines.append("    bibo:status <http://purl.org/ontology/bibo/status/published> ;")
-        lines.append("    widoco:introduction " + ns.xsd.string3(onto_intro) + " ;")
+        lines.append("    " + ns.dcterms.created() + " " + ns.xsd.date("2024-07-30") + " ;")
+        lines.append("    " + ns.dcterms.modified() + " " + ns.xsd.date(date_string) + " ;")
+        lines.append("    " + ns.dcterms.description() + " " + ns.xsd.string3(onto_descr) + " ;")
+        lines.append("    " + ns.dcterms.license() + " <http://creativecommons.org/licenses/by/4.0> ;")
+        lines.append("    " + ns.dcterms.title() + " " + ns.xsd.string("Cellosaurus ontology") + " ;")
+        lines.append("    " + ns.dcterms.hasVersion() + " " + ns.xsd.string(version) + " ;")
+        lines.append("    " + ns.owl.versionInfo() + " " + ns.xsd.string(version) + " ;")
+        lines.append("    " + ns.dcterms.abstract() + " " + ns.xsd.string3(onto_abstract) + " ;")
+        lines.append("    " + ns.vann.preferredNamespacePrefix() + " " + ns.xsd.string(onto_prefix) + " ;")
+        lines.append("    " + ns.bibo.status() + " <http://purl.org/ontology/bibo/status/published> ;")
+        lines.append("    " + ns.widoco.introduction() + " " + ns.xsd.string3(onto_intro) + " ;")
+        lines.append("    " + ns.rdfs.seeAlso() + " " + ns.help.IRI("index-en.html") + " ;")      
+        lines.append("    " + ns.widoco.rdfxmlSerialization() + " " + ns.help.IRI("ontology.owl") + " ;")      
+        lines.append("    " + ns.widoco.ntSerialization() + " " + ns.help.IRI("ontology.nt") + " ;")      
+        lines.append("    " + ns.widoco.turtleSerialization() + " " + ns.help.IRI("ontology.ttl") + " ;")      
+        lines.append("    " + ns.widoco.jsonldSerialization() + " " + ns.help.IRI("ontology.jsonld") + " ;")      
         lines.append("    .")
         lines.append("")
         return lines
@@ -502,12 +573,11 @@ class OntologyBuilder:
 
                     # prop domain definition
                     domain_set = set(domain_dic.keys())
-                    if len(domain_set)>1: 
-                        sd = self.tree.get_close_parent_set(domain_set)
-                        if sd != domain_set: domain_set = sd
-
-                    domain_to_remove = self.rdfs_domain_to_remove.get(prop_name)
-                    if domain_to_remove is not None: domain_set = domain_set - { domain_to_remove }
+                    if len(domain_set)>3: 
+                        domain_set = self.tree.get_close_parent_set(domain_set)
+            
+                    for domain_to_remove in self.rdfs_domain_to_remove.get(prop_name) or {}:
+                        domain_set = domain_set - { domain_to_remove }
 
                     if len(domain_set)==1:
                         name = domain_set.pop()
@@ -529,17 +599,15 @@ class OntologyBuilder:
 
                     # prop range definition
                     range_set = set(range_dic.keys())
-                    if len(range_set)>1:
-                        sr = self.tree.get_close_parent_set(range_set)
-                        if sr != range_set: range_set = sr
+                    if len(range_set)>3:
+                        range_set = self.tree.get_close_parent_set(range_set)
 
                     # hack to replace xsd:date with rdfs:Literal to be OWL2 frienly                    
                     if ns.xsd.dateDataType() in range_set:
                         range_set = range_set - { ns.xsd.dateDataType() }
                         range_set.add(ns.rdfs.Literal())
                         
-                    range_to_remove = self.rdfs_range_to_remove.get(prop_name)
-                    if range_to_remove is not None:
+                    for range_to_remove in self.rdfs_range_to_remove.get(prop_name) or {}:
                         range_set = range_set - { range_to_remove } 
 
                     if len(range_set)==1:
@@ -612,6 +680,7 @@ if __name__ == '__main__':
     else:  
         lines = list()
         lines.extend(builder.get_onto_header(version="1.0"))
+        lines.extend(builder.get_imported_terms())
         lines.extend(builder.get_classes())
         lines.extend(builder.get_props())
         for line in lines: print(line)

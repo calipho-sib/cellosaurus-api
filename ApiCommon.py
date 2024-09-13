@@ -56,12 +56,20 @@ def get_rdf_graph_IRI():
     # to be sync'ed with private/scripts/load_ttl_files.sh
     return "https://www.cellosaurus.org/rdf/graphs/main"
 
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_rdf_base_IRI():
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     # no final "/", please !
     #return "https://www.cellosaurus.org/rdf"
     return "http://localhost/rdf"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_help_base_IRI():
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # no final "/", please !
+    #return "https://www.cellosaurus.org/doc"
+    return "http://localhost/doc"
 
 
 
