@@ -37,7 +37,7 @@ class Tree:
         if len(node_set) == 1: return set(node_set)
         old_set = set(node_set)   # copy of input set
         while True:
-            #print("iter")
+            print("iter")
             new_set = set()
             old_list = list(old_set)
             to_be_removed = set()
@@ -53,7 +53,7 @@ class Tree:
                         if node1 != parent: to_be_removed.add(node1)
                         if node2 != parent: to_be_removed.add(node2)
                         new_set.add(parent)
-                    #print(node1, node2, "=>", parent, ", new set:", new_set, ", will remove:", to_be_removed)
+                    print(node1, node2, "=>", parent, ", new set:", new_set, ", will remove:", to_be_removed)
             if len(new_set)==1: break
             new_set = new_set - to_be_removed
             if len(new_set)==1: break

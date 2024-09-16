@@ -1059,13 +1059,18 @@ if __name__ == "__main__":
         log_it("INFO:", f"serialized OWL for terminologies")
         log_it("INFO:", "end")
 
+
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # create OWL definitions for databases
+        # create OWL definitions for Database subclasses and individuals
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         file_out = open(out_dir + "data_databases.ttl", "wb")
         log_it("INFO:", f"serializing OWL for databases")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         databases = Databases()
+        for k in databases.categories():
+            cat = databases.categories()[k]
+            file_out.write(bytes(rb.get_ttl_for_cello_database_subclass(cat) + "\n", "utf-8"))
+                        
         for k in databases.keys():
             db: Database = databases.get(k)
             file_out.write(bytes(rb.get_ttl_for_cello_database_individual(db) + "\n", "utf-8"))

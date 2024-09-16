@@ -4,7 +4,7 @@ from namespace import NamespaceRegistry as ns
 from ApiCommon import log_it
 from organizations import Organization
 from terminologies import Term, Terminologies, Terminology
-from databases import Database, Databases
+from databases import Database, Databases, get_db_category_IRI
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class DataError(Exception): 
@@ -159,16 +159,35 @@ class RdfBuilder:
         return "".join(triples.lines)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_cello_database_subclass(self, db_cat):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # Note: ns.onto.Database definition is built in ontology_builder but
+        # its sub classes and their named individuals are created in this module
+        triples = TripleList()
+        cat_label = db_cat["label"]
+        cat_IRI = get_db_category_IRI(cat_label)
+        triples.append(cat_IRI, ns.rdf.type(), ns.owl.Class())
+        triples.append(cat_IRI, ns.rdfs.subClassOf(), ns.onto.Database())
+        triples.append(cat_IRI, ns.rdfs.label(), ns.xsd.string(cat_label))
+        url = ns.onto.baseurl()
+        if url.endswith("#"): url = url[:-1]
+        triples.append(cat_IRI, ns.rdfs.isDefinedBy(), "<" + url + ">")
+        return "".join(triples.lines)
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_cello_database_individual(self, db: Database):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # Note: some databases are also declared as terminologies
         triples = TripleList()
         db_IRI = self.get_terminology_or_database_IRI(db.rdf_id)
-        triples.append(db_IRI, ns.rdf.type(), ns.onto.Database())
+        triples.append(db_IRI, ns.rdf.type(), get_db_category_IRI(db.cat))
         triples.append(db_IRI, ns.rdf.type(), ns.owl.NamedIndividual())
         triples.append(db_IRI, ns.rdfs.label(), ns.xsd.string(db.name))
         triples.append(db_IRI, ns.onto.shortname(), ns.xsd.string(db.abbrev))
-        triples.append(db_IRI, ns.onto.category(), ns.xsd.string(db.cat))
+        if db.in_up:
+            triples.append(db_IRI, ns.owl.sameAs(), "<http://purl.uniprot.org/database/" + db.abbrev + ">") 
+
+        #triples.append(db_IRI, ns.onto.category(), ns.xsd.string(db.cat))
         triples.append(db_IRI, ns.rdfs.seeAlso(), "<" + db.url + ">")
         url = ns.onto.baseurl()
         if url.endswith("#"): url = url[:-1]

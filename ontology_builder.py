@@ -4,6 +4,7 @@ from sparql_client import EndpointClient
 import sys
 from datetime import datetime
 from tree_functions import Tree
+from databases import Database, Databases, get_db_category_IRI
 
 
 
@@ -233,6 +234,15 @@ class OntologyBuilder:
                 ns.onto.created() : { ns.rdfs.subPropertyOf(): { ns.dcterms.created() } , ns.skos.closeMatch(): { ns.up.created() }},
                 
             }
+        
+        # we add programmaticaly here to self.ontodata the subClassOf relationships between Database ad its children
+        # so that we can take advantage of close_parent_set() method during computation of domain / ranges of related properties
+        databases = Databases()
+        for k in databases.categories():
+            cat = databases.categories()[k]
+            cat_IRI = get_db_category_IRI(cat["label"])
+            self.ontodata[cat_IRI] = { ns.rdfs.subClassOf(): {ns.onto.Database()} }
+
 
         # build tree with local child - parent relationships based on rdfs:subClassOf()
         edges = dict()
