@@ -1,6 +1,6 @@
 from ApiCommon import log_it
 from datetime import datetime
-from ontologies import Term
+from terminologies import Term
 from optparse import OptionParser
 import sys
 from lxml import etree
@@ -28,7 +28,7 @@ class Rs_Parser:
 
         self.abbrev = abbrev
         self.term_dir = "terminologies/" + self.abbrev + "/"
-        self.onto_version = "" # set by load()
+        self.termi_version = "" # set by load()
         self.line_no = 0
         self.term_dict = dict()
         self.load()
@@ -37,9 +37,9 @@ class Rs_Parser:
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
     # - - - - - - - - - - - - - - - - - - 
-    def get_onto_version(self):
+    def get_termi_version(self):
     # - - - - - - - - - - - - - - - - - - 
-        return self.onto_version
+        return self.termi_version
     
 
     # - - - - - - - - - - - - - - - - - - 
@@ -96,13 +96,13 @@ class Rs_Parser:
         log_it("INFO:", "Loading", filename)
         root = etree.parse(filename)
 
-        # get onto data version
+        # get termi data version
         nodes = root.xpath("/rdf:RDF/owl:Ontology/owl:versionInfo", namespaces=ns)
-        if len(nodes) > 0: self.onto_version = nodes[0].text + " "
+        if len(nodes) > 0: self.termi_version = nodes[0].text + " "
         nodes = root.xpath("/rdf:RDF/owl:Ontology/owl:versionIRI", namespaces=ns)
         if len(nodes) > 0:
             resource = nodes[0].get('{%s}resource' % ns["rdf"])
-            if resource is not None: self.onto_version += resource
+            if resource is not None: self.termi_version += resource
 
 
 
@@ -177,7 +177,7 @@ if __name__ == '__main__':
 
     parser = Rs_Parser("RS")
     #for t in parser.term_dict: print(parser.term_dict[t])        
-    print("Data version", parser.get_onto_version())
+    print("Data version", parser.get_termi_version())
     print("Parsed terms", len(parser.term_dict))
 
     ac = args[0]

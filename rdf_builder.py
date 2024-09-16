@@ -3,7 +3,7 @@ import unicodedata
 from namespace import NamespaceRegistry as ns
 from ApiCommon import log_it
 from organizations import Organization
-from ontologies import Term, Ontologies, Ontology
+from terminologies import Term, Terminologies, Terminology
 from databases import Database, Databases
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -142,20 +142,20 @@ class RdfBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_ttl_for_cello_terminology_individual(self, onto):
+    def get_ttl_for_cello_terminology_individual(self, termi):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # Note: some databases are also declared as terminologies
         triples = TripleList()
-        onto_IRI = self.get_ontology_or_database_IRI(onto.abbrev)
-        triples.append(onto_IRI, ns.rdf.type(), ns.onto.CelloTerminology())
-        triples.append(onto_IRI, ns.rdf.type(), ns.owl.NamedIndividual())
-        triples.append(onto_IRI, ns.rdfs.label(), ns.xsd.string(onto.name))
-        triples.append(onto_IRI, ns.onto.shortname(), ns.xsd.string(onto.abbrev))
-        triples.append(onto_IRI, ns.onto.hasVersion(), ns.xsd.string(onto.version))
-        triples.append(onto_IRI, ns.rdfs.seeAlso(), "<" + onto.url + ">")
+        termi_IRI = self.get_terminology_or_database_IRI(termi.abbrev)
+        triples.append(termi_IRI, ns.rdf.type(), ns.onto.CelloTerminology())
+        triples.append(termi_IRI, ns.rdf.type(), ns.owl.NamedIndividual())
+        triples.append(termi_IRI, ns.rdfs.label(), ns.xsd.string(termi.name))
+        triples.append(termi_IRI, ns.onto.shortname(), ns.xsd.string(termi.abbrev))
+        triples.append(termi_IRI, ns.onto.hasVersion(), ns.xsd.string(termi.version))
+        triples.append(termi_IRI, ns.rdfs.seeAlso(), "<" + termi.url + ">")
         url = ns.onto.baseurl()
         if url.endswith("#"): url = url[:-1]
-        triples.append(onto_IRI, ns.rdfs.isDefinedBy(), "<" + url + ">")
+        triples.append(termi_IRI, ns.rdfs.isDefinedBy(), "<" + url + ">")
         return "".join(triples.lines)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -163,7 +163,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # Note: some databases are also declared as terminologies
         triples = TripleList()
-        db_IRI = self.get_ontology_or_database_IRI(db.rdf_id)
+        db_IRI = self.get_terminology_or_database_IRI(db.rdf_id)
         triples.append(db_IRI, ns.rdf.type(), ns.onto.Database())
         triples.append(db_IRI, ns.rdf.type(), ns.owl.NamedIndividual())
         triples.append(db_IRI, ns.rdfs.label(), ns.xsd.string(db.name))
@@ -185,7 +185,7 @@ class RdfBuilder:
         ac = term.id
         xr_IRI = ns.xref.IRI(db, ac, None, store=False)
         triples.append(xr_IRI, ns.rdf.type(), ns.skos.Concept())
-        triples.append(xr_IRI, ns.skos.inScheme(), self.get_ontology_or_database_IRI(term.scheme))
+        triples.append(xr_IRI, ns.skos.inScheme(), self.get_terminology_or_database_IRI(term.scheme))
         no_accent_label = self.remove_accents(term.prefLabel)
         triples.append(xr_IRI, ns.skos.prefLabel(), ns.xsd.string(no_accent_label))
         triples.append(xr_IRI, ns.skos.notation(), ns.xsd.string(term.id))
@@ -199,7 +199,7 @@ class RdfBuilder:
         return("".join(triples.lines))
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_ontology_or_database_IRI(self, abbrev):
+    def get_terminology_or_database_IRI(self, abbrev):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         return  "db:" + abbrev
 
@@ -248,7 +248,7 @@ class RdfBuilder:
         #     for value in prop_dict["cat"]: break
         #     triples.append(xr_IRI, ns.onto.category(), ns.xsd.string(value)) 
         # DONE
-        triples.append(xr_IRI, ns.onto.database(),  self.get_ontology_or_database_IRI(ns.xref.cleanDb(db))) 
+        triples.append(xr_IRI, ns.onto.database(),  self.get_terminology_or_database_IRI(ns.xref.cleanDb(db))) 
 
         # we usually expect one item in the set associated to each key of prop_dict
         # if we get more than one item, we take the first as the prop value

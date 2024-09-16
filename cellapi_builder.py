@@ -23,7 +23,7 @@ from namespace import NamespaceRegistry as ns_reg
 from rdf_builder import RdfBuilder
 from organizations import KnownOrganizations, Organization
 
-from ontologies import Ontologies, Ontology
+from terminologies import Terminologies, Terminology
 from ontology_builder import OntologyBuilder
 from databases import Database, Databases
 
@@ -915,7 +915,7 @@ if __name__ == "__main__":
         known_orgs.loadInstitutions(input_dir + "institution_list")
         known_orgs.loadOnlineResources(input_dir + "cellosaurus_xrefs.txt")
 
-        ontologies = Ontologies()
+        terminologies = Terminologies()
 
         rb = RdfBuilder(known_orgs)
 
@@ -976,8 +976,8 @@ if __name__ == "__main__":
             item_cnt += 1
             if item_cnt % 10000 == 0: log_it("INFO:", f"looking up xrefs: {item_cnt} / {len(xr_dict)}")
             db, ac = k.split("=")
-            onto = ontologies.get(db)
-            if onto is not None:
+            termi = terminologies.get(db)
+            if termi is not None:
                 if db not in cited_terms: cited_terms[db] = set()
                 cited_terms[db].add(ac)
         log_it("INFO:", f"looked up xrefs: {item_cnt} / {len(xr_dict)}")
@@ -986,21 +986,21 @@ if __name__ == "__main__":
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # get relevant set of terms to be RDFized and serialize them
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        for k in ontologies.onto_dict:
-            onto: Ontology = ontologies.get(k)
-            log_it("INFO:", f"Serializing ontology {k} ...")
-            file_out = open(out_dir + "data_" + onto.abbrev + ".ttl", "wb")
+        for k in terminologies.termi_dict:
+            termi: Terminology = terminologies.get(k)
+            log_it("INFO:", f"Serializing terminology {k} ...")
+            file_out = open(out_dir + "data_" + termi.abbrev + ".ttl", "wb")
             file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
-            parser = getattr(__import__("__main__"), onto.parser_name)(k)
-            # we get version from parser, will be used in RDF defining ontologies as NamedIndividual
-            onto.version = parser.get_onto_version() 
+            parser = getattr(__import__("__main__"), termi.parser_name)(k)
+            # we get version from parser, will be used in RDF defining terminologies as NamedIndividual
+            termi.version = parser.get_termi_version() 
             cited_set = cited_terms.get(k) or set()
             log_it("INFO:", "Cited_set", k, len(cited_set))
             relevant_id_set = set()
             for id in cited_set:
                 term = parser.get_term(id)
                 if term is None:
-                    log_it("ERROR:", f"Cited term/concept {id} not found in {k} ontology")
+                    log_it("ERROR:", f"Cited term/concept {id} not found in {k} terminology")
                 else:
                     parent_list = parser.get_with_parent_list(id)
                     relevant_id_set.update(parent_list)
@@ -1008,11 +1008,11 @@ if __name__ == "__main__":
             for id in relevant_id_set:
                 term = parser.get_term(id)
                 if term is None:
-                    log_it("ERROR:", f"Parent term/concept {id} not found in {k} ontology")
+                    log_it("ERROR:", f"Parent term/concept {id} not found in {k} terminology")
                 else:
                     file_out.write( bytes(rb.get_ttl_for_term(term), "utf-8") ) 
             file_out.close()
-            log_it("INFO:", f"Serialized ontology {k}: {len(relevant_id_set)} relevant concepts")
+            log_it("INFO:", f"Serialized terminology {k}: {len(relevant_id_set)} relevant concepts")
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # create RDF for xrefs
@@ -1048,14 +1048,14 @@ if __name__ == "__main__":
         log_it("INFO:", f"serialized orgs: {item_cnt} / {len(orga_dict)}")
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # create OWL definitions for ontologies
+        # create OWL definitions for terminologies
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         file_out = open(out_dir + "data_terminologies.ttl", "wb")
         log_it("INFO:", f"serializing OWL for terminologies")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
-        for k in ontologies.onto_dict:
-            onto: Ontology = ontologies.get(k)
-            file_out.write(bytes(rb.get_ttl_for_cello_terminology_individual(onto) + "\n", "utf-8"))
+        for k in terminologies.termi_dict:
+            termi: Terminology = terminologies.get(k)
+            file_out.write(bytes(rb.get_ttl_for_cello_terminology_individual(termi) + "\n", "utf-8"))
         log_it("INFO:", f"serialized OWL for terminologies")
         log_it("INFO:", "end")
 

@@ -1,6 +1,6 @@
 from ApiCommon import log_it
 from datetime import datetime
-from ontologies import Term
+from terminologies import Term
 from optparse import OptionParser
 import sys
 
@@ -27,7 +27,7 @@ class Chebi_Parser:
     # - - - - - - - - - - - - - - - - - - 
         self.abbrev = abbrev
         self.term_dir = "terminologies/" + self.abbrev + "/"
-        self.onto_version = "unknown version" # set by load()
+        self.termi_version = "unknown version" # set by load()
         self.line_no = 0
         self.term_dict = dict()
         self.load()
@@ -36,9 +36,9 @@ class Chebi_Parser:
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
     # - - - - - - - - - - - - - - - - - - 
-    def get_onto_version(self):
+    def get_termi_version(self):
     # - - - - - - - - - - - - - - - - - - 
-        return self.onto_version
+        return self.termi_version
     
 
     # - - - - - - - - - - - - - - - - - - 
@@ -72,7 +72,7 @@ class Chebi_Parser:
         cterm = self.term_dict.get(id)
         if cterm is None: return None
         if id != cterm.id:
-            log_it("WARNING", f"term {id} is a secondary ID of {cterm.id} in {self.abbrev} ontology")
+            log_it("WARNING", f"term {id} is a secondary ID of {cterm.id} in {self.abbrev} terminology")
             return None
         parent_set = set(cterm.isaList)
         parent_set.update(cterm.isPartOfSet)
@@ -110,7 +110,7 @@ class Chebi_Parser:
     # - - - - - - - - - - - - - - - - - - 
     def find_data_version(self, f_in):
     # - - - - - - - - - - - - - - - - - - 
-        self.onto_version = "version not found"
+        self.termi_version = "version not found"
         while True:
             line = f_in.readline()
             if line == "": break
@@ -119,7 +119,7 @@ class Chebi_Parser:
             if line == "":
                 break
             elif line.startswith("data-version: "): 
-                self.onto_version = line
+                self.termi_version = line
             elif line.startswith("[Term]"):
                 log_it("ERROR:", "parser could not find ChEBI version")
                 break
@@ -168,7 +168,7 @@ if __name__ == '__main__':
     (options, args) = OptionParser().parse_args()
 
     parser = Chebi_Parser("ChEBI")
-    print(parser.get_onto_version())
+    print(parser.get_termi_version())
 
     ac = args[0]
 

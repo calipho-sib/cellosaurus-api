@@ -1,6 +1,6 @@
 from ApiCommon import log_it
 from datetime import datetime
-from ontologies import Term
+from terminologies import Term
 from optparse import OptionParser
 import sys
 import os
@@ -39,7 +39,7 @@ class Interpro_Parser:
         self.TERM_DIR = "terminologies/" + self.abbrev + "/"
         self.CITED_TERMS_FILE = "cited_uniprot_ac.tsv"
         self.CITED_TERMS_TO_IPR_TERMS_FILE = "cited_uniprot_2_ipr.tsv"
-        self.onto_version = "unknown version" # set by load()
+        self.termi_version = "unknown version" # set by load()
         self.line_no = 0
         self.term_dict = dict()
         self.download()
@@ -49,9 +49,9 @@ class Interpro_Parser:
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
     # - - - - - - - - - - - - - - - - - - 
-    def get_onto_version(self):
+    def get_termi_version(self):
     # - - - - - - - - - - - - - - - - - - 
-        return self.onto_version
+        return self.termi_version
     
 
     # - - - - - - - - - - - - - - - - - - 
@@ -114,7 +114,7 @@ class Interpro_Parser:
     # - - - - - - - - - - - - - - - - - - 
     def find_data_version(self, f_in):
     # - - - - - - - - - - - - - - - - - - 
-        self.onto_version = "version not found"
+        self.termi_version = "version not found"
         while True:
             line = f_in.readline()
             if line == "": break
@@ -123,7 +123,7 @@ class Interpro_Parser:
             if line == "":
                 break
             elif line.startswith("data-version: "): 
-                self.onto_version = line
+                self.termi_version = line
             elif line.startswith("[Term]"):
                 log_it("ERROR:", "parser could not find InterPro version")
                 break
@@ -277,7 +277,7 @@ if __name__ == '__main__':
 
 
     parser = Interpro_Parser("IPR")
-    print(parser.get_onto_version())
+    print(parser.get_termi_version())
 
     sys.exit()
 

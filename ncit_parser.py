@@ -1,6 +1,6 @@
 from ApiCommon import log_it
 from datetime import datetime
-from ontologies import Term
+from terminologies import Term
 from optparse import OptionParser
 import sys
 
@@ -28,7 +28,7 @@ class Ncit_Parser:
     # - - - - - - - - - - - - - - - - - - 
         self.abbrev = abbrev
         self.term_dir = "terminologies/" + self.abbrev + "/"
-        self.onto_version = "unknown version" # set by load()
+        self.termi_version = "unknown version" # set by load()
         self.line_no = 0
         self.term_dict = dict()
         self.load()
@@ -37,9 +37,9 @@ class Ncit_Parser:
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
     # - - - - - - - - - - - - - - - - - - 
-    def get_onto_version(self):
+    def get_termi_version(self):
     # - - - - - - - - - - - - - - - - - - 
-        return self.onto_version
+        return self.termi_version
     
 
     # - - - - - - - - - - - - - - - - - - 
@@ -76,7 +76,7 @@ class Ncit_Parser:
             log_it("WARNING", f"term {id} is obsolete in {self.abbrev} {nci_term.update_instructions}")
             return None
         if nci_term.id != id:
-            log_it("WARNING", f"term {id} is a secondary ID of {nci_term.id} in {self.abbrev} ontology")
+            log_it("WARNING", f"term {id} is a secondary ID of {nci_term.id} in {self.abbrev} terminology")
             return None
         parent_set = set(nci_term.isaList)
         parent_set.update(nci_term.isPartOfSet)
@@ -149,7 +149,7 @@ class Ncit_Parser:
     # - - - - - - - - - - - - - - - - - - 
     def find_data_version(self, f_in):
     # - - - - - - - - - - - - - - - - - - 
-        self.onto_version = "version not found"
+        self.termi_version = "version not found"
         while True:
             line = f_in.readline()
             if line == "": break
@@ -158,7 +158,7 @@ class Ncit_Parser:
             if line == "":
                 break
             elif line.startswith("data-version: "): 
-                self.onto_version = line
+                self.termi_version = line
             elif line.startswith("[Term]"):
                 log_it("ERROR:", "parser could not find ChEBI version")
                 break
@@ -210,7 +210,7 @@ if __name__ == '__main__':
     (options, args) = OptionParser().parse_args()
 
     parser = Ncit_Parser("NCIt")
-    print(parser.get_onto_version())
+    print(parser.get_termi_version())
 
     ac = args[0]
     ac = parser.to_cellostyle(ac)

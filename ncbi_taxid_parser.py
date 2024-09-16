@@ -1,6 +1,6 @@
 from ApiCommon import log_it
 from datetime import datetime
-from ontologies import Term
+from terminologies import Term
 import os
 
 class NcbiTaxid_Parser:
@@ -20,7 +20,7 @@ class NcbiTaxid_Parser:
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
     # - - - - - - - - - - - - - - - - - - 
-    def get_onto_version(self):
+    def get_termi_version(self):
     # - - - - - - - - - - - - - - - - - - 
         file_path = self.term_dir + "names.dmp"
         creation_time = os.path.getctime(file_path)
@@ -155,5 +155,5 @@ if __name__ == '__main__':
     print("------")
     for nl in parser.get_alternate_names("9606"):
         print(id, "alternate-name", nl)
-    print(parser.get_onto_version())
+    print(parser.get_termi_version())
     

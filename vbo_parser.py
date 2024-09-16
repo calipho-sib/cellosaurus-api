@@ -1,6 +1,6 @@
 from ApiCommon import log_it
 from datetime import datetime
-from ontologies import Term
+from terminologies import Term
 from optparse import OptionParser
 import sys
 from lxml import etree
@@ -28,7 +28,7 @@ class Vbo_Parser:
 
         self.abbrev = abbrev
         self.term_dir = "terminologies/" + self.abbrev + "/"
-        self.onto_version = "unknown version" # set by load()
+        self.termi_version = "unknown version" # set by load()
         self.line_no = 0
         self.term_dict = dict()
         self.load()
@@ -37,9 +37,9 @@ class Vbo_Parser:
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
     # - - - - - - - - - - - - - - - - - - 
-    def get_onto_version(self):
+    def get_termi_version(self):
     # - - - - - - - - - - - - - - - - - - 
-        return self.onto_version
+        return self.termi_version
     
 
     # - - - - - - - - - - - - - - - - - - 
@@ -97,9 +97,9 @@ class Vbo_Parser:
         log_it("INFO:", "Loading", filename)
         root = etree.parse(filename)
 
-        # get onto data version
+        # get terminology data version
         nodes = root.xpath("/rdf:RDF/owl:Ontology/owl:versionInfo", namespaces=ns)
-        self.onto_version = nodes[0].text
+        self.termi_version = nodes[0].text
 
         # get description of each orphanet class term
         classes = root.xpath("/rdf:RDF/owl:Class", namespaces=ns)
@@ -163,7 +163,7 @@ if __name__ == '__main__':
     (options, args) = OptionParser().parse_args()
 
     parser = Vbo_Parser("VBO")
-    print("VBO version", parser.get_onto_version())
+    print("VBO version", parser.get_termi_version())
 
     ac = args[0]
     ac = parser.to_cellostyle(ac)

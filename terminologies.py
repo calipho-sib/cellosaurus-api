@@ -12,7 +12,7 @@ class Term:
         return(f"Term({self.id}, {self.prefLabel}, parents: {self.parentIdList} )")
 
 # ------------------------
-class Ontology:
+class Terminology:
 # ------------------------
     def __init__(self, abbrev, name, url, parser_name):
         self.abbrev = abbrev 
@@ -22,41 +22,41 @@ class Ontology:
         self.version = "" # set later by parser
 
 # ------------------------
-class Ontologies:
+class Terminologies:
 # ------------------------
     def __init__(self):
 
-        self.onto_dict = dict()
+        self.termi_dict = dict()
 
-        self.onto_dict["NCBI_TaxID"] = Ontology(
+        self.termi_dict["NCBI_TaxID"] = Terminology(
             "NCBI_TaxID", "NCBI taxonomy database", 
             "https://www.ncbi.nlm.nih.gov/taxonomy", "NcbiTaxid_Parser")
 
-        self.onto_dict["ChEBI"] = Ontology(
+        self.termi_dict["ChEBI"] = Terminology(
             "ChEBI", "Chemical Entities of Biological Interest", 
             "https://www.ebi.ac.uk/chebi/", "Chebi_Parser")
 
-        self.onto_dict["CL"] = Ontology(
+        self.termi_dict["CL"] = Terminology(
             "CL", "Cell Ontology", 
             "https://obophenotype.github.io/cell-ontology/", "Cl_Parser")
 
-        self.onto_dict["UBERON"] = Ontology(
+        self.termi_dict["UBERON"] = Terminology(
             "UBERON", "Uber-anatomy ontology", 
             "https://uberon.github.io/", "Uberon_Parser")
 
-        self.onto_dict["NCIt"] = Ontology(
+        self.termi_dict["NCIt"] = Terminology(
             "NCIt", "NCI thesaurus", 
             "https://ncit.nci.nih.gov/ncitbrowser", "Ncit_Parser")
 
-        self.onto_dict["ORDO"] = Ontology(
+        self.termi_dict["ORDO"] = Terminology(
             "ORDO", "Orphanet Rare Disease Ontology", 
             "https://www.ebi.ac.uk/ols4/ontologies/ordo", "Ordo_Parser")
         
-        self.onto_dict["VBO"] = Ontology(
+        self.termi_dict["VBO"] = Terminology(
             "VBO", "Vertebrate Breed Ontology", 
             "https://monarch-initiative.github.io/vertebrate-breed-ontology/", "Vbo_Parser")
         
-        self.onto_dict["RS"] = Ontology(
+        self.termi_dict["RS"] = Terminology(
             "RS", "Rat Strain Ontology", 
             "https://github.com/rat-genome-database/RS-Rat-Strain-Ontology", "Rs_Parser")
         
@@ -65,5 +65,5 @@ class Ontologies:
     # - - - - - - - - - - - - - - - - - - - - 
     def get(self, abbrev):
     # - - - - - - - - - - - - - - - - - - - - 
-        return self.onto_dict.get(abbrev)
+        return self.termi_dict.get(abbrev)
 

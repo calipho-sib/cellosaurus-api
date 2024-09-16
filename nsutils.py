@@ -2,7 +2,7 @@ def buidNamespaceClassFile(nsName, nsPrefix, nsBaseurl, ontologyFile, prefixInOn
     lines = list()
     INDENT = "    "
     QUOTE = "\""
-    lines.append("from rdfizer import BaseNamespace\n"])
+    lines.append("from rdfizer import BaseNamespace\n")
     lines.append("".join(["class", " ", nsName, "(BaseNamespace):\n"]))
     lines.append("".join([INDENT, "def __init__(self):\n"]))
     lines.append("".join([INDENT, INDENT, "super(", nsName, ", self).__init__(", QUOTE, nsPrefix, QUOTE,  ",", QUOTE, nsBaseurl, QUOTE, ")\n"]))
