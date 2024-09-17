@@ -7,6 +7,7 @@ from terminologies import Term, Terminologies, Terminology
 from databases import Database, Databases, get_db_category_IRI
 from ge_methods import GeMethod, GenomeEditingMethods, get_method_IRI
 from cl_categories import CellLineCategories, CellLineCategory, get_cl_category_IRI
+from sexes import Sexes, Sex, get_sex_IRI
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class DataError(Exception): 
@@ -142,6 +143,30 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         return ns.xref.dbac_dict
 
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_sex(self, sex: Sex):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        triples = TripleList()
+        sex_IRI = get_sex_IRI(sex.label)
+    
+        # either 
+        # as a subclass of :Sex (more compatible with wikidata sexes ?)
+        # triples.append(sex_IRI, ns.rdf.type(), ns.owl.Class())
+        # triples.append(sex_IRI, ns.rdfs.subClassOf(), ns.onto.Sex())
+        # triples.append(sex_IRI, ns.rdfs.label(), ns.xsd.string(sex.label))
+
+        # or 
+        # as a named individual of type :Sex
+        triples.append(sex_IRI, ns.rdf.type(), ns.onto.Sex())
+        triples.append(sex_IRI, ns.rdf.type(), ns.owl.NamedIndividual())
+        triples.append(sex_IRI, ns.rdfs.label(), ns.xsd.string(sex.label))    
+
+        url = ns.onto.baseurl()
+        if url.endswith("#"): url = url[:-1]
+        triples.append(sex_IRI, ns.rdfs.isDefinedBy(), "<" + url + ">")
+        return "".join(triples.lines)
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -586,7 +611,8 @@ class RdfBuilder:
         # fields: SX
         sx = cl_data.get("sex")
         if sx is not None:
-            triples.append(cl_IRI, ns.onto.fromIndividualWithSex(), ns.xsd.string(sx))
+            #triples.append(cl_IRI, ns.onto.fromIndividualWithSex(), ns.xsd.string(sx))
+            triples.append(cl_IRI, ns.onto.fromIndividualWithSex(), get_sex_IRI(sx))
 
         # fields: AG
         ag = cl_data.get("age")

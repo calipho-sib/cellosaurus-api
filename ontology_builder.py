@@ -6,6 +6,7 @@ from datetime import datetime
 from tree_functions import Tree
 from databases import Database, Databases, get_db_category_IRI
 from cl_categories import CellLineCategory, CellLineCategories, get_cl_category_IRI
+from sexes import Sex, Sexes, get_sex_IRI
 
 
 #-------------------------------------------------
@@ -173,7 +174,7 @@ class OntologyBuilder:
                                                                ns.owl.equivalentProperty() : { ns.wd.P9072_OX() }},
                 ns.onto.fromIndividualWithDisease() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() },
                                                         ns.owl.equivalentProperty() :{ ns.wd.P5166_DI()} },
-                ns.onto.fromIndividualWithSex() : { ns.rdfs.subPropertyOf() : { ns.onto.datatypeAnnotation() }},
+                ns.onto.fromIndividualWithSex() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
                 ns.onto.fromSameIndividualAs() : { ns.owl.equivalentProperty(): { ns.wd.P3578_OI()}},
                 
                 ns.onto.geneticIntegration() : { ns.rdfs.subPropertyOf() : { ns.onto.objectAnnotation() }},
@@ -242,7 +243,7 @@ class OntologyBuilder:
                 
             }
         
-        # we add programmaticaly here to self.ontodata the subClassOf relationships between Database ad its children
+        # we add programmaticaly here to self.ontodata the subClassOf relationships between Database and its children
         # so that we can take advantage of close_parent_set() method during computation of domain / ranges of related properties
         databases = Databases()
         for k in databases.categories():
@@ -250,14 +251,21 @@ class OntologyBuilder:
             cat_IRI = get_db_category_IRI(cat["label"])
             self.ontodata[cat_IRI] = { ns.rdfs.subClassOf(): {ns.onto.Database()} }
 
-        # we also add programmaticaly here to self.ontodata the subClassOf relationships between CellLine ad its children
+        # we also add programmaticaly here to self.ontodata the subClassOf relationships between CellLine and its children
         cl_cats = CellLineCategories()
         for k in cl_cats.keys():
             cat : CellLineCategory = cl_cats.get(k)
             self.ontodata[cat.IRI] = { ns.rdfs.subClassOf(): {ns.onto.CellLine()} }
 
+        # we also add programmaticaly here to self.ontodata the subClassOf relationships between Sex and its children
+        # NOTE: currently represented as NamedIndividual
+        # sexes = Sexes()
+        # for k in sexes.keys():
+        #     sex : Sex = sexes.get(k)
+        #     self.ontodata[sex.IRI] = { ns.rdfs.subClassOf(): {ns.onto.Sex()} }
 
-        # build tree with local child - parent relationships based on rdfs:subClassOf()
+
+        # NOW build tree with local child - parent relationships based on rdfs:subClassOf()
         edges = dict()
         for child in self.ontodata:
             child_rec = self.ontodata.get(child) or {}
@@ -301,7 +309,7 @@ class OntologyBuilder:
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         self.rdfs_domain_to_remove = dict()
         self.rdfs_domain_to_remove[ns.onto.accession()] = { ns.skos.Concept() }
-        self.rdfs_domain_to_remove[ns.onto.category()] = { ns.skos.Concept(), ns.owl.NamedIndividual()  }
+        #self.rdfs_domain_to_remove[ns.onto.category()] = { ns.skos.Concept(), ns.owl.NamedIndividual()  }
         self.rdfs_domain_to_remove[ns.onto.database()] = { ns.skos.Concept()  }
         self.rdfs_domain_to_remove[ns.onto.hasVersion()] = { ns.owl.NamedIndividual() }
         self.rdfs_domain_to_remove[ns.onto.shortname()] = { ns.owl.NamedIndividual() }
@@ -312,6 +320,7 @@ class OntologyBuilder:
         self.rdfs_range_to_remove[ns.onto.more_specific_than()] = { ns.onto.Xref() } 
         self.rdfs_range_to_remove[ns.onto.database()] = { ns.owl.NamedIndividual(), ns.onto.CelloTerminology() } 
         self.rdfs_range_to_remove[ns.onto.genomeEditingMethod()] = { ns.owl.NamedIndividual() } 
+        self.rdfs_range_to_remove[ns.onto.fromIndividualWithSex()] = { ns.owl.NamedIndividual() }
 
 
 

@@ -28,6 +28,7 @@ from ontology_builder import OntologyBuilder
 from databases import Database, Databases
 from ge_methods import GenomeEditingMethods, GeMethod
 from cl_categories import CellLineCategories, CellLineCategory
+from sexes import Sexes, Sex
 
 # called dynamically
 from ncbi_taxid_parser import NcbiTaxid_Parser
@@ -1095,6 +1096,11 @@ if __name__ == "__main__":
         for k in cl_cats.keys():
             c = cl_cats.get(k)
             file_out.write(bytes(rb.get_ttl_for_cell_line_subclass(c) + "\n", "utf-8"))                        
+        log_it("INFO:", f"3) serializing OWL for sexes")
+        sexes = Sexes()
+        for k in sexes.keys():
+            s = sexes.get(k)
+            file_out.write(bytes(rb.get_ttl_for_sex(s) + "\n", "utf-8"))                        
         file_out.close()
         log_it("INFO:", f"serialized OWL definitions for other entities")
 

@@ -327,11 +327,12 @@ class OurOntologyNamespace(BaseNamespace):
 
     def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
 
-    # def OnlineResource(self): return ":OnlineResource" # TODO: unused ?
     def Breed(self): return ":Breed"
+    def Sex(self): return ":Sex"
 
     def CelloTerminology(self): return ":CelloTerminology"
     
+
 
     # -----------
     # Properties
