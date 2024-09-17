@@ -6,6 +6,7 @@ from organizations import Organization
 from terminologies import Term, Terminologies, Terminology
 from databases import Database, Databases, get_db_category_IRI
 from ge_methods import GeMethod, GenomeEditingMethods, get_method_IRI
+from cl_categories import CellLineCategories, CellLineCategory, get_cl_category_IRI
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class DataError(Exception): 
@@ -140,6 +141,21 @@ class RdfBuilder:
     def get_xref_dict(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         return ns.xref.dbac_dict
+
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_cell_line_subclass(self, cat: CellLineCategory):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        triples = TripleList()
+        sub_IRI = get_cl_category_IRI(cat.label)
+        triples.append(sub_IRI, ns.rdf.type(), ns.owl.Class())
+        triples.append(sub_IRI, ns.rdfs.subClassOf(), ns.onto.CellLine())
+        triples.append(sub_IRI, ns.rdfs.label(), ns.xsd.string(cat.label))
+        url = ns.onto.baseurl()
+        if url.endswith("#"): url = url[:-1]
+        triples.append(sub_IRI, ns.rdfs.isDefinedBy(), "<" + url + ">")
+        return "".join(triples.lines)
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -497,7 +513,7 @@ class RdfBuilder:
         # print(cl_obj)
         triples = TripleList()
         cl_IRI = ns.cvcl.IRI(ac)
-        triples.append(cl_IRI, ns.rdf.type(), ns.onto.CellLine())
+        #triples.append(cl_IRI, ns.rdf.type(), ns.onto.CellLine()) # set below, see field 'CA'
         triples.append(cl_IRI, ns.rdfs.seeAlso(), ns.cello.IRI(ac))
         cl_data = cl_obj["cell-line"]
 
@@ -595,7 +611,11 @@ class RdfBuilder:
         # fields: CA
         ca = cl_data["category"] # we expect one value for each cell line
         if ca is not None:
-            triples.append(cl_IRI, ns.onto.category(), ns.xsd.string(ca))
+            triples.append(cl_IRI, ns.rdf.type(), get_cl_category_IRI(ca))
+            #triples.append(cl_IRI, ns.onto.category(), ns.xsd.string(ca))
+        else:
+            triples.append(cl_IRI, ns.rdf.type(), ns.onto.CellLine())
+            
 
         # fields DT, dtc, dtu, dtv
         triples.append(cl_IRI, ns.onto.created(), ns.xsd.date(cl_data["created"]))

@@ -27,6 +27,7 @@ from terminologies import Terminologies, Terminology
 from ontology_builder import OntologyBuilder
 from databases import Database, Databases
 from ge_methods import GenomeEditingMethods, GeMethod
+from cl_categories import CellLineCategories, CellLineCategory
 
 # called dynamically
 from ncbi_taxid_parser import NcbiTaxid_Parser
@@ -1079,17 +1080,23 @@ if __name__ == "__main__":
         log_it("INFO:", f"serialized OWL for databases")
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # create OWL definitions for other named individuals
+        # create OWL definitions for other named subclasses and individuals
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        file_out = open(out_dir + "data_individuals.ttl", "wb")
-        log_it("INFO:", f"serializing OWL for genome editing methods")
+        file_out = open(out_dir + "data_other_entities.ttl", "wb")
+        log_it("INFO:", f"serializing OWL for other entities")
+        log_it("INFO:", f"1) serializing OWL for genome editing methods")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         methods = GenomeEditingMethods()
         for k in methods.keys():
             m = methods.get(k)
             file_out.write(bytes(rb.get_ttl_for_genome_editing_method_individual(m) + "\n", "utf-8"))                        
+        log_it("INFO:", f"2) serializing OWL for cell line subclasses")
+        cl_cats = CellLineCategories()
+        for k in cl_cats.keys():
+            c = cl_cats.get(k)
+            file_out.write(bytes(rb.get_ttl_for_cell_line_subclass(c) + "\n", "utf-8"))                        
         file_out.close()
-        log_it("INFO:", f"serialized OWL definitions ofr other name individuals")
+        log_it("INFO:", f"serialized OWL definitions for other entities")
 
         log_it("INFO:", "end")
 

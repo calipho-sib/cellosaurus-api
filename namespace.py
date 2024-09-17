@@ -446,7 +446,7 @@ class OurOntologyNamespace(BaseNamespace):
     def fromSameIndividualAs(self): return ":fromSameIndividualAs" # OI field
     def parentCellLine(self): return ":parentCellLine" # HI field
     def childCellLine(self): return ":childCellLine" # CH field
-    def category(self): return ":category" # CA field
+    #def category(self): return ":category" # CA field
     def publisher(self): return ":publisher" # links thesis -> universtities (orga)
 
     def hasVersion(self): return ":hasVersion"

@@ -5,7 +5,7 @@ import sys
 from datetime import datetime
 from tree_functions import Tree
 from databases import Database, Databases, get_db_category_IRI
-
+from cl_categories import CellLineCategory, CellLineCategories, get_cl_category_IRI
 
 
 #-------------------------------------------------
@@ -249,6 +249,12 @@ class OntologyBuilder:
             cat = databases.categories()[k]
             cat_IRI = get_db_category_IRI(cat["label"])
             self.ontodata[cat_IRI] = { ns.rdfs.subClassOf(): {ns.onto.Database()} }
+
+        # we also add programmaticaly here to self.ontodata the subClassOf relationships between CellLine ad its children
+        cl_cats = CellLineCategories()
+        for k in cl_cats.keys():
+            cat : CellLineCategory = cl_cats.get(k)
+            self.ontodata[cat.IRI] = { ns.rdfs.subClassOf(): {ns.onto.CellLine()} }
 
 
         # build tree with local child - parent relationships based on rdfs:subClassOf()
