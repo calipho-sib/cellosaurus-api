@@ -48,6 +48,9 @@ class OntologyBuilder:
             ns.foaf.Organization(): { ns.rdf.type(): { ns.owl.Class()} ,
                                 ns.rdfs.label() : { ns.xsd.string("foaf:Organization")} ,
                                 ns.rdfs.isDefinedBy() : { f"{ns.foaf.prefix()}:" }} ,
+            ns.up.Protein(): { ns.rdf.type(): { ns.owl.Class()} ,
+                                ns.rdfs.label() : { ns.xsd.string("up:Protein")} ,
+                                ns.rdfs.isDefinedBy() : { f"{ns.up.prefix()}:" }} ,
         }
 
         self.ontodata = {
@@ -73,13 +76,11 @@ class OntologyBuilder:
 
                 ns.onto.AnecdotalComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.AnatomicalElement() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
-                ns.onto.Antigen() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.BiotechnologyComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.Breed() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.CautionComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.CellType() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.CharacteristicsComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
-                ns.onto.ChemicalAgent() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.DiscontinuationRecord() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.Disease() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.DonorInfoComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
@@ -95,7 +96,13 @@ class OntologyBuilder:
                 ns.onto.MisspellingComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.OmicsComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.PopulationComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
-                ns.onto.Protein() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+               
+                #ns.onto.MabTarget() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.Protein() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }, 
+                                        ns.owl.equivalentClass() : { ns.up.Protein() }},
+                ns.onto.ChemicalAgent() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+                ns.onto.Antigen() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
+               
                 ns.onto.SenescenceComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.SequenceVariationComment() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
                 ns.onto.ShortTandemRepeatProfile() : { ns.rdfs.subClassOf() : { ns.onto.Annotation() }},
@@ -298,6 +305,7 @@ class OntologyBuilder:
         self.rdfs_range_to_remove[ns.onto.xref()] = { ns.skos.Concept() }
         self.rdfs_range_to_remove[ns.onto.more_specific_than()] = { ns.onto.Xref() } 
         self.rdfs_range_to_remove[ns.onto.database()] = { ns.owl.NamedIndividual(), ns.onto.CelloTerminology() } 
+        self.rdfs_range_to_remove[ns.onto.genomeEditingMethod()] = { ns.owl.NamedIndividual() } 
 
 
 
@@ -308,6 +316,7 @@ class OntologyBuilder:
         self.rdfs_label[ns.onto.HLATyping()] = "HLA typing"
         self.rdfs_label[ns.onto.hlaTyping()] = "has HLA typing"
         self.rdfs_label[ns.onto.MabIsotype()] = "Monoclonal antibody isotype"
+        #self.rdfs_label[ns.onto.MabTarget()] = "Monoclonal antibody target"
         self.rdfs_label[ns.onto.mabIsotype()] = "has monoclonal antibody isotype"
         self.rdfs_label[ns.onto.mabTarget()] = "has monoclonal antibody target"
         self.rdfs_label[ns.onto.hasPMCId()] = "has PMC identifier"

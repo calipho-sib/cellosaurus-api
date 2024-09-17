@@ -258,6 +258,8 @@ class OurOntologyNamespace(BaseNamespace):
     def PrivaDocentThesis(self): return ":PrivaDocentThesis"
     def VeterinaryMedicalDegreeThesis(self): return ":VeterinaryMedicalDegreeThesis"
 
+    def GenomeEditingMethod(self): return ":GenomeEditingMethod"
+
     def Patent(self): return ":Patent"
     def JournalArticle(self): return ":JournalArticle"
     def BookChapter(self): return ":BookChapter"
@@ -315,9 +317,10 @@ class OurOntologyNamespace(BaseNamespace):
     def PopulationComment(self) : return ":PopulationComment"
     def MicrosatelliteInstability(self): return ":MicrosatelliteInstability"
     def MabIsotype(self): return ":MabIsotype"
+    #def MabTarget(self): return ":MabTarget"
 
-    def Antigen(self): return ":Antigen" # uniprot, chebi (+free text)
-    def ChemicalAgent(self): return ":ChemicalAgent" # drugbank, uniprot, ncit, chebi (+free text)
+    def Antigen(self): return ":Antigen" 
+    def ChemicalAgent(self): return ":ChemicalAgent" # drugbank, ncit, chebi (+free text)
     def TransformantAgent(self): return ":TransformantAgent" # ChEBI, NCBI_TaxID, NCIt, DrugBank (+free text)
     def ShortTandemRepeatProfile(self): return ":ShortTandemRepeatProfile"
     def Species(self): return ":Species"
@@ -351,7 +354,7 @@ class OurOntologyNamespace(BaseNamespace):
     # https://ftp.ncbi.nih.gov/pubmed/J_Medline.txt
     # https://en.wikipedia.org/wiki/ISO_4
     #def hasNLMJournalTitleAbbreviation(self): return ":hasNLMJournalTitleAbbreviation" # unused
-    def hasISO4JournalTitleAbbreviation(self): return ":hasISO4JournalTitleAbbreviation" # Amos uses abbreviation alos used b UniProt based on ISO4
+    def hasISO4JournalTitleAbbreviation(self): return ":hasISO4JournalTitleAbbreviation" # Amos uses abbreviation also used by UniProt based on ISO4
     def title(self): return ":title"
     def volume(self): return ":volume"
     def creator(self): return ":creator" # with range = foaf:Person (authors)
@@ -537,6 +540,8 @@ class UniProtCoreNamespace(BaseNamespace):
     def modified(self): return "up:modified"
     def created(self): return "up:created"
     def Database(self): return "up:Database"
+    def Protein(self): return "up:Protein"
+    
 
 
 

@@ -26,6 +26,7 @@ from organizations import KnownOrganizations, Organization
 from terminologies import Terminologies, Terminology
 from ontology_builder import OntologyBuilder
 from databases import Database, Databases
+from ge_methods import GenomeEditingMethods, GeMethod
 
 # called dynamically
 from ncbi_taxid_parser import NcbiTaxid_Parser
@@ -1056,8 +1057,8 @@ if __name__ == "__main__":
         for k in terminologies.termi_dict:
             termi: Terminology = terminologies.get(k)
             file_out.write(bytes(rb.get_ttl_for_cello_terminology_individual(termi) + "\n", "utf-8"))
+        file_out.close()
         log_it("INFO:", f"serialized OWL for terminologies")
-        log_it("INFO:", "end")
 
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1074,7 +1075,22 @@ if __name__ == "__main__":
         for k in databases.keys():
             db: Database = databases.get(k)
             file_out.write(bytes(rb.get_ttl_for_cello_database_individual(db) + "\n", "utf-8"))
+        file_out.close()
         log_it("INFO:", f"serialized OWL for databases")
+
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # create OWL definitions for other named individuals
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        file_out = open(out_dir + "data_individuals.ttl", "wb")
+        log_it("INFO:", f"serializing OWL for genome editing methods")
+        file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
+        methods = GenomeEditingMethods()
+        for k in methods.keys():
+            m = methods.get(k)
+            file_out.write(bytes(rb.get_ttl_for_genome_editing_method_individual(m) + "\n", "utf-8"))                        
+        file_out.close()
+        log_it("INFO:", f"serialized OWL definitions ofr other name individuals")
+
         log_it("INFO:", "end")
 
 

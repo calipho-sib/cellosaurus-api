@@ -5,6 +5,7 @@ from ApiCommon import log_it
 from organizations import Organization
 from terminologies import Term, Terminologies, Terminology
 from databases import Database, Databases, get_db_category_IRI
+from ge_methods import GeMethod, GenomeEditingMethods, get_method_IRI
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class DataError(Exception): 
@@ -142,6 +143,21 @@ class RdfBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_genome_editing_method_individual(self, method: GeMethod):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # Note: some databases are also declared as terminologies
+        triples = TripleList()
+        method_IRI = get_method_IRI(method.label)
+        triples.append(method_IRI, ns.rdf.type(), ns.onto.GenomeEditingMethod())
+        triples.append(method_IRI, ns.rdf.type(), ns.owl.NamedIndividual())
+        triples.append(method_IRI, ns.rdfs.label(), ns.xsd.string(method.label))
+        url = ns.onto.baseurl()
+        if url.endswith("#"): url = url[:-1]
+        triples.append(method_IRI, ns.rdfs.isDefinedBy(), "<" + url + ">")
+        return "".join(triples.lines)
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_cello_terminology_individual(self, termi):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # Note: some databases are also declared as terminologies
@@ -157,6 +173,7 @@ class RdfBuilder:
         if url.endswith("#"): url = url[:-1]
         triples.append(termi_IRI, ns.rdfs.isDefinedBy(), "<" + url + ">")
         return "".join(triples.lines)
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_cello_database_subclass(self, db_cat):
@@ -185,9 +202,8 @@ class RdfBuilder:
         triples.append(db_IRI, ns.rdfs.label(), ns.xsd.string(db.name))
         triples.append(db_IRI, ns.onto.shortname(), ns.xsd.string(db.abbrev))
         if db.in_up:
-            triples.append(db_IRI, ns.owl.sameAs(), "<http://purl.uniprot.org/database/" + db.abbrev + ">") 
-
-        #triples.append(db_IRI, ns.onto.category(), ns.xsd.string(db.cat))
+            up_db = "<http://purl.uniprot.org/database/" + db.abbrev + ">"
+            triples.append(db_IRI, ns.owl.sameAs(), up_db) 
         triples.append(db_IRI, ns.rdfs.seeAlso(), "<" + db.url + ">")
         url = ns.onto.baseurl()
         if url.endswith("#"): url = url[:-1]
@@ -1003,7 +1019,8 @@ class RdfBuilder:
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.onto.geneticIntegration(), inst_BN)
         triples.append(inst_BN, ns.rdf.type(), ns.onto.GeneticIntegration())
-        triples.append(inst_BN, ns.onto.genomeEditingMethod(), ns.xsd.string(method))
+        #triples.append(inst_BN, ns.onto.genomeEditingMethod(), ns.xsd.string(method))
+        triples.append(inst_BN, ns.onto.genomeEditingMethod(), get_method_IRI(method))
         if note is not None: 
             triples.append(inst_BN, ns.rdfs.comment(), ns.xsd.string(note))
         gene_BN = self.get_blank_node()
@@ -1043,7 +1060,8 @@ class RdfBuilder:
             inst_BN = self.get_blank_node()
             triples.append(cl_IRI, ns.onto.knockout(), inst_BN)
             triples.append(inst_BN, ns.rdf.type(), ns.onto.KnockoutComment())
-            triples.append(inst_BN, ns.onto.genomeEditingMethod(), ns.xsd.string(method))
+            #triples.append(inst_BN, ns.onto.genomeEditingMethod(), ns.xsd.string(method))
+            triples.append(inst_BN, ns.onto.genomeEditingMethod(), get_method_IRI(method))
             gene_BN = self.get_blank_node()
             triples.append(inst_BN, ns.onto.gene(), gene_BN)
             triples.append(gene_BN, ns.rdf.type(), ns.onto.Gene())
