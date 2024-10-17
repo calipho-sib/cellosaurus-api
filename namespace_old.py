@@ -1,12 +1,12 @@
-import re
+#import re
 import hashlib
 from ApiCommon import get_rdf_base_IRI, get_help_base_IRI
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-def replace_non_alphanumeric(input_string):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # Use a regular expression to replace non-alphanumeric characters with underscore
-    return re.sub(r'[^a-zA-Z0-9]', '_', input_string)
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# def replace_non_alphanumeric(input_string):
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#     # Use a regular expression to replace non-alphanumeric characters with underscore
+#     return re.sub(r'[^a-zA-Z0-9]', '_', input_string)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -32,9 +32,9 @@ class BaseNamespace:
     def prefix(self): return self.pfx
     def baseurl(self): return self.url
     def getTtlPrefixDeclaration(self): 
-        return getTtlPrefixDeclaration(self.prefix(), self.baseurl())
+        return getTtlPrefixDeclaration(self.pfx, self.url)
     def getSparqlPrefixDeclaration(self): 
-        return getSparqlPrefixDeclaration(self.prefix(), self.baseurl())
+        return getSparqlPrefixDeclaration(self.pfx, self.url)
     def getSQLforVirtuoso(self):
         return f"insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('{self.pfx}', '{self.url}');"
 
@@ -149,6 +149,13 @@ class SkosNamespace(BaseNamespace):
     def broadMatch(self): return "skos:broadMatch"
     
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class ShaclNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(ShaclNamespace, self).__init__("sh", "http://www.w3.org/ns/shacl#")
+    def declare(self): return "sh:declare"
+    def _prefix(self): return "sh:prefix"
+    def namespace(self): return "sh:namespace"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class WikidataWdNamespace(BaseNamespace):
@@ -200,8 +207,6 @@ class FoafNamespace(BaseNamespace):
 class FabioNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(FabioNamespace, self).__init__("fabio", "http://purl.org/spar/fabio/")
-    def hasPubMedCentralId(self): return "fabio:hasPubMedCentralId"
-    def hasPubMedId(self): return "fabio:hasPubMedId"
     def Expression(self): return "fabio:Expression"
     def Thesis(self): return "fabio:Thesis"
     def BachelorsThesis(self): return "fabio:BachelorsThesis"
@@ -214,7 +219,6 @@ class FabioNamespace(BaseNamespace):
     def ConferencePaper(self): return "fabio:ConferencePaper"
     def TechnicalReport(self): return "fabio:TechnicalReport"
     def hasPubMedCentralId(self): return "fabio:hasPubMedCentralId"
-    def hasPubMedId(self): return "fabio:hasPubMedId"
     def hasPubMedId(self): return "fabio:hasPubMedId"
     def hasPublicationYear(self): return "fabio:hasPublicationYear"
     
@@ -230,107 +234,109 @@ class FabioNamespace(BaseNamespace):
 class OurOntologyNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
-        super(OurOntologyNamespace, self).__init__("", get_rdf_base_IRI() + "/ontology/")
+        super(OurOntologyNamespace, self).__init__("cello", get_rdf_base_IRI() + "/ontology/")
+        #super(OurOntologyNamespace, self).__init__("", get_rdf_base_IRI() + "/ontology/")
 
     # --------
     # CLASSES
     # --------
 
-    def Database(self): return ":Database"
+    def Database(self): return "cello:Database"
 
-    def CellLine(self): return ":CellLine"
+    def CellLine(self): return "cello:CellLine"
  
     # Organization could be a sublass of foaf:Organization or org:Organization
     # see https://www.w3.org/ns/org#%5B4
-    def Organization(self): return ":Organization"
+    def Organization(self): return "cello:Organization"
     
     # publication-related classes
     # see also https://sparontologies.github.io/fabio/current/fabio.html
     # see also https://sibils.text-analytics.ch/doc/api/sparql/sibils-ontology.html
 
-    def Publication(self): return ":Publication"
-    def Thesis(self): return ":Thesis"
-    def BachelorThesis(self): return ":BachelorThesis"
-    def MasterThesis(self): return ":MasterThesis"
-    def DoctoralThesis(self): return ":DoctoralThesis"
-    def MedicalDegreeThesis(self): return ":MedicalDegreeThesis"
-    def MedicalDegreeMasterThesis(self): return ":MedicalDegreeMasterThesis"
-    def PrivaDocentThesis(self): return ":PrivaDocentThesis"
-    def VeterinaryMedicalDegreeThesis(self): return ":VeterinaryMedicalDegreeThesis"
+    def Publication(self): return "cello:Publication"
+    def Thesis(self): return "cello:Thesis"
+    def BachelorThesis(self): return "cello:BachelorThesis"
+    def MasterThesis(self): return "cello:MasterThesis"
+    def DoctoralThesis(self): return "cello:DoctoralThesis"
+    def MedicalDegreeThesis(self): return "cello:MedicalDegreeThesis"
+    def MedicalDegreeMasterThesis(self): return "cello:MedicalDegreeMasterThesis"
+    def PrivaDocentThesis(self): return "cello:PrivaDocentThesis"
+    def VeterinaryMedicalDegreeThesis(self): return "cello:VeterinaryMedicalDegreeThesis"
 
-    def GenomeEditingMethod(self): return ":GenomeEditingMethod"
 
-    def Patent(self): return ":Patent"
-    def JournalArticle(self): return ":JournalArticle"
-    def BookChapter(self): return ":BookChapter"
-    def Book(self): return ":Book"
-    def TechnicalDocument(self): return ":TechnicalDocument"
-    def MiscellaneousDocument(self): return ":MiscellaneousDocument"
-    def ConferencePublication(self): return ":ConferencePublication"
+    def Patent(self): return "cello:Patent"
+    def JournalArticle(self): return "cello:JournalArticle"
+    def BookChapter(self): return "cello:BookChapter"
+    def Book(self): return "cello:Book"
+    def TechnicalDocument(self): return "cello:TechnicalDocument"
+    def MiscellaneousDocument(self): return "cello:MiscellaneousDocument"
+    def ConferencePublication(self): return "cello:ConferencePublication"
     
 
-    def Xref(self): return ":Xref"
-    def GenomeAncestry(self): return ":GenomeAncestry"
-    def PopulationPercentage(self): return ":PopulationPercentage"
-    def HLATyping(self): return ":HLATyping"
-    def Gene(self): return ":Gene"
-    def Protein(self): return ":Protein"
-    def GeneAlleles(self): return ":GeneAlleles"  # used in HLA
-    def MarkerAlleles(self): return ":MarkerAlleles"    # used in short tandem repeat
+    def GenomeModificationMethod(self): return "cello:GenomeModificationMethod"
 
-    def SequenceVariation(self): return ":SequenceVariation" # most generic class
-    def GeneAmplification(self): return ":GeneAmplification"
-    def GeneDuplication(self): return ":GeneDuplication"
-    def GeneTriplication(self): return ":GeneTriplication"
-    def GeneQuarduplication(self): return ":GeneQuadruplication"
-    def GeneExtensiveAmplification(self): return ":GeneExtensiveAmplification"
-    def GeneDeletion(self): return ":GeneDeletion"
-    def GeneFusion(self): return ":GeneFusion"
-    def GeneMutation(self): return ":GeneMutation"
-    def RepeatExpansion(self): return ":RepeatExpansion"
-    def SimpleMutation(self): return ":SimpleMutation"
-    def UnexplicitMutation(self): return ":UnexplicitMutation"
+    def Xref(self): return "cello:Xref"
+    def GenomeAncestry(self): return "cello:GenomeAncestry"
+    def PopulationPercentage(self): return "cello:PopulationPercentage"
+    def HLATyping(self): return "cello:HLATyping"
+    def Gene(self): return "cello:Gene"
+    def Protein(self): return "cello:Protein"
+    def GeneAlleles(self): return "cello:GeneAlleles"  # used in HLA
+    def MarkerAlleles(self): return "cello:MarkerAlleles"    # used in short tandem repeat
 
-    def AnatomicalElement(self): return ":AnatomicalElement"
-    def CellType(self): return ":CellType"
-    def Disease(self): return ":Disease"
+    def SequenceVariation(self): return "cello:SequenceVariation" # most generic class
+    def GeneAmplification(self): return "cello:GeneAmplification"
+    def GeneDuplication(self): return "cello:GeneDuplication"
+    def GeneTriplication(self): return "cello:GeneTriplication"
+    def GeneQuadruplication(self): return "cello:GeneQuadruplication"
+    def GeneExtensiveAmplification(self): return "cello:GeneExtensiveAmplification"
+    def GeneDeletion(self): return "cello:GeneDeletion"
+    def GeneFusion(self): return "cello:GeneFusion"
+    def GeneMutation(self): return "cello:GeneMutation"
+    def RepeatExpansion(self): return "cello:RepeatExpansion"
+    def SimpleMutation(self): return "cello:SimpleMutation"
+    def UnexplicitMutation(self): return "cello:UnexplicitMutation"
 
-    def SequenceVariationComment(self): return ":SequenceVariationComment"
-    def DoublingTimeComment(self): return ":DoublingTimeComment"
-    def DiscontinuationRecord(self): return ":DiscontinuationRecord"
-    def KnockoutComment(self): return ":KnockoutComment"
+    def AnatomicalElement(self): return "cello:AnatomicalElement"
+    def CellType(self): return "cello:CellType"
+    def Disease(self): return "cello:Disease"
 
-    def Annotation(self): return ":Annotation" 
-    def AnecdotalComment(self): return ":AnecdotalComment"
-    def CharacteristicsComment(self): return ":CharacteristicsComment"
-    def BiotechnologyComment(self): return ":BiotechnologyComment"
-    def DonorInfoComment(self): return ":DonorInfoComment"
-    def CautionComment(self): return ":CautionComment"
-    def KaryotypicInfoComment(self): return ":KaryotypicInfoComment"
-    def MiscellaneousInfoComment(self): return ":MiscellaneousInfoComment"
-    def MisspellingComment(self): return ":MisspellingComment"
-    def Registration(self): return ":Registration"
-    def SenescenceComment(self): return ":SenescenceComment"
-    def GeneticIntegration(self): return ":GeneticIntegration"
-    def VirologyComment(self): return ":VirologyComment"
-    def OmicsComment(self) : return ":OmicsComment"
-    def PopulationComment(self) : return ":PopulationComment"
-    def MicrosatelliteInstability(self): return ":MicrosatelliteInstability"
-    def MabIsotype(self): return ":MabIsotype"
-    #def MabTarget(self): return ":MabTarget"
+    def SequenceVariationComment(self): return "cello:SequenceVariationComment"
+    def DoublingTimeComment(self): return "cello:DoublingTimeComment"
+    def DiscontinuationRecord(self): return "cello:DiscontinuationRecord"
+    def KnockoutComment(self): return "cello:KnockoutComment"
 
-    def Antigen(self): return ":Antigen" 
-    def ChemicalAgent(self): return ":ChemicalAgent" # drugbank, ncit, chebi (+free text)
-    def TransformantAgent(self): return ":TransformantAgent" # ChEBI, NCBI_TaxID, NCIt, DrugBank (+free text)
-    def ShortTandemRepeatProfile(self): return ":ShortTandemRepeatProfile"
-    def Species(self): return ":Species"
+    def Annotation(self): return "cello:Annotation" 
+    def AnecdotalComment(self): return "cello:AnecdotalComment"
+    def CharacteristicsComment(self): return "cello:CharacteristicsComment"
+    def BiotechnologyComment(self): return "cello:BiotechnologyComment"
+    def DonorInfoComment(self): return "cello:DonorInfoComment"
+    def CautionComment(self): return "cello:CautionComment"
+    def KaryotypicInfoComment(self): return "cello:KaryotypicInfoComment"
+    def MiscellaneousInfoComment(self): return "cello:MiscellaneousInfoComment"
+    def MisspellingComment(self): return "cello:MisspellingComment"
+    def Registration(self): return "cello:Registration"
+    def SenescenceComment(self): return "cello:SenescenceComment"
+    def GeneticIntegration(self): return "cello:GeneticIntegration"
+    def VirologyComment(self): return "cello:VirologyComment"
+    def OmicsComment(self) : return "cello:OmicsComment"
+    def Population(self) : return "cello:Population"
+    def MicrosatelliteInstability(self): return "cello:MicrosatelliteInstability"
+    def MabIsotype(self): return "cello:MabIsotype"
+    #def MabTarget(self): return "cello:MabTarget"
 
-    def Source(self): return ":Source" # a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
+    def Antigen(self): return "cello:Antigen" 
+    def ChemicalAgent(self): return "cello:ChemicalAgent" # drugbank, ncit, chebi (+free text)
+    def TransformantAgent(self): return "cello:TransformantAgent" # ChEBI, NCBI_TaxID, NCIt, DrugBank (+free text)
+    def ShortTandemRepeatProfile(self): return "cello:ShortTandemRepeatProfile"
+    def Species(self): return "cello:Species"
 
-    def Breed(self): return ":Breed"
-    def Sex(self): return ":Sex"
+    def Source(self): return "cello:Source" # a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
 
-    def CelloTerminology(self): return ":CelloTerminology"
+    def Breed(self): return "cello:Breed"
+    def Sex(self): return "cello:Sex"
+
+    def CelloTerminology(self): return "cello:CelloTerminology"
     
 
 
@@ -342,131 +348,131 @@ class OurOntologyNamespace(BaseNamespace):
     # see also https://sparontologies.github.io/fabio/current/fabio.html
     # see also https://sibils.text-analytics.ch/doc/api/sparql/sibils-ontology.html
 
-    #def hasIdentifier(self): return ":hasIdentifier" # generic prop, parent of hasDOI, hasPubMedId # we use the  as an ancestor
-    def hasInternalId(self): return ":hasInternalId"
-    def hasDOI(self): return ":hasDOI"
-    def hasPubMedId(self): return ":hasPubMedId"
-    def hasPMCId(self): return ":hasPMCId"
-    def publicationDate(self): return ":publicationDate"
-    def hasPublicationYear(self): return ":hasPublicationYear"
-    def startingPage(self): return ":startingPage" 
-    def endingPage(self): return ":endingPage"
+    #def hasIdentifier(self): return "cello:hasIdentifier" # generic prop, parent of hasDOI, hasPubMedId # we use the  as an ancestor
+    def hasInternalId(self): return "cello:hasInternalId"
+    def hasDOI(self): return "cello:hasDOI"
+    def hasPubMedId(self): return "cello:hasPubMedId"
+    def hasPMCId(self): return "cello:hasPMCId"
+    def publicationDate(self): return "cello:publicationDate"
+    def hasPublicationYear(self): return "cello:hasPublicationYear"
+    def startingPage(self): return "cello:startingPage" 
+    def endingPage(self): return "cello:endingPage"
     # journal abbreviation, see also:
     # https://ftp.ncbi.nih.gov/pubmed/J_Medline.txt
     # https://en.wikipedia.org/wiki/ISO_4
-    #def hasNLMJournalTitleAbbreviation(self): return ":hasNLMJournalTitleAbbreviation" # unused
-    def hasISO4JournalTitleAbbreviation(self): return ":hasISO4JournalTitleAbbreviation" # Amos uses abbreviation also used by UniProt based on ISO4
-    def title(self): return ":title"
-    def volume(self): return ":volume"
-    def creator(self): return ":creator" # with range = foaf:Person (authors)
-    def editor(self): return ":editor" # with range = foaf:Person (editors)
+    #def hasNLMJournalTitleAbbreviation(self): return "cello:hasNLMJournalTitleAbbreviation" # unused
+    def hasISO4JournalTitleAbbreviation(self): return "cello:hasISO4JournalTitleAbbreviation" # Amos uses abbreviation also used by UniProt based on ISO4
+    def title(self): return "cello:title"
+    def volume(self): return "cello:volume"
+    def creator(self): return "cello:creator" # with range = foaf:Person (authors)
+    def editor(self): return "cello:editor" # with range = foaf:Person (editors)
 
-    def accession(self): return ":accession"
-    def primaryAccession(self): return ":primaryAccession"
-    def secondaryAccession(self): return ":secondaryAccession"
+    def accession(self): return "cello:accession"
+    def primaryAccession(self): return "cello:primaryAccession"
+    def secondaryAccession(self): return "cello:secondaryAccession"
     
-    def name(self): return ":name"
-    def shortname(self): return ":shortname"
-    def recommendedName(self): return ":recommendedName"
-    def alternativeName(self): return ":alternativeName"
-    def registeredName(self): return ":registeredName"
-    def misspellingName(self): return ":misspellingName"
+    def name(self): return "cello:name"
+    def shortname(self): return "cello:shortname"
+    def recommendedName(self): return "cello:recommendedName"
+    def alternativeName(self): return "cello:alternativeName"
+    def registeredName(self): return "cello:registeredName"
+    def misspellingName(self): return "cello:misspellingName"
 
-    def appearsIn(self): return ":appearsIn"
-    def source(self): return ":source"
-    def xref(self): return ":xref"
-    def reference(self): return ":reference"
+    def appearsIn(self): return "cello:appearsIn"
+    def source(self): return "cello:source"
+    def xref(self): return "cello:xref"
+    def reference(self): return "cello:reference"
 
-    def genomeAncestry(self): return ":genomeAncestry"
-    def component(self): return ":component" # component object = population percentage of genome ancestry
-    def percentage(self): return ":percentage"
-    def populationName(self): return ":populationName" # as sub property of rdfs:label
+    def genomeAncestry(self): return "cello:genomeAncestry"
+    def component(self): return "cello:component" # component object = population percentage of genome ancestry
+    def percentage(self): return "cello:percentage"
+    def populationName(self): return "cello:populationName" # as sub property of rdfs:label
 
-    def hlaTyping(self): return ":hlaTyping"
-    def geneAlleles(self): return ":geneAlleles"
-    def markerAlleles(self): return ":markerAlleles"
-    def alleles(self): return ":alleles"
-    def markerId(self): return ":markerId"
-    def gene(self): return ":gene"
-    def partOf(self): return ":partOf"
+    def hlaTyping(self): return "cello:hlaTyping"
+    def geneAlleles(self): return "cello:geneAlleles"
+    def markerAlleles(self): return "cello:markerAlleles"
+    def alleles(self): return "cello:alleles"
+    def markerId(self): return "cello:markerId"
+    def gene(self): return "cello:gene"
+    def partOf(self): return "cello:partOf"
 
-    def _from(self): return ":from" # cannot use function name "from" (is python reserved word)
+    def _from(self): return "cello:from" # cannot use function name "from" (is python reserved word)
     
-    def sequenceVariation(self): return ":sequenceVariation"
-    def zygosity(self): return ":zygosity"
-    def hgvs(self): return ":hgvs"
-    def noneReported(self): return ":noneReported"
-    def variationStatus(self): return ":variationStatus"
-    def fromIndividualBelongingToBreed(self): return ":fromIndividualBelongingToBreed"
-    def sequenceVariationComment(self): return ":sequenceVariationComment"
-    def annotation(self): return ":annotation"
-    def datatypeAnnotation(self): return ":datatypeAnnotation"
-    def objectAnnotation(self): return ":objectAnnotation"
-    def anecdotalComment(self): return ":anecdotalComment"
-    def characteristicsComment(self): return ":characteristicsComment"
-    def biotechnologyComment(self): return ":biotechnologyComment"
-    def cautionComment(self): return ":cautionComment"
-    def siteType(self): return ":siteType"
-    def derivedFromSite(self): return ":derivedFromSite" 
-    def cellType(self): return ":cellType" 
-    def donorInfoComment(self): return ":donorInfoComment"
-    def doublingTimeComment(self): return ":doublingTimeComment"
-    def duration(self): return ":duration"
-    def group(self): return ":group"
-    def karyotypicInfoComment(self): return ":karyotypicInfoComment"
-    def miscellaneousInfoComment(self): return ":miscellaneousInfoComment"
-    def misspellingComment(self): return ":misspellingComment"
-    def registration(self): return ":registration"
-    def senescenceComment(self): return ":senescenceComment"
-    def geneticIntegration(self): return ":geneticIntegration"
-    def virologyComment(self): return ":virologyComment"
-    def omicsComment(self) : return ":omicsComment"
-    def populationComment(self) : return ":populationComment"
+    def sequenceVariation(self): return "cello:sequenceVariation"
+    def zygosity(self): return "cello:zygosity"
+    def hgvs(self): return "cello:hgvs"
+    def noneReported(self): return "cello:noneReported"
+    def variationStatus(self): return "cello:variationStatus"
+    def fromIndividualBelongingToBreed(self): return "cello:fromIndividualBelongingToBreed"
+    def sequenceVariationComment(self): return "cello:sequenceVariationComment"
+    def annotation(self): return "cello:annotation"
+    def datatypeAnnotation(self): return "cello:datatypeAnnotation"
+    def objectAnnotation(self): return "cello:objectAnnotation"
+    def anecdotalComment(self): return "cello:anecdotalComment"
+    def characteristicsComment(self): return "cello:characteristicsComment"
+    def biotechnologyComment(self): return "cello:biotechnologyComment"
+    def cautionComment(self): return "cello:cautionComment"
+    def siteType(self): return "cello:siteType"
+    def derivedFromSite(self): return "cello:derivedFromSite" 
+    def cellType(self): return "cello:cellType" 
+    def donorInfoComment(self): return "cello:donorInfoComment"
+    def doublingTimeComment(self): return "cello:doublingTimeComment"
+    def duration(self): return "cello:duration"
+    def group(self): return "cello:group"
+    def karyotypicInfoComment(self): return "cello:karyotypicInfoComment"
+    def miscellaneousInfoComment(self): return "cello:miscellaneousInfoComment"
+    def misspellingComment(self): return "cello:misspellingComment"
+    def registration(self): return "cello:registration"
+    def senescenceComment(self): return "cello:senescenceComment"
+    def geneticIntegration(self): return "cello:geneticIntegration"
+    def virologyComment(self): return "cello:virologyComment"
+    def omicsComment(self) : return "cello:omicsComment"
+    def fromIndividualBelongingToPopulation(self) : return "cello:fromIndividualBelongingToPopulation"
 
-    def knockout(self): return ":knockout"
-    def genomeEditingMethod(self): return ":genomeEditingMethod"
+    def knockout(self): return "cello:knockout"
+    def genomeModificationMethod(self): return "cello:genomeModificationMethod"
 
-    def discontinued(self): return ":discontinued"
-    def discontinuationRecord(self): return ":discontinuationRecord"
-    def provider(self): return ":provider"
-    def productId(self): return ":productId"
-    def microsatelliteInstability(self): return ":microsatelliteInstability"
-    def msiValue(self): return ":msiValue"
-    def mabIsotype(self): return ":mabIsotype"
-    def mabTarget(self): return ":mabTarget"
-    def antibodyHeavyChain(self): return ":antibodyHeavyChain"
-    def antibodyLightChain(self): return ":antibodyLightChain"
-    def resistance(self): return ":resistance"
-    def transformant(self): return ":transformant"
-    def shortTandemRepeatProfile(self): return ":shortTandemRepeatProfile"
-    def conflict(self): return ":conflict"
-    def fromIndividualWithDisease(self): return ":fromIndividualWithDisease" # renamed: OK
-    def fromIndividualBelongingToSpecies(self): return ":fromIndividualBelongingToSpecies" # renamed: OK
-    def fromIndividualWithSex(self): return ":fromIndividualWithSex"         # renamed OK
-    def fromIndividualAtAge(self): return ":fromIndividualAtAge"
-    def fromSameIndividualAs(self): return ":fromSameIndividualAs" # OI field
-    def parentCellLine(self): return ":parentCellLine" # HI field
-    def childCellLine(self): return ":childCellLine" # CH field
-    #def category(self): return ":category" # CA field
-    def publisher(self): return ":publisher" # links thesis -> universtities (orga)
+    def discontinued(self): return "cello:discontinued"
+    def discontinuationRecord(self): return "cello:discontinuationRecord"
+    def provider(self): return "cello:provider"
+    def productId(self): return "cello:productId"
+    def microsatelliteInstability(self): return "cello:microsatelliteInstability"
+    def msiValue(self): return "cello:msiValue"
+    def mabIsotype(self): return "cello:mabIsotype"
+    def mabTarget(self): return "cello:mabTarget"
+    def antibodyHeavyChain(self): return "cello:antibodyHeavyChain"
+    def antibodyLightChain(self): return "cello:antibodyLightChain"
+    def resistance(self): return "cello:resistance"
+    def transformant(self): return "cello:transformant"
+    def shortTandemRepeatProfile(self): return "cello:shortTandemRepeatProfile"
+    def conflict(self): return "cello:conflict"
+    def fromIndividualWithDisease(self): return "cello:fromIndividualWithDisease" # renamed: OK
+    def fromIndividualBelongingToSpecies(self): return "cello:fromIndividualBelongingToSpecies" # renamed: OK
+    def fromIndividualWithSex(self): return "cello:fromIndividualWithSex"         # renamed OK
+    def fromIndividualAtAge(self): return "cello:fromIndividualAtAge"
+    def fromSameIndividualAs(self): return "cello:fromSameIndividualAs" # OI field
+    def parentCellLine(self): return "cello:parentCellLine" # HI field
+    def childCellLine(self): return "cello:childCellLine" # CH field
+    #def category(self): return "cello:category" # CA field
+    def publisher(self): return "cello:publisher" # links thesis -> universtities (orga)
 
-    def hasVersion(self): return ":hasVersion"
-    def created(self): return ":created"
-    def modified(self): return ":modified"
+    def hasVersion(self): return "cello:hasVersion"
+    def created(self): return "cello:created"
+    def modified(self): return "cello:modified"
 
-    def organization(self): return ":organization"
-    def database(self): return ":database"
-    def memberOf(self): return ":memberOf" # defined in https://www.w3.org/ns/org#%5B4
-    def city(self): return ":city"
-    def country(self): return ":country"
+    def organization(self): return "cello:organization"
+    def database(self): return "cello:database"
+    def memberOf(self): return "cello:memberOf" # defined in https://www.w3.org/ns/org#%5B4
+    def city(self): return "cello:city"
+    def country(self): return "cello:country"
 
-    def issn13(self): return ":issn13"
-    def bookTitle(self): return ":bookTitle"
-    def conferenceTitle(self): return ":conferenceTitle"
-    def documentTitle(self): return ":documentTitle"
-    def documentSerieTitle(self): return ":documentSerieTitle"
+    def issn13(self): return "cello:issn13"
+    def bookTitle(self): return "cello:bookTitle"
+    def conferenceTitle(self): return "cello:conferenceTitle"
+    def documentTitle(self): return "cello:documentTitle"
+    def documentSerieTitle(self): return "cello:documentSerieTitle"
     
-    def more_specific_than(self): return ":more_specific_than"
+    def more_specific_than(self): return "cello:more_specific_than"
     
 
 
@@ -531,9 +537,9 @@ class UniProtCoreNamespace(BaseNamespace):
     def volume(self): return "up:volume"
     def Citation(self): return "up:Citation"
     def Published_Citation(self): return "up:Published_Citation"
-    def Thesis_Citation(self): return "up:Published_Citation"
-    def Book_Citation(self): return "up:Published_Citation"
-    def Journal_Citation(self): return "up:Published_Citation"
+    def Thesis_Citation(self): return "up:THesis_Citation"
+    def Book_Citation(self): return "up:Book_Citation"
+    def Journal_Citation(self): return "up:JOurnal_Citation"
     def Annotation(self): return "up:Annotation"
     def annotation(self): return "up:annotation"
     def title(self): return "up:title"
@@ -588,12 +594,12 @@ class OurOrganizationNamespace(BaseNamespace):
         return org_iri
 
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class CelloWebsiteNamespace(BaseNamespace):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): 
-        super(CelloWebsiteNamespace, self).__init__("cello", "https://www.cellosaurus.org/")
-    def IRI(self, primaryAccession): return "cello:" + primaryAccession
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# class CelloWebsiteNamespace(BaseNamespace):
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#     def __init__(self): 
+#         super(CelloWebsiteNamespace, self).__init__("cello", "https://www.cellosaurus.org/")
+#     def IRI(self, primaryAccession): return "cello:" + primaryAccession
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class HelpNamespace(BaseNamespace):
@@ -652,17 +658,18 @@ class NamespaceRegistry:
     org = W3OrgNamespace()
     wdt = WikidataWdtNamespace()
     wd = WikidataWdNamespace()
-    cello = CelloWebsiteNamespace()
+    sh = ShaclNamespace()
+    #cello = CelloWebsiteNamespace()
     help = HelpNamespace()
 
-    namespaces = [onto, cvcl, xref, pub, orga, db, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann, oa, org, wdt, wd, cello, help, pubmed]
+    namespaces = [onto, cvcl, xref, pub, orga, db, xsd, rdf, rdfs, skos, owl, foaf, dcterms, fabio, up, bibo, widoco, vann, oa, org, wdt, wd, sh, help, pubmed]
 
 
 if __name__ == '__main__':
     myonto = NamespaceRegistry.orga
     print(myonto.getSparqlPrefixDeclaration())
-    print(myonto.prefix())
-    print(myonto.baseurl())
+    print(myonto.pfx)
+    print(myonto.url)
     print(myonto.pfx)
     print(myonto.url)
     print(myonto.getSQLforVirtuoso())

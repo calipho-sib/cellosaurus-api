@@ -18,7 +18,7 @@ import subprocess
 import ApiCommon
 from ApiCommon import log_it
 from fields_utils import FldDef
-from namespace import NamespaceRegistry as ns_reg
+from namespace_registry import NamespaceRegistry as ns_reg
 
 from rdf_builder import RdfBuilder
 from organizations import KnownOrganizations, Organization
@@ -26,7 +26,7 @@ from organizations import KnownOrganizations, Organization
 from terminologies import Terminologies, Terminology
 from ontology_builder import OntologyBuilder
 from databases import Database, Databases
-from ge_methods import GenomeEditingMethods, GeMethod
+from ge_methods import GenomeModificationMethods, GeMethod
 from cl_categories import CellLineCategories, CellLineCategory
 from sexes import Sexes, Sex
 
@@ -1064,39 +1064,24 @@ if __name__ == "__main__":
 
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # create OWL definitions for Database subclasses and individuals
+        # create OWL definitions for Database individuals
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         file_out = open(out_dir + "data_databases.ttl", "wb")
-        log_it("INFO:", f"serializing OWL for databases")
+        log_it("INFO:", f"serializing OWL for database individuals")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
-        databases = Databases()
-        for k in databases.categories():
-            cat = databases.categories()[k]
-            file_out.write(bytes(rb.get_ttl_for_cello_database_subclass(cat) + "\n", "utf-8"))
-                        
+        databases = Databases()                        
         for k in databases.keys():
             db: Database = databases.get(k)
             file_out.write(bytes(rb.get_ttl_for_cello_database_individual(db) + "\n", "utf-8"))
         file_out.close()
-        log_it("INFO:", f"serialized OWL for databases")
+        log_it("INFO:", f"serialized OWL for database individuals")
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # create OWL definitions for other named subclasses and individuals
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         file_out = open(out_dir + "data_other_entities.ttl", "wb")
-        log_it("INFO:", f"serializing OWL for other entities")
-        log_it("INFO:", f"1) serializing OWL for genome editing methods")
+        log_it("INFO:", f"1) serializing OWL for sexes")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
-        methods = GenomeEditingMethods()
-        for k in methods.keys():
-            m = methods.get(k)
-            file_out.write(bytes(rb.get_ttl_for_genome_editing_method_individual(m) + "\n", "utf-8"))                        
-        log_it("INFO:", f"2) serializing OWL for cell line subclasses")
-        cl_cats = CellLineCategories()
-        for k in cl_cats.keys():
-            c = cl_cats.get(k)
-            file_out.write(bytes(rb.get_ttl_for_cell_line_subclass(c) + "\n", "utf-8"))                        
-        log_it("INFO:", f"3) serializing OWL for sexes")
         sexes = Sexes()
         for k in sexes.keys():
             s = sexes.get(k)
@@ -1119,8 +1104,11 @@ if __name__ == "__main__":
         elif args[1].lower() == "onto":
             result = subprocess.run(['bash', './private/scripts/reload_rdf_onto.sh'], capture_output=True, text=True)
             log_it("INFO", "LOADED (onto)logy, status", result.stdout)
+        elif args[1].lower() == "void":
+            result = subprocess.run(['bash', './private/scripts/reload_rdf_void.sh'], capture_output=True, text=True)
+            log_it("INFO", "LOADED void metadata, status", result.stdout)
         else:
-            log_it("Invalid argument after LOAD, expected data or onto")
+            log_it("Invalid argument after LOAD, expected data, onto or void")
             sys.exit(10)
 
     # -------------------------------------------------------
@@ -1139,22 +1127,13 @@ if __name__ == "__main__":
         file_out = open(out_dir + "ontology.ttl", "wb")
         log_it("INFO:", f"serializing OWL cellosaurus ontology")
         builder = OntologyBuilder()
-        lines = list()
-        log_it("INFO:", f"adding cellosaurus ontology header")
-        lines.extend(builder.get_onto_header(version=version))
-        log_it("INFO:", f"adding some useful external terms")
-        lines.extend(builder.get_imported_terms())
-        log_it("INFO:", f"adding cellosaurus ontology classes")
-        lines.extend(builder.get_classes())
-        log_it("INFO:", f"adding cellosaurus ontology properties")
-        lines.extend(builder.get_props())
+        lines = builder.get_onto_pretty_ttl_lines(version)
         count = 0
         for line in lines:
             count += 1
             if count % 500 == 0: log_it(f"writing line {count} / {len(lines)}")
             file_out.write(bytes(line + "\n", "utf-8"))
         log_it("INFO", f"writing line {count} / {len(lines)}")
-
         log_it("INFO:", f"serialized OWL cellosaurus ontology")
 
 

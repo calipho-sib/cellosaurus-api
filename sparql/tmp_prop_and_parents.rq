@@ -1,0 +1,7 @@
+select ?en (group_concat(?parent, ', ') as ?parents) where {
+  ?en a rdf:Property .
+  ?en rdfs:isDefinedBy : .
+  optional { ?en rdfs:subPropertyOf ?parent . }
+}
+group by ?en
+order by ?en

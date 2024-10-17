@@ -58,6 +58,11 @@ def get_rdf_graph_IRI():
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_onto_preferred_prefix():
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    return "cello"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_rdf_base_IRI():
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     # no final "/", please !

@@ -2,7 +2,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 import json
 import sys
 import datetime
-from namespace import NamespaceRegistry as ns_reg
+from namespace_registry import NamespaceRegistry as ns_reg
 
 # see https://github.com/RDFLib/sparqlwrapper/tree/master
 
@@ -16,7 +16,7 @@ class EndpointClient:
         self.endpoint = SPARQLWrapper(server_url)
         self.prefixes = dict()
         for ns in ns_reg.namespaces:
-            self.prefixes[ns.prefix() + ":"] = ns.baseurl()
+            self.prefixes[ns.pfx + ":"] = ns.url
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_graph_stats(self):

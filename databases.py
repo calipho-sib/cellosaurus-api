@@ -1,4 +1,4 @@
-from namespace import NamespaceRegistry as ns
+from namespace_registry import NamespaceRegistry as ns
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -84,7 +84,7 @@ class Databases:
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_db_category_IRI(label):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    prefix = ns.db.prefix()
+    prefix = ns.cello.pfx
     name = label.title().replace(" ", "").replace("(", "").replace(")", "").replace("/","").replace("-","")
     return prefix + ":" + name
     

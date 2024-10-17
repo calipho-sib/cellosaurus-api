@@ -1,21 +1,4 @@
-from namespace import NamespaceRegistry as ns
-
-    #
-    ## INIT for category
-    #
-    # def __init__(self):
-    #     self.method_dic = dict()
-    #     f_in = open("data_in/cellosaurus.txt")
-    #     while True:
-    #         line = f_in.readline()
-    #         if line == "": break
-    #         line = line.rstrip()
-    #         if line.startswith("CA   "):
-    #             label = line[5:]
-    #             if label not in self.method_dic: self.method_dic[label] = GeMethod(label)
-    #             rec = self.method_dic[label]
-    #             rec.count += 1
-    #     f_in.close()
+from namespace_registry import NamespaceRegistry as ns
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -23,13 +6,13 @@ class GeMethod:
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def __init__(self, label):
         self.label = label
-        self.IRI = get_method_IRI(label)
+        self.IRI = get_method_class_IRI(label)
         self.count = 0
     def __str__(self):
-        return f"GenomeEditingMethod(label:{self.label}, IRI:{self.IRI}, count:{self.count})"
+        return f"GenomeModificationMethod(label:{self.label}, IRI:{self.IRI}, count:{self.count})"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-class GenomeEditingMethods:
+class GenomeModificationMethods:
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def __init__(self):
         self.method_dic = dict()
@@ -61,17 +44,24 @@ class GenomeEditingMethods:
         return self.method_dic.get(k)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_method_IRI(label):
+def get_method_class_IRI(label):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    prefix = ns.onto.prefix()
+    if label == "Not specified": return ns.cello.GenomeModificationMethod # return most generic class name
+    prefix = ns.cello.pfx
     name = label.title().replace(" ", "").replace("(", "").replace(")", "").replace("/","").replace("-","")
     return prefix + ":" + name
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_method_clean_label(label):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    if label == "Not specified": return "Genome modification method NOS" # return label of generic class name + NOS
+    return label
 
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 if __name__ == '__main__':
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-    methods = GenomeEditingMethods()
+    methods = GenomeModificationMethods()
     for k in methods.keys():
         print(methods.get(k))

@@ -1,4 +1,4 @@
-from namespace import NamespaceRegistry as ns
+from namespace_registry import NamespaceRegistry as ns
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -28,7 +28,6 @@ class CellLineCategories:
                 rec.count += 1
         f_in.close()
 
-
     def keys(self):
         return self.cat_dic.keys()
     
@@ -38,7 +37,8 @@ class CellLineCategories:
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_cl_category_IRI(label):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    prefix = ns.onto.prefix()
+    if label == "Undefined cell line type": return ns.cello.CellLine # return most generic class name    
+    prefix = ns.cello.pfx
     name = label.title().replace(" ", "").replace("(", "").replace(")", "").replace("/","").replace("-","")
     return prefix + ":" + name
 

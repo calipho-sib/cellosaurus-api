@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from urllib.parse import urlencode
 import uvicorn
 from enum import Enum
-from namespace import NamespaceRegistry as ns_reg
+from namespace_registry import NamespaceRegistry as ns_reg
 
 
 #import os
@@ -79,8 +79,8 @@ three_media_types_responses = { "description": "Successful response", "content" 
 }
 
 subns_dict = dict()
-for ns in [ns_reg.cvcl, ns_reg.xref, ns_reg.orga, ns_reg.pub, ns_reg.onto, ns_reg.db ]:
-  subdir = ns.baseurl().split("/")[-2]
+for ns in [ns_reg.cvcl, ns_reg.xref, ns_reg.orga, ns_reg.pub, ns_reg.cello, ns_reg.db ]:
+  subdir = ns.url.split("/")[-2]
   subns_dict[subdir] = subdir
 
 SubNs = Enum('SubNs', subns_dict)
