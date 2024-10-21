@@ -63,7 +63,6 @@ IR   cello:GenomeAncestry
 //
 IR   cello:Gene
 #<<   OGG:0000000002 gene
-<<   NCIt:C45822 locus
 EQ   NCIt:C16612 Gene
 //
 IR   cello:Locus

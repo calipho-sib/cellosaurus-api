@@ -1096,16 +1096,16 @@ if __name__ == "__main__":
     if args[0]=="LOAD_RDF":
     # -------------------------------------------------------
         if args[1].lower() == "data":
-            setup_file = 'private/scripts/virtuoso_setup.sql'
+            setup_file = './scripts/virtuoso_setup.sql'
             save_virtuoso_isql_setup_file(setup_file)
             log_it("INFO", "Created", setup_file )
-            result = subprocess.run(['bash', './private/scripts/reload_rdf_data.sh'], capture_output=True, text=True)
+            result = subprocess.run(['bash', './scripts/reload_rdf_data.sh'], capture_output=True, text=True)
             log_it("LOADED data, status", result.stdout)
         elif args[1].lower() == "onto":
-            result = subprocess.run(['bash', './private/scripts/reload_rdf_onto.sh'], capture_output=True, text=True)
+            result = subprocess.run(['bash', './scripts/reload_rdf_onto.sh'], capture_output=True, text=True)
             log_it("INFO", "LOADED (onto)logy, status", result.stdout)
         elif args[1].lower() == "void":
-            result = subprocess.run(['bash', './private/scripts/reload_rdf_void.sh'], capture_output=True, text=True)
+            result = subprocess.run(['bash', './scripts/reload_rdf_void.sh'], capture_output=True, text=True)
             log_it("INFO", "LOADED void metadata, status", result.stdout)
         else:
             log_it("Invalid argument after LOAD, expected data, onto or void")

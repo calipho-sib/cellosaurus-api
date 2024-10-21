@@ -8,8 +8,6 @@ cd ~/work/void-generator
 cp void-cello.ttl ~/work/cellosaurus-api/rdf_data/
 cd ~/work/cellosaurus-api
 python cellapi_builder.py LOAD_RDF void
-#./sparql_service restart
-# cd ./private/scripts; ./start-stop-virtuoso.sh restart # old version
 cd ~/work/widoco
 ./doit-cello.sh
 cd ~/work/cellosaurus-api

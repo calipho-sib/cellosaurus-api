@@ -290,9 +290,10 @@ class OntologyBuilder:
             for comment in range_comments: ns.describe(term.iri, "range_comments", comment)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # UNUSED !!!
     def describe_publication_hierarchy_based_on_up(self):
+    # UNUSED !!!
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        
         ns.describe(ns.up.Book_Citation, ns.rdfs.label, ns.xsd.string("Book chapter citation"))          # they mean book chapter citation
         ns.describe(ns.up.Journal_Citation, ns.rdfs.label, ns.xsd.string("Journal article citation"))    # they mean journal article citation
 

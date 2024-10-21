@@ -1,0 +1,32 @@
+#
+# 2. Get new release and build data locally
+#
+
+ssh mac-098
+release_number=46
+cd cello/cellosaurus-api
+./scripts/get_cello_data $release_number
+./scripts/rebuild_api_data.sh --no-solr
+
+./scripts/deploy_api_code.sh piccard
+./scripts/push_dir.sh data_in piccard
+./scripts/push_dir.sh solr_data piccard
+
+#
+# 2. Deploy code and data to prod server, rebuild indexes and restart
+#
+
+ssh piccard
+cd /work/cellapi/
+
+./api_service.sh stop
+./solr_service.sh stop
+
+tar xvzf cellapi.tar.gz
+
+rm -rf data_in solr_data 
+tar xvzf data_in.tar.gz
+tar xvzf solr_data.tar.gz
+
+./_rebuild_api_data.sh --no-solr
+

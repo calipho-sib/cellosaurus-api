@@ -47,8 +47,8 @@ class CelloOntologyNamespace(BaseNamespace):
         self.Gene = self.registerClass("Gene")                                  # TODO: ongoing
         self.Locus = self.registerClass("Locus")                                  # TODO: ongoing, used in STR profile    
         self.Allele = self.registerClass("Allele")                                  # TODO: ongoing, used in HLA, str and later in genetic integration
-        #self.GeneAlleles = self.registerClass("GeneAlleles")                    # TODO: ongoing , used in HLA typing
-        #self.MarkerAlleles = self.registerClass("MarkerAlleles")                # TODO: , used in short tandem repeat
+        self.GeneAlleles = self.registerClass("GeneAlleles")                    # TODO: ongoing , used in HLA typing
+        self.MarkerAlleles = self.registerClass("MarkerAlleles")                # TODO: , used in short tandem repeat
 
         self.Protein = self.registerClass("Protein")                            # TODO: ongoing
 
