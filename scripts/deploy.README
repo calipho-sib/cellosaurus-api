@@ -2,21 +2,25 @@
 # 2. Get new release and build data locally
 #
 
+trg_host="myserver"
+
 ssh mac-098
 release_number=46
 cd cello/cellosaurus-api
 ./scripts/get_cello_data $release_number
-./scripts/rebuild_api_data.sh --no-solr
+./scripts/rebuild_api_data.sh
+# ./scripts/rebuild_api_data.sh --no-solr
 
-./scripts/deploy_api_code.sh piccard
-./scripts/push_dir.sh data_in piccard
-./scripts/push_dir.sh solr_data piccard
+./scripts/deploy_api_code.sh $trg_host
+./scripts/push_dir.sh data_in $trg_host
+./scripts/push_dir.sh solr_data $trg_host
+./scripts/push_dir.sh rdf_data $trg_host
 
 #
 # 2. Deploy code and data to prod server, rebuild indexes and restart
 #
 
-ssh piccard
+ssh $trg_host
 cd /work/cellapi/
 
 ./api_service.sh stop

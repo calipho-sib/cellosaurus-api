@@ -12,7 +12,7 @@ echo "target_host : $target_host"
 echo "target_dir  : $target_dir"
 
 cd $base_dir
-tar cvzf cellapi.tar.gz *.sh *.py *.html fields_def.txt private/configs/*  private/etc/* static/* solr_config/*
+tar cvzf cellapi.tar.gz *.sh *.py *.html fields_def.txt ./static/* ./configs/*  ./etc/* ./scripts/* ./solr_config/*
 ssh $target_host "mkdir -p $target_dir"
 scp cellapi.tar.gz $target_host:$target_dir/
 

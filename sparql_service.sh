@@ -40,11 +40,6 @@ fi
 DBA_PW=dba
 DAEMON=virtuoso-t
 
-# ISQL=/home/pmichel/work/tools/virtuoso-opensource/bin/isql
-# EXE_FILE=/home/pmichel/work/tools/virtuoso-opensource/bin/virtuoso-t
-# DB_DIR=/home/pmichel/work/tools/virtuoso-opensource/database
-# INI_FILE=/home/pmichel/work/cellosaurus-api/private/etc/virtuoso.ini
-
 ISQL=$virt_base/bin/isql
 EXE_FILE=$virt_base/bin/virtuoso-t
 DB_DIR=$virt_base/database
