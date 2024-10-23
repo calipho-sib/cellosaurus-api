@@ -31,6 +31,7 @@ tar xvzf cellapi.tar.gz
 rm -rf data_in solr_data 
 tar xvzf data_in.tar.gz
 tar xvzf solr_data.tar.gz
+tar xvzf rdf_data.tar.gz
 
 ./_rebuild_api_data.sh --no-solr
 

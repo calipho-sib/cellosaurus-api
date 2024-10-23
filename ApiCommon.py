@@ -17,7 +17,28 @@ RF_TXT_FILE = SERIAL_DIR + "rf-txt.bin"
 FLDDEF_FILE = "./fields_def.txt"
 
 # used in main.py and in fields_utils.py
-CELLAPI_VERSION="1.0.3"
+CELLAPI_VERSION="1.0.4"
+
+platform_key = "test"
+
+platform_dict = {
+    # no final "/", please !
+    "local": {
+        "base_IRI": "http://localhost/rdf",
+        "help_IRI": "http://localhost/sparql/doc",
+        "sparql_IRI": "http://localhost/sparql/service"
+    },
+    "test": {
+        "base_IRI": "https://www.mix-id1.cellosaurus.org/rdf",
+        "help_IRI": "https://test-sparql.cellosaurus.org/sparql/doc",
+        "sparql_IRI": "https://test-sparql.cellosaurus.org/sparql/service"
+    },
+    "prod": {
+        "base_IRI": "https://purl.expasy.org/cellosaurus",
+        "help_IRI": "https://sparql.cellosaurus.org/sparql/doc",
+        "sparql_IRI": "https://sparql.cellosaurus.org/sparql/service"
+    }
+}
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -52,6 +73,7 @@ def log_it(*things, duration_since=None):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_rdf_graph_IRI():
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # no final "/", please !
     # CAREFUL if you change this:
     # to be sync'ed with ./scripts/load_ttl_files.sh
     return "https://www.cellosaurus.org/rdf/graphs/main"
@@ -60,26 +82,33 @@ def get_rdf_graph_IRI():
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_onto_preferred_prefix():
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # used as a descripor of the ontology in its ttl file
     return "cello"
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_rdf_base_IRI():
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # no final "/", please !
-    #return "https://www.cellosaurus.org/rdf"
-    return "https://www.mix-id1.cellosaurus.org/rdf"
-    #return "http://localhost/rdf"
+    # used as a base for all IRIs for cello, xref, 
+    # org and cvcl namespaces  
+    return platform_dict[platform_key]["base_IRI"]
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_help_base_IRI():
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # UNUSED ???
-    # no final "/", please !
-    #return "https://www.cellosaurus.org/doc"
-    return "https://www.mix-id1.cellosaurus.org/rdf"
-    #return "http://localhost/doc"
+    # used as a base for all IRIs for cello, xref, 
+    # org and cvcl namespaces  
+    return platform_dict[platform_key]["help_IRI"]
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_sparql_service_IRI():
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # it is the public URL of the sparql service !!!
+    # not the sparql page path !
+    # used on building sparql-editor related pages
+    return platform_dict[platform_key]["sparql_IRI"]
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

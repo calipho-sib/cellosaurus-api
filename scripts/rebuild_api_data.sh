@@ -40,5 +40,8 @@ sleep 25
 sleep 10
 ./solr/bin/post -c pamcore1 solr_data/data*.xml
 
+# reload rdf data
+./srcipts/reload_rdf_all.sh
+
 # restart api service
 ./api_service.sh start

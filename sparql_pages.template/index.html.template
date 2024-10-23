@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cellosaurus SPARQL editor</title>
+    <meta name="description" content="SPARQL editor demo page" />
+    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/f/f3/Rdf_logo.svg" />
+    <!-- Import the module from a CDN -->
+    <script type="module" src="https://unpkg.com/@sib-swiss/sparql-editor"></script>
+  </head>
+
+  <body style="padding:5px; display:grid; ">
+    <div style="width:100%;background-color: antiquewhite; margin-top: 10px; margin-left: 0px; margin-right: 0px; margin-bottom: 15px; padding: 5px; display:inline;">
+        <span style="float:left; padding-right: 10px;"><a href="doc/index-en.html">Ontology</a></span>
+        <span style="float:none"><a href="resolver-examples.html">Resolver examples</a></span>  
+      <span style="float:right">version 1.3</span>
+    </div>
+    <div>
+      <sparql-editor
+        endpoint="$sparql_IRI"
+        examples-repo-add-url="https://github.com/sib-swiss/sparql-examples/new/master/examples/Cellosaurus"
+        examples-on-main-page="10"
+        style="--btn-color: white; --btn-bg-color: #00709b;"
+      >
+        <h1>About</h1>
+        <p>This SPARQL endpoint contains the Cellosaurus OWL ontology and RDF data</p>
+      </sparql-editor>
+    </div>
+  </body>
+</html>

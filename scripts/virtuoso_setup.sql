@@ -25,7 +25,7 @@ insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('wdt', 'http://www.wikidat
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('wd', 'http://www.wikidata.org/entity/');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('sh', 'http://www.w3.org/ns/shacl#');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('schema', 'https://schema.org/');
-insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('help', 'https://www.mix-id1.cellosaurus.org/rdf/');
+insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('help', 'https://test-sparql.cellosaurus.org/sparql/doc/');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('pubmed', 'https://www.ncbi.nlm.nih.gov/pubmed/');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('BAO', 'http://www.bioassayontology.org/bao#BAO_');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('BTO', 'http://purl.obolibrary.org/obo/BTO_');

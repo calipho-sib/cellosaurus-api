@@ -899,10 +899,10 @@ if __name__ == "__main__":
 # ===========================================================================================
     parser = OptionParser()
     (options, args) = parser.parse_args()
-    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO or TEST")
+    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, SPARQL_PAGES or TEST")
 
-    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "TEST" ]: 
-        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO or TEST")
+    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "SPARQL_PAGES", "TEST" ]: 
+        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, SPARQL_PAGES or TEST")
 
     input_dir = "data_in/"
     if input_dir[-1] != "/" : input_dir + "/"
@@ -1090,6 +1090,30 @@ if __name__ == "__main__":
         log_it("INFO:", f"serialized OWL definitions for other entities")
 
         log_it("INFO:", "end")
+
+    # -------------------------------------------------------
+    if args[0]=="SPARQL_PAGES":
+    # -------------------------------------------------------
+        f_in = open("sparql_pages.template/index.html.template")
+        f_out = open("tmp_index.html", "w")
+        for line in f_in.readlines():
+            line = line.replace("$sparql_IRI", ApiCommon.get_sparql_service_IRI())
+            f_out.write(line)
+        f_in.close()
+        f_out.close()
+        log_it("INFO", "Created tmp_index.html" )
+
+        f_in = open("sparql_pages.template/resolver-examples.template")
+        f_out = open("tmp_resolver-examples.html", "w")
+        for line in f_in.readlines():
+            line = line.replace("$base_IRI", ApiCommon.get_rdf_base_IRI())
+            f_out.write(line)
+        f_in.close()
+        f_out.close()
+        log_it("INFO", "Created tmp_resolver-examples.html" )
+        
+        result = subprocess.run(['bash', './scripts/prepare_sparql_pages.sh'], capture_output=True, text=True)
+        log_it("INFO", "Rebuilt sparql_pages directory, status", result.stdout)
 
 
     # -------------------------------------------------------
