@@ -203,7 +203,8 @@ class RdfBuilder:
         triples.append(db_IRI, ns.cello.shortname, ns.xsd.string(db.abbrev))
         if db.in_up:
             up_db = "<http://purl.uniprot.org/database/" + db.abbrev + ">"
-            triples.append(db_IRI, ns.owl.sameAs, up_db) # <=============== link between up and cello instances
+            #triples.append(db_IRI, ns.owl.sameAs, up_db) # <=============== link between up and cello instances
+            triples.append(db_IRI, ns.skos.exactMatch, up_db) # <=============== link between up and cello instances
         triples.append(db_IRI, ns.rdfs.seeAlso, "<" + db.url + ">")
         url = ns.cello.url
         if url.endswith("#"): url = url[:-1]

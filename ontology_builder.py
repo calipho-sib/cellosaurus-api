@@ -477,6 +477,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.hasPubMedId, ns.rdfs.label, ns.xsd.string("has PubMed identifier"))
         ns.describe(ns.fabio.hasPubMedId, ns.rdfs.label, ns.xsd.string("has PubMed identifier"))
         ns.describe(ns.cello.hasDOI, ns.rdfs.label, ns.xsd.string("has DOI identifier"))
+        ns.describe(ns.cello.issn13, ns.rdfs.label, ns.xsd.string("has ISSN13 identifier"))
         ns.describe(ns.cello.msiValue, ns.rdfs.label, ns.xsd.string("has microsatellite instability value"))
         ns.describe(ns.cello.productId, ns.rdfs.label, ns.xsd.string("product identifier"))
         ns.describe(ns.cello.xref, ns.rdfs.label, ns.xsd.string("has cross-reference"))
