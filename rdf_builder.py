@@ -883,7 +883,7 @@ class RdfBuilder:
         if len(elems) != 3: 
             cl_ac = cl_IRI.split(":")[1]
             log_it("ERROR", f"expected 3-4 tokens in CC From comment '{value}' : {cl_ac}")
-            return []
+            return triples
         orga_IRI = ns.orga.IRI(elems[0], "", elems[1], elems[2], contact)
         triples.append(cl_IRI, ns.cello._from, orga_IRI)
         return triples

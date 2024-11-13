@@ -95,15 +95,15 @@ class Chebi_Parser:
             elif line == "is_obsolete: true":
                 term.obsolete = True
             elif line.startswith("id: "): 
-                term.id = line[4:].rstrip()
+                term.id = line[4:].rstrip().replace(":", "_")
             elif line.startswith("alt_id: "): 
-                term.altIdList.append(line[8:].rstrip())
+                term.altIdList.append(line[8:].rstrip().replace(":", "_"))
             elif line.startswith("name: "):
                 term.name = line[6:].rstrip()
             elif line.startswith("is_a: "):
-                term.isaList.append(line[6:].strip())
+                term.isaList.append(line[6:].strip().replace(":", "_"))
             elif line.startswith("relationship: has_part "):
-                term.hasPartList.append(line[23:].strip())
+                term.hasPartList.append(line[23:].strip().replace(":", "_"))
         return term
 
 
@@ -179,14 +179,17 @@ if __name__ == '__main__':
     sys.exit(0)
 
     print("------")
-    ids = parser.get_parents(set(), "CHEBI:78547")
+    #ids = parser.get_parents(set(), "CHEBI:78547")
+    ids = parser.get_parents(set(), "CHEBI_78547")
     for id in ids:print(parser.term_dict[id])
     
     print("------")
-    ids = parser.get_parents(set(), "CHEBI:36080")
+    #ids = parser.get_parents(set(), "CHEBI:36080")
+    ids = parser.get_parents(set(), "CHEBI_36080")
     for id in ids:print(parser.term_dict[id])
     
     print("------")
-    ids = parser.get_parents(set(), "CHEBI:87627")
+    #ids = parser.get_parents(set(), "CHEBI:36080")
+    ids = parser.get_parents(set(), "CHEBI_36080")
     for id in ids:print(parser.term_dict[id])
     
