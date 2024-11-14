@@ -33,15 +33,15 @@ fi
 ./solr_service.sh restart
 
 # delete all solr indexes
-sleep 25
+sleep 30
 ./solr/bin/post -c pamcore1 -d "<delete><query>*:*</query></delete>"
 
 # rebuild solr indexes
 sleep 10
 ./solr/bin/post -c pamcore1 solr_data/data*.xml
 
-# reload rdf data
-./srcipts/reload_rdf_all.sh
+# reload rdf data (doit-rdf.sh instead ?)
+# ./scripts/reload_rdf_all.sh
 
 # restart api service
 ./api_service.sh start
