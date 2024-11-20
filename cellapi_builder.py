@@ -27,7 +27,6 @@ from terminologies import Terminologies, Terminology
 from ontology_builder import OntologyBuilder
 from databases import Database, Databases
 from ge_methods import GenomeModificationMethods, GeMethod
-from cl_categories import CellLineCategories, CellLineCategory
 from sexes import Sexes, Sex
 
 # called dynamically

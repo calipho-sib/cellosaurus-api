@@ -85,3 +85,10 @@ if __name__ == '__main__':
     ns.describe("cello:TestClass", ns.skos.closeMatch, "OBI:close")
     t = ns.cello.terms["TestClass"]
     print("\n".join(t.ttl_lines()))
+
+    print("----")
+    for id in ns.wd.terms:
+        print("id:", id)
+        term = ns.wd.terms[id]
+        if "owl:Class" in term.props["rdf:type"]:
+            print("YES term", term)

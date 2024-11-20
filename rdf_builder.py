@@ -6,7 +6,7 @@ from organizations import Organization
 from terminologies import Term, Terminologies, Terminology
 from databases import Database, Databases, get_db_category_IRI
 from ge_methods import GeMethod, GenomeModificationMethods, get_method_class_IRI, get_method_clean_label
-from cl_categories import CellLineCategories, CellLineCategory, get_cl_category_IRI
+#from cl_categories import CellLineCategories, CellLineCategory, get_cl_category_IRI
 from sexes import Sexes, Sex, get_sex_IRI
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -39,6 +39,7 @@ class RdfBuilder:
         self.mmm2mm = { "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", 
                 "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
 
+        # publication type label => publication class
         self.pubtype_clazz = {
             "article": ns.fabio.JournalArticle,
             "book chapter": ns.fabio.BookChapter,
@@ -55,6 +56,17 @@ class RdfBuilder:
             "technical document":       ns.cello.TechnicalDocument,
             "miscellaneous document":   ns.cello.MiscellaneousDocument,            
         }
+
+        # cell line category => cell line class
+        self.clcat_clazz = dict()
+        for id in ns.wd.terms:
+            term = ns.wd.terms[id]
+            if "owl:Class" in term.props["rdf:type"]:
+                xsdlabel = term.props["rdfs:label"].pop()
+                label = xsdlabel.split("\"")[1]
+                self.clcat_clazz[label] = term.iri
+        self.clcat_clazz["Undefined cell line type"] = ns.wd.CellLine # generic cell line
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_blank_node(self):
@@ -78,6 +90,7 @@ class RdfBuilder:
         for item in ns.namespaces:
             lines.append(item.getSparqlPrefixDeclaration())
         return "\n".join(lines) + "\n"
+
 
 
 
@@ -126,6 +139,17 @@ class RdfBuilder:
         props = f"cat={cat}|lbl={lbl}|dis={dis}|url={url}"
         #if props is not None: print("DEBUG props:", props)
         return ns.xref.IRI(db,ac, props)
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_cl_category_class(self, category_label):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        clazz = self.clcat_clazz.get(category_label)
+        if clazz is None:
+            log_it("WARNING", f"unexpected cell line category '{category_label}'")
+            clazz = ns.wd.CellLine # default, most generic
+        return clazz
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ref_class(self, ref_data):
@@ -598,10 +622,9 @@ class RdfBuilder:
         # fields: CA
         ca = cl_data["category"] # we expect one value for each cell line
         if ca is not None:
-            triples.append(cl_IRI, ns.rdf.type, get_cl_category_IRI(ca))
-            #triples.append(cl_IRI, ns.cello.category, ns.xsd.string(ca))
+            triples.append(cl_IRI, ns.rdf.type, self.get_cl_category_class(ca))
         else:
-            triples.append(cl_IRI, ns.rdf.type, ns.cello.CellLine)
+            triples.append(cl_IRI, ns.rdf.type, ns.wd.CellLine)
             
 
         # fields DT, dtc, dtu, dtv

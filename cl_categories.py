@@ -50,3 +50,12 @@ if __name__ == '__main__':
     cats = CellLineCategories()
     for k in cats.keys():
         print(cats.get(k))
+    print("-----------")
+    for k in cats.keys():
+#        print(f'"{cats.get(k).label}": ns.wd ,')
+        print(f'self.xxx = self.registerClass("xxx", label="{cats.get(k).label}")')
+
+
+#                self.P5166_DI = self.registerObjectProperty("P5166")
+
+    

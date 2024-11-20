@@ -30,7 +30,7 @@ class CelloOntologyNamespace(BaseNamespace):
         #self.BookChapter = self.registerClass("BookChapter")                    # described
         #self.ConferencePublication = self.registerClass("ConferencePublication")    # described
 
-        self.CellLine = self.registerClass("CellLine")                          # described
+        #self.CellLine = self.registerClass("CellLine")                          # described
         
         self.GenomeModificationMethod = self.registerClass("GenomeModificationMethod")    # described
 

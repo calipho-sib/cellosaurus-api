@@ -23,7 +23,6 @@ class OntologyBuilder:
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         self.gem = GenomeModificationMethods()
         self.ctd = ConceptTermData()
-        self.cl_cats = CellLineCategories()
         self.prefixes = list()
         for space in ns.namespaces: self.prefixes.append(space.getTtlPrefixDeclaration())
 
@@ -391,21 +390,27 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_cell_line_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # describe where our CellLine class is in the universe 
-        ns.describe(ns.cello.CellLine, ns.owl.equivalentClass, "<http://www.wikidata.org/entity/Q21014462>")
-        ns.describe(ns.cello.CellLine, ns.skos.closeMatch, "<http://purl.obolibrary.org/obo/CLO_0000031>")
-        ns.describe(ns.cello.CellLine, ns.skos.closeMatch, "<http://id.nlm.nih.gov/mesh/D002460>")
-        ns.describe(ns.cello.CellLine, ns.rdfs.seeAlso, "<https://www.cellosaurus.org/>")
-        # add programmaticaly the subClassOf relationships between CellLine and its children
-        for k in self.cl_cats.keys():
-            cat : CellLineCategory = self.cl_cats.get(k)
-            if cat.label == "Undefined cell line type": continue
-            cat_id = cat.IRI.split(":")[1]
-            ns.cello.registerClass(cat_id)
-            ns.describe(cat.IRI, ns.rdfs.subClassOf, ns.cello.CellLine)
-            ns.describe(cat.IRI, ns.rdfs.label, ns.xsd.string(cat.label))
-            term = self.ctd.getCelloTerm("CellLine", cat.label)
-            self.describe_related_terms(cat.IRI, term, termIsClass=True)
+        # generate rdfs:subClass links between wd.CellLine and others
+        for id in ns.wd.terms:
+            term = ns.wd.terms[id]
+            if "owl:Class" in term.props["rdf:type"]:
+                if term.iri != ns.wd.CellLine:
+                    ns.describe(term.iri, ns.rdfs.subClassOf, ns.wd.CellLine)
+
+        # describe how CellLine classes relate in the universe 
+        ns.describe(ns.wd.CellLine, ns.skos.closeMatch, "<http://purl.obolibrary.org/obo/CLO_0000031>")
+        ns.describe(ns.wd.CellLine, ns.skos.closeMatch, "<http://id.nlm.nih.gov/mesh/D002460>")
+        ns.describe(ns.wd.CellLine, ns.rdfs.seeAlso, "<https://www.cellosaurus.org/>")
+        ns.describe(ns.wd.Q23058136, ns.skos.closeMatch, f"<{ns.OBI.url}0001906>" )
+        ns.describe(ns.wd.Q107102664, ns.skos.closeMatch, f"<{ns.BTO.url}0001581>" )
+        ns.describe(ns.wd.Q107102664, ns.skos.closeMatch, f"<{ns.CLO.url}0037279>" )
+        ns.describe(ns.wd.Q27671617, ns.skos.closeMatch, f"<{ns.CLO.url}0009829>" )
+        ns.describe(ns.wd.Q27554370, ns.skos.closeMatch, f"<{ns.BTO.url}0001926>" )
+        ns.describe(ns.wd.Q27554370, ns.skos.closeMatch, f"<{ns.CLO.url}0036932>" )
+        ns.describe(ns.wd.Q107103143, ns.skos.closeMatch, f"<{ns.CLO.url}0037307>" )
+        ns.describe(ns.wd.Q27671698, ns.skos.closeMatch, f"<{ns.BTO.url}0005996>" )
+        ns.describe(ns.wd.Q27555384, ns.skos.closeMatch, f"<{ns.OMIT.url}0003790>" )
+
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -437,7 +442,7 @@ class OntologyBuilder:
     def describe_comments(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # comments for classes
-        ns.describe(ns.cello.CellLine, ns.rdfs.comment, ns.xsd.string("Cell line as defined in the Cellosaurus"))
+
         # comments for props
         ns.describe(ns.cello.recommendedName, ns.rdfs.comment, ns.xsd.string("Most frequently the name of the cell line as provided in the original publication"))
         ns.describe(ns.cello.alternativeName, ns.rdfs.comment, ns.xsd.string("Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms"))

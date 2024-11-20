@@ -93,7 +93,7 @@ class Term:
             label_list = list(self.props.get("rdfs:label"))
             if len(label_list) > 0: label = self.unwrap_xsd_string(label_list[0])
         # add skos relationships to other terms
-        for pk in ["skos:exactMatch", "skos:closeMatch", "skos:broadMatch"]:
+        for pk in ["skos:exactMatch", "skos:closeMatch", "skos:broadMatch", "rdfs:seeAlso"]:
             for elem in self.props.get(pk) or set():
                 content = " ".join([pk, elem])
                 parts.append(content)
@@ -339,6 +339,24 @@ class WikidataWdNamespace(BaseNamespace):
         self.P5166_DI = self.registerObjectProperty("P5166")
         self.P3432_HI = self.registerObjectProperty("P3432")
         self.P21_SX = self.registerObjectProperty("P21") # could not figure out how sex is related to cell lines in wikidata
+
+        # cell line classes with label as found in cellosaurus.txt
+        self.Q23058136 = self.registerClass("Q23058136", label="Cancer cell line")
+        self.Q27653145 = self.registerClass("Q27653145", label="Conditionally immortalized cell line")
+        self.Q107102664 = self.registerClass("Q107102664", label="Embryonic stem cell")
+        self.Q27627225 = self.registerClass("Q27627225", label="Factor-dependent cell line")
+        self.Q27671617 = self.registerClass("Q27671617", label="Finite cell line")
+        self.Q27555050 = self.registerClass("Q27555050", label="Hybrid cell line")
+        self.Q27554370 = self.registerClass("Q27554370", label="Hybridoma")
+        self.Q107103143 = self.registerClass("Q107103143", label="Induced pluripotent stem cell")
+        self.Q107103129 = self.registerClass("Q107103129", label="Somatic stem cell")
+        self.Q27555319 = self.registerClass("Q27555319", label="Spontaneously immortalized cell line")
+        self.Q27671698 = self.registerClass("Q27671698", label="Stromal cell line")
+        self.Q27653701 = self.registerClass("Q27653701", label="Telomerase immortalized cell line")
+        self.Q27555384 = self.registerClass("Q27555384", label="Transformed cell line")
+        self.CellLine = self.registerClass("Q21014462", label="Cell line") # with human readable var name because used at several locations
+
+
     def IRI(self, ac): return "wd:" + ac
 
 
