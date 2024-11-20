@@ -13,21 +13,22 @@ class CelloOntologyNamespace(BaseNamespace):
         # Note: described
         # Publication classes 
         self.Publication = self.registerClass("Publication")                    # described
-        self.JournalArticle = self.registerClass("JournalArticle")              # described
-        self.Patent = self.registerClass("Patent")                              # described
-        self.Thesis = self.registerClass("Thesis")                              # described
-        self.BachelorThesis = self.registerClass("BachelorThesis")              # described
-        self.MasterThesis = self.registerClass("MasterThesis")                  # described
-        self.DoctoralThesis = self.registerClass("DoctoralThesis")              # described
         self.MedicalDegreeThesis = self.registerClass("MedicalDegreeThesis")    # described
         self.MedicalDegreeMasterThesis = self.registerClass("MedicalDegreeMasterThesis")    # described
         self.PrivaDocentThesis = self.registerClass("PrivaDocentThesis")        # described
         self.VeterinaryMedicalDegreeThesis = self.registerClass("VeterinaryMedicalDegreeThesis")    # described
-        self.Book = self.registerClass("Book")                                  # described
-        self.BookChapter = self.registerClass("BookChapter")                    # described
         self.TechnicalDocument = self.registerClass("TechnicalDocument")        # described
         self.MiscellaneousDocument = self.registerClass("MiscellaneousDocument")    # described
-        self.ConferencePublication = self.registerClass("ConferencePublication")    # described
+        # entites commented below are replaced with fabio classes (see FabioNamespace)
+        #self.JournalArticle = self.registerClass("JournalArticle")              # described
+        #self.Patent = self.registerClass("Patent")                              # described
+        #self.Thesis = self.registerClass("Thesis")                              # described
+        #self.BachelorThesis = self.registerClass("BachelorThesis")              # described
+        #self.MasterThesis = self.registerClass("MasterThesis")                  # described
+        #self.DoctoralThesis = self.registerClass("DoctoralThesis")              # described
+        #self.Book = self.registerClass("Book")                                  # described
+        #self.BookChapter = self.registerClass("BookChapter")                    # described
+        #self.ConferencePublication = self.registerClass("ConferencePublication")    # described
 
         self.CellLine = self.registerClass("CellLine")                          # described
         

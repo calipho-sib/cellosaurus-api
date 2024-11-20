@@ -72,7 +72,7 @@ class OntologyBuilder:
         self.describe_genetic_characteristics_and_subclasses()
         self.describe_genome_editing_method_and_subclasses()
         self.describe_sequence_variation_and_subclasses()
-        self.describe_publication_hierarchy_based_on_fabio()
+        self.describe_publication_hierarchy_based_on_fabio_no_redundancy()
         self.describe_terminology_database_and_subclasses()
         self.describe_cell_line_properties()
         self.describe_organization_related_terms()
@@ -84,17 +84,21 @@ class OntologyBuilder:
         
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def build_class_tree(self):
+    def build_class_tree(self, local_only=False):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # NOW build tree with local child - parent relationships based on rdfs:subClassOf()
+        # NOW build tree with (local) child - parent relationships based on rdfs:subClassOf()
         edges = dict()
-        for space in [ ns.cello ]: # ns.namespaces:
+        relevant_namespaces = ns.namespaces
+        if local_only: relevant_namespaces = [ ns.cello ]
+        for space in relevant_namespaces:
             for term_id in space.terms:
                 term: Term = space.terms[term_id]
                 if not term.isA(ns.owl.Class): continue
                 for parent_iri in term.props.get(ns.rdfs.subClassOf) or set():
-                    if parent_iri.startswith(ns.cello.pfx):
+                    if parent_iri.startswith(ns.cello.pfx) or not local_only:
                         #print("DEBUG tree", term.iri, "has parent", parent_iri)
+                        if term.iri in edges:
+                            log_it(f"WARNING, multiple parents for {term.iri}:  parent {edges[term.iri]} replaced with {parent_iri}")
                         edges[term.iri] = parent_iri
         self.tree = Tree(edges)
 
@@ -289,107 +293,52 @@ class OntologyBuilder:
             for range in range_set: ns.describe(term.iri, ns.rdfs.range, range)
             for comment in range_comments: ns.describe(term.iri, "range_comments", comment)
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # UNUSED !!!
-    def describe_publication_hierarchy_based_on_up(self):
-    # UNUSED !!!
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        ns.describe(ns.up.Book_Citation, ns.rdfs.label, ns.xsd.string("Book chapter citation"))          # they mean book chapter citation
-        ns.describe(ns.up.Journal_Citation, ns.rdfs.label, ns.xsd.string("Journal article citation"))    # they mean journal article citation
-
-        # Publication hierarchy based on UniProt skeleton
-        ns.describe( ns.up.Published_Citation, ns.rdfs.subClassOf,      ns.up.Citation)
-        ns.describe( ns.cello.Book, ns.rdfs.subClassOf,                     ns.up.Published_Citation)
-        ns.describe( ns.cello.TechnicalDocument, ns.rdfs.subClassOf,        ns.up.Published_Citation)
-        ns.describe( ns.cello.MiscellaneousDocument, ns.rdfs.subClassOf,    ns.up.Published_Citation)
-        ns.describe( ns.cello.ConferencePublication, ns.rdfs.subClassOf,    ns.up.Published_Citation)
-        ns.describe( ns.up.Book_Citation, ns.rdfs.subClassOf,               ns.up.Published_Citation)
-        ns.describe( ns.up.Journal_Citation, ns.rdfs.subClassOf,            ns.up.Published_Citation)
-        ns.describe( ns.up.Patent_Citation, ns.rdfs.subClassOf,             ns.up.Published_Citation)
-        ns.describe( ns.up.Thesis_Citation, ns.rdfs.subClassOf,             ns.up.Published_Citation)
-        ns.describe( ns.cello.BachelorThesis, ns.rdfs.subClassOf,                  ns.up.Thesis_Citation)
-        ns.describe( ns.cello.MasterThesis, ns.rdfs.subClassOf,                    ns.up.Thesis_Citation)
-        ns.describe( ns.cello.DoctoralThesis, ns.rdfs.subClassOf,                  ns.up.Thesis_Citation)
-        ns.describe( ns.cello.MedicalDegreeThesis, ns.rdfs.subClassOf,             ns.up.Thesis_Citation)
-        ns.describe( ns.cello.MedicalDegreeMasterThesis, ns.rdfs.subClassOf,       ns.up.Thesis_Citation)
-        ns.describe( ns.cello.PrivaDocentThesis, ns.rdfs.subClassOf,               ns.up.Thesis_Citation)
-        ns.describe( ns.cello.VeterinaryMedicalDegreeThesis, ns.rdfs.subClassOf,   ns.up.Thesis_Citation)
-
-        # Publication class equivalences with fabio entities (ours only)
-        ns.describe( ns.cello.BachelorThesis,         ns.owl.equivalentClass, ns.fabio.BachelorsThesis)
-        ns.describe( ns.cello.MasterThesis,           ns.owl.equivalentClass, ns.fabio.MastersThesis)
-        ns.describe( ns.cello.DoctoralThesis,         ns.owl.equivalentClass, ns.fabio.DoctoralThesis)
-        ns.describe( ns.cello.Book,                   ns.owl.equivalentClass, ns.fabio.Book )
-        ns.describe( ns.cello.ConferencePublication,  ns.owl.equivalentClass, ns.fabio.ConferencePaper)
-
-        # Publication class broad matches with fabio entities (ours only)
-        ns.describe( ns.cello.MedicalDegreeThesis,            ns.skos.broadMatch, ns.fabio.Thesis)
-        ns.describe( ns.cello.MedicalDegreeMasterThesis,      ns.skos.broadMatch, ns.fabio.Thesis)
-        ns.describe( ns.cello.PrivaDocentThesis,              ns.skos.broadMatch, ns.fabio.Thesis)
-        ns.describe( ns.cello.VeterinaryMedicalDegreeThesis,  ns.skos.broadMatch, ns.fabio.Thesis)
-        ns.describe( ns.cello.TechnicalDocument,              ns.skos.broadMatch, ns.fabio.ReportDocument)
-        ns.describe( ns.cello.MiscellaneousDocument,          ns.skos.broadMatch , ns.fabio.Expression)
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def describe_publication_hierarchy_based_on_fabio(self):
+    def describe_publication_hierarchy_based_on_fabio_no_redundancy(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         
-        ns.describe(ns.up.Book_Citation, ns.rdfs.label, ns.xsd.string("Book chapter citation"))          # they mean book chapter citation
-        ns.describe(ns.up.Journal_Citation, ns.rdfs.label, ns.xsd.string("Journal article citation"))    # they mean journal article citation
-
         # TODO: add relationshp with dcterms.Bibliographic.... ?
 
         # Publication hierarchy based on fabio Expression
         ns.describe( ns.cello.Publication,              ns.rdfs.subClassOf, ns.fabio.Expression)
-        ns.describe( ns.cello.Book,                     ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.BookChapter,              ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.JournalArticle,            ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.Patent,                   ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.TechnicalDocument,        ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.MiscellaneousDocument,    ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.ConferencePublication,    ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.Thesis,                   ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.BachelorThesis,               ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.MasterThesis,                 ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.DoctoralThesis,               ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.MedicalDegreeThesis,          ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.MedicalDegreeMasterThesis,    ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.PrivaDocentThesis,            ns.rdfs.subClassOf, ns.cello.Publication)
-        ns.describe( ns.cello.VeterinaryMedicalDegreeThesis, ns.rdfs.subClassOf, ns.cello.Publication)
-
-        # Relationships with fabio
-        ns.describe( ns.cello.Book,                     ns.owl.equivalentClass, ns.fabio.Book)
-        ns.describe( ns.cello.BookChapter,              ns.owl.equivalentClass, ns.fabio.BookChapter)
-        ns.describe( ns.cello.JournalArticle,            ns.owl.equivalentClass, ns.fabio.JournalArticle)
-        ns.describe( ns.cello.Patent,                   ns.owl.equivalentClass, ns.fabio.PatentDocument)
-        ns.describe( ns.cello.TechnicalDocument,        ns.skos.broadMatch, ns.fabio.ReportDocument)
-        ns.describe( ns.cello.MiscellaneousDocument,    ns.skos.broadMatch, ns.fabio.ReportDocument)
-        ns.describe( ns.cello.ConferencePublication,    ns.owl.equivalentClass, ns.fabio.ConferencePaper)
-        ns.describe( ns.cello.Thesis,                   ns.owl.equivalentClass, ns.fabio.Thesis)
-        ns.describe( ns.cello.BachelorThesis,               ns.owl.equivalentClass, ns.fabio.BachelorsThesis)
-        ns.describe( ns.cello.MasterThesis,                 ns.owl.equivalentClass, ns.fabio.MastersThesis)
-        ns.describe( ns.cello.DoctoralThesis,               ns.owl.equivalentClass, ns.fabio.DoctoralThesis)
-        ns.describe( ns.cello.MedicalDegreeThesis,          ns.skos.broadMatch, ns.fabio.Thesis)
-        ns.describe( ns.cello.MedicalDegreeMasterThesis,    ns.skos.broadMatch, ns.fabio.Thesis)
-        ns.describe( ns.cello.PrivaDocentThesis,            ns.skos.broadMatch, ns.fabio.Thesis)
-        ns.describe( ns.cello.VeterinaryMedicalDegreeThesis, ns.skos.broadMatch, ns.fabio.Thesis)
+        ns.describe( ns.fabio.Book,                     ns.rdfs.subClassOf, ns.cello.Publication)
+        ns.describe( ns.fabio.BookChapter,              ns.rdfs.subClassOf, ns.cello.Publication)
+        ns.describe( ns.fabio.JournalArticle,           ns.rdfs.subClassOf, ns.cello.Publication)
+        ns.describe( ns.fabio.PatentDocument,           ns.rdfs.subClassOf, ns.cello.Publication)
+        ns.describe( ns.fabio.ReportDocument,           ns.rdfs.subClassOf, ns.cello.Publication)
+        ns.describe( ns.cello.TechnicalDocument,        ns.rdfs.subClassOf, ns.fabio.ReportDocument)
+        ns.describe( ns.cello.MiscellaneousDocument,    ns.rdfs.subClassOf, ns.fabio.ReportDocument)
+        ns.describe( ns.fabio.ConferencePaper,          ns.rdfs.subClassOf, ns.cello.Publication)
+        ns.describe( ns.fabio.Thesis,                   ns.rdfs.subClassOf, ns.cello.Publication)
+        ns.describe( ns.fabio.BachelorsThesis,               ns.rdfs.subClassOf, ns.fabio.Thesis)
+        ns.describe( ns.fabio.MastersThesis,                 ns.rdfs.subClassOf, ns.fabio.Thesis)
+        ns.describe( ns.fabio.DoctoralThesis,                ns.rdfs.subClassOf, ns.fabio.Thesis)
+        ns.describe( ns.cello.MedicalDegreeThesis,           ns.rdfs.subClassOf, ns.fabio.Thesis)
+        ns.describe( ns.cello.MedicalDegreeMasterThesis,     ns.rdfs.subClassOf, ns.fabio.Thesis)
+        ns.describe( ns.cello.PrivaDocentThesis,             ns.rdfs.subClassOf, ns.fabio.Thesis)
+        ns.describe( ns.cello.VeterinaryMedicalDegreeThesis, ns.rdfs.subClassOf, ns.fabio.Thesis)
 
         # Relationships with UniProt
         ns.describe( ns.cello.Publication,              ns.skos.closeMatch, ns.up.Published_Citation)
-        ns.describe( ns.cello.BookChapter,              ns.skos.closeMatch, ns.up.Book_Citation)  # book citation is for book chapter !
-        ns.describe( ns.cello.JournalArticle,            ns.skos.closeMatch, ns.up.Journal_Citation )
-        ns.describe( ns.cello.Patent,                   ns.skos.closeMatch, ns.up.Patent_Citation)
-        ns.describe( ns.cello.Thesis,                   ns.skos.closeMatch, ns.up.Thesis_Citation)
-        ns.describe( ns.cello.BachelorThesis,               ns.skos.broadMatch, ns.up.Thesis_Citation)
-        ns.describe( ns.cello.MasterThesis,                 ns.skos.broadMatch, ns.up.Thesis_Citation)
-        ns.describe( ns.cello.DoctoralThesis,               ns.skos.broadMatch, ns.up.Thesis_Citation)
+        ns.describe( ns.fabio.BookChapter,              ns.skos.closeMatch, ns.up.Book_Citation)  # book citation is for book chapter !
+        ns.describe( ns.fabio.JournalArticle,            ns.skos.closeMatch, ns.up.Journal_Citation )
+        ns.describe( ns.fabio.PatentDocument,                   ns.skos.closeMatch, ns.up.Patent_Citation)
+        ns.describe( ns.fabio.Thesis,                   ns.skos.closeMatch, ns.up.Thesis_Citation)
+        ns.describe( ns.fabio.BachelorsThesis,               ns.skos.broadMatch, ns.up.Thesis_Citation)
+        ns.describe( ns.fabio.MastersThesis,                 ns.skos.broadMatch, ns.up.Thesis_Citation)
+        ns.describe( ns.fabio.DoctoralThesis,               ns.skos.broadMatch, ns.up.Thesis_Citation)
         ns.describe( ns.cello.MedicalDegreeThesis,          ns.skos.broadMatch, ns.up.Thesis_Citation)
         ns.describe( ns.cello.MedicalDegreeMasterThesis,    ns.skos.broadMatch, ns.up.Thesis_Citation)
         ns.describe( ns.cello.PrivaDocentThesis,            ns.skos.broadMatch, ns.up.Thesis_Citation)
         ns.describe( ns.cello.VeterinaryMedicalDegreeThesis, ns.skos.broadMatch, ns.up.Thesis_Citation)
 
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_misc_classes(self):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         for tk in self.ctd.getCelloTermKeys("MiscClasses"):
             term_data = self.ctd.getCelloTerm("MiscClasses", tk)
             self.describe_related_terms(tk, term_data, termIsClass=True)

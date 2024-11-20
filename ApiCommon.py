@@ -19,7 +19,7 @@ FLDDEF_FILE = "./fields_def.txt"
 # used in main.py and in fields_utils.py
 CELLAPI_VERSION="1.0.4"
 
-platform_key = "test"
+platform_key = "local"
 
 platform_dict = {
     # no final "/", please !

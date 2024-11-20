@@ -30,18 +30,19 @@ class Term:
         lines.append(self.iri)
         label = self.props.get("rdfs:label")
         if label is None:
-            label = "".join(["\"", self.build_default_label(),"\"", "^^xsd:string"])
-            self.props["rdfs:label"] = { label }
+            if self.ns == "cello" or True:
+                # default label built upon id
+                label = "".join(["\"", self.build_default_label(),"\"", "^^xsd:string"])
+                self.props["rdfs:label"] = { label }
+            else:
+                # label built upon IRI for external ontologies (nicer in widoco)
+                iri_like_label = ":".join([self.ns, self.id])                   
+                label = "".join(["\"", iri_like_label,"\"", "^^xsd:string"])
+                self.props["rdfs:label"] = { label }
 
         # build composite comment including label, skos relationships (otherwise invisible in widoco)
         # and textual comment if any
         self.build_composite_comment()
-
-        # # IRI becomes label (nicer in widoco)
-        if self.ns != "cello":
-            iri_like_label = ":".join([self.ns, self.id])                   
-            label = "".join(["\"", iri_like_label,"\"", "^^xsd:string"])
-            self.props["rdfs:label"] = { label }
 
         for pk in ordered_props:
             value_set = self.props.get(pk)
@@ -163,9 +164,12 @@ class BaseNamespace:
             self.terms[id] = t
         return self.terms[id].iri
 
-    def registerClass(self, id):
-        return self.registerTerm(id, "rdf:type", { "owl:Class" })
-
+    def registerClass(self, id, label=None):
+        iri = self.registerTerm(id, "rdf:type", { "owl:Class" })
+        if label is not None: 
+            self.describe(iri, "rdfs:label", f"\"{label}\"^^xsd:string")
+        return iri
+    
     def registerProperty(self, id):
         return self.registerTerm(id, "rdf:type", { "rdf:Property" })
 
@@ -274,8 +278,8 @@ class FabioNamespace(BaseNamespace):
     
         self.Expression = self.registerClass("Expression")
         self.Thesis = self.registerClass("Thesis")
-        self.BachelorsThesis = self.registerClass("BachelorsThesis")
-        self.MastersThesis = self.registerClass("MastersThesis")
+        self.BachelorsThesis = self.registerClass("BachelorsThesis", label = "Bachelor's thesis")
+        self.MastersThesis = self.registerClass("MastersThesis", label = "Master's thesis")
         self.DoctoralThesis = self.registerClass("DoctoralThesis")
         self.PatentDocument = self.registerClass("PatentDocument")
         self.JournalArticle = self.registerClass("JournalArticle")
@@ -298,8 +302,8 @@ class UniProtCoreNamespace(BaseNamespace):
         self.Published_Citation = self.registerClass("Published_Citation")
         self.Patent_Citation = self.registerClass("Patent_Citation")
         self.Thesis_Citation = self.registerClass("Thesis_Citation")
-        self.Book_Citation = self.registerClass("Book_Citation")
-        self.Journal_Citation = self.registerClass("Journal_Citation")    
+        self.Book_Citation = self.registerClass("Book_Citation", label="Book chapter citation")
+        self.Journal_Citation = self.registerClass("Journal_Citation", label = "Journal article citation")    
         
         self.Annotation = self.registerClass("Annotation")
         self.Database = self.registerClass("Database")

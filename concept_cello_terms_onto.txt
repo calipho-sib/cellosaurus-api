@@ -326,6 +326,8 @@ EQ   OBI:0600059 DNA transduction
 //
 LB   Transfection/transduction [GI]
 //
+LB   Transduction/transfection
+//
 LB   Transfection [GI]
 EQ   OBI:0001152 transfection
 //

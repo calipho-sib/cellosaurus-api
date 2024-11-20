@@ -40,20 +40,20 @@ class RdfBuilder:
                 "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
 
         self.pubtype_clazz = {
-            "article": ns.cello.JournalArticle,
-            "book chapter": ns.cello.BookChapter,
-            "patent": ns.cello.Patent,
-            "thesis BSc": ns.cello.BachelorThesis,
-            "thesis MD": ns.cello.MedicalDegreeThesis,
-            "thesis MDSc": ns.cello.MedicalDegreeMasterThesis,
-            "thesis MSc": ns.cello.MasterThesis,
-            "thesis PD": ns.cello.PrivaDocentThesis,
-            "thesis PhD": ns.cello.DoctoralThesis,
-            "thesis VMD": ns.cello.VeterinaryMedicalDegreeThesis,
-            "book": ns.cello.Book,
-            "conference": ns.cello.ConferencePublication,
-            "technical document": ns.cello.TechnicalDocument,
-            "miscellaneous document": ns.cello.MiscellaneousDocument,            
+            "article": ns.fabio.JournalArticle,
+            "book chapter": ns.fabio.BookChapter,
+            "patent":       ns.fabio.PatentDocument,
+            "thesis BSc":   ns.fabio.BachelorsThesis,
+            "thesis MSc":   ns.fabio.MastersThesis,
+            "thesis PhD":   ns.fabio.DoctoralThesis,
+            "book":         ns.fabio.Book,
+            "conference":   ns.fabio.ConferencePaper,
+            "thesis MDSc":  ns.cello.MedicalDegreeMasterThesis,
+            "thesis MD":    ns.cello.MedicalDegreeThesis,
+            "thesis PD":    ns.cello.PrivaDocentThesis,
+            "thesis VMD":   ns.cello.VeterinaryMedicalDegreeThesis,
+            "technical document":       ns.cello.TechnicalDocument,
+            "miscellaneous document":   ns.cello.MiscellaneousDocument,            
         }
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

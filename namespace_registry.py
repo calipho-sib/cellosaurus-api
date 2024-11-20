@@ -67,9 +67,9 @@ if __name__ == '__main__':
                 print(line)
 
     print("----")
-    ns.up.registerClass("TestClass")
+    ns.up.registerClass("TestClass", "my nice registered label")
     ns.describe("up:TestClass", ns.rdfs.comment, ns.xsd.string("""this is my " real comment"""))
-    ns.describe("up:TestClass", ns.rdfs.label, ns.xsd.string("Test Class label"))
+    #ns.describe("up:TestClass", ns.rdfs.label, ns.xsd.string("Test Class label"))
     ns.describe("up:TestClass", ns.skos.broadMatch, "OBI:broader")
     ns.describe("up:TestClass", ns.skos.exactMatch, "OBI:exact")
     ns.describe("up:TestClass", ns.skos.closeMatch, "OBI:close")
