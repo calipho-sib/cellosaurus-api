@@ -463,11 +463,33 @@ class CLONamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class NCItNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(NCItNamespace, self).__init__("NCIt", "http://purl.obolibrary.org/obo/NCIT_")
+    def __init__(self): 
+        super(NCItNamespace, self).__init__("NCIt", "http://purl.obolibrary.org/obo/NCIT_")
+        self.C17262 = self.registerClass("C17262", label="X-ray")             # genome modification method subclass
+        self.C44386 = self.registerClass("C44386", label="Gamma radiation")   # genome modification method subclass
+
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OBINamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(OBINamespace, self).__init__("OBI", "http://purl.obolibrary.org/obo/OBI_")
+    def __init__(self): 
+        super(OBINamespace, self).__init__("OBI", "http://purl.obolibrary.org/obo/OBI_")
+
+        # most generic class for genome modification methods and its subclasses
+        self.GenomeModificationMethod = self.registerClass("0600043", label="Genome modification method")  
+        self._0001152 = self.registerClass("0001152", label="Transfection")   
+        self._0001154 = self.registerClass("0001154", label="Mutagenesis")
+        self._0002626 = self.registerClass("0002626", label="siRNA knockdown")
+        self._0003134 = self.registerClass("0003134", label="TALEN")
+        self._0003135 = self.registerClass("0003135", label="ZFN")
+        self._0003137 = self.registerClass("0003137", label="Gene trap")
+        self._0600059 = self.registerClass("0600059", label="Transduction")
+
+        self._0001404 = self.registerClass("0001404", label="Genetic characteristics information")
+        self._0001364 = self.registerClass("0001364", label="Genetic alteration information")
+        self._0001225 = self.registerClass("0001225", label="Genetic population background information")
+                
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OMITNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -478,6 +500,8 @@ class FBcvNamespace(BaseNamespace):
     def __init__(self): 
         super(FBcvNamespace, self).__init__("FBcv", "http://purl.obolibrary.org/obo/FBcv_")
         self.Database = self.registerClass("0000790")
+        self._0003008 = self.registerClass("0003008", label="CRISPR/Cas9")   # genome modification method subclass
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OGGNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

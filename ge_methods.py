@@ -46,7 +46,7 @@ class GenomeModificationMethods:
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_method_class_IRI(label):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    if label == "Not specified": return ns.cello.GenomeModificationMethod # return most generic class name
+    if label == "Not specified": return ns.OBI.GenomeModificationMethod # return most generic class name
     prefix = ns.cello.pfx
     name = label.title().replace(" ", "").replace("(", "").replace(")", "").replace("/","").replace("-","")
     return prefix + ":" + name
@@ -54,7 +54,7 @@ def get_method_class_IRI(label):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_method_clean_label(label):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    if label == "Not specified": return "Genome modification method NOS" # return label of generic class name + NOS
+    if label == "Not specified": return "Genome modification method" # return label of generic class name
     return label
 
 

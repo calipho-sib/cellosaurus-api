@@ -26,10 +26,9 @@ from organizations import KnownOrganizations, Organization
 from terminologies import Terminologies, Terminology
 from ontology_builder import OntologyBuilder
 from databases import Database, Databases
-from ge_methods import GenomeModificationMethods, GeMethod
 from sexes import Sexes, Sex
 
-# called dynamically
+# no not remove imports below, parsers are called dynamically
 from ncbi_taxid_parser import NcbiTaxid_Parser
 from chebi_parser import Chebi_Parser
 from cl_parser import Cl_Parser

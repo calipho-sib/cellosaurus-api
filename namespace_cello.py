@@ -30,9 +30,41 @@ class CelloOntologyNamespace(BaseNamespace):
         #self.BookChapter = self.registerClass("BookChapter")                    # described
         #self.ConferencePublication = self.registerClass("ConferencePublication")    # described
 
-        #self.CellLine = self.registerClass("CellLine")                          # described
+        #self.CellLine = self.registerClass("CellLine")                          # described in another namespace
         
-        self.GenomeModificationMethod = self.registerClass("GenomeModificationMethod")    # described
+        #self.GenomeModificationMethod = self.registerClass("GenomeModificationMethod", "Genome Modification Method NOS")    # described in another namespace
+
+        # Genome modification methods sublasses not found in NCIt, OBI, FBcv
+        # WARNING: labels must match what's found in cellosaurus.txt !!!
+        self.BacHomologousRecombination = self.registerClass("BacHomologousRecombination", label="BAC homologous recombination")   # cello genome modification method subclass
+        self.CreLoxp = self.registerClass("CreLoxp", label="Cre/loxP")   # cello genome modification method subclass
+        self.CrisprCas9N = self.registerClass("CrisprCas9N", label="CRISPR/Cas9n")   # cello genome modification method subclass
+        self.EbvBasedVectorSirnaKnockdown = self.registerClass("EbvBasedVectorSirnaKnockdown", label="EBV-based vector siRNA knockdown")   # cello genome modification method subclass
+        self.FloxingCreRecombination = self.registerClass("FloxingCreRecombination", label="Floxing/Cre recombination")   # cello genome modification method subclass
+        self.GeneTargetedKoMouse = self.registerClass("GeneTargetedKoMouse", label="Gene-targeted KO mouse")   # cello genome modification method subclass
+        self.HelperDependentAdenoviralVector = self.registerClass("HelperDependentAdenoviralVector", label="Helper-dependent adenoviral vector")   # cello genome modification method subclass
+        self.HomologousRecombination = self.registerClass("HomologousRecombination", label="Homologous recombination")   # cello genome modification method subclass
+        self.KnockoutFirstConditional = self.registerClass("KnockoutFirstConditional", label="Knockout-first conditional")   # cello genome modification method subclass
+        self.KoMouse = self.registerClass("KoMouse", label="KO mouse")   # cello genome modification method subclass
+        self.KoPig = self.registerClass("KoPig", label="KO pig")   # cello genome modification method subclass
+        self.MirnaKnockdown = self.registerClass("MirnaKnockdown", label="miRNA knockdown")   # cello genome modification method subclass
+        self.NullMutation = self.registerClass("NullMutation", label="Null mutation")   # cello genome modification method subclass
+        self.PElement = self.registerClass("PElement", label="P-element")   # cello genome modification method subclass
+        self.PiggybacTransposition = self.registerClass("PiggybacTransposition", label="PiggyBac transposition")   # cello genome modification method subclass
+        self.PrimeEditing = self.registerClass("PrimeEditing", label="Prime editing")   # cello genome modification method subclass
+        self.PromoterlessGeneTargeting = self.registerClass("PromoterlessGeneTargeting", label="Promoterless gene targeting")   # cello genome modification method subclass
+        self.RecombinantAdenoAssociatedVirus = self.registerClass("RecombinantAdenoAssociatedVirus", label="Recombinant Adeno-Associated Virus")   # cello genome modification method subclass
+        self.ShrnaKnockdown = self.registerClass("ShrnaKnockdown", label="shRNA knockdown")   # cello genome modification method subclass
+        self.SleepingBeautyTransposition = self.registerClass("SleepingBeautyTransposition", label="Sleeping Beauty transposition")   # cello genome modification method subclass
+        self.SpontaneousMutation = self.registerClass("SpontaneousMutation", label="Spontaneous mutation")   # cello genome modification method subclass
+        self.TargetedIntegration = self.registerClass("TargetedIntegration", label="Targeted integration")   # cello genome modification method subclass
+        self.TransductionTransfection = self.registerClass("TransductionTransfection", label="Transduction/transfection")   # cello genome modification method subclass
+        self.TransfectionTransduction = self.registerClass("TransfectionTransduction", label="Transfection/transduction")   # cello genome modification method subclass
+        self.TransgenicFish = self.registerClass("TransgenicFish", label="Transgenic fish")   # cello genome modification method subclass
+        self.TransgenicMouse = self.registerClass("TransgenicMouse", label="Transgenic mouse")   # cello genome modification method subclass
+        self.TransgenicRat = self.registerClass("TransgenicRat", label="Transgenic rat")   # cello genome modification method subclass
+
+        
 
         self.Database = self.registerClass("Database")                          # described
         self.CelloConceptScheme = self.registerClass("CelloConceptScheme")      # described
@@ -85,8 +117,8 @@ class CelloOntologyNamespace(BaseNamespace):
         self.MisspellingComment = self.registerClass("MisspellingComment")          # TODO:
         self.Registration = self.registerClass("Registration")                      # TODO:
         self.SenescenceComment = self.registerClass("SenescenceComment")            # TODO:
-        self.GeneKnockout = self.registerClass("GeneKnockout")                      # described as child of OBI:0001364
-        self.GeneticIntegration = self.registerClass("GeneticIntegration")          # described as child of OBI:0001364
+        self.GeneKnockout = self.registerClass("GeneKnockout")                      # described as child of OBI:0001364 : characteristics of genetic alteration
+        self.GeneticIntegration = self.registerClass("GeneticIntegration")          # described as child of OBI:0001364 : characteristics of genetic alteration
         self.VirologyComment = self.registerClass("VirologyComment")                # TODO
         self.OmicsComment = self.registerClass("OmicsComment")                      # TODO:
         self.Population = self.registerClass("Population")                          # described

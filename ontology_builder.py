@@ -1,15 +1,12 @@
-from namespace_registry import NamespaceRegistry as ns
-from namespaces import Term
-from ApiCommon import log_it, split_string, get_onto_preferred_prefix
-from sparql_client import EndpointClient
 import sys
 from datetime import datetime
+from namespaces import Term
+from namespace_registry import NamespaceRegistry as ns
+from ApiCommon import log_it, split_string, get_onto_preferred_prefix
+from sparql_client import EndpointClient
 from tree_functions import Tree
 from databases import Database, Databases, get_db_category_IRI
-from cl_categories import CellLineCategory, CellLineCategories, get_cl_category_IRI
 from concept_term import ConceptTermData
-from sexes import Sex, Sexes, get_sex_IRI
-from ge_methods import GeMethod, GenomeModificationMethods, get_method_class_IRI
 
 
 #-------------------------------------------------
@@ -21,7 +18,6 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # load info from data_in used later by describe...() functions
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        self.gem = GenomeModificationMethods()
         self.ctd = ConceptTermData()
         self.prefixes = list()
         for space in ns.namespaces: self.prefixes.append(space.getTtlPrefixDeclaration())
@@ -164,41 +160,62 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_genetic_characteristics_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # main class
-        ns.OBI.registerClass("0001404") 
-        ns.describe("OBI:0001404", ns.rdfs.label, ns.xsd.string("genetic characteristics information"))
 
-        # subclass OBI:0001364 genetic alteration information (2) (superclass for seq var + gen.int + gen.ko)
-        ns.OBI.registerClass("0001364") 
-        ns.describe("OBI:0001364", ns.rdfs.label, ns.xsd.string("genetic alteration information"))
-        ns.describe("OBI:0001364", ns.rdfs.subClassOf, "OBI:0001404")
+        # OBI:0001404 - genetic characteristics information
+        # OBI:0001364 - genetic alteration information = superclass for seq var + gen.int + gen.ko)
+        # OBI:0001225 - genetic population background information
 
-        # subclass OBI:0001225 genetic population background information
-        ns.OBI.registerClass("0001225") 
-        ns.describe("OBI:0001225", ns.rdfs.label, ns.xsd.string("genetic population background information"))
-        ns.describe("OBI:0001225", ns.rdfs.subClassOf, "OBI:0001404")     
-        
-        
+        ns.describe(ns.OBI._0001225, ns.rdfs.subClassOf, ns.OBI._0001404)     
+        ns.describe(ns.OBI._0001364, ns.rdfs.subClassOf, ns.OBI._0001404)     
+        ns.describe(ns.cello.GeneticIntegration, ns.rdfs.subClassOf, ns.OBI._0001364)
+        ns.describe(ns.cello.GeneKnockout, ns.rdfs.subClassOf, ns.OBI._0001364)
 
         # subclass OBI:0002769 karyotype information  
         # ...
 
+
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_genome_editing_method_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # describe top class
-        term = self.ctd.getCelloTerm("GenomeModificationMethod", ns.cello.GenomeModificationMethod)
-        self.describe_related_terms(ns.cello.GenomeModificationMethod, term, termIsClass=True)
-        # describe external links of sub classes
-        for k in self.gem.keys():
-            meth : GeMethod = self.gem.get(k)
-            if meth.label != "Not specified":
-                meth_id = meth.IRI.split(":")[1]
-                ns.cello.registerClass(meth_id)
-                ns.describe(meth.IRI, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
-                ns.describe(meth.IRI, ns.rdfs.label, ns.xsd.string(meth.label))
-                term = self.ctd.getCelloTerm("GenomeModificationMethod", meth.label)
-                self.describe_related_terms(meth.IRI, term, termIsClass=True)
+        ns.describe(ns.FBcv._0003008, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.NCIt.C17262, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.NCIt.C44386, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.OBI._0001152, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.OBI._0001154, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.OBI._0002626, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.OBI._0003134, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.OBI._0003135, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.OBI._0003137, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.OBI._0600059, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.BacHomologousRecombination, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.CreLoxp, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.CrisprCas9N, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.EbvBasedVectorSirnaKnockdown, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.FloxingCreRecombination, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.GeneTargetedKoMouse, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.HelperDependentAdenoviralVector, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.HomologousRecombination, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.KnockoutFirstConditional, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.KoMouse, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.KoPig, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.MirnaKnockdown, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.NullMutation, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.PElement, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.PiggybacTransposition, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.PrimeEditing, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.PromoterlessGeneTargeting, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.RecombinantAdenoAssociatedVirus, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.ShrnaKnockdown, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.SleepingBeautyTransposition, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.SpontaneousMutation, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.TargetedIntegration, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.TransductionTransfection, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.TransfectionTransduction, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.TransgenicFish, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.TransgenicMouse, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+        ns.describe(ns.cello.TransgenicRat, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
+
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_cell_line_properties(self):

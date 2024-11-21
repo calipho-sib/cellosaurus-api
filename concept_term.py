@@ -1,4 +1,4 @@
-
+from ge_methods import get_method_class_IRI
 
 # - - - - - - - - - - - - - - - - - - - - - - 
 class ConceptTermData:
@@ -45,7 +45,7 @@ class ConceptTermData:
                 lbl = " ".join(words[1:])
                 pfx, ac = iri.split(":")
                 expanded_iri = self.prefixes[pfx] + ac
-                related_term = {"IRI": expanded_iri, "LB": lbl}
+                related_term = {"IRI": expanded_iri, "LB": lbl, "PfxIRI": iri}
                 term_rec[key].append(related_term)
                                 
         f_in.close()
@@ -56,6 +56,7 @@ class ConceptTermData:
     def getBroaderTermList(self, term) : return term["BR"]
     def getCloseTermList(self, term) : return term["CL"]
     def getTermIRI(self, term):   return term["IRI"]
+    def getTermPfxIRI(self, term):   return term["PfxIRI"]
     def getTermLabel(self, term): return term["LB"]
 
     def getCelloTermKeys(self, section_key): return self.data[section_key]
@@ -105,3 +106,45 @@ if __name__ == '__main__':
             print("prop_key", prop_key)
             prop_term = "???"
             if prop_key == "EQ": prop_term = "owl:"
+
+    print("---------------")
+    elems = list()
+    subs = list()
+    items = list()
+    sct = "GenomeModificationMethod"
+    for label in obj.getCelloTermKeys(sct):
+        iri = get_method_class_IRI(label)
+        data = obj.getCelloTerm(sct, label)
+        for eqTerm in obj.getEquivalentTermList(data):                        
+            possible_iri = obj.getTermPfxIRI(eqTerm)
+            if possible_iri.startswith("BAO"): iri = possible_iri
+
+        for eqTerm in obj.getEquivalentTermList(data):                        
+            possible_iri = obj.getTermPfxIRI(eqTerm)
+            if possible_iri.startswith("FBcv"): iri = possible_iri
+
+        for eqTerm in obj.getEquivalentTermList(data):                        
+            possible_iri = obj.getTermPfxIRI(eqTerm)
+            if possible_iri.startswith("OBI"): iri = possible_iri
+
+        for eqTerm in obj.getEquivalentTermList(data):                        
+            possible_iri = obj.getTermPfxIRI(eqTerm)
+            if possible_iri.startswith("NCIt"): iri = possible_iri
+
+        pfx = iri.split(":")[0]
+        id = iri.split(":")[1]
+        elems.append(f"{pfx:<6}self.{id} = self.registerClass(\"{id}\", label=\"{label}\")   # {pfx} genome modification method subclass")
+        line = f"ns.describe(ns.{pfx}.{id}, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)"
+        subs.append(line)
+        sortcrit = f"ns.{pfx}.{id}"
+        items.append(f'{sortcrit:<50} "{label}": ns.{pfx}.{id},')
+
+    elems.sort()
+    for el in elems: print(el[6:])
+    print("---------------")
+    subs.sort()
+    for el in subs: print(el)
+    print("---------------")
+    items.sort()
+    for el in items: print(el[50:])
+    

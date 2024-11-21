@@ -5,8 +5,6 @@ from ApiCommon import log_it
 from organizations import Organization
 from terminologies import Term, Terminologies, Terminology
 from databases import Database, Databases, get_db_category_IRI
-from ge_methods import GeMethod, GenomeModificationMethods, get_method_class_IRI, get_method_clean_label
-#from cl_categories import CellLineCategories, CellLineCategory, get_cl_category_IRI
 from sexes import Sexes, Sex, get_sex_IRI
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -36,8 +34,9 @@ class RdfBuilder:
 
         self.known_orgs = known_orgs
 
-        self.mmm2mm = { "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", 
-                "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
+        self.mmm2mm = { 
+            "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", 
+            "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
 
         # publication type label => publication class
         self.pubtype_clazz = {
@@ -55,6 +54,48 @@ class RdfBuilder:
             "thesis VMD":   ns.cello.VeterinaryMedicalDegreeThesis,
             "technical document":       ns.cello.TechnicalDocument,
             "miscellaneous document":   ns.cello.MiscellaneousDocument,            
+        }
+
+        # genome editing method labels => class
+        self.gem_clazz = {
+            "CRISPR/Cas9": ns.FBcv._0003008,
+            "X-ray": ns.NCIt.C17262,
+            "Gamma radiation": ns.NCIt.C44386,
+            "Transfection": ns.OBI._0001152,
+            "Mutagenesis": ns.OBI._0001154,
+            "siRNA knockdown": ns.OBI._0002626,
+            "TALEN": ns.OBI._0003134,
+            "ZFN": ns.OBI._0003135,
+            "Gene trap": ns.OBI._0003137,
+            "Not specified": ns.OBI.GenomeModificationMethod,
+            "Transduction": ns.OBI._0600059,
+            "BAC homologous recombination": ns.cello.BacHomologousRecombination,
+            "Cre/loxP": ns.cello.CreLoxp,
+            "CRISPR/Cas9n": ns.cello.CrisprCas9N,
+            "EBV-based vector siRNA knockdown": ns.cello.EbvBasedVectorSirnaKnockdown,
+            "Floxing/Cre recombination": ns.cello.FloxingCreRecombination,
+            "Gene-targeted KO mouse": ns.cello.GeneTargetedKoMouse,
+            "Helper-dependent adenoviral vector": ns.cello.HelperDependentAdenoviralVector,
+            "Homologous recombination": ns.cello.HomologousRecombination,
+            "Knockout-first conditional": ns.cello.KnockoutFirstConditional,
+            "KO mouse": ns.cello.KoMouse,
+            "KO pig": ns.cello.KoPig,
+            "miRNA knockdown": ns.cello.MirnaKnockdown,
+            "Null mutation": ns.cello.NullMutation,
+            "P-element": ns.cello.PElement,
+            "PiggyBac transposition": ns.cello.PiggybacTransposition,
+            "Prime editing": ns.cello.PrimeEditing,
+            "Promoterless gene targeting": ns.cello.PromoterlessGeneTargeting,
+            "Recombinant Adeno-Associated Virus": ns.cello.RecombinantAdenoAssociatedVirus,
+            "shRNA knockdown": ns.cello.ShrnaKnockdown,
+            "Sleeping Beauty transposition": ns.cello.SleepingBeautyTransposition,
+            "Spontaneous mutation": ns.cello.SpontaneousMutation,
+            "Targeted integration": ns.cello.TargetedIntegration,
+            "Transduction/transfection": ns.cello.TransductionTransfection,
+            "Transfection/transduction": ns.cello.TransfectionTransduction,
+            "Transgenic fish": ns.cello.TransgenicFish,
+            "Transgenic mouse": ns.cello.TransgenicMouse,
+            "Transgenic rat": ns.cello.TransgenicRat,
         }
 
         # cell line category => cell line class
@@ -142,23 +183,39 @@ class RdfBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_cl_category_class(self, category_label):
+    def get_gem_class_IRI(self, gem_label):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        clazz = self.gem_clazz.get(gem_label)
+        if clazz is None:
+            log_it("ERROR", f"unexpected genome editing method '{gem_label}'")
+            clazz = ns.OBI.GenomeModificationMethod # default, most generic
+        return clazz
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_gem_clean_label(self, label):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        if label == "Not specified": return "Genome modification method" # return label of generic class name
+        return label
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_cl_category_class_IRI(self, category_label):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         clazz = self.clcat_clazz.get(category_label)
         if clazz is None:
-            log_it("WARNING", f"unexpected cell line category '{category_label}'")
+            log_it("ERROR", f"unexpected cell line category '{category_label}'")
             clazz = ns.wd.CellLine # default, most generic
         return clazz
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_ref_class(self, ref_data):
+    def get_ref_class_IRI(self, ref_data):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         typ = ref_data["type"]
         clazz = self.pubtype_clazz.get(typ) 
         if clazz is None:
             ref_id = ref_data["internal-id"]
-            log_it("WARNING", f"unexpected publication type '{typ}' in {ref_id}")
+            log_it("ERROR", f"unexpected publication type '{typ}' in {ref_id}")
             clazz = ns.cello.Publication # default, most generic
         return clazz
 
@@ -418,7 +475,7 @@ class RdfBuilder:
         ref_IRI = self.get_pub_IRI(ref_data)
 
         # class: article, thesis, patent, ... (mandatory)
-        ref_class = self.get_ref_class(ref_data)
+        ref_class = self.get_ref_class_IRI(ref_data)
         triples.append(ref_IRI, ns.rdf.type, ref_class)
 
         # internal id (mandatory) for debug purpose
@@ -622,7 +679,7 @@ class RdfBuilder:
         # fields: CA
         ca = cl_data["category"] # we expect one value for each cell line
         if ca is not None:
-            triples.append(cl_IRI, ns.rdf.type, self.get_cl_category_class(ca))
+            triples.append(cl_IRI, ns.rdf.type, self.get_cl_category_class_IRI(ca))
         else:
             triples.append(cl_IRI, ns.rdf.type, ns.wd.CellLine)
             
@@ -1065,8 +1122,8 @@ class RdfBuilder:
         triples.append(cl_IRI, ns.cello.geneticIntegration, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.GeneticIntegration)
         method_BN = self.get_blank_node()
-        triples.append(method_BN, ns.rdf.type, get_method_class_IRI(method))
-        triples.append(method_BN, ns.rdfs.label, ns.xsd.string(get_method_clean_label(method)))
+        triples.append(method_BN, ns.rdf.type, self.get_gem_class_IRI(method))
+        triples.append(method_BN, ns.rdfs.label, ns.xsd.string(self.get_gem_clean_label(method)))
         triples.append(inst_BN, ns.cello.genomeModificationMethod, method_BN)
         if note is not None: 
             triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(note))
@@ -1096,8 +1153,8 @@ class RdfBuilder:
             triples.append(cl_IRI, ns.cello.geneKnockout, inst_BN)
             triples.append(inst_BN, ns.rdf.type, ns.cello.GeneKnockout)
             method_BN = self.get_blank_node()
-            triples.append(method_BN, ns.rdf.type, get_method_class_IRI(method))
-            triples.append(method_BN, ns.rdfs.label, ns.xsd.string(get_method_clean_label(method)))
+            triples.append(method_BN, ns.rdf.type, self.get_gem_class_IRI(method))
+            triples.append(method_BN, ns.rdfs.label, ns.xsd.string(self.get_gem_clean_label(method)))
             triples.append(inst_BN, ns.cello.genomeModificationMethod, method_BN)
             gene_BN = self.get_blank_node()
             triples.append(inst_BN, ns.cello.gene, gene_BN)
