@@ -9,7 +9,7 @@ class NamespaceRegistry:
     pub = OurPublicationNamespace(); orga = OurOrganizationNamespace(); db = OurDatabaseAndTerminologyNamespace()
     # instanciate other used namespaces
     xsd  = XsdNamespace(); rdf = RdfNamespace(); rdfs = RdfsNamespace(); owl = OwlNamespace()
-    skos = SkosNamespace(); foaf = FoafNamespace(); dcterms = DctermsNamespace()
+    skos = SkosNamespace(); dcterms = DctermsNamespace()
     fabio = FabioNamespace(); up = UniProtCoreNamespace() 
     bibo = BiboNamespace(); widoco = WidocoNamespace()
     vann = VannNamespace(); pubmed = PubMedNamespace()
@@ -24,7 +24,7 @@ class NamespaceRegistry:
     NCIt = NCItNamespace(); OBI = OBINamespace(); OMIT = OMITNamespace()
     FBcv = FBcvNamespace(); OGG = OGGNamespace()
 
-    namespaces = [cello, cvcl, xref, pub, orga, db, xsd, rdf, rdfs, skos, owl, foaf, dcterms, 
+    namespaces = [cello, cvcl, xref, pub, orga, db, xsd, rdf, rdfs, skos, owl, dcterms, 
                   fabio, up, bibo, widoco, vann, oa, wdt, wd, sh, schema, help, pubmed,
                   BAO, BTO, CLO, NCIt, OBI, OMIT, FBcv , OGG ]
 

@@ -18,8 +18,8 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 
 select ?pname ?pub count(?cl) as ?cl_count sample(?cl) as ?cl_sample where {
   select  str(?pname) as ?pname  ?publi group_concat(distinct str(?pac); separator = ', ') as ?pub  str(?cl) as ?cl  where {
-    ?person a foaf:Person .
-    ?person :name ?pname .
+    ?person a schema:Person .
+    ?person cello:name ?pname .
     ?publi ?p ?person .
     ?publi :xref ?xref .
     ?xref :accession ?pac.

@@ -5,8 +5,8 @@ from ApiCommon import get_rdf_base_IRI, get_help_base_IRI
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class Term:
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self, ns, id):
-        self.ns = ns; self.id = id; self.iri = ":".join([ns, id]); self.props = dict()
+    def __init__(self, ns, id, hidden=False):
+        self.ns = ns; self.id = id; self.iri = ":".join([ns, id]); self.props = dict(); self.hidden = hidden
 
     def __str__(self) -> str:
         return ":".join([self.ns, self.id])
@@ -21,6 +21,7 @@ class Term:
         return result
 
     def ttl_lines(self):
+        if self.hidden: return list()
         ordered_props = [
             "a", "rdf:type", "rdfs:label", "rdfs:comment", "rdfs:subClassOf", "rdfs:subPropertyOf",
             "owl:equivalentClass", "owl:equivalentProperty","owl:sameAs", 
@@ -35,7 +36,7 @@ class Term:
                 label = "".join(["\"", self.build_default_label(),"\"", "^^xsd:string"])
                 self.props["rdfs:label"] = { label }
             else:
-                # label built upon IRI for external ontologies (nicer in widoco)
+                # unused: label built upon IRI for external ontologies (nicer in widoco)
                 iri_like_label = ":".join([self.ns, self.id])                   
                 label = "".join(["\"", iri_like_label,"\"", "^^xsd:string"])
                 self.props["rdfs:label"] = { label }
@@ -156,31 +157,31 @@ class BaseNamespace:
         id = iri.split(":")[1]
         return self.terms.get(id)
 
-    def registerTerm(self, id, p=None, v=None):
+    def registerTerm(self, id, p=None, v=None, hidden=False):
         if id not in self.terms: 
-            t = Term(self.pfx, id)
+            t = Term(self.pfx, id, hidden)
             t.props["rdfs:isDefinedBy"] = { self.pfx + ":" }
             if p is not None and v is not None: t.props[p] = v
             self.terms[id] = t
         return self.terms[id].iri
 
-    def registerClass(self, id, label=None):
-        iri = self.registerTerm(id, "rdf:type", { "owl:Class" })
+    def registerClass(self, id, label=None, hidden=False):
+        iri = self.registerTerm(id, p="rdf:type", v={ "owl:Class" }, hidden=hidden)
         if label is not None: 
             self.describe(iri, "rdfs:label", f"\"{label}\"^^xsd:string")
         return iri
     
-    def registerProperty(self, id):
-        return self.registerTerm(id, "rdf:type", { "rdf:Property" })
+    def registerProperty(self, id, hidden=False):
+        return self.registerTerm(id, p="rdf:type", v={ "rdf:Property" }, hidden=hidden)
 
-    def registerDatatypeProperty(self, id):
-        return self.registerTerm(id, "rdf:type", { "rdf:Property", "owl:DatatypeProperty" })
+    def registerDatatypeProperty(self, id, hidden=False):
+        return self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:DatatypeProperty" }, hidden=hidden)
 
-    def registerObjectProperty(self, id):
-        return self.registerTerm(id, "rdf:type", { "rdf:Property", "owl:ObjectProperty" })
+    def registerObjectProperty(self, id, hidden=False):
+        return self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:ObjectProperty" }, hidden=hidden)
 
-    def registerAnnotationProperty(self, id):
-        return self.registerTerm(id, "rdf:type", { "rdf:Property", "owl:AnnotationProperty" })
+    def registerAnnotationProperty(self, id, hidden=False):
+        return self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:AnnotationProperty" }, hidden=hidden)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -306,7 +307,7 @@ class UniProtCoreNamespace(BaseNamespace):
         self.Journal_Citation = self.registerClass("Journal_Citation", label = "Journal article citation")    
         
         self.Annotation = self.registerClass("Annotation")
-        self.Database = self.registerClass("Database")
+        self.Database = self.registerClass("Database", hidden=True)
         self.Protein = self.registerClass("Protein")
 
         self.annotation = self.registerObjectProperty("annotation")
@@ -375,32 +376,15 @@ class OaNamespace(BaseNamespace):
         self.Annotation = self.registerClass("Annotation")
 
 
-# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# class W3OrgNamespace(BaseNamespace):
-# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#     def __init__(self): 
-#         super(W3OrgNamespace, self).__init__("org", "http://www.w3.org/ns/org#")
-#         self.Organization = self.registerClass("Organization")
-#         self.memberOf = self.registerTerm("memberOf")
-
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class SchemaOrgNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(SchemaOrgNamespace, self).__init__("schema", "https://schema.org/")
-        self.location = self.registerDatatypeProperty("location")   # only a rdf:Property in original ontology but useful for protege, widoco, ...
-        self.memberOf = self.registerObjectProperty("memberOf")     # only a rdf:Property in original ontology but useful for protege, widoco, ...
+        self.location = self.registerDatatypeProperty("location")                   # only a rdf:Property in original ontology but useful for protege, widoco, ...
+        self.memberOf = self.registerObjectProperty("memberOf", hidden=True)        # only a rdf:Property in original ontology but useful for protege, widoco, ...
         self.Organization = self.registerClass("Organization")
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class FoafNamespace(BaseNamespace):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): 
-        super(FoafNamespace, self).__init__("foaf", "http://xmlns.com/foaf/0.1/")
-        self.Agent =        self.registerClass("Agent")
-        self.Person =       self.registerClass("Person")
-        self.name =         self.registerDatatypeProperty("name")
-        self.Organization = self.registerClass("Organization")
+        self.Person = self.registerClass("Person")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -408,12 +392,12 @@ class DctermsNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(DctermsNamespace, self).__init__("dcterms", "http://purl.org/dc/terms/")
-        self.created =      self.registerAnnotationProperty("created")
-        self.modified =     self.registerAnnotationProperty("modified")
-        self.hasVersion =   self.registerAnnotationProperty("hasVersion")
-        self.description =  self.registerDatatypeProperty("description")
-        self.license =      self.registerDatatypeProperty("license")
-        self.abstract =     self.registerDatatypeProperty("abstract")
+        self.created =      self.registerDatatypeProperty("created", hidden=True)       # hidden because redundant with cello equivalent
+        self.modified =     self.registerDatatypeProperty("modified", hidden=True)      # hidden because redundant with cello equivalent
+        self.hasVersion =   self.registerDatatypeProperty("hasVersion", hidden=True)    # hidden because redundant with cello equivalent
+        self.description =  self.registerDatatypeProperty("description", hidden=True)   # hidden because irrelevant to cello data
+        self.license =      self.registerDatatypeProperty("license", hidden=True)       # hidden because irrelevant to cello data
+        self.abstract =     self.registerDatatypeProperty("abstract", hidden=True)      # hidden because irrelevant to cello data
         self.title =        self.registerDatatypeProperty("title")
         self.creator =      self.registerObjectProperty("creator")
         self.publisher =    self.registerObjectProperty("publisher")
@@ -465,8 +449,9 @@ class NCItNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(NCItNamespace, self).__init__("NCIt", "http://purl.obolibrary.org/obo/NCIT_")
-        self.C17262 = self.registerClass("C17262", label="X-ray")             # genome modification method subclass
-        self.C44386 = self.registerClass("C44386", label="Gamma radiation")   # genome modification method subclass
+        self.C15426 = self.registerClass("C15426", label="Database", hidden=True)
+        self.C17262 = self.registerClass("C17262", label="X-ray")                    # genome modification method subclass
+        self.C44386 = self.registerClass("C44386", label="Gamma radiation")         # genome modification method subclass
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -499,7 +484,6 @@ class FBcvNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(FBcvNamespace, self).__init__("FBcv", "http://purl.obolibrary.org/obo/FBcv_")
-        self.Database = self.registerClass("0000790")
         self._0003008 = self.registerClass("0003008", label="CRISPR/Cas9")   # genome modification method subclass
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

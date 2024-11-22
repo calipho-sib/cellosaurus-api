@@ -428,8 +428,8 @@ class RdfBuilder:
         triples = TripleList()
 
         orga_IRI = ns.orga.IRI(org.name, org.shortname, org.city, org.country, org.contact, store = False)
-        triples.append(orga_IRI, ns.rdf.type, ns.cello.Organization)
-        triples.append(orga_IRI, ns.rdfs.label, ns.xsd.string(org.name))
+        triples.append(orga_IRI, ns.rdf.type, ns.schema.Organization)
+        triples.append(orga_IRI, ns.cello.name, ns.xsd.string(org.name))
 
         if org.shortname is not None and len(org.shortname)>0:
             triples.append(orga_IRI, ns.cello.shortname, ns.xsd.string(org.shortname))
@@ -443,7 +443,7 @@ class RdfBuilder:
         if org.contact is not None and len(org.contact)>0:
             for name in org.contact.split(" and "):
                 p_BN = self.get_blank_node()
-                triples.append(p_BN, ns.rdf.type, ns.foaf.Person)
+                triples.append(p_BN, ns.rdf.type, ns.schema.Person)
                 triples.append(p_BN, ns.cello.name, ns.xsd.string(name))
                 triples.append(p_BN, ns.cello.memberOf, orga_IRI)
 
@@ -494,7 +494,7 @@ class RdfBuilder:
                 for name in p_name.split(" and "):                
                     p_BN = self.get_blank_node()
                     triples.append(ref_IRI, ns.cello.creator, p_BN)
-                    triples.append(p_BN, ns.rdf.type, ns.foaf.Person)
+                    triples.append(p_BN, ns.rdf.type, ns.schema.Person)
                     triples.append(p_BN, ns.cello.name, ns.xsd.string(name))
 
         # title (mandatory)
@@ -569,7 +569,7 @@ class RdfBuilder:
             for name in p_name.split(" and "):
                 p_BN = self.get_blank_node()
                 triples.append(ref_IRI, ns.cello.editor, p_BN)
-                triples.append(p_BN, ns.rdf.type, ns.foaf.Person)
+                triples.append(p_BN, ns.rdf.type, ns.schema.Person)
                 triples.append(p_BN, ns.cello.name, ns.xsd.string(name))
 
         return("".join(triples.lines))

@@ -149,9 +149,7 @@ class OntologyBuilder:
         # describing our own terms as subClass/Prop of terms defined elsewhere 
         # instead of simply using these external terms allow to give them a domain / range
         # and additional semantic relationships to other terms
-        ns.describe(ns.cello.Organization, ns.rdfs.subClassOf, ns.foaf.Agent)
-        ns.describe(ns.cello.Organization, ns.owl.equivalentClass, ns.foaf.Organization)
-        ns.describe(ns.cello.Organization, ns.owl.equivalentClass, ns.schema.Organization)
+        ns.describe(ns.cello.name, ns.rdfs.subPropertyOf, ns.dcterms.title)
         ns.describe(ns.cello.memberOf, ns.rdfs.subPropertyOf, ns.schema.memberOf)
         ns.describe(ns.cello.city, ns.rdfs.subPropertyOf, ns.schema.location)
         ns.describe(ns.cello.country, ns.rdfs.subPropertyOf, ns.schema.location)
@@ -366,9 +364,8 @@ class OntologyBuilder:
         # Describe root cellosaurus terminology class
         ns.describe(ns.cello.CelloConceptScheme, ns.rdfs.subClassOf, ns.skos.ConceptScheme)
 
-        # Describe parent class of our Database class and quivalence to uniprot Database
-        ns.describe(ns.FBcv.Database, ns.rdfs.label, ns.xsd.string("Database")) # IRI = FBcv:0000790
-        ns.describe(ns.cello.Database, ns.rdfs.subClassOf, ns.FBcv.Database)
+        # Describe parent class of our Database class and equivalence to uniprot Database
+        ns.describe(ns.cello.Database, ns.rdfs.subClassOf, ns.NCIt.C15426)
         ns.describe(ns.cello.Database, ns.owl.equivalentClass, ns.up.Database)
         
         # we add programmaticaly the subClassOf relationships between Database and its children
@@ -382,6 +379,7 @@ class OntologyBuilder:
             ns.cello.registerClass(cat_id)
             ns.describe(cat_IRI, ns.rdfs.subClassOf, ns.cello.Database)
             ns.describe(cat_IRI, ns.rdfs.label, ns.xsd.string(cat_label))            
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_sequence_variation_and_subclasses(self):
@@ -567,27 +565,29 @@ class OntologyBuilder:
     def get_imported_terms(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         lines = list()
-        #for space in [ns.fabio, ns.foaf, ns.schema, ns.dcterms, ns.wd, ns.FBcv, ns.up, ns.NCIt]:
+        
         allButCello = list(ns.namespaces)
+        
         # remove basic ones
         allButCello.remove(ns.xsd)
-        allButCello.remove(ns.cello)
         allButCello.remove(ns.rdf)
         allButCello.remove(ns.rdfs)
         allButCello.remove(ns.owl)
         allButCello.remove(ns.sh)
         allButCello.remove(ns.widoco)
+        #allButCello.remove(ns.dcterms) # only some terms are hidden for the moment
+        
         # remove namespaces for our data
+        allButCello.remove(ns.cello)
         allButCello.remove(ns.cvcl)
         allButCello.remove(ns.db)
         allButCello.remove(ns.orga)
         allButCello.remove(ns.xref)
+        
         # remove irrelevant ones
         allButCello.remove(ns.pubmed)
 
-
-        for nspace in allButCello:
-            lines.extend(self.get_terms(nspace))
+        for nspace in allButCello: lines.extend(self.get_terms(nspace))
         return lines
     
 

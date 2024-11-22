@@ -10,66 +10,63 @@ class CelloOntologyNamespace(BaseNamespace):
         # Classes
         #
 
-        # Note: described
         # Publication classes 
-        self.Publication = self.registerClass("Publication")                    # described
-        self.MedicalDegreeThesis = self.registerClass("MedicalDegreeThesis")    # described
-        self.MedicalDegreeMasterThesis = self.registerClass("MedicalDegreeMasterThesis")    # described
-        self.PrivaDocentThesis = self.registerClass("PrivaDocentThesis")        # described
-        self.VeterinaryMedicalDegreeThesis = self.registerClass("VeterinaryMedicalDegreeThesis")    # described
-        self.TechnicalDocument = self.registerClass("TechnicalDocument")        # described
-        self.MiscellaneousDocument = self.registerClass("MiscellaneousDocument")    # described
-        # entites commented below are replaced with fabio classes (see FabioNamespace)
-        #self.JournalArticle = self.registerClass("JournalArticle")              # described
-        #self.Patent = self.registerClass("Patent")                              # described
-        #self.Thesis = self.registerClass("Thesis")                              # described
-        #self.BachelorThesis = self.registerClass("BachelorThesis")              # described
-        #self.MasterThesis = self.registerClass("MasterThesis")                  # described
-        #self.DoctoralThesis = self.registerClass("DoctoralThesis")              # described
-        #self.Book = self.registerClass("Book")                                  # described
-        #self.BookChapter = self.registerClass("BookChapter")                    # described
-        #self.ConferencePublication = self.registerClass("ConferencePublication")    # described
+        self.Publication = self.registerClass("Publication")                                    # described
+        self.MedicalDegreeThesis = self.registerClass("MedicalDegreeThesis")                    # described
+        self.MedicalDegreeMasterThesis = self.registerClass("MedicalDegreeMasterThesis")        # described
+        self.PrivaDocentThesis = self.registerClass("PrivaDocentThesis")                        # described
+        self.VeterinaryMedicalDegreeThesis = self.registerClass("VeterinaryMedicalDegreeThesis")# described
+        self.TechnicalDocument = self.registerClass("TechnicalDocument")                        # described
+        self.MiscellaneousDocument = self.registerClass("MiscellaneousDocument")                # described
 
-        #self.CellLine = self.registerClass("CellLine")                          # described in another namespace
-        
-        #self.GenomeModificationMethod = self.registerClass("GenomeModificationMethod", "Genome Modification Method NOS")    # described in another namespace
+        # entites commented below are replaced with fabio classes (see FabioNamespace)
+        #self.JournalArticle = self.registerClass("JournalArticle")              # described, defined if fabio namespace
+        #self.Patent = self.registerClass("Patent")                              # described, defined if fabio namespace
+        #self.Thesis = self.registerClass("Thesis")                              # described, defined if fabio namespace
+        #self.BachelorThesis = self.registerClass("BachelorThesis")              # described, defined if fabio namespace
+        #self.MasterThesis = self.registerClass("MasterThesis")                  # described, defined if fabio namespace
+        #self.DoctoralThesis = self.registerClass("DoctoralThesis")              # described, defined if fabio namespace
+        #self.Book = self.registerClass("Book")                                  # described, defined if fabio namespace
+        #self.BookChapter = self.registerClass("BookChapter")                    # described, defined if fabio namespace
+        #self.ConferencePublication = self.registerClass("ConferencePublication")    # described, defined if fabio namespace
+
+        #self.CellLine = self.registerClass("CellLine")                                                                         # described, defined in wd namespace
+        #self.GenomeModificationMethod = self.registerClass("GenomeModificationMethod", "Genome Modification Method NOS")       # described, defined in OBI namespace
 
         # Genome modification methods sublasses not found in NCIt, OBI, FBcv
         # WARNING: labels must match what's found in cellosaurus.txt !!!
-        self.BacHomologousRecombination = self.registerClass("BacHomologousRecombination", label="BAC homologous recombination")   # cello genome modification method subclass
-        self.CreLoxp = self.registerClass("CreLoxp", label="Cre/loxP")   # cello genome modification method subclass
-        self.CrisprCas9N = self.registerClass("CrisprCas9N", label="CRISPR/Cas9n")   # cello genome modification method subclass
-        self.EbvBasedVectorSirnaKnockdown = self.registerClass("EbvBasedVectorSirnaKnockdown", label="EBV-based vector siRNA knockdown")   # cello genome modification method subclass
-        self.FloxingCreRecombination = self.registerClass("FloxingCreRecombination", label="Floxing/Cre recombination")   # cello genome modification method subclass
-        self.GeneTargetedKoMouse = self.registerClass("GeneTargetedKoMouse", label="Gene-targeted KO mouse")   # cello genome modification method subclass
-        self.HelperDependentAdenoviralVector = self.registerClass("HelperDependentAdenoviralVector", label="Helper-dependent adenoviral vector")   # cello genome modification method subclass
-        self.HomologousRecombination = self.registerClass("HomologousRecombination", label="Homologous recombination")   # cello genome modification method subclass
-        self.KnockoutFirstConditional = self.registerClass("KnockoutFirstConditional", label="Knockout-first conditional")   # cello genome modification method subclass
-        self.KoMouse = self.registerClass("KoMouse", label="KO mouse")   # cello genome modification method subclass
-        self.KoPig = self.registerClass("KoPig", label="KO pig")   # cello genome modification method subclass
-        self.MirnaKnockdown = self.registerClass("MirnaKnockdown", label="miRNA knockdown")   # cello genome modification method subclass
-        self.NullMutation = self.registerClass("NullMutation", label="Null mutation")   # cello genome modification method subclass
-        self.PElement = self.registerClass("PElement", label="P-element")   # cello genome modification method subclass
-        self.PiggybacTransposition = self.registerClass("PiggybacTransposition", label="PiggyBac transposition")   # cello genome modification method subclass
-        self.PrimeEditing = self.registerClass("PrimeEditing", label="Prime editing")   # cello genome modification method subclass
-        self.PromoterlessGeneTargeting = self.registerClass("PromoterlessGeneTargeting", label="Promoterless gene targeting")   # cello genome modification method subclass
-        self.RecombinantAdenoAssociatedVirus = self.registerClass("RecombinantAdenoAssociatedVirus", label="Recombinant Adeno-Associated Virus")   # cello genome modification method subclass
-        self.ShrnaKnockdown = self.registerClass("ShrnaKnockdown", label="shRNA knockdown")   # cello genome modification method subclass
-        self.SleepingBeautyTransposition = self.registerClass("SleepingBeautyTransposition", label="Sleeping Beauty transposition")   # cello genome modification method subclass
-        self.SpontaneousMutation = self.registerClass("SpontaneousMutation", label="Spontaneous mutation")   # cello genome modification method subclass
-        self.TargetedIntegration = self.registerClass("TargetedIntegration", label="Targeted integration")   # cello genome modification method subclass
-        self.TransductionTransfection = self.registerClass("TransductionTransfection", label="Transduction/transfection")   # cello genome modification method subclass
-        self.TransfectionTransduction = self.registerClass("TransfectionTransduction", label="Transfection/transduction")   # cello genome modification method subclass
-        self.TransgenicFish = self.registerClass("TransgenicFish", label="Transgenic fish")   # cello genome modification method subclass
-        self.TransgenicMouse = self.registerClass("TransgenicMouse", label="Transgenic mouse")   # cello genome modification method subclass
-        self.TransgenicRat = self.registerClass("TransgenicRat", label="Transgenic rat")   # cello genome modification method subclass
-
-        
+        self.BacHomologousRecombination = self.registerClass("BacHomologousRecombination", label="BAC homologous recombination")                    # described
+        self.CreLoxp = self.registerClass("CreLoxp", label="Cre/loxP")                                                                              # described
+        self.CrisprCas9N = self.registerClass("CrisprCas9N", label="CRISPR/Cas9n")                                                                  # described
+        self.EbvBasedVectorSirnaKnockdown = self.registerClass("EbvBasedVectorSirnaKnockdown", label="EBV-based vector siRNA knockdown")            # described
+        self.FloxingCreRecombination = self.registerClass("FloxingCreRecombination", label="Floxing/Cre recombination")                             # described
+        self.GeneTargetedKoMouse = self.registerClass("GeneTargetedKoMouse", label="Gene-targeted KO mouse")                                        # described
+        self.HelperDependentAdenoviralVector = self.registerClass("HelperDependentAdenoviralVector", label="Helper-dependent adenoviral vector")    # described
+        self.HomologousRecombination = self.registerClass("HomologousRecombination", label="Homologous recombination")                              # described
+        self.KnockoutFirstConditional = self.registerClass("KnockoutFirstConditional", label="Knockout-first conditional")                          # described
+        self.KoMouse = self.registerClass("KoMouse", label="KO mouse")                                                              # described
+        self.KoPig = self.registerClass("KoPig", label="KO pig")                                                                    # described
+        self.MirnaKnockdown = self.registerClass("MirnaKnockdown", label="miRNA knockdown")                                         # described
+        self.NullMutation = self.registerClass("NullMutation", label="Null mutation")                                               # described
+        self.PElement = self.registerClass("PElement", label="P-element")                                                           # described
+        self.PiggybacTransposition = self.registerClass("PiggybacTransposition", label="PiggyBac transposition")                    # described
+        self.PrimeEditing = self.registerClass("PrimeEditing", label="Prime editing")                                               # described
+        self.PromoterlessGeneTargeting = self.registerClass("PromoterlessGeneTargeting", label="Promoterless gene targeting")       # described
+        self.RecombinantAdenoAssociatedVirus = self.registerClass("RecombinantAdenoAssociatedVirus", label="Recombinant Adeno-Associated Virus")    # described
+        self.ShrnaKnockdown = self.registerClass("ShrnaKnockdown", label="shRNA knockdown")                                                         # described
+        self.SleepingBeautyTransposition = self.registerClass("SleepingBeautyTransposition", label="Sleeping Beauty transposition")                 # described
+        self.SpontaneousMutation = self.registerClass("SpontaneousMutation", label="Spontaneous mutation")                          # described
+        self.TargetedIntegration = self.registerClass("TargetedIntegration", label="Targeted integration")                          # described
+        self.TransductionTransfection = self.registerClass("TransductionTransfection", label="Transduction/transfection")           # described
+        self.TransfectionTransduction = self.registerClass("TransfectionTransduction", label="Transfection/transduction")           # described
+        self.TransgenicFish = self.registerClass("TransgenicFish", label="Transgenic fish")                                         # described
+        self.TransgenicMouse = self.registerClass("TransgenicMouse", label="Transgenic mouse")                                      # described
+        self.TransgenicRat = self.registerClass("TransgenicRat", label="Transgenic rat")                                            # described
 
         self.Database = self.registerClass("Database")                          # described
         self.CelloConceptScheme = self.registerClass("CelloConceptScheme")      # described
-
-        self.Organization = self.registerClass("Organization")                  # described
+        
+        # self.Organization = self.registerClass("Organization")                  # described, defined in schema namespace
 
         self.Xref = self.registerClass("Xref")                                  # TODO:
         self.GenomeAncestry = self.registerClass("GenomeAncestry")              # described
@@ -172,7 +169,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.primaryAccession = self.registerDatatypeProperty("primaryAccession")       # TODO: # should be defined as subProp of skos:notation / dcterms:identifier
         self.secondaryAccession = self.registerDatatypeProperty("secondaryAccession")   # TODO: # should be defined as subProp of skos:notation / dcterms:identifier
         
-        self.name = self.registerDatatypeProperty("name")                               # TODO:
+        self.name = self.registerDatatypeProperty("name")                               # TODO: # described, as subProp of dcterms:title
         self.shortname = self.registerDatatypeProperty("shortname")                     # TODO:
         self.recommendedName = self.registerDatatypeProperty("recommendedName")         # TODO:
         self.alternativeName = self.registerDatatypeProperty("alternativeName")         # TODO:
@@ -189,7 +186,7 @@ class CelloOntologyNamespace(BaseNamespace):
 
         self.population = self.registerObjectProperty("population")                     # TODO: # as link between PopulationPercentage and Population
         self.percentage = self.registerDatatypeProperty("percentage")                   # TODO: # as link between PopulationPercentage and percentage
-        self.populationName = self.registerDatatypeProperty("populationName")           # TODO: # as sub property of rdfs:label or cello/foaf/schema:name
+        self.populationName = self.registerDatatypeProperty("populationName")           # TODO: # as sub property of rdfs:label as name, recommendedName,...
 
         self.hlaTyping = self.registerObjectProperty("hlaTyping")                       # TODO:
         self.geneAlleles = self.registerObjectProperty("geneAlleles")                   # TODO:
@@ -276,15 +273,15 @@ class CelloOntologyNamespace(BaseNamespace):
         self.parentCellLine = self.registerObjectProperty("parentCellLine")             # described: # HI field
         self.childCellLine = self.registerObjectProperty("childCellLine")               # TODO: # as inverse of parentCellLine, CH field
         
-        self.publisher = self.registerObjectProperty("publisher")                       # TODO: # links thesis -> universities (orga)
+        self.publisher = self.registerObjectProperty("publisher")                       # TODO: # to be defined as sub propf of dcterms:publisher
 
-        self.hasVersion = self.registerAnnotationProperty("hasVersion")                 # described as sub of dcterms term
-        self.created = self.registerAnnotationProperty("created")                       # described as sub of dcterms term
-        self.modified = self.registerAnnotationProperty("modified")                     # described as sub of dcterms term
+        self.hasVersion = self.registerDatatypeProperty("hasVersion")                 # described as sub of dcterms term
+        self.created = self.registerDatatypeProperty("created")                       # described as sub of dcterms term
+        self.modified = self.registerDatatypeProperty("modified")                     # described as sub of dcterms term
 
         self.organization = self.registerObjectProperty("organization")                 # TODO:
         self.database = self.registerObjectProperty("database")                         # TODO:
-        self.memberOf = self.registerObjectProperty("memberOf")                         # described as sub of schema:location
+        self.memberOf = self.registerObjectProperty("memberOf")                         # described, defined in schema namespace
         self.city = self.registerDatatypeProperty("city")                               # described as sub of schema:location
         self.country = self.registerDatatypeProperty("country")                         # described as sub of schema:location
 

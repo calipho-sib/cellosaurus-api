@@ -17,11 +17,11 @@ PREFIX widoco: <https://w3id.org/widoco/vocab#>
 PREFIX vann: <http://purl.org/vocab/vann/> 
 
 select str(?oname) as ?org_name str(?pname) as ?person_name count(distinct ?cl) as ?cl_count sample(?cl) as ?cl_sample where {
-  ?person a foaf:Person .
-  ?person :name ?pname .
-  ?person :memberOf ?org.
-  ?org a :Organization.
-  ?org rdfs:label ?oname .
+  ?person a schema:Person .
+  ?person cello:name ?pname .
+  ?person cello:memberOf ?org.
+  ?org a schema:Organization.
+  ?org cello:name ?oname .
   ?cl a :CellLine .
   ?cl :from ?org. 
 }
