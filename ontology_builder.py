@@ -167,6 +167,24 @@ class OntologyBuilder:
         ns.describe(ns.OBI._0001364, ns.rdfs.subClassOf, ns.OBI._0001404)     
         ns.describe(ns.cello.GeneticIntegration, ns.rdfs.subClassOf, ns.OBI._0001364)
         ns.describe(ns.cello.GeneKnockout, ns.rdfs.subClassOf, ns.OBI._0001364)
+        ns.describe(ns.cello.GenomeAncestry, ns.rdfs.subClassOf, ns.OBI._0001225)
+        ns.describe(ns.cello.HLATyping, ns.rdfs.subClassOf, ns.OBI._0001404)
+
+        ns.describe(ns.NCIt.C101157, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C190000, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C19409, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C28585, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C29953, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C62758, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C62778, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C70614, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C71259, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C71261, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C71263, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C71265, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.NCIt.C71267, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.OGG._3000003128, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        ns.describe(ns.OGG._3000003132, ns.rdfs.subClassOf, ns.cello.HLAGene)
 
         # subclass OBI:0002769 karyotype information  
         # ...
@@ -353,9 +371,20 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_misc_classes(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        for tk in self.ctd.getCelloTermKeys("MiscClasses"):
-            term_data = self.ctd.getCelloTerm("MiscClasses", tk)
-            self.describe_related_terms(tk, term_data, termIsClass=True)
+        # for tk in self.ctd.getCelloTermKeys("MiscClasses"):
+        #     term_data = self.ctd.getCelloTerm("MiscClasses", tk)
+        #     self.describe_related_terms(tk, term_data, termIsClass=True)
+
+        ns.describe(ns.cello.Population, ns.rdfs.subClassOf, ns.OBI._0000181)
+        ns.describe(ns.cello.Gene, ns.owl.equivalentClass, ns.NCIt.C16612)
+        ns.describe(ns.cello.Locus, ns.owl.equivalentClass, ns.NCIt.C45822)
+        ns.describe(ns.cello.HLAGene, ns.rdfs.subClassOf, ns.cello.Gene)
+        ns.describe(ns.cello.HLA_Allele, ns.rdfs.subClassOf, ns.GENO._0000512_Allele)
+        # ns.describe(ns.cello.hasAllele, ns.rdfs.subPropertyOf, ns.GENO._0000413_has_allele) # unused
+        ns.describe(ns.cello.isAlleleOf, ns.rdfs.subPropertyOf, ns.GENO._0000408_is_allele_of)
+        ns.describe(ns.cello.alleleIdentifier, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        
+        
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -365,8 +394,9 @@ class OntologyBuilder:
         ns.describe(ns.cello.CelloConceptScheme, ns.rdfs.subClassOf, ns.skos.ConceptScheme)
 
         # Describe parent class of our Database class and equivalence to uniprot Database
-        ns.describe(ns.cello.Database, ns.rdfs.subClassOf, ns.NCIt.C15426)
+        ns.describe(ns.cello.Database, ns.rdfs.subClassOf, ns.NCIt.C15426_Database)
         ns.describe(ns.cello.Database, ns.owl.equivalentClass, ns.up.Database)
+        ns.describe(ns.cello.Xref, ns.rdfs.subClassOf, ns.NCIt.C43621_Xref)
         
         # we add programmaticaly the subClassOf relationships between Database and its children
         # so that we can take advantage of close_parent_set() method during computation of domain / ranges of related properties

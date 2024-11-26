@@ -46,34 +46,33 @@ PX   OGG  http://purl.obolibrary.org/obo/OGG_
 #    ---------------------------------------
 SC   MiscClasses (misc. classes)
 #    ---------------------------------------
-IR   cello:GeneticIntegration
-<<   OBI:0001364 genetic alteration information
-//
-IR   cello:GeneKnockout
-<<   OBI:0001364 genetic alteration information
-//
-IR   cello:HLATyping
-<<   OBI:0001404 genetic characteristics information
-//
-IR   cello:Population
-CL   OBI:0000181 population
-//
-IR   cello:GenomeAncestry
-<<   OBI:0001225 genetic population background information
-//
-IR   cello:Gene
-#<<   OGG:0000000002 gene
-EQ   NCIt:C16612 Gene
-//
-IR   cello:Locus
-EQ   NCIt:C45822 locus
-//
-IR   cello:HLAGene
-<<   NCIt:C25790 Immunoprotein Gene
-//
+# IR   cello:GeneticIntegration
+# <<   OBI:0001364 genetic alteration information
+# //
+# IR   cello:GeneKnockout
+# <<   OBI:0001364 genetic alteration information
+# //
+# IR   cello:HLATyping
+# <<   OBI:0001404 genetic characteristics information
+# //
+# IR   cello:Population
+# CL   OBI:0000181 population
+# //
+# IR   cello:GenomeAncestry
+# <<   OBI:0001225 genetic population background information
+# //
+# IR   cello:Gene
+# EQ   NCIt:C16612 Gene
+# //
+# IR   cello:Locus
+# EQ   NCIt:C45822 locus
+# //
+# IR   cello:HLAGene
+# <<   NCIt:C25790 Immunoprotein Gene
+# //
 
 #    ---------------------------------------
-SC   HLAGene (HLA genes)
+SC   HLAGene-obsolete-section (HLA genes)
 #    ---------------------------------------
 LB   HLA-DPB1
 EQ   NCIt:C29953 HLA-DPB1 Gene
@@ -119,7 +118,7 @@ LB   HLA-DRB6
 EQ   OGG:3000003128 major histocompatibility complex, class II, DR beta 6 (pseudogene)
 //
 LB   HLA-DRB9
-CL   OGG:3000003132 major histocompatibility complex, class II, DR beta 9 (pseudogene)
+EQ   OGG:3000003132 major histocompatibility complex, class II, DR beta 9 (pseudogene)
 //
 LB   HLA-DRB1
 EQ   NCIt:C19409 HLA-DRB1 Gene

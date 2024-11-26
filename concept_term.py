@@ -148,3 +148,46 @@ if __name__ == '__main__':
     items.sort()
     for el in items: print(el[50:])
     
+
+
+
+    print("---------------")
+    elems = list()
+    subs = list()
+    items = list()
+    sct = "HLAGene"
+    for label in obj.getCelloTermKeys(sct):
+        print("label:",label)
+        iri = f"no IRI for {label}"
+        eqilabel = f"no EQ label for {label}"
+        data = obj.getCelloTerm(sct, label)
+        for eqTerm in obj.getEquivalentTermList(data):                        
+            possible_iri = obj.getTermPfxIRI(eqTerm)
+            if possible_iri.startswith("OGG"): 
+                eq_label = obj.getTermLabel(eqTerm)
+                iri = possible_iri
+
+        for eqTerm in obj.getEquivalentTermList(data):                        
+            possible_iri = obj.getTermPfxIRI(eqTerm)
+            if possible_iri.startswith("NCIt"): 
+                eq_label = obj.getTermLabel(eqTerm)
+                iri = possible_iri
+
+        print("iri:", iri)
+        pfx = iri.split(":")[0]
+        id = iri.split(":")[1]
+        elems.append(f"{pfx:<6}self.{id} = self.registerClass(\"{id}\", label=\"{eq_label}\")   # described as a cello:HLAGene subclass")
+        line = f"ns.describe(ns.{pfx}.{id}, ns.rdfs.subClassOf, ns.cello.HLAGene)"
+        subs.append(line)
+        sortcrit = f"ns.{pfx}.{id}"
+        items.append(f'{sortcrit:<50} "{label}": ns.{pfx}.{id},')
+
+    elems.sort()
+    for el in elems: print(el[6:])
+    print("---------------")
+    subs.sort()
+    for el in subs: print(el)
+    print("---------------")
+    items.sort()
+    for el in items: print(el[50:])
+    

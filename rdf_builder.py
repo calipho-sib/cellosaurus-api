@@ -56,6 +56,24 @@ class RdfBuilder:
             "miscellaneous document":   ns.cello.MiscellaneousDocument,            
         }
 
+        self.hla_clazz = {
+            "HLA-DRA": ns.NCIt.C101157,
+            "HLA-DRB2": ns.NCIt.C190000,
+            "HLA-DRB1": ns.NCIt.C19409,
+            "HLA-A": ns.NCIt.C28585,
+            "HLA-DPB1": ns.NCIt.C29953,
+            "HLA-C": ns.NCIt.C62758,
+            "HLA-B": ns.NCIt.C62778,
+            "HLA-DQB1": ns.NCIt.C70614,
+            "HLA-DRB3": ns.NCIt.C71259,
+            "HLA-DRB4": ns.NCIt.C71261,
+            "HLA-DRB5": ns.NCIt.C71263,
+            "HLA-DQA1": ns.NCIt.C71265,
+            "HLA-DPA1": ns.NCIt.C71267,
+            "HLA-DRB6": ns.OGG._3000003128,
+            "HLA-DRB9": ns.OGG._3000003132,
+        }
+
         # genome editing method labels => class
         self.gem_clazz = {
             "CRISPR/Cas9": ns.FBcv._0003008,
@@ -183,6 +201,16 @@ class RdfBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_hla_gene_class_IRI(self, our_label):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        clazz = self.hla_clazz.get(our_label)
+        if clazz is None:
+            log_it("ERROR", f"unexpected HLA Gene label '{our_label}'")
+            clazz = ns.cello.HLAGene # default, most generic
+        return clazz
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_gem_class_IRI(self, gem_label):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         clazz = self.gem_clazz.get(gem_label)
@@ -190,6 +218,7 @@ class RdfBuilder:
             log_it("ERROR", f"unexpected genome editing method '{gem_label}'")
             clazz = ns.OBI.GenomeModificationMethod # default, most generic
         return clazz
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_gem_clean_label(self, label):
@@ -722,16 +751,21 @@ class RdfBuilder:
             if src is not None: 
                 triples.extend(self.get_ttl_for_source(annot_BN, src))
             for gall in annot["hla-gene-alleles-list"]:
-                gall_BN = self.get_blank_node()
-                triples.append(annot_BN, ns.cello.geneAlleles, gall_BN)
-                triples.append(gall_BN, ns.rdf.type, ns.cello.GeneAlleles)
-                gene_BN = self.get_blank_node()
-                triples.append(gall_BN, ns.cello.gene, gene_BN)
-                triples.append(gene_BN, ns.rdf.type, ns.cello.Gene)
-                gene_name = ns.xsd.string(gall["gene"])
-                triples.append(gene_BN, ns.rdfs.label, gene_name)
-                alleles = ns.xsd.string(gall["alleles"])            
-                triples.append(gall_BN, ns.cello.alleles, alleles)
+                gene_label = gall["gene"]
+                gene_clazz = self.get_hla_gene_class_IRI(gene_label)
+                for allele in gall["alleles"].split(","):
+                    allele_BN = self.get_blank_node()
+                    triples.append(annot_BN, ns.cello.hasIdentifiedAllele, allele_BN)
+                    allele_id = "*".join([gene_label, allele])
+                    triples.append(allele_BN, ns.rdf.type, ns.cello.HLA_Allele)
+                    triples.append(allele_BN, ns.cello.alleleIdentifier, ns.xsd.string(allele_id))
+                    # alternative 1)
+                    gene_BN = self.get_blank_node()
+                    triples.append(gene_BN, ns.rdf.type, gene_clazz)
+                    triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(gene_label))
+                    triples.append(allele_BN, ns.cello.isAlleleOf, gene_BN)
+                    # alternative 2) - we loose domain / range in widoco, we break instance / class separation
+                    # triples.append(allele_BN, ns.GENO._0000408_is_allele_of, gene_clazz)
 
 
         # fields: CC str, WARNING: str-list is not a list !!!

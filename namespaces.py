@@ -449,10 +449,39 @@ class NCItNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(NCItNamespace, self).__init__("NCIt", "http://purl.obolibrary.org/obo/NCIT_")
-        self.C15426 = self.registerClass("C15426", label="Database", hidden=True)
-        self.C17262 = self.registerClass("C17262", label="X-ray")                    # genome modification method subclass
-        self.C44386 = self.registerClass("C44386", label="Gamma radiation")         # genome modification method subclass
 
+        self.C15426_Database = self.registerClass("C15426", label="Database", hidden=True)      # superclass of cello:Database
+        self.C43621_Xref = self.registerClass("C43621", label="Cross-Reference", hidden=True)   # superclass of cello:Xref
+        self.C17262 = self.registerClass("C17262", label="X-ray")                               # genome modification method subclass
+        self.C44386 = self.registerClass("C44386", label="Gamma radiation")                     # genome modification method subclass
+        self.C16612 = self.registerClass("C16612", label="Gene", hidden=True)                   # owl:equClass cello:Gene
+        self.C45822 = self.registerClass("C45822", label="Locus", hidden=True)                  # owl:equClass cello:Locus
+
+        self.C101157 = self.registerClass("C101157", label="HLA-DRA Gene")   # described as a cello:HLAGene subclass
+        self.C190000 = self.registerClass("C190000", label="HLA-DRB2 Gene")   # described as a cello:HLAGene subclass
+        self.C19409 = self.registerClass("C19409", label="HLA-DRB1 Gene")   # described as a cello:HLAGene subclass
+        self.C28585 = self.registerClass("C28585", label="HLA-A Gene")   # described as a cello:HLAGene subclass
+        self.C29953 = self.registerClass("C29953", label="HLA-DPB1 Gene")   # described as a cello:HLAGene subclass
+        self.C62758 = self.registerClass("C62758", label="HLA-C Gene")   # described as a cello:HLAGene subclass
+        self.C62778 = self.registerClass("C62778", label="HLA-B Gene")   # described as a cello:HLAGene subclass
+        self.C70614 = self.registerClass("C70614", label="HLA-DQB1 Gene")   # described as a cello:HLAGene subclass
+        self.C71259 = self.registerClass("C71259", label="HLA-DRB3 Gene")   # described as a cello:HLAGene subclass
+        self.C71261 = self.registerClass("C71261", label="HLA-DRB4 Gene")   # described as a cello:HLAGene subclass
+        self.C71263 = self.registerClass("C71263", label="HLA-DRB5 Gene")   # described as a cello:HLAGene subclass
+        self.C71265 = self.registerClass("C71265", label="HLA-DQA1 Gene")   # described as a cello:HLAGene subclass
+        self.C71267 = self.registerClass("C71267", label="HLA-DPA1 Gene")   # described as a cello:HLAGene subclass
+        
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class GENONamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(GENONamespace, self).__init__("GENO", "http://purl.obolibrary.org/obo/GENO_")
+
+        self._0000512_Allele = self.registerClass("0000512", label="Allele")
+        #self._0000413_has_allele = self.registerObjectProperty("0000413", label="has allele", hidden=True )
+        self._0000408_is_allele_of = self.registerObjectProperty("0000408", hidden=True)
+        
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OBINamespace(BaseNamespace):
@@ -473,6 +502,8 @@ class OBINamespace(BaseNamespace):
         self._0001404 = self.registerClass("0001404", label="Genetic characteristics information")
         self._0001364 = self.registerClass("0001364", label="Genetic alteration information")
         self._0001225 = self.registerClass("0001225", label="Genetic population background information")
+
+        self._0000181 = self.registerClass("0000181", label="Population", hidden=True) # hidden because has same label as cello:Population
                 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -489,7 +520,11 @@ class FBcvNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OGGNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(OGGNamespace, self).__init__("OGG", "http://purl.obolibrary.org/obo/OGG_")
+    def __init__(self): 
+        super(OGGNamespace, self).__init__("OGG", "http://purl.obolibrary.org/obo/OGG_")
+        self._3000003128 = self.registerClass("3000003128", label="Major histocompatibility complex, class II, DR beta 6")   # described as a cello:HLAGene subclass
+        self._3000003132 = self.registerClass("3000003132", label="Major histocompatibility complex, class II, DR beta 9")   # described as a cello:HLAGene subclass
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class PubMedNamespace(BaseNamespace):

@@ -68,16 +68,16 @@ class CelloOntologyNamespace(BaseNamespace):
         
         # self.Organization = self.registerClass("Organization")                  # described, defined in schema namespace
 
-        self.Xref = self.registerClass("Xref")                                  # TODO:
-        self.GenomeAncestry = self.registerClass("GenomeAncestry")              # described
-        self.PopulationPercentage = self.registerClass("PopulationPercentage")  # TODO:
+        self.Xref = self.registerClass("Xref")                                  # described as NCIT:C43621 subclass
+        self.GenomeAncestry = self.registerClass("GenomeAncestry")              # described as OBI:0001225 subclass
+        self.PopulationPercentage = self.registerClass("PopulationPercentage")  # LATER: define as restriction
 
-        self.HLATyping = self.registerClass("HLATyping")                        # described as OBI:0001404
-        self.HLAGene = self.registerClass("HLAGene")                            # TODO: ongoing
-        self.Gene = self.registerClass("Gene")                                  # TODO: ongoing
-        self.Locus = self.registerClass("Locus")                                  # TODO: ongoing, used in STR profile    
-        self.Allele = self.registerClass("Allele")                                  # TODO: ongoing, used in HLA, str and later in genetic integration
-        self.GeneAlleles = self.registerClass("GeneAlleles")                    # TODO: ongoing , used in HLA typing
+        self.Locus = self.registerClass("Locus")                                # descrided as equivalent of NCIt.C45822, used in STR profile    
+
+        self.HLATyping = self.registerClass("HLATyping", label="HLA Typing")    # described as OBI:0001404 subclass
+        self.Gene = self.registerClass("Gene")                                  # described as equivalent as NCIt:C16612
+        self.HLAGene = self.registerClass("HLAGene", label="HLA Gene")          # described as cello:Gene subclass
+        self.HLA_Allele = self.registerClass("HLAAllele", label="HLA Allele")   # described as GENO:0000512 subclass, used in HLA, str and later in genetic integration
         self.MarkerAlleles = self.registerClass("MarkerAlleles")                # TODO: , used in short tandem repeat
 
         self.Protein = self.registerClass("Protein")                            # TODO: ongoing
@@ -118,7 +118,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.GeneticIntegration = self.registerClass("GeneticIntegration")          # described as child of OBI:0001364 : characteristics of genetic alteration
         self.VirologyComment = self.registerClass("VirologyComment")                # TODO
         self.OmicsComment = self.registerClass("OmicsComment")                      # TODO:
-        self.Population = self.registerClass("Population")                          # described
+        self.Population = self.registerClass("Population")                          # described as child of OBI_0000181
         self.MicrosatelliteInstability = self.registerClass("MicrosatelliteInstability")    # TODO:
         self.MabIsotype = self.registerClass("MabIsotype")                          # TODO:
         #self.MabTarget = self.registerClass("MabTarget")
@@ -189,7 +189,11 @@ class CelloOntologyNamespace(BaseNamespace):
         self.populationName = self.registerDatatypeProperty("populationName")           # TODO: # as sub property of rdfs:label as name, recommendedName,...
 
         self.hlaTyping = self.registerObjectProperty("hlaTyping")                       # TODO:
-        self.geneAlleles = self.registerObjectProperty("geneAlleles")                   # TODO:
+        #self.hasAllele = self.registerObjectProperty("hasAllele")                      # unused, described as ns.GENO:0000413 subprop
+        self.isAlleleOf = self.registerObjectProperty("isAlleleOf")                     # described as ns.GENO:0000408 subprop
+        self.alleleIdentifier = self.registerDatatypeProperty("alleleIdentifier")       # described as dcterms:identifier subprop
+        self.hasIdentifiedAllele = self.registerObjectProperty("hasIdentifiedAllele")   # TODO
+        #self.geneAlleles = self.registerObjectProperty("geneAlleles")                  # obsolete
         self.markerAlleles = self.registerObjectProperty("markerAlleles")               # TODO:
 
         self.alleles = self.registerDatatypeProperty("alleles")                         # TODO:
