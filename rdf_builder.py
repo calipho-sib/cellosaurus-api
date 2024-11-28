@@ -971,20 +971,20 @@ class RdfBuilder:
         #      25 varmut | Gene amplification | Duplication
         #      12 varmut | Gene amplification | Quadruplication
         #      12 varmut | Gene amplification | Extensive
-        # ordering of "if" based on data: most frequent cases first to ensure best performance
+
         if var_type == "Mutation":
-            if mut_type.startswith("Simple"): return ns.cello.SimpleMutation
+            if mut_type.startswith("Simple"): return ns.NCIt.GeneMutation
             if mut_type.startswith("Repeat"): return ns.cello.RepeatExpansion
-            if mut_type.startswith("Unexplicit"): return ns.cello.UnexplicitMutation
-            if mut_type == "None_reported": return ns.cello.GeneMutation
-        elif var_type == "Gene fusion": return ns.cello.GeneFusion
-        elif var_type == "Gene deletion": return ns.cello.GeneDeletion
+            if mut_type.startswith("Unexplicit"): return ns.NCIt.GeneMutation
+            if mut_type == "None_reported": return ns.NCIt.GeneMutation
+        elif var_type == "Gene fusion": return ns.NCIt.GeneFusion
+        elif var_type == "Gene deletion": return ns.NCIt.GeneDeletion
         elif var_type == "Gene amplification":
             if mut_type == "Triplication": return ns.cello.GeneTriplication
             if mut_type == "Duplication": return ns.cello.GeneDuplication
             if mut_type == "Quadruplication": return ns.cello.GeneQuadruplication
             if mut_type == "Extensive": return ns.cello.GeneExtensiveAmplification
-            if mut_type == "None_reported": return ns.cello.GeneMutation # not in data so far...    
+            if mut_type == "None_reported": return ns.NCIt.GeneAmplification # not in data but we never know    
         raise DataError("SequenceVariation", f"Unexpected variation-type / mutation-type combination: {var_type} / {mut_type}")
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1236,7 +1236,7 @@ class RdfBuilder:
         site_type = site["site-type"]
         label = site["value"]
         triples.append(cl_IRI, ns.cello.derivedFromSite, site_BN)
-        triples.append(site_BN, ns.rdf.type, ns.cello.AnatomicalElement)
+        triples.append(site_BN, ns.rdf.type, ns.CARO.AnatomicalEntity)
         triples.append(site_BN, ns.cello.siteType, ns.xsd.string(site_type))
         triples.append(site_BN, ns.rdfs.label, ns.xsd.string(label))
         if note is not None:
@@ -1255,7 +1255,7 @@ class RdfBuilder:
         else:
             label, cv = (annot["value"], annot.get("xref"))
         triples.append(cl_IRI, ns.cello.cellType, ct_BN)
-        triples.append(ct_BN, ns.rdf.type, ns.cello.CellType)
+        triples.append(ct_BN, ns.rdf.type, ns.CL.CellType)
         triples.append(ct_BN, ns.rdfs.label, ns.xsd.string(label))    
         if cv is not None: triples.append(ct_BN, ns.cello.xref, self.get_xref_IRI(cv))
         return triples

@@ -169,6 +169,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.GeneKnockout, ns.rdfs.subClassOf, ns.OBI._0001364)
         ns.describe(ns.cello.GenomeAncestry, ns.rdfs.subClassOf, ns.OBI._0001225)
         ns.describe(ns.cello.HLATyping, ns.rdfs.subClassOf, ns.OBI._0001404)
+        ns.describe(ns.cello.SequenceVariationComment, ns.rdfs.subClassOf, ns.OBI._0001364)
 
         ns.describe(ns.NCIt.C101157, ns.rdfs.subClassOf, ns.cello.HLAGene)
         ns.describe(ns.NCIt.C190000, ns.rdfs.subClassOf, ns.cello.HLAGene)
@@ -414,22 +415,18 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_sequence_variation_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # TODO: describe SequenceVariation
-
-        ns.describe( ns.cello.GeneMutation, ns.rdfs.subClassOf, ns.cello.SequenceVariation )
-        ns.describe( ns.cello.RepeatExpansion, ns.rdfs.subClassOf, ns.cello.GeneMutation  )
-        ns.describe( ns.cello.SimpleMutation, ns.rdfs.subClassOf, ns.cello.GeneMutation  )
-        ns.describe( ns.cello.UnexplicitMutation, ns.rdfs.subClassOf, ns.cello.GeneMutation  )
-        ns.describe( ns.cello.GeneFusion, ns.rdfs.subClassOf, ns.cello.SequenceVariation  )
-        ns.describe( ns.cello.GeneAmplification, ns.rdfs.subClassOf, ns.cello.SequenceVariation ) 
-        ns.describe( ns.cello.GeneDuplication, ns.rdfs.subClassOf, ns.cello.GeneAmplification  )
-        ns.describe( ns.cello.GeneTriplication, ns.rdfs.subClassOf, ns.cello.GeneAmplification  )
-        ns.describe( ns.cello.GeneQuadruplication, ns.rdfs.subClassOf, ns.cello.GeneAmplification  )
-        ns.describe( ns.cello.GeneExtensiveAmplification, ns.rdfs.subClassOf, ns.cello.GeneAmplification ) 
-        ns.describe( ns.cello.GeneDeletion, ns.rdfs.subClassOf, ns.cello.SequenceVariation  )
-        for tk in self.ctd.getCelloTermKeys("SequenceVariation"):
-            term_data = self.ctd.getCelloTerm("SequenceVariation", tk)
-            self.describe_related_terms(tk, term_data, termIsClass=True)
+        # describe children of SequenceVariation class
+        ns.describe( ns.NCIt.GeneMutation, ns.rdfs.subClassOf, ns.NCIt.SequenceVariation )
+        ns.describe( ns.NCIt.GeneFusion, ns.rdfs.subClassOf, ns.NCIt.SequenceVariation  )
+        ns.describe( ns.NCIt.GeneAmplification, ns.rdfs.subClassOf, ns.NCIt.SequenceVariation ) 
+        ns.describe( ns.NCIt.GeneDeletion, ns.rdfs.subClassOf, ns.NCIt.SequenceVariation  )
+        ns.describe( ns.cello.RepeatExpansion, ns.rdfs.subClassOf, ns.NCIt.GeneMutation  )
+        #ns.describe( ns.cello.SimpleMutation, ns.rdfs.subClassOf, ns.NCIt.GeneMutation  )          # SimpleMutation is not used
+        #ns.describe( ns.cello.UnexplicitMutation, ns.rdfs.subClassOf, ns.cello.GeneMutation  )     # SimpleMutation is not used
+        ns.describe( ns.cello.GeneDuplication, ns.rdfs.subClassOf, ns.NCIt.GeneAmplification  )
+        ns.describe( ns.cello.GeneTriplication, ns.rdfs.subClassOf, ns.NCIt.GeneAmplification  )
+        ns.describe( ns.cello.GeneQuadruplication, ns.rdfs.subClassOf, ns.NCIt.GeneAmplification  )
+        ns.describe( ns.cello.GeneExtensiveAmplification, ns.rdfs.subClassOf, ns.NCIt.GeneAmplification ) 
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

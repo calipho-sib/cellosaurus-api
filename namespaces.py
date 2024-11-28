@@ -165,10 +165,10 @@ class BaseNamespace:
             self.terms[id] = t
         return self.terms[id].iri
 
-    def registerClass(self, id, label=None, hidden=False):
+    def registerClass(self, id, label=None, comment=None, hidden=False):
         iri = self.registerTerm(id, p="rdf:type", v={ "owl:Class" }, hidden=hidden)
-        if label is not None: 
-            self.describe(iri, "rdfs:label", f"\"{label}\"^^xsd:string")
+        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
+        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
         return iri
     
     def registerProperty(self, id, hidden=False):
@@ -444,6 +444,7 @@ class BTONamespace(BaseNamespace):
 class CLONamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(CLONamespace, self).__init__("CLO", "http://purl.obolibrary.org/obo/CLO_")
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class NCItNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -470,7 +471,18 @@ class NCItNamespace(BaseNamespace):
         self.C71263 = self.registerClass("C71263", label="HLA-DRB5 Gene")   # described as a cello:HLAGene subclass
         self.C71265 = self.registerClass("C71265", label="HLA-DQA1 Gene")   # described as a cello:HLAGene subclass
         self.C71267 = self.registerClass("C71267", label="HLA-DPA1 Gene")   # described as a cello:HLAGene subclass
-        
+
+        # SequenceVariation class, aleternative 1)
+        comment = "A variation in or modification of the molecular sequence of a gene or gene product."
+        self.SequenceVariation = self.registerClass("C36391", label = "Molecular Genetic Variation", comment = comment) # as generic class for SequenceVariation
+        # SequenceVariation class, aleternative 2) Note: Gene Abnormality is a direct subclass of Molecular Genetic Variation
+        #comment = "A variation in or modification of the nucleic acid sequence of a gene that can alter its expression and may result in either a congenital disorder or the clinical presentation of a disease."
+        #self.SequenceVariation = self.registerClass("C36327", label = "Gene Abnormality", comment = comment) # as generic class for SequenceVariation
+        # ... sub classes first level        
+        self.GeneAmplification = self.registerClass("C45581", label="Gene Amplification Abnormality", comment="An increase in the copy number of a particular gene. This type of abnormality can be either inherited or somatic")
+        self.GeneDeletion = self.registerClass("C16606", label="Gene Deletion", comment="A deletion that results in the loss of a DNA segment encompassing an entire gene sequence")
+        self.GeneFusion = self.registerClass("C45584", label="Gene Fusion Abnormality", comment="Any hybrid gene formed from two previously separate genes. Such fusions occur as a result of translocation, intersititial deletion or chromosomal inversion, and often result in gene products with functions different from the two fusion partners. Gene fusions are associated frequently with hematological cancers, sarcomas and prostate cancer")
+        self.GeneMutation = self.registerClass("C18093", label="Gene Mutation", comment="The result of any gain, loss or alteration of the sequences comprising a gene, including all sequences transcribed into RN")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class GENONamespace(BaseNamespace):
@@ -524,6 +536,27 @@ class OGGNamespace(BaseNamespace):
         super(OGGNamespace, self).__init__("OGG", "http://purl.obolibrary.org/obo/OGG_")
         self._3000003128 = self.registerClass("3000003128", label="Major histocompatibility complex, class II, DR beta 6")   # described as a cello:HLAGene subclass
         self._3000003132 = self.registerClass("3000003132", label="Major histocompatibility complex, class II, DR beta 9")   # described as a cello:HLAGene subclass
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class CARONamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(CARONamespace, self).__init__("CARO", "http://purl.obolibrary.org/obo/CARO_")
+        # superclass for UBERON and PO anatomical entities
+        comment = "A part of a cellular organism that is either an immaterial entity or a material entity with granularity above the level of a protein complex. Or, a substance produced by a cellular organism with granularity above the level of a protein complex."
+        self.AnatomicalEntity = self.registerClass("0000000", label="Anatomical entity", comment=comment)   
+        
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class CLNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(CLNamespace, self).__init__("CL", "http://purl.obolibrary.org/obo/CL_")
+        # superclass for CL cell types
+        self.CellType = self.registerClass("0000000", label="Cell type")
+        # see also https://ontobee.org/ontology/rdf/CL?iri=http://purl.obolibrary.org/obo/CL_0000000
+
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

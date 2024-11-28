@@ -72,34 +72,40 @@ class CelloOntologyNamespace(BaseNamespace):
         self.GenomeAncestry = self.registerClass("GenomeAncestry")              # described as OBI:0001225 subclass
         self.PopulationPercentage = self.registerClass("PopulationPercentage")  # LATER: define as restriction
 
-        self.Locus = self.registerClass("Locus")                                # descrided as equivalent of NCIt.C45822, used in STR profile    
 
         self.HLATyping = self.registerClass("HLATyping", label="HLA Typing")    # described as OBI:0001404 subclass
         self.Gene = self.registerClass("Gene")                                  # described as equivalent as NCIt:C16612
         self.HLAGene = self.registerClass("HLAGene", label="HLA Gene")          # described as cello:Gene subclass
         self.HLA_Allele = self.registerClass("HLAAllele", label="HLA Allele")   # described as GENO:0000512 subclass, used in HLA, str and later in genetic integration
+
+        self.Locus = self.registerClass("Locus")                                # descrided as equivalent of NCIt.C45822, used in STR profile    
+
         self.MarkerAlleles = self.registerClass("MarkerAlleles")                # TODO: , used in short tandem repeat
 
         self.Protein = self.registerClass("Protein")                            # TODO: ongoing
 
-        self.SequenceVariation = self.registerClass("SequenceVariation")        # described incl. related terms
-        self.GeneAmplification = self.registerClass("GeneAmplification")        # described incl. related terms
-        self.GeneDuplication = self.registerClass("GeneDuplication")            # described incl. related terms
-        self.GeneTriplication = self.registerClass("GeneTriplication")          # described incl. related terms
-        self.GeneQuadruplication = self.registerClass("GeneQuadruplication")    # described incl. related terms
-        self.GeneExtensiveAmplification = self.registerClass("GeneExtensiveAmplification")  # described incl. related terms
-        self.GeneDeletion = self.registerClass("GeneDeletion")                  # described incl. related terms
-        self.GeneFusion = self.registerClass("GeneFusion")                      # described incl. related terms
-        self.GeneMutation = self.registerClass("GeneMutation")                  # described incl. related terms
-        self.RepeatExpansion = self.registerClass("RepeatExpansion")            # described incl. related terms
-        self.SimpleMutation = self.registerClass("SimpleMutation")              # described incl. related terms
-        self.UnexplicitMutation = self.registerClass("UnexplicitMutation")      # described incl. related terms
+        self.GeneKnockout = self.registerClass("GeneKnockout")                          # described as child of OBI:0001364 : characteristics of genetic alteration
+        self.GeneticIntegration = self.registerClass("GeneticIntegration")              # described as child of OBI:0001364 : characteristics of genetic alteration
+        self.SequenceVariationComment = self.registerClass("SequenceVariationComment")  # described as child of OBI:0001364 : characteristics of genetic alteration
+        # ...
+        #self.SequenceVariation = self.registerClass("SequenceVariation")        # # defined as NCIt:C36391 - Molecular genetic varation
+        #self.GeneAmplification = self.registerClass("GeneAmplification")       # defined as NCIt:C45581
+        self.GeneDuplication = self.registerClass("GeneDuplication")            # described as child of NCIt:C45581 - gene amplification
+        self.GeneTriplication = self.registerClass("GeneTriplication")          # described as child of NCIt:C45581 - gene amplification
+        self.GeneQuadruplication = self.registerClass("GeneQuadruplication")    # described as child of NCIt:C45581 - gene amplification
+        self.GeneExtensiveAmplification = self.registerClass("GeneExtensiveAmplification")  # described as child of NCIt:C45581 - gene amplification
+        #self.GeneDeletion = self.registerClass("GeneDeletion")                  # defined in NCIt namespace
+        #self.GeneFusion = self.registerClass("GeneFusion")                      # defined in NCIt namespace
+        #self.GeneMutation = self.registerClass("GeneMutation")                  # defined in NCIt namespace
+        self.RepeatExpansion = self.registerClass("RepeatExpansion")            # described as child of NCIt:C18093 (gene mutation)
+        #self.SimpleMutation = self.registerClass("SimpleMutation")              # unused 
+        #self.UnexplicitMutation = self.registerClass("UnexplicitMutation")      # unused
 
-        self.AnatomicalElement = self.registerClass("AnatomicalElement")        # TODO:
-        self.CellType = self.registerClass("CellType")                          # TODO:
+        #self.AnatomicalElement = self.registerClass("AnatomicalElement")        # replaced with CARO:0000000
+        #self.CellType = self.registerClass("CellType")                          # replaced with CL:0000000
+
         self.Disease = self.registerClass("Disease")                            # TODO:
 
-        self.SequenceVariationComment = self.registerClass("SequenceVariationComment")  # TODO:
         self.DoublingTimeComment = self.registerClass("DoublingTimeComment")            # TODO:
         self.DiscontinuationRecord = self.registerClass("DiscontinuationRecord")        # TODO:
 
@@ -114,8 +120,6 @@ class CelloOntologyNamespace(BaseNamespace):
         self.MisspellingComment = self.registerClass("MisspellingComment")          # TODO:
         self.Registration = self.registerClass("Registration")                      # TODO:
         self.SenescenceComment = self.registerClass("SenescenceComment")            # TODO:
-        self.GeneKnockout = self.registerClass("GeneKnockout")                      # described as child of OBI:0001364 : characteristics of genetic alteration
-        self.GeneticIntegration = self.registerClass("GeneticIntegration")          # described as child of OBI:0001364 : characteristics of genetic alteration
         self.VirologyComment = self.registerClass("VirologyComment")                # TODO
         self.OmicsComment = self.registerClass("OmicsComment")                      # TODO:
         self.Population = self.registerClass("Population")                          # described as child of OBI_0000181
@@ -192,8 +196,8 @@ class CelloOntologyNamespace(BaseNamespace):
         #self.hasAllele = self.registerObjectProperty("hasAllele")                      # unused, described as ns.GENO:0000413 subprop
         self.isAlleleOf = self.registerObjectProperty("isAlleleOf")                     # described as ns.GENO:0000408 subprop
         self.alleleIdentifier = self.registerDatatypeProperty("alleleIdentifier")       # described as dcterms:identifier subprop
-        self.hasIdentifiedAllele = self.registerObjectProperty("hasIdentifiedAllele")   # TODO
-        #self.geneAlleles = self.registerObjectProperty("geneAlleles")                  # obsolete
+        self.hasIdentifiedAllele = self.registerObjectProperty("hasIdentifiedAllele")   # TODO link between some gneetic information and a gene allele
+
         self.markerAlleles = self.registerObjectProperty("markerAlleles")               # TODO:
 
         self.alleles = self.registerDatatypeProperty("alleles")                         # TODO:
@@ -222,8 +226,8 @@ class CelloOntologyNamespace(BaseNamespace):
 
         self.siteType = self.registerDatatypeProperty("siteType")                       # TODO:
 
-        self.derivedFromSite = self.registerObjectProperty("derivedFromSite")           # TODO:
-        self.cellType = self.registerObjectProperty("cellType" )                        # TODO:
+        self.derivedFromSite = self.registerObjectProperty("derivedFromSite")           # TODO: rename it ?
+        self.cellType = self.registerObjectProperty("cellType" )                        # TODO: rename it ? derivedFromCellType
 
         self.donorInfoComment = self.registerObjectProperty("donorInfoComment")         # TODO:
         self.doublingTimeComment = self.registerObjectProperty("doublingTimeComment")   # TODO:
