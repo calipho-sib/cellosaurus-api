@@ -211,19 +211,19 @@ EQ   WD:P21 sex or gender
 
 
 #    ---------------------------------------
-SC   SequenceVariation
+# SC   SequenceVariation
 #    ---------------------------------------
-IR   cello:SequenceVariation
-CC   A variation in or modification of the molecular sequence of a gene or gene product.
-EQ   NCIt:C36391 Molecular Genetic Variation
-#or
-#CC   A variation in or modification of the nucleic acid sequence of a gene that can alter its expression and may result in either a congenital disorder or the clinical presentation of a disease.
-#EQ   NCIt:C36327 Gene Abnormality
-#//
-IR   cello:GeneAmplification
-CC   An increase in the copy number of a particular gene. This type of abnormality can be either inherited or somatic.
-EQ   NCIt:C45581 Gene Amplification Abnormality
-//
+# IR   cello:SequenceVariation
+# CC   A variation in or modification of the molecular sequence of a gene or gene product.
+# EQ   NCIt:C36391 Molecular Genetic Variation
+# #or
+# #CC   A variation in or modification of the nucleic acid sequence of a gene that can alter its expression and may result in either a congenital disorder or the clinical presentation of a disease.
+# #EQ   NCIt:C36327 Gene Abnormality
+# #//
+# IR   cello:GeneAmplification
+# CC   An increase in the copy number of a particular gene. This type of abnormality can be either inherited or somatic.
+# EQ   NCIt:C45581 Gene Amplification Abnormality
+# //
 # IR   cello:GeneDuplication
 # EQ   NCIt:C16607 Gene Duplication
 # //
@@ -236,27 +236,24 @@ EQ   NCIt:C45581 Gene Amplification Abnormality
 # IR   cello:GeneExtensiveAmplification
 # BR   NCIt:C16605 Gene Amplification
 # //
-IR   cello:GeneDeletion
-CC   A deletion that results in the loss of a DNA segment encompassing an entire gene sequence.
-EQ   NCIt:C16606 Gene Deletion
-//
-IR   cello:GeneFusion
-CC   Any hybrid gene formed from two previously separate genes. Such fusions occur as a result of translocation, intersititial deletion or chromosomal inversion, and often result in gene products with functions different from the two fusion partners. Gene fusions are associated frequently with hematological cancers, sarcomas and prostate cancer.
-EQ   NCIt:C45584 Gene Fusion Abnormality
-//
-IR   cello:GeneMutation
-CC   The result of any gain, loss or alteration of the sequences comprising a gene, including all sequences transcribed into RNA.
-EQ   NCIt:C18093 Gene Mutation
-//
-
-# IR   cello:RepeatExpansion
+# IR   cello:GeneDeletion
+# CC   A deletion that results in the loss of a DNA segment encompassing an entire gene sequence.
+# EQ   NCIt:C16606 Gene Deletion
+# //
+# IR   cello:GeneFusion
+# CC   Any hybrid gene formed from two previously separate genes. Such fusions occur as a result of translocation, intersititial deletion or chromosomal inversion, and often result in gene products with functions different from the two fusion partners. Gene fusions are associated frequently with hematological cancers, sarcomas and prostate cancer.
+# EQ   NCIt:C45584 Gene Fusion Abnormality
+# //
+# IR   cello:GeneMutation
+# CC   The result of any gain, loss or alteration of the sequences comprising a gene, including all sequences transcribed into RNA.
+# EQ   NCIt:C18093 Gene Mutation
+# //
+# # IR   cello:RepeatExpansion
 # EQ   NCIt:C176696 Repeat Expansion Disease (=> to be checked)
 # //
-
 # IR   cello:SimpleMutation
 # EQ   ???
 # //
-
 # IR   cello:UnexplicitMutation
 # EQ   NCIt:C97926 Molecular Sequence Variation (boadest class => to be checked)
 # //

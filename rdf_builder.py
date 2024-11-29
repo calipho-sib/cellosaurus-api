@@ -1366,7 +1366,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         annot_BN = self.get_blank_node()
-        clazz = ns.cello.Antigen # default when we have no xref
+        clazz = ns.CHEBI.ChemicalEntity # default when we have no xref
 
         # we might get a simple string in annot (the name of the antigen)
         if type(annot) == str:
@@ -1386,9 +1386,9 @@ class RdfBuilder:
             xref_IRI = self.get_xref_IRI(xref)
             db = self.get_xref_db(xref)
             if db in [ "UniProtKB", "FPbase" ]: 
-                clazz = ns.cello.Protein
+                clazz = ns.CHEBI.Protein
             elif db == "ChEBI":
-                clazz = ns.cello.ChemicalAgent
+                clazz = ns.CHEBI.ChemicalEntity
             else:
                 raise DataError("Monoclonal antibody target", "Unexpected xref database: " + db)
 
@@ -1409,7 +1409,7 @@ class RdfBuilder:
         triples = TripleList()
         annot_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.cello.resistance, annot_BN)
-        triples.append(annot_BN, ns.rdf.type, ns.cello.ChemicalAgent)
+        triples.append(annot_BN, ns.rdf.type, ns.CHEBI.ChemicalEntity)
         # we might get a simple string in annot (the name of the chemical)
         if type(annot) == str:
             triples.append(annot_BN, ns.rdfs.label, ns.xsd.string(annot))
@@ -1428,7 +1428,7 @@ class RdfBuilder:
         triples = TripleList()
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.cello.transformant, inst_BN)
-        triples.append(inst_BN, ns.rdf.type, ns.cello.TransformantAgent)
+        triples.append(inst_BN, ns.rdf.type, ns.CHEBI.ChemicalEntity)
 
         # we might get a simple string in annot (the name of the chemical)
         if type(cc) == str:
@@ -1439,7 +1439,7 @@ class RdfBuilder:
             term = cc.get("xref") # optional too
             inst_BN = self.get_blank_node()
             triples.append(cl_IRI, ns.cello.transformant, inst_BN)
-            triples.append(inst_BN, ns.rdf.type, ns.cello.TransformantAgent)
+            triples.append(inst_BN, ns.rdf.type, ns.CHEBI.ChemicalEntity)
             if term is not None:
                 triples.append(inst_BN, ns.cello.xref, self.get_xref_IRI(term))
                 label = self.get_xref_label(term)

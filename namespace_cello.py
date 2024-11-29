@@ -79,10 +79,12 @@ class CelloOntologyNamespace(BaseNamespace):
         self.HLA_Allele = self.registerClass("HLAAllele", label="HLA Allele")   # described as GENO:0000512 subclass, used in HLA, str and later in genetic integration
 
         self.Locus = self.registerClass("Locus")                                # descrided as equivalent of NCIt.C45822, used in STR profile    
-
         self.MarkerAlleles = self.registerClass("MarkerAlleles")                # TODO: , used in short tandem repeat
 
-        self.Protein = self.registerClass("Protein")                            # TODO: ongoing
+        #self.ChemicalAgent = self.registerClass("ChemicalAgent")               # defined as CHEBI:24431: instances are drugbank, ncit, chebi xrefs (+free text)
+        #self.Protein = self.registerClass("Protein")                           # defined as CHEBI:36080, a child of CHEBI:24431
+        #self.Antigen = self.registerClass("Antigen")                           # unused
+        #self.TransformantAgent = self.registerClass("TransformantAgent")       # synonym of CHEBI:24431, instances are ChEBI, NCBI_TaxID, NCIt, DrugBank (+free text)
 
         self.GeneKnockout = self.registerClass("GeneKnockout")                          # described as child of OBI:0001364 : characteristics of genetic alteration
         self.GeneticIntegration = self.registerClass("GeneticIntegration")              # described as child of OBI:0001364 : characteristics of genetic alteration
@@ -127,9 +129,6 @@ class CelloOntologyNamespace(BaseNamespace):
         self.MabIsotype = self.registerClass("MabIsotype")                          # TODO:
         #self.MabTarget = self.registerClass("MabTarget")
 
-        self.Antigen = self.registerClass("Antigen")                                # TODO:
-        self.ChemicalAgent = self.registerClass("ChemicalAgent")                    # TODO: # drugbank, ncit, chebi (+free text)
-        self.TransformantAgent = self.registerClass("TransformantAgent")            # TODO: # ChEBI, NCBI_TaxID, NCIt, DrugBank (+free text)
         self.ShortTandemRepeatProfile = self.registerClass("ShortTandemRepeatProfile")  # TODO:
         self.Species = self.registerClass("Species")                                    # TODO:
 

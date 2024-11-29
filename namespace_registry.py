@@ -24,10 +24,11 @@ class NamespaceRegistry:
     NCIt = NCItNamespace(); OBI = OBINamespace(); OMIT = OMITNamespace()
     FBcv = FBcvNamespace(); OGG = OGGNamespace()
     GENO = GENONamespace(); CARO = CARONamespace(); CL = CLNamespace()
+    CHEBI = CHEBINamespace()
 
     namespaces = [cello, cvcl, xref, pub, orga, db, xsd, rdf, rdfs, skos, owl, dcterms, 
                   fabio, up, bibo, widoco, vann, oa, wdt, wd, sh, schema, help, pubmed,
-                  BAO, BTO, CLO, NCIt, OBI, OMIT, FBcv , OGG, GENO, CARO, CL ]
+                  BAO, BTO, CLO, NCIt, OBI, OMIT, FBcv , OGG, GENO, CARO, CL, CHEBI ]
 
     pfx2ns = dict()
     for ns in namespaces: pfx2ns[ns.pfx] = ns

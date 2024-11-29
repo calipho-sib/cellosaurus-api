@@ -308,7 +308,7 @@ class UniProtCoreNamespace(BaseNamespace):
         
         self.Annotation = self.registerClass("Annotation")
         self.Database = self.registerClass("Database", hidden=True)
-        self.Protein = self.registerClass("Protein")
+        self.Protein = self.registerClass("Protein", hidden=True)
 
         self.annotation = self.registerObjectProperty("annotation")
         self.volume = self.registerDatatypeProperty("volume")
@@ -554,9 +554,21 @@ class CLNamespace(BaseNamespace):
     def __init__(self): 
         super(CLNamespace, self).__init__("CL", "http://purl.obolibrary.org/obo/CL_")
         # superclass for CL cell types
-        self.CellType = self.registerClass("0000000", label="Cell type")
         # see also https://ontobee.org/ontology/rdf/CL?iri=http://purl.obolibrary.org/obo/CL_0000000
+        self.CellType = self.registerClass("0000000", label="Cell type")
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class CHEBINamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(CHEBINamespace, self).__init__("CHEBI", "http://purl.obolibrary.org/obo/CHEBI_")
+        # superclass for Chemical substances
+        # see also https://ontobee.org/ontology/rdf/CHEBI?iri=http://purl.obolibrary.org/obo/CHEBI_24431
+        comment = "A chemical entity is a physical entity of interest in chemistry including molecular entities, parts thereof, and chemical substances."
+        self.ChemicalEntity = self.registerClass("24431", label="Chemical Entity", comment=comment)
+        comment = "A biological macromolecule minimally consisting of one polypeptide chain synthesized at the ribosome."
+        self.Protein = self.registerClass("36080", label="Protein", comment=comment)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

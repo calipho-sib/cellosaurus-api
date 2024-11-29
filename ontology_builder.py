@@ -384,6 +384,9 @@ class OntologyBuilder:
         # ns.describe(ns.cello.hasAllele, ns.rdfs.subPropertyOf, ns.GENO._0000413_has_allele) # unused
         ns.describe(ns.cello.isAlleleOf, ns.rdfs.subPropertyOf, ns.GENO._0000408_is_allele_of)
         ns.describe(ns.cello.alleleIdentifier, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+
+        ns.describe(ns.CHEBI.Protein, ns.rdfs.subClassOf, ns.CHEBI.ChemicalEntity)
+        ns.describe(ns.CHEBI.Protein, ns.skos.closeMatch, ns.up.Protein)
         
         
 
