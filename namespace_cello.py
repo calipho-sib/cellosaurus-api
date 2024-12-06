@@ -78,8 +78,18 @@ class CelloOntologyNamespace(BaseNamespace):
         self.HLAGene = self.registerClass("HLAGene", label="HLA Gene")          # described as cello:Gene subclass
         self.HLA_Allele = self.registerClass("HLAAllele", label="HLA Allele")   # described as GENO:0000512 subclass, used in HLA, str and later in genetic integration
 
-        self.Locus = self.registerClass("Locus")                                # descrided as equivalent of NCIt.C45822, used in STR profile    
-        self.MarkerAlleles = self.registerClass("MarkerAlleles")                # TODO: , used in short tandem repeat
+        self.Locus = self.registerClass("Locus")                                        # descrided as equivalent of NCIt.C45822, used in STR profile    
+        self.STR_Allele = self.registerClass("STRAllele", label="STR Allele")           # described as GENO:0000512 subclass
+        self.Marker = self.registerClass("Marker", label="Marker")                      # described as NCIT:C45822(Locus) subclass AND as  NCIT:C13441(Short Tandem Repeat) subclass
+        #self.MarkerAlleles = self.registerClass("MarkerAlleles")                       # obsolete, was used in short tandem repeat
+        self.ShortTandemRepeatProfile = self.registerClass("ShortTandemRepeatProfile")  # described as subClass of OBI:0001404
+        self.detectedTarget = self.registerDatatypeProperty("detectedTarget")           # TODO later
+        self.detectedAllele = self.registerObjectProperty("detectedAllele")             # TODO: later
+        self.hasTarget = self.registerObjectProperty("hasTarget")                       # described as subProp of schema:obserationAbout
+        self.conflicting = self.registerDatatypeProperty("conflicting")                 # TODO: later
+        self.containsObservation = self.registerObjectProperty("containsObservation")   # TODO: later
+        self.repeatNumber = self.registerDatatypeProperty("repeatNumber")                 # TODO: later, question: separate number dand variant id ?
+        
 
         #self.ChemicalAgent = self.registerClass("ChemicalAgent")               # defined as CHEBI:24431: instances are drugbank, ncit, chebi xrefs (+free text)
         #self.Protein = self.registerClass("Protein")                           # defined as CHEBI:36080, a child of CHEBI:24431
@@ -111,7 +121,6 @@ class CelloOntologyNamespace(BaseNamespace):
         self.DoublingTimeComment = self.registerClass("DoublingTimeComment")            # TODO:
         self.DiscontinuationRecord = self.registerClass("DiscontinuationRecord")        # TODO:
 
-        self.Annotation = self.registerClass("Annotation" )                         # TODO:  keep this one ?
         self.AnecdotalComment = self.registerClass("AnecdotalComment")              # TODO:
         self.CharacteristicsComment = self.registerClass("CharacteristicsComment")  # TODO:
         self.BiotechnologyComment = self.registerClass("BiotechnologyComment")      # TODO:
@@ -129,7 +138,6 @@ class CelloOntologyNamespace(BaseNamespace):
         self.MabIsotype = self.registerClass("MabIsotype")                          # TODO:
         #self.MabTarget = self.registerClass("MabTarget")
 
-        self.ShortTandemRepeatProfile = self.registerClass("ShortTandemRepeatProfile")  # TODO:
         self.Species = self.registerClass("Species")                                    # TODO:
 
         self.Source = self.registerClass("Source")                                  # TODO: # define as a superclass of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
@@ -140,10 +148,6 @@ class CelloOntologyNamespace(BaseNamespace):
         #
         # Properties
         #
-
-        self.annotation = self.registerObjectProperty("annotation")                     # TODO: keep this one ???        
-        self.datatypeAnnotation = self.registerDatatypeProperty("datatypeAnnotation")   # TODO: keep this one ??? 
-        self.objectAnnotation = self.registerObjectProperty("objectAnnotation")         # TODO: keep this one ??? 
 
         # publication properties
         # see also https://sparontologies.github.io/fabio/current/fabio.html
@@ -180,7 +184,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.misspellingName = self.registerDatatypeProperty("misspellingName")         # TODO: # should be defined as subProp of skos:hiddenName
 
         self.appearsIn = self.registerObjectProperty("appearsIn")                       # TODO:
-        self.source = self.registerObjectProperty("source")                             # TODO:
+        self.source = self.registerObjectProperty("source")                             # TODO: rename hasSource
         self.xref = self.registerObjectProperty("xref")                                 # TODO:
         self.reference = self.registerObjectProperty("reference")                       # TODO:
 
@@ -195,11 +199,11 @@ class CelloOntologyNamespace(BaseNamespace):
         #self.hasAllele = self.registerObjectProperty("hasAllele")                      # unused, described as ns.GENO:0000413 subprop
         self.isAlleleOf = self.registerObjectProperty("isAlleleOf")                     # described as ns.GENO:0000408 subprop
         self.alleleIdentifier = self.registerDatatypeProperty("alleleIdentifier")       # described as dcterms:identifier subprop
-        self.hasIdentifiedAllele = self.registerObjectProperty("hasIdentifiedAllele")   # TODO link between some gneetic information and a gene allele
+        self.includesObservationOf = self.registerObjectProperty("includesObservationOf")   # TODO link between some gneetic information and a gene allele
 
-        self.markerAlleles = self.registerObjectProperty("markerAlleles")               # TODO:
-
-        self.alleles = self.registerDatatypeProperty("alleles")                         # TODO:
+        #self.markerAlleles = self.registerObjectProperty("markerAlleles")               # obsolete
+        #self.alleles = self.registerDatatypeProperty("alleles")                         # obsolete 
+        
         self.markerId = self.registerDatatypeProperty("markerId")                       # TODO:
 
         self.gene = self.registerObjectProperty("gene")                                 # TODO:
@@ -268,7 +272,6 @@ class CelloOntologyNamespace(BaseNamespace):
         self.transformant = self.registerObjectProperty("transformant")                 # TODO:
         self.shortTandemRepeatProfile = self.registerObjectProperty("shortTandemRepeatProfile") # TODO:
 
-        self.conflict = self.registerDatatypeProperty("conflict")                       # TODO:
 
         self.fromIndividualWithDisease = self.registerObjectProperty("fromIndividualWithDisease")               # described: # renamed: OK
         self.fromIndividualBelongingToSpecies = self.registerObjectProperty("fromIndividualBelongingToSpecies") # described: # renamed: OK

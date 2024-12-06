@@ -169,6 +169,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.GeneKnockout, ns.rdfs.subClassOf, ns.OBI._0001364)
         ns.describe(ns.cello.GenomeAncestry, ns.rdfs.subClassOf, ns.OBI._0001225)
         ns.describe(ns.cello.HLATyping, ns.rdfs.subClassOf, ns.OBI._0001404)
+        ns.describe(ns.cello.ShortTandemRepeatProfile, ns.rdfs.subClassOf, ns.OBI._0001404)
         ns.describe(ns.cello.SequenceVariationComment, ns.rdfs.subClassOf, ns.OBI._0001364)
 
         ns.describe(ns.NCIt.C101157, ns.rdfs.subClassOf, ns.cello.HLAGene)
@@ -378,12 +379,18 @@ class OntologyBuilder:
 
         ns.describe(ns.cello.Population, ns.rdfs.subClassOf, ns.OBI._0000181)
         ns.describe(ns.cello.Gene, ns.owl.equivalentClass, ns.NCIt.C16612)
-        ns.describe(ns.cello.Locus, ns.owl.equivalentClass, ns.NCIt.C45822)
         ns.describe(ns.cello.HLAGene, ns.rdfs.subClassOf, ns.cello.Gene)
         ns.describe(ns.cello.HLA_Allele, ns.rdfs.subClassOf, ns.GENO._0000512_Allele)
+
+        ns.describe(ns.cello.Locus, ns.owl.equivalentClass, ns.NCIt.C45822)
+        ns.describe(ns.cello.STR_Allele, ns.rdfs.subClassOf, ns.GENO._0000512_Allele)
+        ns.describe(ns.cello.Marker, ns.rdfs.subClassOf, ns.NCIt.C13441_ShortTandemRepeat)
+        ns.describe(ns.cello.Marker, ns.rdfs.subClassOf, ns.cello.Locus)
+
         # ns.describe(ns.cello.hasAllele, ns.rdfs.subPropertyOf, ns.GENO._0000413_has_allele) # unused
         ns.describe(ns.cello.isAlleleOf, ns.rdfs.subPropertyOf, ns.GENO._0000408_is_allele_of)
         ns.describe(ns.cello.alleleIdentifier, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.hasTarget, ns.rdfs.subPropertyOf, ns.schema.observationAbout)
 
         ns.describe(ns.CHEBI.Protein, ns.rdfs.subClassOf, ns.CHEBI.ChemicalEntity)
         ns.describe(ns.CHEBI.Protein, ns.skos.closeMatch, ns.up.Protein)

@@ -306,11 +306,11 @@ class UniProtCoreNamespace(BaseNamespace):
         self.Book_Citation = self.registerClass("Book_Citation", label="Book chapter citation")
         self.Journal_Citation = self.registerClass("Journal_Citation", label = "Journal article citation")    
         
-        self.Annotation = self.registerClass("Annotation")
+        #self.Annotation = self.registerClass("Annotation")
         self.Database = self.registerClass("Database", hidden=True)
         self.Protein = self.registerClass("Protein", hidden=True)
 
-        self.annotation = self.registerObjectProperty("annotation")
+        #self.annotation = self.registerObjectProperty("annotation")
         self.volume = self.registerDatatypeProperty("volume")
         self.title = self.registerDatatypeProperty("title")
 
@@ -385,7 +385,8 @@ class SchemaOrgNamespace(BaseNamespace):
         self.memberOf = self.registerObjectProperty("memberOf", hidden=True)        # only a rdf:Property in original ontology but useful for protege, widoco, ...
         self.Organization = self.registerClass("Organization")
         self.Person = self.registerClass("Person")
-
+        self.Observation = self.registerClass("Observation")
+        self.observationAbout = self.registerObjectProperty("observationAbout", hidden = False)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class DctermsNamespace(BaseNamespace):
@@ -445,18 +446,20 @@ class CLONamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(CLONamespace, self).__init__("CLO", "http://purl.obolibrary.org/obo/CLO_")
 
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class NCItNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(NCItNamespace, self).__init__("NCIt", "http://purl.obolibrary.org/obo/NCIT_")
 
-        self.C15426_Database = self.registerClass("C15426", label="Database", hidden=True)      # superclass of cello:Database
-        self.C43621_Xref = self.registerClass("C43621", label="Cross-Reference", hidden=True)   # superclass of cello:Xref
-        self.C17262 = self.registerClass("C17262", label="X-ray")                               # genome modification method subclass
-        self.C44386 = self.registerClass("C44386", label="Gamma radiation")                     # genome modification method subclass
-        self.C16612 = self.registerClass("C16612", label="Gene", hidden=True)                   # owl:equClass cello:Gene
-        self.C45822 = self.registerClass("C45822", label="Locus", hidden=True)                  # owl:equClass cello:Locus
+        self.C15426_Database = self.registerClass("C15426", label="Database", hidden=True)          # superclass of cello:Database
+        self.C43621_Xref = self.registerClass("C43621", label="Cross-Reference", hidden=True)       # superclass of cello:Xref
+        self.C17262 = self.registerClass("C17262", label="X-ray")                                   # genome modification method subclass
+        self.C44386 = self.registerClass("C44386", label="Gamma radiation")                         # genome modification method subclass
+        self.C16612 = self.registerClass("C16612", label="Gene", hidden=True)                       # owl:equClass cello:Gene
+        self.C45822 = self.registerClass("C45822", label="Locus", hidden=True)                      # owl:equClass cello:Locus
+        self.C13441_ShortTandemRepeat = self.registerClass("C13441", label="Short Tandem Repeat")   # superclass for cello:Marker
 
         self.C101157 = self.registerClass("C101157", label="HLA-DRA Gene")   # described as a cello:HLAGene subclass
         self.C190000 = self.registerClass("C190000", label="HLA-DRB2 Gene")   # described as a cello:HLAGene subclass

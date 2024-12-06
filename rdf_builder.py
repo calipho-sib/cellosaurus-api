@@ -201,6 +201,30 @@ class RdfBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_amelogenin_gene_xref_IRI(self, chr):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ac = "461" if chr == "X" else "462"
+        db = "HGNC"
+        cat = "Organism-specific databases"
+        lbl = "AMEL" + chr
+        url = f"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:{ac}"
+        dis = ""
+        props = f"cat={cat}|lbl={lbl}|dis={dis}|url={url}"
+        return ns.xref.IRI(db,ac, props)
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_amelogenin_gene_instance(self, gene_BN, chr):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        triples = TripleList()
+        triples.append(gene_BN, ns.rdf.type, ns.cello.Gene)
+        triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(f"AMEL{chr}"))
+        xref_IRI = self.get_amelogenin_gene_xref_IRI(chr)
+        triples.append(gene_BN, ns.cello.xref, xref_IRI)
+        return triples
+    
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_hla_gene_class_IRI(self, our_label):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         clazz = self.hla_clazz.get(our_label)
@@ -755,7 +779,7 @@ class RdfBuilder:
                 gene_clazz = self.get_hla_gene_class_IRI(gene_label)
                 for allele in gall["alleles"].split(","):
                     allele_BN = self.get_blank_node()
-                    triples.append(annot_BN, ns.cello.hasIdentifiedAllele, allele_BN)
+                    triples.append(annot_BN, ns.cello.includesObservationOf, allele_BN)
                     allele_id = "*".join([gene_label, allele])
                     triples.append(allele_BN, ns.rdf.type, ns.cello.HLA_Allele)
                     triples.append(allele_BN, ns.cello.alleleIdentifier, ns.xsd.string(allele_id))
@@ -1307,6 +1331,23 @@ class RdfBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_key_for_source(self, src):    
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        if type(src) == dict:
+            xref = src.get("xref")
+            if xref is not None: return "=".join([xref["database"], xref["accession"]])
+            ref =src.get("reference")
+            if ref is not None: return ref.get("resource-internal-ref")
+            lbl = src.get("value")
+            if lbl is not None: return lbl
+        elif type(src) == str:
+            return src
+        else:
+            print("ERROR, don't know how to build ksy for source", src) 
+            return str(src)
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_sources(self, parentNode, sources):    
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
@@ -1451,28 +1492,109 @@ class RdfBuilder:
                 triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         return triples
 
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_str_observation_list(self, annot):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        obs_dict = dict()
+
+        # all_src_key_set = set()
+        # for src in annot["source-list"]:
+        #     all_src_key_set.add(self.get_key_for_source(src))
+
+        mrk_src_key_dict = dict()
+
+        for marker in annot["marker-list"]:
+            marker_id = marker["id"]
+            mrk_src_key_dict[marker_id] = set()
+            for marker_data in marker["marker-data-list"]:
+                dat_src_key_set = set()
+                for src in marker_data.get("source-list") or []:
+                    dat_src_key_set.add(self.get_key_for_source(src))
+                mrk_src_key_dict[marker_id].update(dat_src_key_set)
+                alleles = list()
+                if marker_id == "Amelogenin":
+                    #print(">>>marker_data", marker_data)
+                    alleles.append("X") if "X" in marker_data["marker-alleles"] else alleles.append("Not_X") # make undetected AMELX explicit
+                    alleles.append("Y") if "Y" in marker_data["marker-alleles"] else alleles.append("Not_Y") # make undetected AMELY explicit
+                else:
+                    #print(">>>marker", marker)
+                    for allele in marker_data["marker-alleles"].split(","):
+                        if allele == "Not_detected": continue # we ignore other undetected markers (non-Amelogenin)
+                        alleles.append(allele)
+                for allele in alleles:
+                    key = "".join([marker_id,allele])
+                    if key not in obs_dict: 
+                        obs_dict[key] = {"marker_id": marker_id, "allele": allele, "conflict": False, "srckey_set": set(), "obs_source_list": list()}
+                    rec = obs_dict[key]
+                    #print(">>>rec", rec)
+                    rec["srckey_set"].update(dat_src_key_set)
+                    rec["obs_source_list"].extend(marker_data.get("source-list") or [])
+        for obs in obs_dict.values():
+            if obs["srckey_set"] != set() and obs["srckey_set"] != mrk_src_key_dict[obs["marker_id"]]:
+                obs["conflict"] = True
+        return list(obs_dict.values())
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_str_marker_instance(self, marker_BN, id):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        triples = TripleList()
+        triples.append(marker_BN, ns.rdf.type, ns.cello.Marker)
+        triples.append(marker_BN, ns.cello.markerId, ns.xsd.string(id))
+        return triples
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_str_allele_instance(self, allele_BN, repeat_number):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        triples = TripleList()
+        triples.append(allele_BN, ns.rdf.type, ns.cello.STR_Allele)
+        triples.append(allele_BN, ns.cello.repeatNumber, ns.xsd.string(repeat_number))
+        return triples
+
+
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_short_tandem_repeat(self, cl_IRI, annot):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
+
         annot_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.cello.shortTandemRepeatProfile, annot_BN)
         triples.append(annot_BN, ns.rdf.type, ns.cello.ShortTandemRepeatProfile)
         sources = annot["source-list"]
         triples.extend(self.get_ttl_for_sources(annot_BN, sources))
-        for marker in annot["marker-list"]:
-            marker_id = marker["id"]
-            conflict = marker["conflict"]
-            for data in marker["marker-data-list"]:
+
+        for obs in self.get_str_observation_list(annot):
+            print(">>>obs", cl_IRI, obs)
+            marker_id = obs["marker_id"]
+            allele = obs["allele"]
+            sources = obs["obs_source_list"]
+            conflict = obs["conflict"]
+            obs_BN = self.get_blank_node()
+            triples.append(annot_BN, ns.cello.containsObservation, obs_BN)
+            triples.append(obs_BN, ns.rdf.type, ns.schema.Observation)
+            triples.append(obs_BN, ns.rdfs.label, ns.xsd.string(f"Observation of {marker_id}"))
+            marker_BN = self.get_blank_node()
+            if marker_id == "Amelogenin":
+                gene_BN = self.get_blank_node()
+                triples.append(obs_BN, ns.cello.hasTarget, gene_BN)
+                chr = "X" if allele in  ["X", "Not_X"] else "Y" 
+                triples.extend(self.get_ttl_for_amelogenin_gene_instance(gene_BN, chr))
+                detected = not "Not" in allele
+                triples.append(obs_BN, ns.cello.detectedTarget, ns.xsd.boolean(detected))
+                triples.append(obs_BN, ns.cello.conflicting, ns.xsd.boolean(conflict))
+            else:
                 marker_BN = self.get_blank_node()
-                alleles = data["marker-alleles"]
-                triples.append(annot_BN, ns.cello.markerAlleles, marker_BN)
-                triples.append(marker_BN, ns.rdf.type, ns.cello.MarkerAlleles)
-                triples.append(marker_BN, ns.cello.markerId, ns.xsd.string(marker_id))
-                triples.append(marker_BN, ns.cello.conflict, ns.xsd.boolean(conflict))
-                triples.append(marker_BN, ns.cello.alleles, ns.xsd.string(alleles))
-                marker_sources = data.get("source-list") or []
-                triples.extend(self.get_ttl_for_sources(marker_BN, marker_sources))
+                triples.append(obs_BN, ns.cello.hasTarget, marker_BN)
+                triples.extend(self.get_ttl_for_str_marker_instance(marker_BN, marker_id))
+                allele_BN = self.get_blank_node()
+                triples.append(obs_BN, ns.cello.detectedAllele, allele_BN)
+                triples.extend(self.get_ttl_for_str_allele_instance(allele_BN, allele))
+                triples.append(obs_BN, ns.cello.conflicting, ns.xsd.boolean(conflict))
+            if conflict:
+                triples.extend(self.get_ttl_for_sources(obs_BN, sources))
+   
         return triples
 
 
