@@ -197,13 +197,10 @@ class CelloOntologyNamespace(BaseNamespace):
 
         self.hlaTyping = self.registerObjectProperty("hlaTyping")                       # TODO:
         #self.hasAllele = self.registerObjectProperty("hasAllele")                      # unused, described as ns.GENO:0000413 subprop
-        self.isAlleleOf = self.registerObjectProperty("isAlleleOf")                     # described as ns.GENO:0000408 subprop
+        #self.isAlleleOf = self.registerObjectProperty("isAlleleOf")                    # unused, described as ns.GENO:0000408 subprop
         self.alleleIdentifier = self.registerDatatypeProperty("alleleIdentifier")       # described as dcterms:identifier subprop
         self.includesObservationOf = self.registerObjectProperty("includesObservationOf")   # TODO link between some gneetic information and a gene allele
 
-        #self.markerAlleles = self.registerObjectProperty("markerAlleles")               # obsolete
-        #self.alleles = self.registerDatatypeProperty("alleles")                         # obsolete 
-        
         self.markerId = self.registerDatatypeProperty("markerId")                       # TODO:
 
         self.gene = self.registerObjectProperty("gene")                                 # TODO:

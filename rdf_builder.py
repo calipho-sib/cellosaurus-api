@@ -157,6 +157,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_pub_IRI(self, refOrPub):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        #print(">>>",refOrPub)
         dbac = refOrPub.get("resource-internal-ref")    # exists in reference-list items
         if dbac is None: dbac = refOrPub["internal-id"] # exists in publication-list items
         (db,ac) = dbac.split("=")
@@ -774,23 +775,38 @@ class RdfBuilder:
             src = annot.get("source")
             if src is not None: 
                 triples.extend(self.get_ttl_for_source(annot_BN, src))
+            # for gall in annot["hla-gene-alleles-list"]:
+            #     gene_label = gall["gene"]
+            #     gene_clazz = self.get_hla_gene_class_IRI(gene_label)
+            #     for allele in gall["alleles"].split(","):
+            #         allele_BN = self.get_blank_node()
+            #         triples.append(annot_BN, ns.cello.includesObservationOf, allele_BN)
+            #         allele_id = "*".join([gene_label, allele])
+            #         triples.append(allele_BN, ns.rdf.type, ns.cello.HLA_Allele)
+            #         triples.append(allele_BN, ns.cello.alleleIdentifier, ns.xsd.string(allele_id))
+            #         # alternative 1)
+            #         gene_BN = self.get_blank_node()
+            #         triples.append(gene_BN, ns.rdf.type, gene_clazz)
+            #         triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(gene_label))
+            #         triples.append(allele_BN, ns.cello.isAlleleOf, gene_BN)
+            #         # alternative 2) - we loose domain / range in widoco, we break instance / class separation
+            #         # triples.append(allele_BN, ns.GENO._0000408_is_allele_of, gene_clazz)
             for gall in annot["hla-gene-alleles-list"]:
                 gene_label = gall["gene"]
                 gene_clazz = self.get_hla_gene_class_IRI(gene_label)
                 for allele in gall["alleles"].split(","):
-                    allele_BN = self.get_blank_node()
-                    triples.append(annot_BN, ns.cello.includesObservationOf, allele_BN)
-                    allele_id = "*".join([gene_label, allele])
-                    triples.append(allele_BN, ns.rdf.type, ns.cello.HLA_Allele)
-                    triples.append(allele_BN, ns.cello.alleleIdentifier, ns.xsd.string(allele_id))
-                    # alternative 1)
+                    obs_BN = self.get_blank_node()
+                    triples.append(annot_BN, ns.cello.includesObservationOf, obs_BN)                    
+                    triples.append(obs_BN, ns.rdf.type, ns.schema.Observation)
                     gene_BN = self.get_blank_node()
+                    triples.append(obs_BN, ns.cello.hasTarget, gene_BN)
                     triples.append(gene_BN, ns.rdf.type, gene_clazz)
                     triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(gene_label))
-                    triples.append(allele_BN, ns.cello.isAlleleOf, gene_BN)
-                    # alternative 2) - we loose domain / range in widoco, we break instance / class separation
-                    # triples.append(allele_BN, ns.GENO._0000408_is_allele_of, gene_clazz)
-
+                    allele_BN = self.get_blank_node()
+                    allele_id = "*".join([gene_label, allele])
+                    triples.append(obs_BN, ns.cello.detectedAllele, allele_BN)
+                    triples.append(allele_BN, ns.rdf.type, ns.cello.HLA_Allele)
+                    triples.append(allele_BN, ns.cello.alleleIdentifier, ns.xsd.string(allele_id))
 
         # fields: CC str, WARNING: str-list is not a list !!!
         annot = cl_data.get("str-list")
@@ -1566,7 +1582,7 @@ class RdfBuilder:
         triples.extend(self.get_ttl_for_sources(annot_BN, sources))
 
         for obs in self.get_str_observation_list(annot):
-            print(">>>obs", cl_IRI, obs)
+            #print(">>>obs", cl_IRI, obs)
             marker_id = obs["marker_id"]
             allele = obs["allele"]
             sources = obs["obs_source_list"]

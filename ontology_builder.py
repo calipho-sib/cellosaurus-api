@@ -388,7 +388,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.Marker, ns.rdfs.subClassOf, ns.cello.Locus)
 
         # ns.describe(ns.cello.hasAllele, ns.rdfs.subPropertyOf, ns.GENO._0000413_has_allele) # unused
-        ns.describe(ns.cello.isAlleleOf, ns.rdfs.subPropertyOf, ns.GENO._0000408_is_allele_of)
+        # ns.describe(ns.cello.isAlleleOf, ns.rdfs.subPropertyOf, ns.GENO._0000408_is_allele_of) # unused
         ns.describe(ns.cello.alleleIdentifier, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.hasTarget, ns.rdfs.subPropertyOf, ns.schema.observationAbout)
 

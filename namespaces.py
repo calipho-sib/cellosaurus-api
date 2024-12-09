@@ -495,7 +495,7 @@ class GENONamespace(BaseNamespace):
 
         self._0000512_Allele = self.registerClass("0000512", label="Allele")
         #self._0000413_has_allele = self.registerObjectProperty("0000413", label="has allele", hidden=True )
-        self._0000408_is_allele_of = self.registerObjectProperty("0000408", hidden=True)
+        #self._0000408_is_allele_of = self.registerObjectProperty("0000408", hidden=True)
         
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -531,6 +531,8 @@ class FBcvNamespace(BaseNamespace):
     def __init__(self): 
         super(FBcvNamespace, self).__init__("FBcv", "http://purl.obolibrary.org/obo/FBcv_")
         self._0003008 = self.registerClass("0003008", label="CRISPR/Cas9")   # genome modification method subclass
+
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OGGNamespace(BaseNamespace):
