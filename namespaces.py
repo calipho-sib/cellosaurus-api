@@ -177,8 +177,11 @@ class BaseNamespace:
     def registerDatatypeProperty(self, id, hidden=False):
         return self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:DatatypeProperty" }, hidden=hidden)
 
-    def registerObjectProperty(self, id, hidden=False):
-        return self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:ObjectProperty" }, hidden=hidden)
+    def registerObjectProperty(self, id,  label=None, comment=None, hidden=False):
+        iri = self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:ObjectProperty" }, hidden=hidden)
+        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
+        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
+        return iri
 
     def registerAnnotationProperty(self, id, hidden=False):
         return self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:AnnotationProperty" }, hidden=hidden)
@@ -404,6 +407,8 @@ class DctermsNamespace(BaseNamespace):
         self.publisher =    self.registerObjectProperty("publisher")
         self.contributor =  self.registerObjectProperty("contributor")
         self.identifier =   self.registerDatatypeProperty("identifier")
+        self.source =       self.registerObjectProperty("source", hidden=True)              # hidden because redundant with cello subprop
+        self.references =   self.registerObjectProperty("references", hidden=True)          # hidden because redundant with cello subprop
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -422,6 +427,28 @@ class BiboNamespace(BaseNamespace):
         self.status = self.registerTerm("status")
         self.doi = self.registerTerm("doi")
         
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class IAONamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(IAONamespace, self).__init__("IAO", "http://purl.org/ontology/IAO_")
+        comment = "A (currently) primitive relation that relates an information artifact to an entity."
+        self.is_about_0000136 = self.registerObjectProperty("0000136", label="is about", comment=comment)
+        comment = "An information content entity that is intended to be a truthful statement about something (modulo, e.g., measurement precision or other systematic errors) and is constructed/acquired by a method which reliably tends to produce (approximately) truthful statements."
+        self.DataItem_0000027 = self.registerClass("0000027", label = "Data item", comment=comment)
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class EDAMNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(EDAMNamespace, self).__init__("EDAM", "http://edamontology.org/")
+        comment = "A category denoting a rather broad domain or field of interest, study, application, work, data, or technology. Topics have no clearly defined borders between each other."
+        self.Topic_0003 = self.registerClass("topic_0003", label="Topic", comment=comment)
+        comment = "'A has_topic B' defines for the subject A, that it has the object B as its topic (A is in the scope of a topic B)."
+        self.has_topic = self.registerObjectProperty("has_topic", label="has topic", comment=comment)
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class WidocoNamespace(BaseNamespace):
@@ -454,6 +481,16 @@ class NCItNamespace(BaseNamespace):
         super(NCItNamespace, self).__init__("NCIt", "http://purl.obolibrary.org/obo/NCIT_")
 
         self.C15426_Database = self.registerClass("C15426", label="Database", hidden=True)          # superclass of cello:Database
+
+        comment = "Any abnormal condition of the body or mind that causes discomfort, dysfunction, or distress to the person affected or those in contact with the person. The term is often used broadly to include injuries, disabilities, syndromes, symptoms, deviant behaviors, and atypical variations of structure and function."
+        self.C2991_Disease = self.registerClass("C2991", label="Disease or disorder", comment=comment)
+        
+        comment="A group of animals homogeneous in appearance and other characteristics that distinguish it from other animals of the same species."
+        self.C53692_Breed = self.registerClass("C53692", label="Breed", comment=comment, hidden=True)
+
+        comment="Ranked categories for the classification of organisms according to their suspected evolutionary relationships."
+        self.C40098_Taxon = self.registerClass("C40098", label="Taxon", comment=comment)
+        
         self.C43621_Xref = self.registerClass("C43621", label="Cross-Reference", hidden=True)       # superclass of cello:Xref
         self.C17262 = self.registerClass("C17262", label="X-ray")                                   # genome modification method subclass
         self.C44386 = self.registerClass("C44386", label="Gamma radiation")                         # genome modification method subclass
@@ -475,6 +512,8 @@ class NCItNamespace(BaseNamespace):
         self.C71265 = self.registerClass("C71265", label="HLA-DQA1 Gene")   # described as a cello:HLAGene subclass
         self.C71267 = self.registerClass("C71267", label="HLA-DPA1 Gene")   # described as a cello:HLAGene subclass
 
+        self.xxx = self.registerClass("", label="", comment = "")
+
         # SequenceVariation class, aleternative 1)
         comment = "A variation in or modification of the molecular sequence of a gene or gene product."
         self.SequenceVariation = self.registerClass("C36391", label = "Molecular Genetic Variation", comment = comment) # as generic class for SequenceVariation
@@ -492,11 +531,18 @@ class GENONamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(GENONamespace, self).__init__("GENO", "http://purl.obolibrary.org/obo/GENO_")
-
         self._0000512_Allele = self.registerClass("0000512", label="Allele")
         #self._0000413_has_allele = self.registerObjectProperty("0000413", label="has allele", hidden=True )
         #self._0000408_is_allele_of = self.registerObjectProperty("0000408", hidden=True)
         
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class ORDONamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(ORDONamespace, self).__init__("ORDO", "http://www.orpha.net/ORDO/Orphanet_")
+        comment = "A generic term used to describe the clinical items included in the Orphanet nomenclature of rare diseases."
+        self.C001_Clinical_Entity = self.registerClass("C001", label="Clinical entity", comment=comment)
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OBINamespace(BaseNamespace):
@@ -517,6 +563,7 @@ class OBINamespace(BaseNamespace):
         self._0001404 = self.registerClass("0001404", label="Genetic characteristics information")
         self._0001364 = self.registerClass("0001364", label="Genetic alteration information")
         self._0001225 = self.registerClass("0001225", label="Genetic population background information")
+        self._0002769 = self.registerClass("0002769", label="Karyotype information", hidden=True) # hidden because has same label as cello:KaryotypeInfoComment       
 
         self._0000181 = self.registerClass("0000181", label="Population", hidden=True) # hidden because has same label as cello:Population
                 

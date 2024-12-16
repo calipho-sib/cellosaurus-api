@@ -71,7 +71,7 @@ class OntologyBuilder:
         self.describe_terminology_database_and_subclasses()
         self.describe_cell_line_properties()
         self.describe_organization_related_terms()
-        self.describe_misc_classes()
+        self.describe_misc_terms()
         self.describe_ranges_and_domains()
         self.describe_annotation_properties()
         self.describe_labels()
@@ -166,11 +166,14 @@ class OntologyBuilder:
         ns.describe(ns.OBI._0001225, ns.rdfs.subClassOf, ns.OBI._0001404)     
         ns.describe(ns.OBI._0001364, ns.rdfs.subClassOf, ns.OBI._0001404)     
         ns.describe(ns.cello.GeneticIntegration, ns.rdfs.subClassOf, ns.OBI._0001364)
+        ns.describe(ns.cello.SequenceVariationComment, ns.rdfs.subClassOf, ns.OBI._0001364)
         ns.describe(ns.cello.GeneKnockout, ns.rdfs.subClassOf, ns.OBI._0001364)
         ns.describe(ns.cello.GenomeAncestry, ns.rdfs.subClassOf, ns.OBI._0001225)
         ns.describe(ns.cello.HLATyping, ns.rdfs.subClassOf, ns.OBI._0001404)
         ns.describe(ns.cello.ShortTandemRepeatProfile, ns.rdfs.subClassOf, ns.OBI._0001404)
-        ns.describe(ns.cello.SequenceVariationComment, ns.rdfs.subClassOf, ns.OBI._0001364)
+        ns.describe(ns.cello.MicrosatelliteInstability, ns.rdfs.subClassOf, ns.OBI._0001404)
+        ns.describe(ns.cello.KaryotypicInfoComment, ns.rdfs.subClassOf, ns.OBI._0001404)     
+        ns.describe(ns.cello.KaryotypicInfoComment, ns.owl.equivalentClass, ns.OBI._0002769)             
 
         ns.describe(ns.NCIt.C101157, ns.rdfs.subClassOf, ns.cello.HLAGene)
         ns.describe(ns.NCIt.C190000, ns.rdfs.subClassOf, ns.cello.HLAGene)
@@ -371,12 +374,23 @@ class OntologyBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def describe_misc_classes(self):
+    def describe_misc_terms(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # for tk in self.ctd.getCelloTermKeys("MiscClasses"):
         #     term_data = self.ctd.getCelloTerm("MiscClasses", tk)
         #     self.describe_related_terms(tk, term_data, termIsClass=True)
 
+        # - - - - - - - - 
+        # misc classes
+        # - - - - - - - - 
+
+        # describe our disease class as a superclass of ncit disorder and ordo clinical entities
+        ns.describe(ns.NCIt.C2991_Disease, ns.rdfs.subClassOf, ns.cello.Disease)
+        ns.describe(ns.ORDO.C001_Clinical_Entity, ns.rdfs.subClassOf, ns.cello.Disease)
+        
+        ns.describe(ns.cello.Breed, ns.owl.equivalentClass, ns.NCIt.C53692_Breed)
+        ns.describe(ns.cello.Species, ns.rdfs.subClassOf, ns.NCIt.C40098_Taxon)
+    
         ns.describe(ns.cello.Population, ns.rdfs.subClassOf, ns.OBI._0000181)
         ns.describe(ns.cello.Gene, ns.owl.equivalentClass, ns.NCIt.C16612)
         ns.describe(ns.cello.HLAGene, ns.rdfs.subClassOf, ns.cello.Gene)
@@ -387,15 +401,20 @@ class OntologyBuilder:
         ns.describe(ns.cello.Marker, ns.rdfs.subClassOf, ns.NCIt.C13441_ShortTandemRepeat)
         ns.describe(ns.cello.Marker, ns.rdfs.subClassOf, ns.cello.Locus)
 
+        ns.describe(ns.CHEBI.Protein, ns.rdfs.subClassOf, ns.CHEBI.ChemicalEntity)
+        ns.describe(ns.CHEBI.Protein, ns.skos.closeMatch, ns.up.Protein)
+
+        # - - - - - - - - 
+        # misc properties
+        # - - - - - - - - 
+
         # ns.describe(ns.cello.hasAllele, ns.rdfs.subPropertyOf, ns.GENO._0000413_has_allele) # unused
         # ns.describe(ns.cello.isAlleleOf, ns.rdfs.subPropertyOf, ns.GENO._0000408_is_allele_of) # unused
         ns.describe(ns.cello.alleleIdentifier, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.hasTarget, ns.rdfs.subPropertyOf, ns.schema.observationAbout)
-
-        ns.describe(ns.CHEBI.Protein, ns.rdfs.subClassOf, ns.CHEBI.ChemicalEntity)
-        ns.describe(ns.CHEBI.Protein, ns.skos.closeMatch, ns.up.Protein)
         
-        
+        ns.describe(ns.cello.source, ns.rdfs.subPropertyOf, ns.dcterms.source)
+        ns.describe(ns.cello.reference, ns.rdfs.subPropertyOf, ns.dcterms.references)
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -481,7 +500,6 @@ class OntologyBuilder:
         ns.describe(ns.cello.hasPMCId, ns.rdfs.label, ns.xsd.string("has PMC identifier"))
         ns.describe(ns.fabio.hasPubMedCentralId, ns.rdfs.label, ns.xsd.string("has PMC identifier"))
         ns.describe(ns.cello.hasPubMedId, ns.rdfs.label, ns.xsd.string("has PubMed identifier"))
-        ns.describe(ns.fabio.hasPubMedId, ns.rdfs.label, ns.xsd.string("has PubMed identifier"))
         ns.describe(ns.cello.hasDOI, ns.rdfs.label, ns.xsd.string("has DOI identifier"))
         ns.describe(ns.cello.issn13, ns.rdfs.label, ns.xsd.string("has ISSN13 identifier"))
         ns.describe(ns.cello.msiValue, ns.rdfs.label, ns.xsd.string("has microsatellite instability value"))
@@ -565,6 +583,229 @@ class OntologyBuilder:
 
         lines.append("")
         return lines
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_topic_comments(self):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        text = """
+
+# Topic individuals
+
+cello:Biotechnology a owl:NamedIndividual, NCIt:C16351 ; 
+    rdfs:label "Biotechnology"^^xsd:string ;
+    rdfs:comment "The field devoted to applying the techniques of biochemistry, cellular biology, biophysics, and molecular biology to addressing issues related to human beings and the environment."^^xsd:string ;
+    .
+
+cello:Senescence a owl:NamedIndividual, NCIt:C17467 ;
+    rdfs:label "Senescence"^^xsd:string ;
+    rdfs:comment "PDL stands for Population Doubling Level. The process of growing old and showing the effects of time."^^xsd:string ;
+    .
+
+cello:DoublingTime a owl:NamedIndividual, NCIt:C94346 ;
+    rdfs:label "Doubling time"^^xsd:string ;
+    rdfs:comment "In biology, the amount of time it takes for one cell to divide or for a group of cells (such as a tumor) to double in size. The doubling time is different for different kinds of cancer cells or tumors."^^xsd:string ;
+    .
+
+cello:Virology a owl:NamedIndividual, NCIt:C17256 ;
+    rdfs:label "Virology"^^xsd:string ;
+    rdfs:comment "The science that deals with the study of viruses."^^xsd:string ;
+    .
+
+cello:Omics a owl:NamedIndividual, NCIt:C205365 ;
+    rdfs:label "Omics"^^xsd:string ;
+    rdfs:comment "The fields of research that use large scale sets of bioinformatics data to identify, describe and quantify the entire set of molecules and molecular processes that contribute to the form and function of cells, tissues and organisms."^^xsd:string ;
+    .
+
+cello:GeneralTopic a owl:Class ;
+    rdfs:label "General topic" ;
+    rdfs:subClassOf EDAM:topic_0003 ;
+    .
+
+cello:Characteristics a owl:NamedIndividual, cello:GeneralTopic ;
+    rdfs:label "Characteristics"^^xsd:string ;
+    rdfs:comment "Production process or specific biological properties of the cell line"^^xsd:string ;
+    .
+
+cello:Miscellaneous a owl:NamedIndividual, cello:GeneralTopic ;
+    rdfs:label "Miscellaneous"^^xsd:string ;
+    rdfs:comment "Miscellaneous remarks about the cell line."^^xsd:string ;
+    .
+
+cello:Caution a owl:NamedIndividual, cello:GeneralTopic ;
+    rdfs:label "Caution"^^xsd:string ;
+    rdfs:comment "Errors, inconsistencies, ambiguities regarding the origin or other aspects of the cell line."^^xsd:string ;
+    .
+
+cello:Anecdotal a owl:NamedIndividual, cello:GeneralTopic ;
+    rdfs:label "Anecdotal"^^xsd:string ;
+    rdfs:comment "Anecdotal details regarding the cell line (its origin, its name or any other particularity)."^^xsd:string ;
+    .
+
+cello:Misspelling a owl:NamedIndividual, cello:GeneralTopic ;
+    rdfs:label "Misspelling"^^xsd:string ;
+    rdfs:comment "Identified misspelling(s) of the cell line name with in some case the specific publication or external resource entry where it appears."^^xsd:string ;
+    .
+
+cello:DonorInfo a owl:NamedIndividual, cello:GeneralTopic ;
+    rdfs:label "DonorInfo"^^xsd:string ;
+    rdfs:comment "Miscellaneous information relevant to the donor of the cell line."^^xsd:string ;
+    .
+
+# Define some of these external terms as Topic subclasses
+
+cello:CellLineAnnotationTopic a owl:Class ;
+    rdfs:label "Cell line annotation topic"^^xsd:string ;
+    rdfs:subClassOf EDAM:topic_0003 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            EDAM:topic_0003
+            [
+                rdf:type owl:Class ;
+                owl:oneOf (cello:Biotechnology cello:Senescence cello:DoublingTime cello:Virology cello:Omics cello:Characteristics 
+                cello:Miscellaneous cello:Caution cello:Anecdotal cello:DonorInfo cello:Misspelling) ;
+            ]
+        )
+    ] 
+    .    
+        
+# Define a topic data item
+
+cello:VirologyComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Virology ;
+            ]
+        )
+    ] .
+
+cello:BiotechnologyComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Biotechnology ;
+            ]
+        )
+    ] .
+
+cello:SenescenceComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Senescence ;
+            ]
+        )
+    ] .
+
+cello:DoublingTimeComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:DoublingTime ;
+            ]
+        )
+    ] .
+
+cello:OmicsComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Omics ;
+            ]
+        )
+    ] .
+
+cello:CharacteristicsComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Characteristics ;
+            ]
+        )
+    ] .
+
+cello:MiscellaneousComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Miscellaneous ;
+            ]
+        )
+    ] .
+
+cello:CautionComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Caution ;
+            ]
+        )
+    ] .
+
+cello:AnecdotalComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Anecdotal ;
+            ]
+        )
+    ] .
+
+cello:MisspellingComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Misspelling ;
+            ]
+        )
+    ] .
+
+cello:DonorInfoComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:DonorInfo ;
+            ]
+        )
+    ] .
+
+"""
+        return text.split("\n")
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_query_examples(self):
@@ -661,6 +902,7 @@ class OntologyBuilder:
         lines.extend(self.get_onto_terms(ns.owl.ObjectProperty))
         lines.append("#\n# Datatype Properties used in ontology\n#\n")
         lines.extend(self.get_onto_terms(ns.owl.DatatypeProperty))
+        lines.extend(self.get_topic_comments())
         return lines
 
 

@@ -690,7 +690,8 @@ class RdfBuilder:
             xref_IRI = self.get_xref_IRI(xref)
             triples.append(cl_IRI, ns.cello.xref, xref_IRI)
             if self.get_xref_db(xref)=="Wikidata":
-                triples.append(cl_IRI, ns.owl.equivalentClass, ns.wd.IRI(xref["accession"]))
+                # we use owl:sameAs because our cell lines and their equivalent in wikidata are instances (as opposed as classes)
+                triples.append(cl_IRI, ns.owl.sameAs, ns.wd.IRI(xref["accession"])) 
             if self.get_xref_discontinued(xref):
                 # also used for "CC   Discontinued: " lines       
                 triples.extend(self.get_ttl_for_cc_discontinued(cl_IRI, xref["database"], xref["accession"], xref_IRI)) 
