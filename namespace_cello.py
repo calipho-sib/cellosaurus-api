@@ -83,13 +83,21 @@ class CelloOntologyNamespace(BaseNamespace):
         self.Marker = self.registerClass("Marker", label="Marker")                      # described as NCIT:C45822(Locus) subclass AND as  NCIT:C13441(Short Tandem Repeat) subclass
         #self.MarkerAlleles = self.registerClass("MarkerAlleles")                       # obsolete, was used in short tandem repeat
         self.ShortTandemRepeatProfile = self.registerClass("ShortTandemRepeatProfile")  # described as subClass of OBI:0001404
+        self.hasTarget = self.registerObjectProperty("hasTarget")                       # described as subProp of schema:obserationAbout
+        
+        # next 3 lines as some kind of experiment result
         self.detectedTarget = self.registerDatatypeProperty("detectedTarget")           # TODO later
         self.detectedAllele = self.registerObjectProperty("detectedAllele")             # TODO: later
-        self.hasTarget = self.registerObjectProperty("hasTarget")                       # described as subProp of schema:obserationAbout
-        self.conflicting = self.registerDatatypeProperty("conflicting")                 # TODO: later
-        self.containsObservation = self.registerObjectProperty("containsObservation")   # TODO: later
         self.repeatNumber = self.registerDatatypeProperty("repeatNumber")               # TODO: later, question: separate number dand variant id ?
-        
+
+        self.conflicting = self.registerDatatypeProperty("conflicting")                 # TODO: later
+        self.includesObservation = self.registerObjectProperty("includesObservation")   # TODO: later
+
+        self.Sex = self.registerClass("Sex")                                            # TODO: later, has some special cases like mixed sex
+
+        comment = "An entity which is used as a source of information (mostly a cross-reference, a publication or an organization)"
+        self.Source = self.registerClass("Source", comment=comment)                     # TODO: later, a wrapper of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
+
 
         #self.ChemicalAgent = self.registerClass("ChemicalAgent")               # unused, defined as CHEBI:24431: instances are drugbank, ncit, chebi xrefs (+free text)
         #self.Protein = self.registerClass("Protein")                           # unused, defined as CHEBI:36080, a child of CHEBI:24431
@@ -118,32 +126,28 @@ class CelloOntologyNamespace(BaseNamespace):
         self.Disease = self.registerClass("Disease")                            # described as superclass of ORDO clinical entity and NCIt disorder
         self.Species = self.registerClass("Species")                            # described as subClassOf NCIt taxon
         comment="A group of animals homogeneous in appearance and other characteristics that distinguish it from other animals of the same species."
-        self.Breed = self.registerClass("Breed", comment=comment)                   # described as equivalent of NCIt corresponding class
+        self.Breed = self.registerClass("Breed", comment=comment)               # described as equivalent of NCIt corresponding class
 
-        comment = "An entity which is used as a source of information (mostly a cross-reference, a publication or an organization)"
-        self.Source = self.registerClass("Source", comment=comment)                 # a wrapper of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
         self.Population = self.registerClass("Population")                          # described as child of OBI_0000181
-
-        self.Sex = self.registerClass("Sex")                                        # TODO: later, has some special cases like mixed sex
 
         self.KaryotypicInfoComment = self.registerClass("KaryotypicInfoComment")    # described as subclass of OBI:Genetic info & equiv as OBI:Karyotype info
         self.MicrosatelliteInstability = self.registerClass("MicrosatelliteInstability")    # described as subclass of OBI:Genetic info
 
-        self.BiotechnologyComment = self.registerClass("BiotechnologyComment")          # described
-        self.SenescenceComment = self.registerClass("SenescenceComment")                # described
-        self.DoublingTimeComment = self.registerClass("DoublingTimeComment")            # described
-        self.VirologyComment = self.registerClass("VirologyComment")                    # described
-        self.OmicsComment = self.registerClass("OmicsComment")                          # described
-        self.CharacteristicsComment = self.registerClass("CharacteristicsComment")      # described     
-        self.MiscellaneousInfoComment = self.registerClass("MiscellaneousInfoComment")  # described
-        self.CautionComment = self.registerClass("CautionComment")                      # described
-        self.AnecdotalComment = self.registerClass("AnecdotalComment")                  # described
-        self.MisspellingComment = self.registerClass("MisspellingComment")              # described
-        self.DonorInfoComment = self.registerClass("DonorInfoComment")                  # described
+        self.BiotechnologyComment = self.registerClass("BiotechnologyComment")          # described as a Data iterm cello:GeneralTopic
+        self.SenescenceComment = self.registerClass("SenescenceComment")                # described as an IAO:Topic
+        self.DoublingTimeComment = self.registerClass("DoublingTimeComment")            # described as an IAO:Topic
+        self.VirologyComment = self.registerClass("VirologyComment")                    # described as an IAO:Topic
+        self.OmicsComment = self.registerClass("OmicsComment")                          # described as an IAO:Topic
+        self.CharacteristicsComment = self.registerClass("CharacteristicsComment")      # described as an IAO:Topic
+        self.MiscellaneousInfoComment = self.registerClass("MiscellaneousInfoComment")  # described as an IAO:Topic
+        self.CautionComment = self.registerClass("CautionComment")                      # described as an IAO:Topic
+        self.AnecdotalComment = self.registerClass("AnecdotalComment")                  # described as an IAO:Topic
+        self.MisspellingComment = self.registerClass("MisspellingComment")              # described as an IAO:Topic
+        self.DonorInfoComment = self.registerClass("DonorInfoComment")                  # described as an IAO:Topic
+        self.DiscontinuationRecord = self.registerClass("DiscontinuationRecord")        # described as an IAO:Topic
+        self.RegistrationRecord = self.registerClass("RegistrationRecord")              # described as an IAO:Topic
 
-        self.MabIsotype = self.registerClass("MabIsotype")                          # TODO:
-        self.DiscontinuationRecord = self.registerClass("DiscontinuationRecord")    # TODO:
-        self.Registration = self.registerClass("Registration")                      # TODO:
+        self.MabIsotype = self.registerClass("MabIsotype")                          # TODO:0
 
 
         #self.MabTarget = self.registerClass("MabTarget")
@@ -156,6 +160,7 @@ class CelloOntologyNamespace(BaseNamespace):
         # publication properties
         # see also https://sparontologies.github.io/fabio/current/fabio.html
         # see also https://sibils.text-analytics.ch/doc/api/sparql/sibils-ontology.html
+
 
         #self.hasIdentifier = self.registerDatatypeProperty("hasIdentifier") # generic prop, parent of hasDOI, hasPubMedId # we use the  as an ancestor
         self.hasInternalId = self.registerDatatypeProperty("hasInternalId")             # TODO:
@@ -175,6 +180,8 @@ class CelloOntologyNamespace(BaseNamespace):
         self.volume = self.registerDatatypeProperty("volume")                           # TODO: see bibo
         self.creator = self.registerObjectProperty("creator")                           # TODO: # with range = foaf:Person (authors)
         self.editor = self.registerObjectProperty("editor")                             # TODO:# with range = foaf:Person (editors)
+
+        self.hasAnnotation = self.registerObjectProperty("hasAnnotation")               # described as inverse of IAO:is_about
 
         self.accession = self.registerDatatypeProperty("accession")                     # TODO: # should be defined as subProp of skos:notation / dcterms:identifier
         self.primaryAccession = self.registerDatatypeProperty("primaryAccession")       # TODO: # should be defined as subProp of skos:notation / dcterms:identifier
@@ -203,7 +210,7 @@ class CelloOntologyNamespace(BaseNamespace):
         #self.hasAllele = self.registerObjectProperty("hasAllele")                      # unused, described as ns.GENO:0000413 subprop
         #self.isAlleleOf = self.registerObjectProperty("isAlleleOf")                    # unused, described as ns.GENO:0000408 subprop
         self.alleleIdentifier = self.registerDatatypeProperty("alleleIdentifier")       # described as dcterms:identifier subprop
-        self.includesObservationOf = self.registerObjectProperty("includesObservationOf")   # TODO link between some gneetic information and a gene allele
+        self.includesObservation = self.registerObjectProperty("includesObservation")   # TODO link between some gneetic information and a gene allele
 
         self.markerId = self.registerDatatypeProperty("markerId")                       # TODO:
 
@@ -246,7 +253,8 @@ class CelloOntologyNamespace(BaseNamespace):
         self.duration = self.registerDatatypeProperty("duration")                       # TODO:
         self.group = self.registerDatatypeProperty("group")                             # TODO:
 
-        self.registration = self.registerObjectProperty("registration")                 # TODO:
+        self.isRegistered = self.registerObjectProperty("isRegistered")                # TODO:
+        self.inRegister = self.registerObjectProperty("inRegister")                    # TODO
         
         self.geneKnockout = self.registerObjectProperty("geneKnockout")                 # TODO:
         self.geneticIntegration = self.registerObjectProperty("geneticIntegration")     # TODO:

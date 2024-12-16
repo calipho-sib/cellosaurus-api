@@ -416,6 +416,8 @@ class OntologyBuilder:
         ns.describe(ns.cello.source, ns.rdfs.subPropertyOf, ns.dcterms.source)
         ns.describe(ns.cello.reference, ns.rdfs.subPropertyOf, ns.dcterms.references)
 
+        ns.describe(ns.cello.hasAnnotation, ns.owl.inverseOf, ns.IAO.is_about_0000136)
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_terminology_database_and_subclasses(self):
@@ -627,6 +629,11 @@ cello:Characteristics a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:comment "Production process or specific biological properties of the cell line"^^xsd:string ;
     .
 
+cello:Discontinuation a owl:NamedIndividual, cello:GeneralTopic ;
+    rdfs:label "Discontinuation"^^xsd:string ;
+    rdfs:comment "Discontinuation status of the cell line in a cell line catalog."^^xsd:string ;
+ 	.
+     
 cello:Miscellaneous a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "Miscellaneous"^^xsd:string ;
     rdfs:comment "Miscellaneous remarks about the cell line."^^xsd:string ;
@@ -652,6 +659,14 @@ cello:DonorInfo a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:comment "Miscellaneous information relevant to the donor of the cell line."^^xsd:string ;
     .
 
+cello:Registration a owl:NamedIndividual, cello:GeneralTopic ;
+    rdfs:label "Registration"^^xsd:string ;
+    rdfs:comment "Register or official list in which the cell line is registered."^^xsd:string ;
+    .
+
+    
+
+
 # Define some of these external terms as Topic subclasses
 
 cello:CellLineAnnotationTopic a owl:Class ;
@@ -663,7 +678,7 @@ cello:CellLineAnnotationTopic a owl:Class ;
             [
                 rdf:type owl:Class ;
                 owl:oneOf (cello:Biotechnology cello:Senescence cello:DoublingTime cello:Virology cello:Omics cello:Characteristics 
-                cello:Miscellaneous cello:Caution cello:Anecdotal cello:DonorInfo cello:Misspelling) ;
+                cello:Miscellaneous cello:Caution cello:Anecdotal cello:DonorInfo cello:Misspelling cello:Discontinuation cello:Registration) ;
             ]
         )
     ] 
@@ -743,6 +758,18 @@ cello:CharacteristicsComment a owl:Class ;
         )
     ] .
 
+cello:DiscontinuationRecord a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Discontinuation ;
+            ]
+        )
+    ] .
+
 cello:MiscellaneousComment a owl:Class ;
     rdfs:subClassOf IAO:0000027 ;
     owl:equivalentClass [
@@ -802,6 +829,20 @@ cello:DonorInfoComment a owl:Class ;
             ]
         )
     ] .
+
+cello:RegistrationRecord a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:Registration ;
+            ]
+        )
+    ] .
+
+    
 
 """
         return text.split("\n")

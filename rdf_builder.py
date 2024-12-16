@@ -660,12 +660,12 @@ class RdfBuilder:
             triples.append(cl_IRI, ns.cello.registeredName, name)
             
             annot_BN = self.get_blank_node()
-            triples.append(cl_IRI, ns.cello.registration, annot_BN)
-            triples.append(annot_BN, ns.rdf.type, ns.cello.Registration)      
-            triples.append(annot_BN, ns.rdfs.label, name)
+            triples.append(cl_IRI, ns.cello.isRegistered, annot_BN)
+            triples.append(annot_BN, ns.rdf.type, ns.cello.RegistrationRecord)      
+            triples.append(annot_BN, ns.cello.registeredName, name)
             org_name = reg_obj["registry"]
             org_IRI = ns.orga.IRI(org_name, "", "", "", "")
-            triples.append(annot_BN, ns.cello.source, org_IRI)
+            triples.append(annot_BN, ns.cello.inRegister, org_IRI)
  
         # fields: CC, misspelling
         for msp_obj in cl_data.get("misspelling-list") or []:
@@ -677,7 +677,7 @@ class RdfBuilder:
             annot_BN = self.get_blank_node()
             triples.append(cl_IRI, ns.cello.misspellingComment, annot_BN)
             triples.append(annot_BN, ns.rdf.type, ns.cello.MisspellingComment)
-            triples.append(annot_BN, ns.rdfs.label, name)
+            triples.append(annot_BN, ns.cello.misspellingName, name)
             note = msp_obj.get("misspelling-note")
             if note is not None: triples.append(annot_BN, ns.rdfs.comment, ns.xsd.string(note))
             for ref in msp_obj.get("reference-list") or []:
@@ -781,7 +781,7 @@ class RdfBuilder:
             #     gene_clazz = self.get_hla_gene_class_IRI(gene_label)
             #     for allele in gall["alleles"].split(","):
             #         allele_BN = self.get_blank_node()
-            #         triples.append(annot_BN, ns.cello.includesObservationOf, allele_BN)
+            #         triples.append(annot_BN, ns.cello.includesObservation, allele_BN)
             #         allele_id = "*".join([gene_label, allele])
             #         triples.append(allele_BN, ns.rdf.type, ns.cello.HLA_Allele)
             #         triples.append(allele_BN, ns.cello.alleleIdentifier, ns.xsd.string(allele_id))
@@ -797,7 +797,7 @@ class RdfBuilder:
                 gene_clazz = self.get_hla_gene_class_IRI(gene_label)
                 for allele in gall["alleles"].split(","):
                     obs_BN = self.get_blank_node()
-                    triples.append(annot_BN, ns.cello.includesObservationOf, obs_BN)                    
+                    triples.append(annot_BN, ns.cello.includesObservation, obs_BN)                    
                     triples.append(obs_BN, ns.rdf.type, ns.schema.Observation)
                     gene_BN = self.get_blank_node()
                     triples.append(obs_BN, ns.cello.hasTarget, gene_BN)
@@ -1589,7 +1589,7 @@ class RdfBuilder:
             sources = obs["obs_source_list"]
             conflict = obs["conflict"]
             obs_BN = self.get_blank_node()
-            triples.append(annot_BN, ns.cello.containsObservation, obs_BN)
+            triples.append(annot_BN, ns.cello.includesObservation, obs_BN)
             triples.append(obs_BN, ns.rdf.type, ns.schema.Observation)
             triples.append(obs_BN, ns.rdfs.label, ns.xsd.string(f"Observation of {marker_id}"))
             marker_BN = self.get_blank_node()

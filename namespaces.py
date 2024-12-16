@@ -24,7 +24,7 @@ class Term:
         if self.hidden: return list()
         ordered_props = [
             "a", "rdf:type", "rdfs:label", "rdfs:comment", "rdfs:subClassOf", "rdfs:subPropertyOf",
-            "owl:equivalentClass", "owl:equivalentProperty","owl:sameAs", 
+            "owl:equivalentClass", "owl:equivalentProperty", "owl:inverseOf", "owl:sameAs", 
             "skos:exactMatch", "skos:closeMatch", "skos:broadMatch", 
             "domain_comments", "rdfs:domain", "range_comments","rdfs:range", "rdfs:seeAlso", "rdfs:isDefinedBy"]
         lines = list()
@@ -254,6 +254,7 @@ class OwlNamespace(BaseNamespace):
         self.equivalentProperty  = self.registerTerm("equivalentProperty")
         self.versionInfo  = self.registerTerm("versionInfo")
         self.Ontology  = self.registerTerm("Ontology")
+        self.inverseOf = self.registerTerm("inverseOf")
 
 
 
