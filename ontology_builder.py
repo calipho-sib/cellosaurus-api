@@ -74,8 +74,6 @@ class OntologyBuilder:
         self.describe_misc_terms()
         self.describe_ranges_and_domains()
         self.describe_annotation_properties()
-        self.describe_labels()
-        self.describe_comments()
         
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -149,7 +147,6 @@ class OntologyBuilder:
         # describing our own terms as subClass/Prop of terms defined elsewhere 
         # instead of simply using these external terms allow to give them a domain / range
         # and additional semantic relationships to other terms
-        ns.describe(ns.cello.name, ns.rdfs.subPropertyOf, ns.dcterms.title)
         ns.describe(ns.cello.memberOf, ns.rdfs.subPropertyOf, ns.schema.memberOf)
         ns.describe(ns.cello.city, ns.rdfs.subPropertyOf, ns.schema.location)
         ns.describe(ns.cello.country, ns.rdfs.subPropertyOf, ns.schema.location)
@@ -418,6 +415,33 @@ class OntologyBuilder:
 
         ns.describe(ns.cello.hasAnnotation, ns.owl.inverseOf, ns.IAO.is_about_0000136)
 
+        ns.describe(ns.cello.hasInternalId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.issn13, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.prism.hasDOI, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.fabio.hasPubMedCentralId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.fabio.hasPubMedId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.hasISO4JournalTitleAbbreviation, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.prism.volume, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        
+        ns.describe(ns.cello.accession, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.primaryAccession, ns.rdfs.subPropertyOf, ns.cello.accession)
+        ns.describe(ns.cello.primaryAccession, ns.owl.equivalentProperty, ns.wd.P3289_AC)
+        ns.describe(ns.cello.secondaryAccession, ns.rdfs.subPropertyOf, ns.cello.accession)
+
+        ns.describe(ns.cello.name, ns.owl.equivalentProperty, ns.rdfs.label)
+        ns.describe(ns.cello.shortname, ns.rdfs.subPropertyOf, ns.cello.name)
+        ns.describe(ns.cello.registeredName, ns.rdfs.subPropertyOf, ns.cello.name)
+        ns.describe(ns.skos.prefLabel, ns.rdfs.subPropertyOf, ns.cello.name)
+        ns.describe(ns.skos.altLabel, ns.rdfs.subPropertyOf, ns.cello.name)
+        ns.describe(ns.skos.hiddenLabel, ns.rdfs.subPropertyOf, ns.cello.name)
+        ns.describe(ns.cello.recommendedName, ns.rdfs.subPropertyOf, ns.skos.prefLabel)
+        ns.describe(ns.cello.alternativeName, ns.rdfs.subPropertyOf, ns.skos.altLabel)
+        ns.describe(ns.cello.misspellingName, ns.rdfs.subPropertyOf, ns.skos.hiddenLabel)
+        
+
+        
+        
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_terminology_database_and_subclasses(self):
@@ -485,41 +509,6 @@ class OntologyBuilder:
         ns.describe(ns.wd.Q27555384, ns.skos.closeMatch, f"<{ns.OMIT.url}0003790>" )
 
 
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def describe_labels(self):
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # non default labels for classes and properties
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        self.rdfs_label = dict()
-        ns.describe(ns.cello.HLATyping, ns.rdfs.label, ns.xsd.string("HLA typing"))
-        ns.describe(ns.cello.hlaTyping, ns.rdfs.label, ns.xsd.string("has HLA typing"))
-        ns.describe(ns.cello.MabIsotype, ns.rdfs.label, ns.xsd.string("Monoclonal antibody isotype"))
-        #ns.describe(ns.cello.MabTarget, ns.rdfs.label, ns.xsd.string("Monoclonal antibody target"))
-        ns.describe(ns.cello.mabIsotype, ns.rdfs.label, ns.xsd.string("has monoclonal antibody isotype"))
-        ns.describe(ns.cello.mabTarget, ns.rdfs.label, ns.xsd.string("has monoclonal antibody target"))
-        ns.describe(ns.cello.hasPMCId, ns.rdfs.label, ns.xsd.string("has PMC identifier"))
-        ns.describe(ns.fabio.hasPubMedCentralId, ns.rdfs.label, ns.xsd.string("has PMC identifier"))
-        ns.describe(ns.cello.hasPubMedId, ns.rdfs.label, ns.xsd.string("has PubMed identifier"))
-        ns.describe(ns.cello.hasDOI, ns.rdfs.label, ns.xsd.string("has DOI identifier"))
-        ns.describe(ns.cello.issn13, ns.rdfs.label, ns.xsd.string("has ISSN13 identifier"))
-        ns.describe(ns.cello.msiValue, ns.rdfs.label, ns.xsd.string("has microsatellite instability value"))
-        ns.describe(ns.cello.productId, ns.rdfs.label, ns.xsd.string("product identifier"))
-        ns.describe(ns.cello.xref, ns.rdfs.label, ns.xsd.string("has cross-reference"))
-        ns.describe(ns.cello.Xref, ns.rdfs.label, ns.xsd.string("Cross-reference"))
-        ns.describe(ns.cello.CelloConceptScheme, ns.rdfs.label, ns.xsd.string("Cellosaurus concept scheme"))
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def describe_comments(self):
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # comments for classes
-
-        # comments for props
-        ns.describe(ns.cello.recommendedName, ns.rdfs.comment, ns.xsd.string("Most frequently the name of the cell line as provided in the original publication"))
-        ns.describe(ns.cello.alternativeName, ns.rdfs.comment, ns.xsd.string("Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms"))
-        ns.describe(ns.cello.more_specific_than, ns.rdfs.comment, ns.xsd.string("Links two concepts. The subject concept is more specific than the object concept. The semantics is the similar to the skos:broader property but its label less ambiguous."))
-        ns.describe(ns.cello.CelloConceptScheme, ns.rdfs.comment, ns.xsd.string("Class of cellosaurus terminologies containing some concepts used for annotating cell lines."))
 
 
 

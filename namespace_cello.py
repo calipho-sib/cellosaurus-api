@@ -64,11 +64,13 @@ class CelloOntologyNamespace(BaseNamespace):
         self.TransgenicRat = self.registerClass("TransgenicRat", label="Transgenic rat")                                            # described
 
         self.Database = self.registerClass("Database")                          # described
-        self.CelloConceptScheme = self.registerClass("CelloConceptScheme")      # described
+
+        comment="Class of cellosaurus terminologies containing some concepts used for annotating cell lines."
+        self.CelloConceptScheme = self.registerClass("CelloConceptScheme", label="Cellosaurus Concept Scheme", comment=comment)      # described
         
         # self.Organization = self.registerClass("Organization")                  # described, defined in schema namespace
 
-        self.Xref = self.registerClass("Xref")                                  # described as NCIT:C43621 subclass
+        self.Xref = self.registerClass("Xref", "Cross-Reference")                                  # described as NCIT:C43621 subclass
         self.GenomeAncestry = self.registerClass("GenomeAncestry")              # described as OBI:0001225 subclass
         self.PopulationPercentage = self.registerClass("PopulationPercentage")  # LATER: define as restriction
 
@@ -85,20 +87,6 @@ class CelloOntologyNamespace(BaseNamespace):
         self.ShortTandemRepeatProfile = self.registerClass("ShortTandemRepeatProfile")  # described as subClass of OBI:0001404
         self.hasTarget = self.registerObjectProperty("hasTarget")                       # described as subProp of schema:obserationAbout
         
-        # next 3 lines as some kind of experiment result
-        self.detectedTarget = self.registerDatatypeProperty("detectedTarget")           # TODO later
-        self.detectedAllele = self.registerObjectProperty("detectedAllele")             # TODO: later
-        self.repeatNumber = self.registerDatatypeProperty("repeatNumber")               # TODO: later, question: separate number dand variant id ?
-
-        self.conflicting = self.registerDatatypeProperty("conflicting")                 # TODO: later
-        self.includesObservation = self.registerObjectProperty("includesObservation")   # TODO: later
-
-        self.Sex = self.registerClass("Sex")                                            # TODO: later, has some special cases like mixed sex
-
-        comment = "An entity which is used as a source of information (mostly a cross-reference, a publication or an organization)"
-        self.Source = self.registerClass("Source", comment=comment)                     # TODO: later, a wrapper of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
-
-
         #self.ChemicalAgent = self.registerClass("ChemicalAgent")               # unused, defined as CHEBI:24431: instances are drugbank, ncit, chebi xrefs (+free text)
         #self.Protein = self.registerClass("Protein")                           # unused, defined as CHEBI:36080, a child of CHEBI:24431
         #self.TransformantAgent = self.registerClass("TransformantAgent")       # synonym of CHEBI:24431, instances are ChEBI, NCBI_TaxID, NCIt, DrugBank (+free text)
@@ -147,10 +135,22 @@ class CelloOntologyNamespace(BaseNamespace):
         self.DiscontinuationRecord = self.registerClass("DiscontinuationRecord")        # described as an IAO:Topic
         self.RegistrationRecord = self.registerClass("RegistrationRecord")              # described as an IAO:Topic
 
-        self.MabIsotype = self.registerClass("MabIsotype")                          # TODO:0
-
 
         #self.MabTarget = self.registerClass("MabTarget")
+        self.MabIsotype = self.registerClass("MabIsotype", label="Monoclonal antibody isotype") # TODO:0
+
+        # next 3 lines as some kind of experiment result
+        self.detectedTarget = self.registerDatatypeProperty("detectedTarget")           # TODO later
+        self.detectedAllele = self.registerObjectProperty("detectedAllele")             # TODO: later
+        self.repeatNumber = self.registerDatatypeProperty("repeatNumber")               # TODO: later, question: separate number dand variant id ?
+
+        self.conflicting = self.registerDatatypeProperty("conflicting")                 # TODO: later
+        self.includesObservation = self.registerObjectProperty("includesObservation")   # TODO: later
+
+        self.Sex = self.registerClass("Sex")                                            # TODO: later, has some special cases like mixed sex
+
+        comment = "An entity which is used as a source of information (mostly a cross-reference, a publication or an organization)"
+        self.Source = self.registerClass("Source", comment=comment)                     # TODO: later, a wrapper of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
 
 
         #
@@ -163,40 +163,60 @@ class CelloOntologyNamespace(BaseNamespace):
 
 
         #self.hasIdentifier = self.registerDatatypeProperty("hasIdentifier") # generic prop, parent of hasDOI, hasPubMedId # we use the  as an ancestor
-        self.hasInternalId = self.registerDatatypeProperty("hasInternalId")             # TODO:
-        self.hasDOI = self.registerDatatypeProperty("hasDOI")                           # TODO: see bibo
-        self.hasPubMedId = self.registerDatatypeProperty("hasPubMedId")                 # TODO:
-        self.hasPMCId = self.registerDatatypeProperty("hasPMCId")                       # TODO:
-        self.publicationDate = self.registerDatatypeProperty("publicationDate")         # TODO:
-        self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear")   # TODO:
-        self.startingPage = self.registerDatatypeProperty("startingPage" )              # TODO:
-        self.endingPage = self.registerDatatypeProperty("endingPage")                   # TODO:
+        self.hasInternalId = self.registerDatatypeProperty("hasInternalId", label="has Internal Identifier")     # described as sub dcterms:identifier
+        #self.hasDOI = self.registerDatatypeProperty("hasDOI"label=)                     # described as sub dcterms:identifier: see prism
+        #self.hasPubMedId = self.registerDatatypeProperty("hasPubMedId")                 # described as sub dcterms:identifier: see fabio
+        #self.hasPMCId = self.registerDatatypeProperty("hasPMCId")                       # described as sub dcterms:identifier, see fabio
+        self.issn13 = self.registerDatatypeProperty("issn13", label="has ISSN13")        # described as sub dcterms:identifier
+
+        #self.publicationDate = self.registerDatatypeProperty("publicationDate")         # described in prism
+        #self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear")   # described in dcterms
+        # self.startingPage = self.registerDatatypeProperty("startingPage" )              # described in prism
+        # self.endingPage = self.registerDatatypeProperty("endingPage")                   # described in prism
+
         # journal abbreviation, see also:
         # https://ftp.ncbi.nih.gov/pubmed/J_Medline.txt
         # https://en.wikipedia.org/wiki/ISO_4
-        #self.hasNLMJournalTitleAbbreviation = self.registerObjectProperty("hasNLMJournalTitleAbbreviation") # unused
-        self.hasISO4JournalTitleAbbreviation = self.registerDatatypeProperty("hasISO4JournalTitleAbbreviation") # TODO: # Amos uses abbreviation also used by UniProt based on ISO4
-        self.title = self.registerDatatypeProperty("title")                             # TODO:
-        self.volume = self.registerDatatypeProperty("volume")                           # TODO: see bibo
-        self.creator = self.registerObjectProperty("creator")                           # TODO: # with range = foaf:Person (authors)
-        self.editor = self.registerObjectProperty("editor")                             # TODO:# with range = foaf:Person (editors)
+
+        # described as sub dcterms:identifier: # Amos uses abbreviation also used by UniProt based on ISO4
+        self.hasISO4JournalTitleAbbreviation = self.registerDatatypeProperty(            # described, see line above
+            "hasISO4JournalTitleAbbreviation",
+            label="has ISO4 Journal Title Abbreviation") 
+        
+        #self.title = self.registerDatatypeProperty("title")                             # defined in dcterms
+        #self.volume = self.registerDatatypeProperty("volume")                           # defined as sub dcterms:identifier: see prism
+        #self.creator = self.registerObjectProperty("creator")                           # see dcterms
+        #self.publisher = self.registerObjectProperty("publisher")                       # see dcterms
+        
+        self.editor = self.registerObjectProperty("editor")                              # TODO later : with range = foaf:Person (editors)
 
         self.hasAnnotation = self.registerObjectProperty("hasAnnotation")               # described as inverse of IAO:is_about
 
-        self.accession = self.registerDatatypeProperty("accession")                     # TODO: # should be defined as subProp of skos:notation / dcterms:identifier
-        self.primaryAccession = self.registerDatatypeProperty("primaryAccession")       # TODO: # should be defined as subProp of skos:notation / dcterms:identifier
-        self.secondaryAccession = self.registerDatatypeProperty("secondaryAccession")   # TODO: # should be defined as subProp of skos:notation / dcterms:identifier
+        comment = "Unique identifier for an entity in a database."
+        self.accession = self.registerDatatypeProperty("accession", comment=comment)    # described as subProp of dcterms:identifier
+        comment = "Unique identifier of the cell line. It is normally stable across Cellosaurus versions"
+        self.primaryAccession = self.registerDatatypeProperty("primaryAccession", comment=comment)       # described as subProp of dcterms:identifier
+        comment = "Former primary accession kept here to ensure the access to a cell line via old identifiers."
+        self.secondaryAccession = self.registerDatatypeProperty("secondaryAccession", comment=comment)   # described as subProp of dcterms:identifier
         
-        self.name = self.registerDatatypeProperty("name")                               # TODO: # described, as subProp of dcterms:title
-        self.shortname = self.registerDatatypeProperty("shortname")                     # TODO:
-        self.recommendedName = self.registerDatatypeProperty("recommendedName")         # TODO:
-        self.alternativeName = self.registerDatatypeProperty("alternativeName")         # TODO:
-        self.registeredName = self.registerDatatypeProperty("registeredName")           # TODO:
-        self.misspellingName = self.registerDatatypeProperty("misspellingName")         # TODO: # should be defined as subProp of skos:hiddenName
+
+
+        self.name = self.registerDatatypeProperty("name")                               # described, as equivalent of rdfs:label
+        self.shortname = self.registerDatatypeProperty("shortname")                     # described as sub prop of cello:name
+
+        comment="Most frequently the name of the cell line as provided in the original publication"
+        self.recommendedName = self.registerDatatypeProperty("recommendedName", comment=comment)   # described as sub of skos:prefLabel sub of cello:name      
+
+        comment="Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms"
+        self.alternativeName = self.registerDatatypeProperty("alternativeName", comment=comment)   # described as sub of skos:altLabel sub of cello:name
+        
+        self.registeredName = self.registerDatatypeProperty("registeredName")           # described as sub of cello:name
+        self.misspellingName = self.registerDatatypeProperty("misspellingName")         # described as sub of skos:hiddenLabel sub of cello:name
+
 
         self.appearsIn = self.registerObjectProperty("appearsIn")                       # TODO:
         self.source = self.registerObjectProperty("source")                             # defined as subproperty of dcterms:source, TODO: rename has_source
-        self.xref = self.registerObjectProperty("xref")                                 # TODO:
+        self.xref = self.registerObjectProperty("xref", label="has Cross-Reference")                                 # TODO:
         self.reference = self.registerObjectProperty("reference")                       # defined as subproperty of dcterms:references, TODO: rename has_reference or references
 
         self.genomeAncestry = self.registerObjectProperty("genomeAncestry")             # TODO:
@@ -206,7 +226,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.percentage = self.registerDatatypeProperty("percentage")                   # TODO: # as link between PopulationPercentage and percentage
         self.populationName = self.registerDatatypeProperty("populationName")           # TODO: # as sub property of rdfs:label as name, recommendedName,...
 
-        self.hlaTyping = self.registerObjectProperty("hlaTyping")                       # TODO:
+        self.hlaTyping = self.registerObjectProperty("hlaTyping", label="has HLA Typing")                       # TODO:
         #self.hasAllele = self.registerObjectProperty("hasAllele")                      # unused, described as ns.GENO:0000413 subprop
         #self.isAlleleOf = self.registerObjectProperty("isAlleleOf")                    # unused, described as ns.GENO:0000408 subprop
         self.alleleIdentifier = self.registerDatatypeProperty("alleleIdentifier")       # described as dcterms:identifier subprop
@@ -265,14 +285,14 @@ class CelloOntologyNamespace(BaseNamespace):
         self.discontinuationRecord = self.registerObjectProperty("discontinuationRecord")   # TODO:
         
         self.provider = self.registerDatatypeProperty("provider")                       # TODO:
-        self.productId = self.registerDatatypeProperty("productId")                     # TODO:
+        self.productId = self.registerDatatypeProperty("productId", label="product Identifier")                     # TODO:
 
         self.microsatelliteInstability = self.registerObjectProperty("microsatelliteInstability")   # TODO:
         
-        self.msiValue = self.registerDatatypeProperty("msiValue")                       # TODO:
+        self.msiValue = self.registerDatatypeProperty("msiValue", label="has microsatellite instability value")                       # TODO:
 
-        self.mabIsotype = self.registerObjectProperty("mabIsotype")                     # TODO:
-        self.mabTarget = self.registerObjectProperty("mabTarget")                       # TODO:
+        self.mabIsotype = self.registerObjectProperty("mabIsotype", label="has monoclonal antibody isotype")          # TODO:
+        self.mabTarget = self.registerObjectProperty("mabTarget", label="has monoclonal antibody target")             # TODO:
         
         self.antibodyHeavyChain = self.registerDatatypeProperty("antibodyHeavyChain")   # TODO:
         self.antibodyLightChain = self.registerDatatypeProperty("antibodyLightChain")   # TODO:
@@ -292,7 +312,6 @@ class CelloOntologyNamespace(BaseNamespace):
         self.parentCellLine = self.registerObjectProperty("parentCellLine")             # described: # HI field
         self.childCellLine = self.registerObjectProperty("childCellLine")               # TODO: # as inverse of parentCellLine, CH field
         
-        self.publisher = self.registerObjectProperty("publisher")                       # TODO: # to be defined as sub propf of dcterms:publisher
 
         self.hasVersion = self.registerDatatypeProperty("hasVersion")                 # described as sub of dcterms term
         self.created = self.registerDatatypeProperty("created")                       # described as sub of dcterms term
@@ -304,11 +323,11 @@ class CelloOntologyNamespace(BaseNamespace):
         self.city = self.registerDatatypeProperty("city")                               # described as sub of schema:location
         self.country = self.registerDatatypeProperty("country")                         # described as sub of schema:location
 
-        self.issn13 = self.registerDatatypeProperty("issn13")                           # TODO
         self.bookTitle = self.registerDatatypeProperty("bookTitle")                     # TODO
         self.conferenceTitle = self.registerDatatypeProperty("conferenceTitle")         # TODO
         self.documentTitle = self.registerDatatypeProperty("documentTitle")             # TODO
         self.documentSerieTitle = self.registerDatatypeProperty("documentSerieTitle")   # TODO
         
-        self.more_specific_than = self.registerObjectProperty("more_specific_than")     # TODO as equivalent of skos:broader
+        comment="Links two concepts. The subject concept is more specific than the object concept. The semantics is the similar to the skos:broader property but its label less ambiguous."
+        self.more_specific_than = self.registerObjectProperty("more_specific_than", comment=comment)     # TODO as equivalent of skos:broader
         

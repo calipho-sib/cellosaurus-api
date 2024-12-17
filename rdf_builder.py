@@ -543,35 +543,35 @@ class RdfBuilder:
             p_name = p["name"]
             if p_type == "consortium":
                 orga_IRI = ns.orga.IRI(p_name, None, None, None, None)
-                triples.append(ref_IRI, ns.cello.creator, orga_IRI)
+                triples.append(ref_IRI, ns.dcterms.creator, orga_IRI)
             else:
                 for name in p_name.split(" and "):                
                     p_BN = self.get_blank_node()
-                    triples.append(ref_IRI, ns.cello.creator, p_BN)
+                    triples.append(ref_IRI, ns.dcterms.creator, p_BN)
                     triples.append(p_BN, ns.rdf.type, ns.schema.Person)
                     triples.append(p_BN, ns.cello.name, ns.xsd.string(name))
 
         # title (mandatory)
         ttl = ref_data["title"]
-        triples.append(ref_IRI, ns.cello.title, ns.xsd.string(ttl))
+        triples.append(ref_IRI, ns.dcterms.title, ns.xsd.string(ttl))
 
         # date (mandatory)
         dt = ref_data["date"]
         year = dt[-4:]
-        triples.append(ref_IRI, ns.cello.hasPublicationYear, ns.xsd.string(year))
+        triples.append(ref_IRI, ns.fabio.hasPublicationYear, ns.xsd.string(year))
         if len(dt) > 4:
             if len(dt) != 11: raise DataError("Publication", "Unexpecting date format in " + ref_id)
             day = dt[0:2]
             month = self.mmm2mm[dt[3:6]]
             #print("mydate",year,month,day)
-            triples.append(ref_IRI, ns.cello.publicationDate, ns.xsd.date("-".join([year, month, day])))
+            triples.append(ref_IRI, ns.prism.publicationDate, ns.xsd.date("-".join([year, month, day])))
 
         # xref-list (mandatory), we create and xref and a direct link to the url via rdfs:seeAlso
         for xref in ref_data["xref-list"]:
             accession = xref["accession"]
-            if self.get_xref_db(xref) == "PubMed": triples.append(ref_IRI, ns.cello.hasPubMedId, ns.xsd.string(accession))
-            elif self.get_xref_db(xref) == "DOI": triples.append(ref_IRI, ns.cello.hasDOI, ns.xsd.string3(accession))
-            elif self.get_xref_db(xref) == "PMCID": triples.append(ref_IRI, ns.cello.hasPMCId, ns.xsd.string(accession))
+            if self.get_xref_db(xref) == "PubMed": triples.append(ref_IRI, ns.fabio.hasPubMedId, ns.xsd.string(accession))
+            elif self.get_xref_db(xref) == "DOI": triples.append(ref_IRI, ns.prism.hasDOI, ns.xsd.string3(accession))
+            elif self.get_xref_db(xref) == "PMCID": triples.append(ref_IRI, ns.fabio.hasPubMedCentralId, ns.xsd.string(accession))
             xref_IRI = self.get_xref_IRI(xref)
             triples.append(ref_IRI, ns.cello.xref, xref_IRI)
             url = "". join(["<", self.encode_url(xref["url"]), ">"])
@@ -580,11 +580,11 @@ class RdfBuilder:
 
         # first page, last page, volume, journal (optional)
         p1 = ref_data.get("first-page")
-        if p1 is not None: triples.append(ref_IRI, ns.cello.startingPage, ns.xsd.string(p1))
+        if p1 is not None: triples.append(ref_IRI, ns.prism.startingPage, ns.xsd.string(p1))
         p2 = ref_data.get("last-page")
-        if p2 is not None: triples.append(ref_IRI, ns.cello.endingPage, ns.xsd.string(p2))
+        if p2 is not None: triples.append(ref_IRI, ns.prism.endingPage, ns.xsd.string(p2))
         vol = ref_data.get("volume")
-        if vol is not None: triples.append(ref_IRI, ns.cello.volume, ns.xsd.string(vol))
+        if vol is not None: triples.append(ref_IRI, ns.prism.volume, ns.xsd.string(vol))
         jou = ref_data.get("journal-name")
         if jou is not None: triples.append(ref_IRI, ns.cello.hasISO4JournalTitleAbbreviation, ns.xsd.string(jou))
         
@@ -594,11 +594,11 @@ class RdfBuilder:
         institu = ref_data.get("institution")
         if institu is not None:
             orga_IRI = ns.orga.IRI(institu, None, city, country, None)
-            triples.append(ref_IRI, ns.cello.publisher, orga_IRI)        
+            triples.append(ref_IRI, ns.dcterms.publisher, orga_IRI)        
         publisher = ref_data.get("publisher")
         if publisher is not None:
             orga_IRI = ns.orga.IRI(publisher, None, city, country, None)
-            triples.append(ref_IRI, ns.cello.publisher, orga_IRI)
+            triples.append(ref_IRI, ns.dcterms.publisher, orga_IRI)
 
         # issn13 and entity titles        
         issn13 = ref_data.get("issn-13")

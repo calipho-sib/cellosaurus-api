@@ -25,11 +25,11 @@ class NamespaceRegistry:
     FBcv = FBcvNamespace(); OGG = OGGNamespace()
     GENO = GENONamespace(); CARO = CARONamespace(); CL = CLNamespace()
     CHEBI = CHEBINamespace(); ORDO = ORDONamespace(); IAO = IAONamespace();
-    EDAM = EDAMNamespace()
+    EDAM = EDAMNamespace(); prism = PrismNamespace()
 
     namespaces = [cello, cvcl, xref, pub, orga, db, xsd, rdf, rdfs, skos, owl, dcterms, 
                   fabio, up, bibo, widoco, vann, oa, wdt, wd, sh, schema, help, pubmed,
-                  BAO, BTO, CLO, NCIt, OBI, OMIT, FBcv , OGG, GENO, CARO, CL, CHEBI, ORDO, IAO, EDAM ]
+                  BAO, BTO, CLO, NCIt, OBI, OMIT, FBcv , OGG, GENO, CARO, CL, CHEBI, ORDO, IAO, EDAM, prism ]
 
     pfx2ns = dict()
     for ns in namespaces: pfx2ns[ns.pfx] = ns

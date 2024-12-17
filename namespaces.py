@@ -174,17 +174,23 @@ class BaseNamespace:
     def registerProperty(self, id, hidden=False):
         return self.registerTerm(id, p="rdf:type", v={ "rdf:Property" }, hidden=hidden)
 
-    def registerDatatypeProperty(self, id, hidden=False):
-        return self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:DatatypeProperty" }, hidden=hidden)
-
+    def registerDatatypeProperty(self, id,   label=None, comment=None, hidden=False):
+        iri = self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:DatatypeProperty" }, hidden=hidden)
+        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
+        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
+        return iri
+    
     def registerObjectProperty(self, id,  label=None, comment=None, hidden=False):
         iri = self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:ObjectProperty" }, hidden=hidden)
         if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
         if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
         return iri
 
-    def registerAnnotationProperty(self, id, hidden=False):
-        return self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:AnnotationProperty" }, hidden=hidden)
+    def registerAnnotationProperty(self, id,  label=None, comment=None, hidden=False):
+        iri = self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:AnnotationProperty" }, hidden=hidden)
+        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
+        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
+        return iri
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -223,16 +229,16 @@ class RdfsNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(RdfsNamespace, self).__init__("rdfs", "http://www.w3.org/2000/01/rdf-schema#")
-        self.Class = self.registerTerm("Class")
-        self.subClassOf = self.registerTerm("subClassOf")
-        self.subPropertyOf = self.registerTerm("subPropertyOf")
-        self.comment = self.registerTerm("comment")
-        self.label = self.registerTerm("label")
-        self.domain = self.registerTerm("domain")
-        self.range = self.registerTerm("range")
-        self.seeAlso = self.registerTerm("seeAlso")
-        self.isDefinedBy = self.registerTerm("isDefinedBy")
-        self.Literal = self.registerTerm("Literal")
+        self.Class = self.registerTerm("Class", hidden=True)
+        self.subClassOf = self.registerTerm("subClassOf", hidden=True)
+        self.subPropertyOf = self.registerTerm("subPropertyOf", hidden=True)
+        self.comment = self.registerTerm("comment", hidden=True)
+        self.label = self.registerTerm("label", hidden=True)
+        self.domain = self.registerTerm("domain", hidden=True)
+        self.range = self.registerTerm("range", hidden=True)
+        self.seeAlso = self.registerTerm("seeAlso", hidden=True)
+        self.isDefinedBy = self.registerTerm("isDefinedBy", hidden=True)
+        self.Literal = self.registerTerm("Literal", hidden=True)
         
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -269,6 +275,7 @@ class SkosNamespace(BaseNamespace):
         self.notation = self.registerTerm("notation")
         self.prefLabel = self.registerTerm("prefLabel")
         self.altLabel = self.registerTerm("altLabel")
+        self.hiddenLabel = self.registerTerm("hiddenLabel")
         self.broader = self.registerTerm("broader")
         self.exactMatch = self.registerTerm("exactMatch")
         self.closeMatch = self.registerTerm("closeMatch")
@@ -292,9 +299,27 @@ class FabioNamespace(BaseNamespace):
         self.BookChapter = self.registerClass("BookChapter")
         self.ConferencePaper = self.registerClass("ConferencePaper")
         self.ReportDocument = self.registerClass("ReportDocument")
-        self.hasPubMedCentralId = self.registerDatatypeProperty("hasPubMedCentralId")
-        self.hasPubMedId = self.registerDatatypeProperty("hasPubMedId")
-        self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear")
+
+        self.hasPubMedCentralId = self.registerDatatypeProperty("hasPubMedCentralId", label="has PubMed Central Identifier")
+        self.hasPubMedId = self.registerDatatypeProperty("hasPubMedId", label="has PubMed Identifier")
+        self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear", label="has Publication Year")
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class PrismNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(PrismNamespace, self).__init__("prism", "http://prismstandard.org/namespaces/basic/2.0/")
+        self.hasDOI = self.registerDatatypeProperty("doi", label="has DOI")
+        self.publicationDate = self.registerDatatypeProperty("publicationDate", label="has publication date")
+        self.startingPage = self.registerDatatypeProperty("startingPage" )              
+        self.endingPage = self.registerDatatypeProperty("endingPage")    
+
+        comment="An identifier for a particular volume of a resource, such as a journal or a multi-volume book."
+        self.volume = self.registerDatatypeProperty("volume", comment=comment)    
+        
+                       
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -315,8 +340,8 @@ class UniProtCoreNamespace(BaseNamespace):
         self.Protein = self.registerClass("Protein", hidden=True)
 
         #self.annotation = self.registerObjectProperty("annotation")
-        self.volume = self.registerDatatypeProperty("volume")
-        self.title = self.registerDatatypeProperty("title")
+        #self.volume = self.registerDatatypeProperty("volume")
+        #self.title = self.registerDatatypeProperty("title")
 
         #self.version = self.registerDatatypeProperty("version")   # warning: invompatible domain (Protein, Sequence, Cluster)
         #self.modified = self.registerDatatypeProperty("modified") # warning: incompatible domain (Protein, Sequence, Cluster)
