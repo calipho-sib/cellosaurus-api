@@ -221,7 +221,7 @@ class RdfBuilder:
         triples.append(gene_BN, ns.rdf.type, ns.cello.Gene)
         triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(f"AMEL{chr}"))
         xref_IRI = self.get_amelogenin_gene_xref_IRI(chr)
-        triples.append(gene_BN, ns.cello.xref, xref_IRI)
+        triples.append(gene_BN, ns.cello.hasXref, xref_IRI)
         return triples
     
 
@@ -296,7 +296,7 @@ class RdfBuilder:
         # as a named individual of type :Sex
         triples.append(sex_IRI, ns.rdf.type, ns.cello.Sex)
         triples.append(sex_IRI, ns.rdf.type, ns.owl.NamedIndividual)
-        triples.append(sex_IRI, ns.rdfs.label, ns.xsd.string(sex.label))    
+        triples.append(sex_IRI, ns.rdfs.label, ns.xsd.string(sex.label))    # onto NI
 
         url = ns.cello.url
         if url.endswith("#"): url = url[:-1]
@@ -313,7 +313,7 @@ class RdfBuilder:
         termi_IRI = self.get_terminology_or_database_IRI(termi.abbrev)
         triples.append(termi_IRI, ns.rdf.type, ns.cello.CelloConceptScheme)
         triples.append(termi_IRI, ns.rdf.type, ns.owl.NamedIndividual)
-        triples.append(termi_IRI, ns.rdfs.label, ns.xsd.string(termi.name))
+        triples.append(termi_IRI, ns.rdfs.label, ns.xsd.string(termi.name))    # onto NI
         triples.append(termi_IRI, ns.cello.shortname, ns.xsd.string(termi.abbrev))
         triples.append(termi_IRI, ns.cello.hasVersion, ns.xsd.string(termi.version))
         triples.append(termi_IRI, ns.rdfs.seeAlso, "<" + termi.url + ">")
@@ -334,7 +334,7 @@ class RdfBuilder:
         db_IRI = self.get_terminology_or_database_IRI(db.rdf_id)
         triples.append(db_IRI, ns.rdf.type, get_db_category_IRI(db.cat))
         triples.append(db_IRI, ns.rdf.type, ns.owl.NamedIndividual)
-        triples.append(db_IRI, ns.rdfs.label, ns.xsd.string(db.name))
+        triples.append(db_IRI, ns.rdfs.label, ns.xsd.string(db.name))           # onto NI
         triples.append(db_IRI, ns.cello.shortname, ns.xsd.string(db.abbrev))
         if db.in_up:
             up_db = "<http://purl.uniprot.org/database/" + db.abbrev + ">"
@@ -573,7 +573,7 @@ class RdfBuilder:
             elif self.get_xref_db(xref) == "DOI": triples.append(ref_IRI, ns.prism.hasDOI, ns.xsd.string3(accession))
             elif self.get_xref_db(xref) == "PMCID": triples.append(ref_IRI, ns.fabio.hasPubMedCentralId, ns.xsd.string(accession))
             xref_IRI = self.get_xref_IRI(xref)
-            triples.append(ref_IRI, ns.cello.xref, xref_IRI)
+            triples.append(ref_IRI, ns.cello.hasXref, xref_IRI)
             url = "". join(["<", self.encode_url(xref["url"]), ">"])
             triples.append(ref_IRI, ns.rdfs.seeAlso, url )
 
@@ -675,8 +675,8 @@ class RdfBuilder:
             triples.append(cl_IRI, ns.cello.misspellingName, name)
 
             annot_BN = self.get_blank_node()
-            triples.append(cl_IRI, ns.cello.misspellingComment, annot_BN)
-            triples.append(annot_BN, ns.rdf.type, ns.cello.MisspellingComment)
+            triples.append(cl_IRI, ns.cello.hasMisspellingRecord, annot_BN)
+            triples.append(annot_BN, ns.rdf.type, ns.cello.MisspellingRecord)
             triples.append(annot_BN, ns.cello.misspellingName, name)
             note = msp_obj.get("misspelling-note")
             if note is not None: triples.append(annot_BN, ns.rdfs.comment, ns.xsd.string(note))
@@ -688,7 +688,7 @@ class RdfBuilder:
         # fields: DR
         for xref in cl_data.get("xref-list") or []:
             xref_IRI = self.get_xref_IRI(xref)
-            triples.append(cl_IRI, ns.cello.xref, xref_IRI)
+            triples.append(cl_IRI, ns.cello.hasXref, xref_IRI)
             if self.get_xref_db(xref)=="Wikidata":
                 # we use owl:sameAs because our cell lines and their equivalent in wikidata are instances (as opposed as classes)
                 triples.append(cl_IRI, ns.owl.sameAs, ns.wd.IRI(xref["accession"])) 
@@ -698,7 +698,7 @@ class RdfBuilder:
                 
         # fields: RX
         for rx in cl_data.get("reference-list") or []:
-            triples.append(cl_IRI, ns.cello.reference, self.get_pub_IRI(rx))
+            triples.append(cl_IRI, ns.cello.references, self.get_pub_IRI(rx))
     
         # fields: WW
         for ww in cl_data.get("web-page-list") or []:
@@ -748,7 +748,7 @@ class RdfBuilder:
         annot = cl_data.get("genome-ancestry")
         if annot is not None:
             annot_BN = self.get_blank_node()
-            triples.append(cl_IRI, ns.cello.genomeAncestry, annot_BN)
+            triples.append(cl_IRI, ns.cello.hasGenomeAncestry, annot_BN)
             triples.append(annot_BN, ns.rdf.type ,ns.cello.GenomeAncestry)
             # ref can be publi or organization, but only publi in real data
             src = annot.get("source")
@@ -758,20 +758,20 @@ class RdfBuilder:
                 log_it("ERROR", f"reference of genome-ancestry source is null: {ac}")
             for pop in annot["population-list"]:
                 pop_percent_BN = self.get_blank_node()
-                triples.append(annot_BN, ns.cello.component, pop_percent_BN)
+                triples.append(annot_BN, ns.cello.hasComponent, pop_percent_BN)
                 triples.append(pop_percent_BN, ns.rdf.type, ns.cello.PopulationPercentage)
                 pop_name = ns.xsd.string(pop["population-name"])
                 pop_BN = self.get_blank_node()
                 triples.append(pop_BN, ns.rdf.type, ns.cello.Population)
-                triples.append(pop_BN, ns.cello.populationName, pop_name)
-                triples.append(pop_percent_BN, ns.cello.population, pop_BN)
+                triples.append(pop_BN, ns.cello.name, pop_name)
+                triples.append(pop_percent_BN, ns.cello.hasPopulation, pop_BN)
                 percent = ns.xsd.float(pop["population-percentage"])
                 triples.append(pop_percent_BN, ns.cello.percentage, percent)
 
         # fields: CC hla
         for annot in cl_data.get("hla-typing-list") or []:
             annot_BN = self.get_blank_node()
-            triples.append(cl_IRI, ns.cello.hlaTyping, annot_BN)
+            triples.append(cl_IRI, ns.cello.hasHLAtyping, annot_BN)
             triples.append(annot_BN, ns.rdf.type ,ns.cello.HLATyping)
             src = annot.get("source")
             if src is not None: 
@@ -952,7 +952,7 @@ class RdfBuilder:
             triples.extend(self.get_ttl_for_sources(annot_BN, var_sources))
 
             seqvar_BN = self.get_blank_node()
-            triples.append(annot_BN, ns.cello.sequenceVariation, seqvar_BN)
+            triples.append(annot_BN, ns.cello.commentedSequenceVariation, seqvar_BN)
             var_type = annot.get("variation-type")
             sv_clazz = self.get_sequence_variation_class(var_type, mut_type)
             triples.append(seqvar_BN, ns.rdf.type, sv_clazz)
@@ -975,14 +975,14 @@ class RdfBuilder:
                 db = xref["database"]
                 if db in ["HGNC", "MGI", "RGD", "VGNC", "UniProtKB"]:
                     gene_BN = self.get_blank_node()
-                    triples.append(seqvar_BN, ns.cello.gene, gene_BN)
+                    triples.append(seqvar_BN, ns.cello.ofGene, gene_BN)
                     triples.append(gene_BN, ns.rdf.type, ns.cello.Gene)
                     gene_label =  self.get_xref_label(xref)
                     if gene_label is not None and len(gene_label) > 0:
                         triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(gene_label))
-                    triples.append(gene_BN, ns.cello.xref, self.get_xref_IRI(xref)) # gene(s) related to the variation
+                    triples.append(gene_BN, ns.cello.hasXref, self.get_xref_IRI(xref)) # gene(s) related to the variation
                 elif db in ["ClinVar", "dbSNP"]:
-                    triples.append(seqvar_BN, ns.cello.xref, self.get_xref_IRI(xref)) # reference of the variant description
+                    triples.append(seqvar_BN, ns.cello.hasXref, self.get_xref_IRI(xref)) # reference of the variant description
 
             #print(f"varmut-desc | {var_type} | {mut_type} | {label}")
             return triples
@@ -1040,7 +1040,7 @@ class RdfBuilder:
             log_it("ERROR", f"expected 3-4 tokens in CC From comment '{value}' : {cl_ac}")
             return triples
         orga_IRI = ns.orga.IRI(elems[0], "", elems[1], elems[2], contact)
-        triples.append(cl_IRI, ns.cello._from, orga_IRI)
+        triples.append(cl_IRI, ns.cello.establishedBy, orga_IRI)
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1048,7 +1048,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         label = cc["value"]
-        triples.append(cl_IRI, ns.cello.partOf, ns.xsd.string(label))
+        triples.append(cl_IRI, ns.cello.belongsTo, ns.xsd.string(label))
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1056,7 +1056,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         label = cc["value"]
-        triples.append(cl_IRI, ns.cello.group, ns.xsd.string(label))
+        triples.append(cl_IRI, ns.cello.inGroup, ns.xsd.string(label))
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1073,7 +1073,7 @@ class RdfBuilder:
             label = breed["value"]
             triples.append(annot_BN, ns.rdfs.label, ns.xsd.string(label))
             for xref in breed.get("xref-list") or []:
-                triples.append(annot_BN, ns.cello.xref, self.get_xref_IRI(xref))
+                triples.append(annot_BN, ns.cello.hasXref, self.get_xref_IRI(xref))
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1203,12 +1203,12 @@ class RdfBuilder:
         if note is not None: 
             triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(note))
         gene_BN = self.get_blank_node()
-        triples.append(inst_BN, ns.cello.gene, gene_BN)
+        triples.append(inst_BN, ns.cello.ofGene, gene_BN)
         triples.append(gene_BN, ns.rdf.type, ns.cello.Gene)
         if nameonly is not None:
             triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(nameonly))
         else:
-            triples.append(gene_BN, ns.cello.xref, self.get_xref_IRI(xref))
+            triples.append(gene_BN, ns.cello.hasXref, self.get_xref_IRI(xref))
             gene_name =  self.get_xref_label(xref)
             if gene_name is not None and len(gene_name)>0:
                 triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(gene_name))
@@ -1232,9 +1232,9 @@ class RdfBuilder:
             triples.append(method_BN, ns.rdfs.label, ns.xsd.string(self.get_gem_clean_label(method)))
             triples.append(inst_BN, ns.cello.genomeModificationMethod, method_BN)
             gene_BN = self.get_blank_node()
-            triples.append(inst_BN, ns.cello.gene, gene_BN)
+            triples.append(inst_BN, ns.cello.ofGene, gene_BN)
             triples.append(gene_BN, ns.rdf.type, ns.cello.Gene)
-            triples.append(gene_BN, ns.cello.xref, self.get_xref_IRI(xref))
+            triples.append(gene_BN, ns.cello.hasXref, self.get_xref_IRI(xref))
             gene_name =  self.get_xref_label(xref)
             if gene_name is not None and len(gene_name)>0:
                 triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(gene_name))
@@ -1262,7 +1262,7 @@ class RdfBuilder:
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.cello.fromIndividualBelongingToPopulation, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.Population)
-        triples.append(inst_BN, ns.cello.populationName, ns.xsd.string(nameOrNames))
+        triples.append(inst_BN, ns.cello.name, ns.xsd.string(nameOrNames))
         return triples
 
 
@@ -1283,7 +1283,7 @@ class RdfBuilder:
         if note is not None:
             triples.append(site_BN, ns.rdfs.comment, ns.xsd.string(note)) 
         for xref in site.get("xref-list") or []: 
-            triples.append(site_BN, ns.cello.xref, self.get_xref_IRI(xref))
+            triples.append(site_BN, ns.cello.hasXref, self.get_xref_IRI(xref))
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1298,7 +1298,7 @@ class RdfBuilder:
         triples.append(cl_IRI, ns.cello.cellType, ct_BN)
         triples.append(ct_BN, ns.rdf.type, ns.CL.CellType)
         triples.append(ct_BN, ns.rdfs.label, ns.xsd.string(label))    
-        if cv is not None: triples.append(ct_BN, ns.cello.xref, self.get_xref_IRI(cv))
+        if cv is not None: triples.append(ct_BN, ns.cello.hasXref, self.get_xref_IRI(cv))
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1311,7 +1311,7 @@ class RdfBuilder:
         triples.append(annot_BN, ns.cello.provider, ns.xsd.string(provider))
         triples.append(annot_BN, ns.cello.productId, ns.xsd.string(product_id))
         if xref_IRI is not None:
-            triples.append(annot_BN, ns.cello.xref, xref_IRI)
+            triples.append(annot_BN, ns.cello.hasXref, xref_IRI)
         return triples
 
 
@@ -1320,7 +1320,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         src_BN = self.get_blank_node()
-        triples.append(parentNode, ns.cello.source, src_BN)
+        triples.append(parentNode, ns.cello.hasSource, src_BN)
         triples.append(src_BN, ns.rdf.type, ns.cello.Source)
         if type(src) == dict:
             lbl = src.get("value")
@@ -1328,10 +1328,10 @@ class RdfBuilder:
                 triples.append(src_BN, ns.rdfs.label, ns.xsd.string(lbl))
             xref = src.get("xref")
             if xref is not None:
-                triples.append(src_BN, ns.cello.xref, self.get_xref_IRI(xref))
+                triples.append(src_BN, ns.cello.hasXref, self.get_xref_IRI(xref))
             ref =src.get("reference")
             if ref is not None: 
-                triples.append(src_BN, ns.cello.reference, self.get_pub_IRI(ref))
+                triples.append(src_BN, ns.cello.references, self.get_pub_IRI(ref))
         elif type(src) == str:
             #print("string/src", src)
             if src == "Direct_author_submission" or src.startswith("from inference of"):
@@ -1456,7 +1456,7 @@ class RdfBuilder:
         if comment is not None:
             triples.append(annot_BN, ns.rdfs.comment, ns.xsd.string(comment))
         if xref is not None:
-            triples.append(annot_BN, ns.cello.xref, xref_IRI)
+            triples.append(annot_BN, ns.cello.hasXref, xref_IRI)
 
         return triples
 
@@ -1476,7 +1476,7 @@ class RdfBuilder:
             xref = annot.get("xref")
             name = self.get_xref_label(xref)
             xref_IRI = self.get_xref_IRI(xref)
-            triples.append(annot_BN, ns.cello.xref, xref_IRI)
+            triples.append(annot_BN, ns.cello.hasXref, xref_IRI)
             triples.append(annot_BN, ns.rdfs.label, ns.xsd.string(name))
         return triples
 
@@ -1499,7 +1499,7 @@ class RdfBuilder:
             triples.append(cl_IRI, ns.cello.transformant, inst_BN)
             triples.append(inst_BN, ns.rdf.type, ns.CHEBI.ChemicalEntity)
             if term is not None:
-                triples.append(inst_BN, ns.cello.xref, self.get_xref_IRI(term))
+                triples.append(inst_BN, ns.cello.hasXref, self.get_xref_IRI(term))
                 label = self.get_xref_label(term)
                 triples.append(inst_BN, ns.rdfs.label, ns.xsd.string(label))
             else:
@@ -1624,7 +1624,7 @@ class RdfBuilder:
         triples.append(annot_BN, ns.rdf.type, ns.cello.Disease)
         name = self.get_xref_label(cvterm)
         xref_IRI = self.get_xref_IRI(cvterm)
-        triples.append(annot_BN, ns.cello.xref, xref_IRI)
+        triples.append(annot_BN, ns.cello.hasXref, xref_IRI)
         triples.append(annot_BN, ns.rdfs.label, ns.xsd.string(name))
         return triples
 
@@ -1637,6 +1637,6 @@ class RdfBuilder:
         triples.append(annot_BN, ns.rdf.type, ns.cello.Species)
         name = self.get_xref_label(xref)
         xref_IRI = self.get_xref_IRI(xref)
-        triples.append(annot_BN, ns.cello.xref, xref_IRI)
+        triples.append(annot_BN, ns.cello.hasXref, xref_IRI)
         triples.append(annot_BN, ns.rdfs.label, ns.xsd.string(name))
         return triples

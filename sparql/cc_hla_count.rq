@@ -18,7 +18,7 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 
 select (count(distinct ?annot) as ?cc_hla_count) where {
 select ?cl ?annot ?ref ?gene_name ?alleles where {
-  ?cl a :CellLine ; :hlaTyping ?annot .
+  ?cl a :CellLine ; :hasHLAtyping ?annot .
   ?annot a :HLATyping ;  :source ?ref ;  :geneAlleles ?ga .
   ?ga :alleles ?alleles ; :gene ?gene .
   ?gene a :Gene ;  rdfs:label ?gene_name .

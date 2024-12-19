@@ -130,7 +130,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.MiscellaneousInfoComment = self.registerClass("MiscellaneousInfoComment")  # described as an IAO:Topic
         self.CautionComment = self.registerClass("CautionComment")                      # described as an IAO:Topic
         self.AnecdotalComment = self.registerClass("AnecdotalComment")                  # described as an IAO:Topic
-        self.MisspellingComment = self.registerClass("MisspellingComment")              # described as an IAO:Topic
+        self.MisspellingRecord = self.registerClass("MisspellingRecord")              # described as an IAO:Topic
         self.DonorInfoComment = self.registerClass("DonorInfoComment")                  # described as an IAO:Topic
         self.DiscontinuationRecord = self.registerClass("DiscontinuationRecord")        # described as an IAO:Topic
         self.RegistrationRecord = self.registerClass("RegistrationRecord")              # described as an IAO:Topic
@@ -145,7 +145,6 @@ class CelloOntologyNamespace(BaseNamespace):
         self.repeatNumber = self.registerDatatypeProperty("repeatNumber")               # TODO: later, question: separate number dand variant id ?
 
         self.conflicting = self.registerDatatypeProperty("conflicting")                 # TODO: later
-        self.includesObservation = self.registerObjectProperty("includesObservation")   # TODO: later
 
         self.Sex = self.registerClass("Sex")                                            # TODO: later, has some special cases like mixed sex
 
@@ -200,8 +199,9 @@ class CelloOntologyNamespace(BaseNamespace):
         self.secondaryAccession = self.registerDatatypeProperty("secondaryAccession", comment=comment)   # described as subProp of dcterms:identifier
         
 
-
-        self.name = self.registerDatatypeProperty("name")                               # described, as equivalent of rdfs:label
+        comment = "A human-readable version of a resource's name. It is an owl:equivalentProperty of rdfs:label"
+        self.name = self.registerDatatypeProperty("name", comment=comment)              # described, as equivalent of rdfs:label
+        comment = "A name which serves as a concise or abbreviated version of a longer name."
         self.shortname = self.registerDatatypeProperty("shortname")                     # described as sub prop of cello:name
 
         comment="Most frequently the name of the cell line as provided in the original publication"
@@ -209,43 +209,55 @@ class CelloOntologyNamespace(BaseNamespace):
 
         comment="Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms"
         self.alternativeName = self.registerDatatypeProperty("alternativeName", comment=comment)   # described as sub of skos:altLabel sub of cello:name
+
+        comment="A name as it appears in some register or official list."        
+        self.registeredName = self.registerDatatypeProperty("registeredName", comment=comment)           # described as sub of cello:name
+        comment="A misspelling as it appears in some publication or external resource"
+        self.misspellingName = self.registerDatatypeProperty("misspellingName", comment=comment)         # described as sub of skos:hiddenLabel sub of cello:name
+
+
+        comment="A related resource from which the described resource is derived or originates."
+        self.hasSource = self.registerObjectProperty("hasSource", comment=comment)                       # defined as subproperty of dcterms:source
+
+        comment="A related resource in which the described resource appears."
+        self.appearsIn = self.registerObjectProperty("appearsIn", comment=comment)                       # defined as sub prop of dcterms:source
+
+        comment="A publication that is referenced, cited, or otherwise pointed to by the described resource."
+        self.references = self.registerObjectProperty("references", comment=comment)    # defined as subproperty of dcterms:references
+
+        comment="A cross-reference that is referenced, cited, or otherwise pointed to by the described resource."
+        self.hasXref = self.registerObjectProperty("hasXref", label="has cross-reference", comment=comment)    # defined as sub prop of dcterms:references
         
-        self.registeredName = self.registerDatatypeProperty("registeredName")           # described as sub of cello:name
-        self.misspellingName = self.registerDatatypeProperty("misspellingName")         # described as sub of skos:hiddenLabel sub of cello:name
+        self.hasGenomeAncestry = self.registerObjectProperty("hasGenomeAncestry")       # described as sub cello:hasAnnotation
 
+        self.hasComponent = self.registerObjectProperty("hasComponent")                 # described as sub prop of BFO:has_part 
+        self.hasPopulation = self.registerObjectProperty("hasPopulation")               # TODO: later # as link between PopulationPercentage and Population
+        self.percentage = self.registerDatatypeProperty("percentage")                   # TODO: later # as link between PopulationPercentage and percentage
 
-        self.appearsIn = self.registerObjectProperty("appearsIn")                       # TODO:
-        self.source = self.registerObjectProperty("source")                             # defined as subproperty of dcterms:source, TODO: rename has_source
-        self.xref = self.registerObjectProperty("xref", label="has Cross-Reference")                                 # TODO:
-        self.reference = self.registerObjectProperty("reference")                       # defined as subproperty of dcterms:references, TODO: rename has_reference or references
+        self.hasHLAtyping = self.registerObjectProperty("hasHLAtyping", label="has HLA Typing")     # described as sub cello:hasAnnotation
+        #self.hasAllele = self.registerObjectProperty("hasAllele")                                  # unused, described as ns.GENO:0000413 subprop
+        #self.isAlleleOf = self.registerObjectProperty("isAlleleOf")                                # unused, described as ns.GENO:0000408 subprop
+        self.alleleIdentifier = self.registerDatatypeProperty("alleleIdentifier")                   # described as dcterms:identifier subprop
+        self.includesObservation = self.registerObjectProperty("includesObservation")   # described as sub prop of BFO:has_part, link between some genetic information and a gene allele
 
-        self.genomeAncestry = self.registerObjectProperty("genomeAncestry")             # TODO:
-        self.component = self.registerObjectProperty("component")                       # TODO: # component object = population percentage of genome ancestry
+        self.markerId = self.registerDatatypeProperty("markerId")                       # described as sub cello:hasAnnotation  
 
-        self.population = self.registerObjectProperty("population")                     # TODO: # as link between PopulationPercentage and Population
-        self.percentage = self.registerDatatypeProperty("percentage")                   # TODO: # as link between PopulationPercentage and percentage
-        self.populationName = self.registerDatatypeProperty("populationName")           # TODO: # as sub property of rdfs:label as name, recommendedName,...
+        self.ofGene = self.registerObjectProperty("ofGene")                             # TODO: later
 
-        self.hlaTyping = self.registerObjectProperty("hlaTyping", label="has HLA Typing")                       # TODO:
-        #self.hasAllele = self.registerObjectProperty("hasAllele")                      # unused, described as ns.GENO:0000413 subprop
-        #self.isAlleleOf = self.registerObjectProperty("isAlleleOf")                    # unused, described as ns.GENO:0000408 subprop
-        self.alleleIdentifier = self.registerDatatypeProperty("alleleIdentifier")       # described as dcterms:identifier subprop
-        self.includesObservation = self.registerObjectProperty("includesObservation")   # TODO link between some gneetic information and a gene allele
+        comment="The belonging to a specific panel or collection of cell lines"
+        self.belongsTo = self.registerDatatypeProperty("belongsTo", comment=comment)    # described as sub prop of schema:category
 
-        self.markerId = self.registerDatatypeProperty("markerId")                       # TODO:
-
-        self.gene = self.registerObjectProperty("gene")                                 # TODO:
-
-        self.partOf = self.registerDatatypeProperty("partOf")                           # TODO:
-
-        self._from = self.registerObjectProperty("from")                                # TODO: # cannot use function name "from" (is python reserved word)
+        comment="Laboratory, research institute, university having established the cell line."
+        self.establishedBy = self.registerObjectProperty("establishedBy", comment=comment)   # described as sub prop of dcterms:source # cannot use function name "from" (is python reserved word)
         
-        self.sequenceVariation = self.registerObjectProperty("sequenceVariation")       # TODO:
+        self.commentedSequenceVariation = self.registerObjectProperty("commentedSequenceVariation")  # TODO: later
         
-        self.zygosity = self.registerDatatypeProperty("zygosity")                       # TODO:
-        self.hgvs = self.registerDatatypeProperty("hgvs")                               # TODO:
-        self.noneReported = self.registerDatatypeProperty("noneReported")               # TODO:
-        self.variationStatus = self.registerDatatypeProperty("variationStatus")         # TODO:
+        self.zygosity = self.registerDatatypeProperty("zygosity")                       # described as sub prop of GENO:_0000608_has_zygozity
+
+        comment="Notation acoording to the HGVS Nomenclature. HGVS is an internationally-recognized standard for the description of DNA, RNA, and protein sequence variants."
+        self.hgvs = self.registerDatatypeProperty("hgvs", comment=comment)              # described as sub of skos:notation ?
+        self.noneReported = self.registerDatatypeProperty("noneReported")               # TODO: later
+        self.variationStatus = self.registerDatatypeProperty("variationStatus")         # TODO: later
 
         self.fromIndividualBelongingToBreed = self.registerObjectProperty("fromIndividualBelongingToBreed") # TODO:
         self.sequenceVariationComment = self.registerObjectProperty("sequenceVariationComment")             # TODO:
@@ -264,14 +276,14 @@ class CelloOntologyNamespace(BaseNamespace):
         self.doublingTimeComment = self.registerObjectProperty("doublingTimeComment")   # TODO:
         self.karyotypicInfoComment = self.registerObjectProperty("karyotypicInfoComment")           # TODO:
         self.miscellaneousInfoComment = self.registerObjectProperty("miscellaneousInfoComment")     # TODO:
-        self.misspellingComment = self.registerObjectProperty("misspellingComment")     # TODO:
+        self.hasMisspellingRecord = self.registerObjectProperty("hasMisspellingRecord")     # TODO:
         self.senescenceComment = self.registerObjectProperty("senescenceComment")       # TODO:
         self.virologyComment = self.registerObjectProperty("virologyComment")           # TODO:
         self.omicsComment = self.registerObjectProperty("omicsComment")                 # TODO:
         self.fromIndividualBelongingToPopulation = self.registerObjectProperty("fromIndividualBelongingToPopulation")       # TODO:
 
         self.duration = self.registerDatatypeProperty("duration")                       # TODO:
-        self.group = self.registerDatatypeProperty("group")                             # TODO:
+        self.inGroup = self.registerDatatypeProperty("inGroup")                             # described as sub prop of schema:category
 
         self.isRegistered = self.registerObjectProperty("isRegistered")                # TODO:
         self.inRegister = self.registerObjectProperty("inRegister")                    # TODO

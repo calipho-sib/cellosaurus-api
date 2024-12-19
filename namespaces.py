@@ -272,10 +272,10 @@ class SkosNamespace(BaseNamespace):
         self.Concept = self.registerTerm("Concept")
         self.ConceptScheme = self.registerTerm("ConceptScheme")
         self.inScheme = self.registerTerm("inScheme")
-        self.notation = self.registerTerm("notation")
+        self.notation = self.registerDatatypeProperty("notation", comment=" Notations are symbols which are not normally recognizable as words or sequences of words in any natural language and are thus usable independently of natural-language contexts. They are typically composed of digits, complemented with punctuation signs and other characters.")
         self.prefLabel = self.registerTerm("prefLabel")
         self.altLabel = self.registerTerm("altLabel")
-        self.hiddenLabel = self.registerTerm("hiddenLabel")
+        self.hiddenLabel = self.registerDatatypeProperty("hiddenLabel", comment="A hidden lexical label, represented by means of the skos:hiddenLabel property, is a lexical label for a resource, where a KOS designer would like that character string to be accessible to applications performing text-based indexing and search operations, but would not like that label to be visible otherwise. Hidden labels may for instance be used to include misspelled variants of other lexical labels.")
         self.broader = self.registerTerm("broader")
         self.exactMatch = self.registerTerm("exactMatch")
         self.closeMatch = self.registerTerm("closeMatch")
@@ -416,6 +416,7 @@ class SchemaOrgNamespace(BaseNamespace):
         self.Person = self.registerClass("Person")
         self.Observation = self.registerClass("Observation")
         self.observationAbout = self.registerObjectProperty("observationAbout", hidden = False)
+        self.category = self.registerDatatypeProperty("category", comment="A category for the item.")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class DctermsNamespace(BaseNamespace):
@@ -435,6 +436,16 @@ class DctermsNamespace(BaseNamespace):
         self.identifier =   self.registerDatatypeProperty("identifier")
         self.source =       self.registerObjectProperty("source", hidden=True)              # hidden because redundant with cello subprop
         self.references =   self.registerObjectProperty("references", hidden=True)          # hidden because redundant with cello subprop
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class BFONamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(BFONamespace, self).__init__("BFO", "http://purl.obolibrary.org/obo/BFO_")
+        self._0000051_has_part = self.registerObjectProperty("0000051", label="has part", comment="a core relation that holds between a whole and its part")
+        #self._0000050_part_of = self.registerObjectProperty("0000050", label="part of", comment="a core relation that holds between a part and its whole")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -558,6 +569,7 @@ class GENONamespace(BaseNamespace):
     def __init__(self): 
         super(GENONamespace, self).__init__("GENO", "http://purl.obolibrary.org/obo/GENO_")
         self._0000512_Allele = self.registerClass("0000512", label="Allele")
+        self._0000608_has_zygozity = self.registerDatatypeProperty("0000608", hidden=True)
         #self._0000413_has_allele = self.registerObjectProperty("0000413", label="has allele", hidden=True )
         #self._0000408_is_allele_of = self.registerObjectProperty("0000408", hidden=True)
         

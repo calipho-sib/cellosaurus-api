@@ -55,7 +55,7 @@ class OntologyBuilder:
         self.rdfs_domain_to_remove[ns.cello.shortname] = { ns.owl.NamedIndividual }
         self.rdfs_domain_to_remove[ns.cello.more_specific_than] = { ns.cello.Xref  }
         self.rdfs_range_to_remove = dict()
-        self.rdfs_range_to_remove[ns.cello.xref] = { ns.skos.Concept }
+        self.rdfs_range_to_remove[ns.cello.hasXref] = { ns.skos.Concept }
         self.rdfs_range_to_remove[ns.cello.more_specific_than] = { ns.cello.Xref } 
         self.rdfs_range_to_remove[ns.cello.database] = { ns.owl.NamedIndividual, ns.cello.CelloConceptScheme } 
         #self.rdfs_range_to_remove[ns.cello.genomeModificationMethod] = { ns.owl.NamedIndividual } 
@@ -407,14 +407,16 @@ class OntologyBuilder:
 
         # ns.describe(ns.cello.hasAllele, ns.rdfs.subPropertyOf, ns.GENO._0000413_has_allele) # unused
         # ns.describe(ns.cello.isAlleleOf, ns.rdfs.subPropertyOf, ns.GENO._0000408_is_allele_of) # unused
-        ns.describe(ns.cello.alleleIdentifier, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.hasTarget, ns.rdfs.subPropertyOf, ns.schema.observationAbout)
         
-        ns.describe(ns.cello.source, ns.rdfs.subPropertyOf, ns.dcterms.source)
-        ns.describe(ns.cello.reference, ns.rdfs.subPropertyOf, ns.dcterms.references)
+        ns.describe(ns.cello.hasSource, ns.rdfs.subPropertyOf, ns.dcterms.source)
+        ns.describe(ns.cello.appearsIn, ns.rdfs.subPropertyOf, ns.dcterms.source)
+        ns.describe(ns.cello.references, ns.rdfs.subPropertyOf, ns.dcterms.references)
+        ns.describe(ns.cello.hasXref, ns.rdfs.subPropertyOf, ns.dcterms.references)
 
         ns.describe(ns.cello.hasAnnotation, ns.owl.inverseOf, ns.IAO.is_about_0000136)
 
+        
         ns.describe(ns.cello.hasInternalId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.issn13, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.prism.hasDOI, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
@@ -423,11 +425,13 @@ class OntologyBuilder:
         ns.describe(ns.cello.hasISO4JournalTitleAbbreviation, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.prism.volume, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         
+        ns.describe(ns.cello.markerId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.alleleIdentifier, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.accession, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.primaryAccession, ns.rdfs.subPropertyOf, ns.cello.accession)
         ns.describe(ns.cello.primaryAccession, ns.owl.equivalentProperty, ns.wd.P3289_AC)
         ns.describe(ns.cello.secondaryAccession, ns.rdfs.subPropertyOf, ns.cello.accession)
-
+        
         ns.describe(ns.cello.name, ns.owl.equivalentProperty, ns.rdfs.label)
         ns.describe(ns.cello.shortname, ns.rdfs.subPropertyOf, ns.cello.name)
         ns.describe(ns.cello.registeredName, ns.rdfs.subPropertyOf, ns.cello.name)
@@ -437,8 +441,21 @@ class OntologyBuilder:
         ns.describe(ns.cello.recommendedName, ns.rdfs.subPropertyOf, ns.skos.prefLabel)
         ns.describe(ns.cello.alternativeName, ns.rdfs.subPropertyOf, ns.skos.altLabel)
         ns.describe(ns.cello.misspellingName, ns.rdfs.subPropertyOf, ns.skos.hiddenLabel)
+        ns.describe(ns.cello.hgvs, ns.rdfs.subPropertyOf, ns.skos.notation)
         
+        ns.describe(ns.cello.includesObservation, ns.rdfs.subPropertyOf, ns.BFO._0000051_has_part)
+        ns.describe(ns.cello.hasComponent, ns.rdfs.subPropertyOf, ns.BFO._0000051_has_part)
+        ns.describe(ns.cello.zygosity, ns.rdfs.subPropertyOf, ns.GENO._0000608_has_zygozity)
 
+        ns.describe(ns.cello.inGroup, ns.rdfs.subPropertyOf, ns.schema.category)
+        ns.describe(ns.cello.belongsTo, ns.rdfs.subPropertyOf, ns.schema.category)
+
+        ns.describe(ns.cello.establishedBy, ns.rdfs.subPropertyOf, ns.dcterms.source)
+
+        ns.describe(ns.cello.hasGenomeAncestry, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasHLAtyping, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        
+        
         
         
 
@@ -795,7 +812,7 @@ cello:AnecdotalComment a owl:Class ;
         )
     ] .
 
-cello:MisspellingComment a owl:Class ;
+cello:MisspellingRecord a owl:Class ;
     rdfs:subClassOf IAO:0000027 ;
     owl:equivalentClass [
         owl:intersectionOf (
