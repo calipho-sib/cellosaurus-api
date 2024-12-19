@@ -116,11 +116,8 @@ tags_metadata = [
         "description": "Get general information about the current Cellosaurus release",
     },{ "name": "Cell lines",
         "description": "Get all or part of the information related to cell lines",
-    },{ "name": "RDF",
-     "description": "RDF desciption of entities",
-    }
-]
-
+    }]
+#tags_metadata.append({ "name": "RDF", "description": "RDF desciption of entities" })
 
 # general documentation in the header of the page
 app = FastAPI(
@@ -562,7 +559,7 @@ async def search_cell_line(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/entity/ontology/" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
+@app.get("/describe/entity/ontology/" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_onto(
         request: Request,
@@ -580,7 +577,7 @@ async def describe_onto(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/entity/{dir}/{ac}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
+@app.get("/describe/entity/{dir}/{ac}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_entity(
         request: Request,
