@@ -1407,15 +1407,28 @@ class RdfBuilder:
     def get_ttl_for_mab_isotype(self, cl_IRI, annot):    
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
-        annot_BN = self.get_blank_node()
         heavy = annot["heavy-chain"]
         light = annot.get("light-chain")
+        if light is None:
+            if heavy == "Not specified":
+                light = "Not specified"
+            else:
+                light = "Not determined"
         sources = annot.get("source-list") or []
-        triples.append(cl_IRI, ns.cello.mabIsotype, annot_BN)
-        triples.append(annot_BN, ns.rdf.type, ns.cello.MabIsotype)
-        triples.append(annot_BN, ns.cello.antibodyHeavyChain, ns.xsd.string(heavy))
-        if light is not None: triples.append(annot_BN, ns.cello.antibodyLightChain, ns.xsd.string(light))
-        triples.extend(self.get_ttl_for_sources(annot_BN, sources))
+        for h in heavy.split("+"):
+            for l in light.split("+"):
+                annot_BN = self.get_blank_node()
+                triples.append(cl_IRI, ns.cello.mabIsotype, annot_BN)
+                triples.append(annot_BN, ns.rdf.type, ns.cello.MabIsotype)
+                igh_BN = self.get_blank_node()
+                triples.append(annot_BN, ns.cello.hasAntibodyHeavyChain, igh_BN)
+                triples.append(igh_BN, ns.rdf.type, ns.NCIt.C16717_IGH)
+                triples.append(igh_BN, ns.rdfs.label, ns.xsd.string(h))
+                igl_BN = self.get_blank_node()
+                triples.append(annot_BN, ns.cello.hasAntibodyLightChain, igl_BN)
+                triples.append(igl_BN, ns.rdf.type, ns.NCIt.C16720_IGL)
+                triples.append(igl_BN, ns.rdfs.label, ns.xsd.string(l))
+                triples.extend(self.get_ttl_for_sources(annot_BN, sources))
         return triples
 
 

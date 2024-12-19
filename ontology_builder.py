@@ -400,6 +400,8 @@ class OntologyBuilder:
 
         ns.describe(ns.CHEBI.Protein, ns.rdfs.subClassOf, ns.CHEBI.ChemicalEntity)
         ns.describe(ns.CHEBI.Protein, ns.skos.closeMatch, ns.up.Protein)
+        ns.describe(ns.NCIt.C16717_IGH, ns.rdfs.subPropertyOf, ns.CHEBI.Protein)
+        ns.describe(ns.NCIt.C16720_IGL, ns.rdfs.subPropertyOf, ns.CHEBI.Protein)
 
         # - - - - - - - - 
         # misc properties

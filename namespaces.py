@@ -534,7 +534,10 @@ class NCItNamespace(BaseNamespace):
         self.C16612 = self.registerClass("C16612", label="Gene", hidden=True)                       # owl:equClass cello:Gene
         self.C45822 = self.registerClass("C45822", label="Locus", hidden=True)                      # owl:equClass cello:Locus
         self.C13441_ShortTandemRepeat = self.registerClass("C13441", label="Short Tandem Repeat")   # superclass for cello:Marker
+        self.C16717_IGH = self.registerClass("C16717", label="Immunoglobulin Heavy Chain")
+        self.C16720_IGL = self.registerClass("C16720", label="Immunoglobulin Light Chain")
 
+        # replace with HGNC xrefs
         self.C101157 = self.registerClass("C101157", label="HLA-DRA Gene")   # described as a cello:HLAGene subclass
         self.C190000 = self.registerClass("C190000", label="HLA-DRB2 Gene")   # described as a cello:HLAGene subclass
         self.C19409 = self.registerClass("C19409", label="HLA-DRB1 Gene")   # described as a cello:HLAGene subclass

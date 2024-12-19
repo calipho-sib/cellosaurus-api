@@ -306,8 +306,8 @@ class CelloOntologyNamespace(BaseNamespace):
         self.mabIsotype = self.registerObjectProperty("mabIsotype", label="has monoclonal antibody isotype")          # TODO:
         self.mabTarget = self.registerObjectProperty("mabTarget", label="has monoclonal antibody target")             # TODO:
         
-        self.antibodyHeavyChain = self.registerDatatypeProperty("antibodyHeavyChain")   # TODO:
-        self.antibodyLightChain = self.registerDatatypeProperty("antibodyLightChain")   # TODO:
+        self.hasAntibodyHeavyChain = self.registerObjectProperty("hasAntibodyHeavyChain")   # TODO
+        self.hasAntibodyLightChain = self.registerObjectProperty("hasAntibodyLightChain")   # TODO:
 
         self.resistance = self.registerObjectProperty("resistance")                     # TODO:
         self.transformant = self.registerObjectProperty("transformant")                 # TODO:
