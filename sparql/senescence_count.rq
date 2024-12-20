@@ -17,7 +17,7 @@ PREFIX widoco: <https://w3id.org/widoco/vocab#>
 PREFIX vann: <http://purl.org/vocab/vann/> 
 select (count(*) as ?senescence_count) where { 
   ?cl a :CellLine .
-  ?cl :senescenceComment ?annot.
+  ?cl :hasSenescenceComment ?annot.
   ?annot a ?ctClass .
   ?annot rdfs:comment ?cm .
 }

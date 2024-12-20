@@ -537,22 +537,20 @@ class NCItNamespace(BaseNamespace):
         self.C16717_IGH = self.registerClass("C16717", label="Immunoglobulin Heavy Chain")
         self.C16720_IGL = self.registerClass("C16720", label="Immunoglobulin Light Chain")
 
-        # replace with HGNC xrefs
-        self.C101157 = self.registerClass("C101157", label="HLA-DRA Gene")   # described as a cello:HLAGene subclass
-        self.C190000 = self.registerClass("C190000", label="HLA-DRB2 Gene")   # described as a cello:HLAGene subclass
-        self.C19409 = self.registerClass("C19409", label="HLA-DRB1 Gene")   # described as a cello:HLAGene subclass
-        self.C28585 = self.registerClass("C28585", label="HLA-A Gene")   # described as a cello:HLAGene subclass
-        self.C29953 = self.registerClass("C29953", label="HLA-DPB1 Gene")   # described as a cello:HLAGene subclass
-        self.C62758 = self.registerClass("C62758", label="HLA-C Gene")   # described as a cello:HLAGene subclass
-        self.C62778 = self.registerClass("C62778", label="HLA-B Gene")   # described as a cello:HLAGene subclass
-        self.C70614 = self.registerClass("C70614", label="HLA-DQB1 Gene")   # described as a cello:HLAGene subclass
-        self.C71259 = self.registerClass("C71259", label="HLA-DRB3 Gene")   # described as a cello:HLAGene subclass
-        self.C71261 = self.registerClass("C71261", label="HLA-DRB4 Gene")   # described as a cello:HLAGene subclass
-        self.C71263 = self.registerClass("C71263", label="HLA-DRB5 Gene")   # described as a cello:HLAGene subclass
-        self.C71265 = self.registerClass("C71265", label="HLA-DQA1 Gene")   # described as a cello:HLAGene subclass
-        self.C71267 = self.registerClass("C71267", label="HLA-DPA1 Gene")   # described as a cello:HLAGene subclass
-
-        self.xxx = self.registerClass("", label="", comment = "")
+        # # replace with HGNC xrefs
+        # self.C101157 = self.registerClass("C101157", label="HLA-DRA Gene")   # described as a cello:HLAGene subclass
+        # self.C190000 = self.registerClass("C190000", label="HLA-DRB2 Gene")   # described as a cello:HLAGene subclass
+        # self.C19409 = self.registerClass("C19409", label="HLA-DRB1 Gene")   # described as a cello:HLAGene subclass
+        # self.C28585 = self.registerClass("C28585", label="HLA-A Gene")   # described as a cello:HLAGene subclass
+        # self.C29953 = self.registerClass("C29953", label="HLA-DPB1 Gene")   # described as a cello:HLAGene subclass
+        # self.C62758 = self.registerClass("C62758", label="HLA-C Gene")   # described as a cello:HLAGene subclass
+        # self.C62778 = self.registerClass("C62778", label="HLA-B Gene")   # described as a cello:HLAGene subclass
+        # self.C70614 = self.registerClass("C70614", label="HLA-DQB1 Gene")   # described as a cello:HLAGene subclass
+        # self.C71259 = self.registerClass("C71259", label="HLA-DRB3 Gene")   # described as a cello:HLAGene subclass
+        # self.C71261 = self.registerClass("C71261", label="HLA-DRB4 Gene")   # described as a cello:HLAGene subclass
+        # self.C71263 = self.registerClass("C71263", label="HLA-DRB5 Gene")   # described as a cello:HLAGene subclass
+        # self.C71265 = self.registerClass("C71265", label="HLA-DQA1 Gene")   # described as a cello:HLAGene subclass
+        # self.C71267 = self.registerClass("C71267", label="HLA-DPA1 Gene")   # described as a cello:HLAGene subclass
 
         # SequenceVariation class, aleternative 1)
         comment = "A variation in or modification of the molecular sequence of a gene or gene product."
@@ -622,13 +620,13 @@ class FBcvNamespace(BaseNamespace):
 
 
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class OGGNamespace(BaseNamespace):
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): 
-        super(OGGNamespace, self).__init__("OGG", "http://purl.obolibrary.org/obo/OGG_")
-        self._3000003128 = self.registerClass("3000003128", label="Major histocompatibility complex, class II, DR beta 6")   # described as a cello:HLAGene subclass
-        self._3000003132 = self.registerClass("3000003132", label="Major histocompatibility complex, class II, DR beta 9")   # described as a cello:HLAGene subclass
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# class OGGNamespace(BaseNamespace):
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#     def __init__(self): 
+#         super(OGGNamespace, self).__init__("OGG", "http://purl.obolibrary.org/obo/OGG_")
+#         self._3000003128 = self.registerClass("3000003128", label="Major histocompatibility complex, class II, DR beta 6")   # described as a cello:HLAGene subclass
+#         self._3000003132 = self.registerClass("3000003132", label="Major histocompatibility complex, class II, DR beta 9")   # described as a cello:HLAGene subclass
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

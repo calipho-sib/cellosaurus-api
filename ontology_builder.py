@@ -172,21 +172,22 @@ class OntologyBuilder:
         ns.describe(ns.cello.KaryotypicInfoComment, ns.rdfs.subClassOf, ns.OBI._0001404)     
         ns.describe(ns.cello.KaryotypicInfoComment, ns.owl.equivalentClass, ns.OBI._0002769)             
 
-        ns.describe(ns.NCIt.C101157, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C190000, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C19409, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C28585, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C29953, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C62758, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C62778, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C70614, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C71259, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C71261, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C71263, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C71265, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.NCIt.C71267, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.OGG._3000003128, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        ns.describe(ns.OGG._3000003132, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # obsolete, replaced with HGNC sref
+        # ns.describe(ns.NCIt.C101157, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C190000, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C19409, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C28585, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C29953, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C62758, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C62778, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C70614, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C71259, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C71261, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C71263, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C71265, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.NCIt.C71267, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.OGG._3000003128, ns.rdfs.subClassOf, ns.cello.HLAGene)
+        # ns.describe(ns.OGG._3000003132, ns.rdfs.subClassOf, ns.cello.HLAGene)
 
         # subclass OBI:0002769 karyotype information  
         # ...
@@ -400,8 +401,8 @@ class OntologyBuilder:
 
         ns.describe(ns.CHEBI.Protein, ns.rdfs.subClassOf, ns.CHEBI.ChemicalEntity)
         ns.describe(ns.CHEBI.Protein, ns.skos.closeMatch, ns.up.Protein)
-        ns.describe(ns.NCIt.C16717_IGH, ns.rdfs.subPropertyOf, ns.CHEBI.Protein)
-        ns.describe(ns.NCIt.C16720_IGL, ns.rdfs.subPropertyOf, ns.CHEBI.Protein)
+        ns.describe(ns.NCIt.C16717_IGH, ns.rdfs.subClassOf, ns.CHEBI.Protein)
+        ns.describe(ns.NCIt.C16720_IGL, ns.rdfs.subClassOf, ns.CHEBI.Protein)
 
         # - - - - - - - - 
         # misc properties
@@ -454,12 +455,29 @@ class OntologyBuilder:
 
         ns.describe(ns.cello.establishedBy, ns.rdfs.subPropertyOf, ns.dcterms.source)
 
+        ns.describe(ns.cello.isDerivedFromCellType, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.isDerivedFromSite, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+
         ns.describe(ns.cello.hasGenomeAncestry, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasHLAtyping, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.comesFomIndividualBelongingToBreed, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasSequenceVariationComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         
+        ns.describe(ns.cello.hasAnecdotalComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasCautionComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasCharacteristicsComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasBiotechnologyComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         
-        
-        
+
+        ns.describe(ns.cello.hasDonorInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasDoublingTimeComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasKaryotypicInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasMiscellaneousInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasMisspellingRecord, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasSenescenceComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasVirologyComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasOmicsComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.comesFromIndividualBelongingToPopulation, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

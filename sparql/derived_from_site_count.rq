@@ -17,7 +17,7 @@ PREFIX widoco: <https://w3id.org/widoco/vocab#>
 PREFIX vann: <http://purl.org/vocab/vann/> 
 select (count(distinct ?site) as ?derived_form_site_count) where {
     ?cl a :CellLine .
-    ?cl :derivedFromSite ?site.
+    ?cl :isDerivedFromSite ?site.
     ?site a ?siteClass .
     ?site rdfs:label ?label .
     ?site :siteType ?type .

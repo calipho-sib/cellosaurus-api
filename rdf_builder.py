@@ -56,22 +56,22 @@ class RdfBuilder:
             "miscellaneous document":   ns.cello.MiscellaneousDocument,            
         }
 
-        self.hla_clazz = {
-            "HLA-DRA": ns.NCIt.C101157,
-            "HLA-DRB2": ns.NCIt.C190000,
-            "HLA-DRB1": ns.NCIt.C19409,
-            "HLA-A": ns.NCIt.C28585,
-            "HLA-DPB1": ns.NCIt.C29953,
-            "HLA-C": ns.NCIt.C62758,
-            "HLA-B": ns.NCIt.C62778,
-            "HLA-DQB1": ns.NCIt.C70614,
-            "HLA-DRB3": ns.NCIt.C71259,
-            "HLA-DRB4": ns.NCIt.C71261,
-            "HLA-DRB5": ns.NCIt.C71263,
-            "HLA-DQA1": ns.NCIt.C71265,
-            "HLA-DPA1": ns.NCIt.C71267,
-            "HLA-DRB6": ns.OGG._3000003128,
-            "HLA-DRB9": ns.OGG._3000003132,
+        self.hla_hgnc_ac = {
+            "HLA-DRA": "4947",
+            "HLA-DRB2": "4950",
+            "HLA-DRB1": "4948",
+            "HLA-A": "4931",
+            "HLA-DPB1": "4940",
+            "HLA-C": "4933",
+            "HLA-B": "4932",
+            "HLA-DQB1": "4944",
+            "HLA-DRB3": "4951",
+            "HLA-DRB4": "4952",
+            "HLA-DRB5": "4953",
+            "HLA-DQA1": "4942",
+            "HLA-DPA1": "4938",
+            "HLA-DRB6": "4954",
+            "HLA-DRB9": "4957",
         }
 
         # genome editing method labels => class
@@ -213,6 +213,21 @@ class RdfBuilder:
         props = f"cat={cat}|lbl={lbl}|dis={dis}|url={url}"
         return ns.xref.IRI(db,ac, props)
 
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_hla_gene_xref_IRI(self, our_label):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ac = self.hla_hgnc_ac.get(our_label)
+        if ac is None:
+            log_it("ERROR", f"unexpected HLA Gene label '{our_label}'")
+            ac = ns.cello.HLAGene # default, most generic
+        db = "HGNC"
+        cat = "Organism-specific databases"
+        url = f"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:{ac}"
+        dis = ""
+        lbl = our_label 
+        props = f"cat={cat}|lbl={lbl}|dis={dis}|url={url}"
+        return ns.xref.IRI(db,ac, props)
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_amelogenin_gene_instance(self, gene_BN, chr):
@@ -226,14 +241,15 @@ class RdfBuilder:
     
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_hla_gene_class_IRI(self, our_label):
+    def get_ttl_for_hla_gene_instance(self, gene_BN, label):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        clazz = self.hla_clazz.get(our_label)
-        if clazz is None:
-            log_it("ERROR", f"unexpected HLA Gene label '{our_label}'")
-            clazz = ns.cello.HLAGene # default, most generic
-        return clazz
-
+        triples = TripleList()
+        triples.append(gene_BN, ns.rdf.type, ns.cello.HLAGene)
+        triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(label))
+        xref_IRI = self.get_hla_gene_xref_IRI(label)
+        triples.append(gene_BN, ns.cello.hasXref, xref_IRI)
+        return triples
+    
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_gem_class_IRI(self, gem_label):
@@ -776,33 +792,15 @@ class RdfBuilder:
             src = annot.get("source")
             if src is not None: 
                 triples.extend(self.get_ttl_for_source(annot_BN, src))
-            # for gall in annot["hla-gene-alleles-list"]:
-            #     gene_label = gall["gene"]
-            #     gene_clazz = self.get_hla_gene_class_IRI(gene_label)
-            #     for allele in gall["alleles"].split(","):
-            #         allele_BN = self.get_blank_node()
-            #         triples.append(annot_BN, ns.cello.includesObservation, allele_BN)
-            #         allele_id = "*".join([gene_label, allele])
-            #         triples.append(allele_BN, ns.rdf.type, ns.cello.HLA_Allele)
-            #         triples.append(allele_BN, ns.cello.alleleIdentifier, ns.xsd.string(allele_id))
-            #         # alternative 1)
-            #         gene_BN = self.get_blank_node()
-            #         triples.append(gene_BN, ns.rdf.type, gene_clazz)
-            #         triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(gene_label))
-            #         triples.append(allele_BN, ns.cello.isAlleleOf, gene_BN)
-            #         # alternative 2) - we loose domain / range in widoco, we break instance / class separation
-            #         # triples.append(allele_BN, ns.GENO._0000408_is_allele_of, gene_clazz)
             for gall in annot["hla-gene-alleles-list"]:
                 gene_label = gall["gene"]
-                gene_clazz = self.get_hla_gene_class_IRI(gene_label)
                 for allele in gall["alleles"].split(","):
                     obs_BN = self.get_blank_node()
                     triples.append(annot_BN, ns.cello.includesObservation, obs_BN)                    
                     triples.append(obs_BN, ns.rdf.type, ns.schema.Observation)
                     gene_BN = self.get_blank_node()
                     triples.append(obs_BN, ns.cello.hasTarget, gene_BN)
-                    triples.append(gene_BN, ns.rdf.type, gene_clazz)
-                    triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(gene_label))
+                    triples.extend(self.get_ttl_for_hla_gene_instance(gene_BN, gene_label))
                     allele_BN = self.get_blank_node()
                     allele_id = "*".join([gene_label, allele])
                     triples.append(obs_BN, ns.cello.detectedAllele, allele_BN)
@@ -941,7 +939,7 @@ class RdfBuilder:
             triples = TripleList()
 
             annot_BN = self.get_blank_node()
-            triples.append(cl_IRI, ns.cello.sequenceVariationComment, annot_BN)
+            triples.append(cl_IRI, ns.cello.hasSequenceVariationComment, annot_BN)
             triples.append(annot_BN, ns.rdf.type, ns.cello.SequenceVariationComment)
             mut_type = annot.get("mutation-type")
             variationStatus = "Natural"
@@ -1064,7 +1062,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         annot_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.fromIndividualBelongingToBreed, annot_BN)
+        triples.append(cl_IRI, ns.cello.comesFomIndividualBelongingToBreed, annot_BN)
         triples.append(annot_BN, ns.rdf.type, ns.cello.Breed)
         if type(breed) == str:
             label = breed
@@ -1082,7 +1080,7 @@ class RdfBuilder:
         triples = TripleList()
         comment = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.characteristicsComment, inst_BN)
+        triples.append(cl_IRI, ns.cello.hasCharacteristicsComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.CharacteristicsComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -1094,7 +1092,7 @@ class RdfBuilder:
         triples = TripleList()
         comment = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.cautionComment, inst_BN)
+        triples.append(cl_IRI, ns.cello.hasCautionComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.CautionComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -1106,7 +1104,7 @@ class RdfBuilder:
         triples = TripleList()
         comment = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.biotechnologyComment, inst_BN)
+        triples.append(cl_IRI, ns.cello.hasBiotechnologyComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.BiotechnologyComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -1118,7 +1116,7 @@ class RdfBuilder:
         triples = TripleList()
         comment = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.anecdotalComment, inst_BN)
+        triples.append(cl_IRI, ns.cello.hasAnecdotalComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.AnecdotalComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -1130,7 +1128,7 @@ class RdfBuilder:
         triples = TripleList()
         comment = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.donorInfoComment, inst_BN)
+        triples.append(cl_IRI, ns.cello.hasDonorInfoComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.DonorInfoComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -1143,7 +1141,7 @@ class RdfBuilder:
         triples = TripleList()
         comment = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.karyotypicInfoComment, inst_BN)
+        triples.append(cl_IRI, ns.cello.hasKaryotypicInfoComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.KaryotypicInfoComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -1155,7 +1153,7 @@ class RdfBuilder:
         triples = TripleList()
         comment = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.miscellaneousInfoComment, inst_BN)
+        triples.append(cl_IRI, ns.cello.hasMiscellaneousInfoComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.MiscellaneousInfoComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -1167,7 +1165,7 @@ class RdfBuilder:
         triples = TripleList()
         comment = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.senescenceComment, inst_BN)
+        triples.append(cl_IRI, ns.cello.hasSenescenceComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.SenescenceComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -1179,7 +1177,7 @@ class RdfBuilder:
         triples = TripleList()
         comment = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.virologyComment, inst_BN)
+        triples.append(cl_IRI, ns.cello.hasVirologyComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.VirologyComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_ttl_for_sources(inst_BN, cc.get("source-list") or []))
@@ -1249,7 +1247,7 @@ class RdfBuilder:
         triples = TripleList()
         comment = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.omicsComment, inst_BN)
+        triples.append(cl_IRI, ns.cello.hasOmicsComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.OmicsComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         return triples
@@ -1260,7 +1258,7 @@ class RdfBuilder:
         triples = TripleList()
         nameOrNames = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.fromIndividualBelongingToPopulation, inst_BN)
+        triples.append(cl_IRI, ns.cello.comesFromIndividualBelongingToPopulation, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.Population)
         triples.append(inst_BN, ns.cello.name, ns.xsd.string(nameOrNames))
         return triples
@@ -1276,7 +1274,7 @@ class RdfBuilder:
         site = annot["site"]
         site_type = site["site-type"]
         label = site["value"]
-        triples.append(cl_IRI, ns.cello.derivedFromSite, site_BN)
+        triples.append(cl_IRI, ns.cello.isDerivedFromSite, site_BN)
         triples.append(site_BN, ns.rdf.type, ns.CARO.AnatomicalEntity)
         triples.append(site_BN, ns.cello.siteType, ns.xsd.string(site_type))
         triples.append(site_BN, ns.rdfs.label, ns.xsd.string(label))
@@ -1295,7 +1293,7 @@ class RdfBuilder:
             label, cv = (annot, None)
         else:
             label, cv = (annot["value"], annot.get("xref"))
-        triples.append(cl_IRI, ns.cello.cellType, ct_BN)
+        triples.append(cl_IRI, ns.cello.isDerivedFromCellType, ct_BN)
         triples.append(ct_BN, ns.rdf.type, ns.CL.CellType)
         triples.append(ct_BN, ns.rdfs.label, ns.xsd.string(label))    
         if cv is not None: triples.append(ct_BN, ns.cello.hasXref, self.get_xref_IRI(cv))
@@ -1381,7 +1379,7 @@ class RdfBuilder:
         duration = annot["doubling-time-value"]
         comment = annot.get("doubling-time-note")
         sources = annot.get("source-list") or [] 
-        triples.append(cl_IRI, ns.cello.doublingTimeComment, annot_BN)
+        triples.append(cl_IRI, ns.cello.hasDoublingTimeComment, annot_BN)
         triples.append(annot_BN, ns.rdf.type, ns.cello.DoublingTimeComment)
         triples.append(annot_BN, ns.cello.duration, ns.xsd.string(duration))
         if comment is not None: triples.append(annot_BN, ns.rdfs.comment, ns.xsd.string(comment))

@@ -18,7 +18,7 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 select (count(*) as ?population_count) where {
 #select * where {
    ?cl a :CellLine .
-   ?cl :fromIndividualBelongingToPopulation ?annot.
+   ?cl :comesFromIndividualBelongingToPopulation ?annot.
    ?annot a ?ctClass .
    ?annot rdfs:comment ?comment
 }

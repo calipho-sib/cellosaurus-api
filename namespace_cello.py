@@ -259,28 +259,28 @@ class CelloOntologyNamespace(BaseNamespace):
         self.noneReported = self.registerDatatypeProperty("noneReported")               # TODO: later
         self.variationStatus = self.registerDatatypeProperty("variationStatus")         # TODO: later
 
-        self.fromIndividualBelongingToBreed = self.registerObjectProperty("fromIndividualBelongingToBreed") # TODO:
-        self.sequenceVariationComment = self.registerObjectProperty("sequenceVariationComment")             # TODO:
+        self.comesFomIndividualBelongingToBreed = self.registerObjectProperty("comesFromIndividualBelongingToBreed") # described as cello:hasAnnotation
+        self.hasSequenceVariationComment = self.registerObjectProperty("hasSequenceVariationComment")                # described as cello:hasAnnotation
 
-        self.anecdotalComment = self.registerObjectProperty("anecdotalComment")         # TODO:
-        self.characteristicsComment = self.registerObjectProperty("characteristicsComment") # TODO:
-        self.biotechnologyComment = self.registerObjectProperty("biotechnologyComment") # TODO:
-        self.cautionComment = self.registerObjectProperty("cautionComment")             # TODO:
+        self.hasAnecdotalComment = self.registerObjectProperty("hasAnecdotalComment")                               # described as cello:hasAnnotation
+        self.hasCharacteristicsComment = self.registerObjectProperty("hasCharacteristicsComment")                   # described as cello:hasAnnotation
+        self.hasBiotechnologyComment = self.registerObjectProperty("hasBiotechnologyComment")                       # described as cello:hasAnnotation
+        self.hasCautionComment = self.registerObjectProperty("hasCautionComment")                                   # described as cello:hasAnnotation
 
-        self.siteType = self.registerDatatypeProperty("siteType")                       # TODO:
+        self.siteType = self.registerDatatypeProperty("siteType")                       # TODO:later
 
-        self.derivedFromSite = self.registerObjectProperty("derivedFromSite")           # TODO: rename it ?
-        self.cellType = self.registerObjectProperty("cellType" )                        # TODO: rename it ? derivedFromCellType
+        self.isDerivedFromSite = self.registerObjectProperty("isDerivedFromSite")                                   # described as cello:hasAnnotation
+        self.isDerivedFromCellType = self.registerObjectProperty("isDerivedFromCellType" )                          # described as cello:hasAnnotation
 
-        self.donorInfoComment = self.registerObjectProperty("donorInfoComment")         # TODO:
-        self.doublingTimeComment = self.registerObjectProperty("doublingTimeComment")   # TODO:
-        self.karyotypicInfoComment = self.registerObjectProperty("karyotypicInfoComment")           # TODO:
-        self.miscellaneousInfoComment = self.registerObjectProperty("miscellaneousInfoComment")     # TODO:
-        self.hasMisspellingRecord = self.registerObjectProperty("hasMisspellingRecord")     # TODO:
-        self.senescenceComment = self.registerObjectProperty("senescenceComment")       # TODO:
-        self.virologyComment = self.registerObjectProperty("virologyComment")           # TODO:
-        self.omicsComment = self.registerObjectProperty("omicsComment")                 # TODO:
-        self.fromIndividualBelongingToPopulation = self.registerObjectProperty("fromIndividualBelongingToPopulation")       # TODO:
+        self.hasDonorInfoComment = self.registerObjectProperty("hasDonorInfoComment")                               # described as cello:hasAnnotation
+        self.hasDoublingTimeComment = self.registerObjectProperty("hasDoublingTimeComment")                         # described as cello:hasAnnotation
+        self.hasKaryotypicInfoComment = self.registerObjectProperty("hasKaryotypicInfoComment")                     # described as cello:hasAnnotation
+        self.hasMiscellaneousInfoComment = self.registerObjectProperty("hasMiscellaneousInfoComment")               # described as cello:hasAnnotation
+        self.hasMisspellingRecord = self.registerObjectProperty("hasMisspellingRecord")                             # described as cello:hasAnnotation
+        self.hasSenescenceComment = self.registerObjectProperty("hasSenescenceComment")                             # described as cello:hasAnnotation
+        self.hasVirologyComment = self.registerObjectProperty("hasVirologyComment")                                 # described as cello:hasAnnotation
+        self.hasOmicsComment = self.registerObjectProperty("hasOmicsComment")                                       # described as cello:hasAnnotation
+        self.comesFromIndividualBelongingToPopulation = self.registerObjectProperty("comesFromIndividualBelongingToPopulation")       # described as cello:hasAnnotation
 
         self.duration = self.registerDatatypeProperty("duration")                       # TODO:
         self.inGroup = self.registerDatatypeProperty("inGroup")                             # described as sub prop of schema:category
