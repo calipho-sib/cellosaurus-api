@@ -16,9 +16,10 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def __init__(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - -         
         # load info from data_in used later by describe...() functions
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        self.ctd = ConceptTermData()
+        # - - - - - - - - - - - - - - - - - - - - - - - - - - -         
         self.prefixes = list()
         for space in ns.namespaces: self.prefixes.append(space.getTtlPrefixDeclaration())
 
@@ -58,8 +59,8 @@ class OntologyBuilder:
         self.rdfs_range_to_remove[ns.cello.hasXref] = { ns.skos.Concept }
         self.rdfs_range_to_remove[ns.cello.more_specific_than] = { ns.cello.Xref } 
         self.rdfs_range_to_remove[ns.cello.database] = { ns.owl.NamedIndividual, ns.cello.CelloConceptScheme } 
-        #self.rdfs_range_to_remove[ns.cello.genomeModificationMethod] = { ns.owl.NamedIndividual } 
-        self.rdfs_range_to_remove[ns.cello.fromIndividualWithSex] = { ns.owl.NamedIndividual }
+        #self.rdfs_range_to_remove[ns.cello.hasGenomeModificationMethod] = { ns.owl.NamedIndividual } 
+        self.rdfs_range_to_remove[ns.cello.comesFromIndividualWithSex] = { ns.owl.NamedIndividual }
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # add description of terms (subClasses, ...) to terms in namespaces
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -69,7 +70,6 @@ class OntologyBuilder:
         self.describe_sequence_variation_and_subclasses()
         self.describe_publication_hierarchy_based_on_fabio_no_redundancy()
         self.describe_terminology_database_and_subclasses()
-        self.describe_cell_line_properties()
         self.describe_organization_related_terms()
         self.describe_misc_terms()
         self.describe_ranges_and_domains()
@@ -95,43 +95,6 @@ class OntologyBuilder:
                         edges[term.iri] = parent_iri
         self.tree = Tree(edges)
 
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def describe_related_terms(self, parent_class_IRI, term, termIsClass=True):
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # CAUTION: for owl:equivalentProperty triples to be parsed by protege, widoco, ...
-    # the property appearing in the object of the triple must be declared
-    # in the ontology as the same property type (ObjectProperty, DatatypeProperty, ...) 
-    # as the property appearing in the subject in the triple
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        #print("parent_clss_IRI", parent_class_IRI)
-        for rel_key in term:
-            rel_prop = None
-            if   rel_key == "EQ": 
-                if termIsClass: rel_prop = ns.owl.equivalentClass
-                else: rel_prop = ns.owl.equivalentProperty
-            elif   rel_key == "<<": 
-                if termIsClass: rel_prop = ns.rdfs.subClassOf
-                else: rel_prop = ns.rdfs.subPropertyOf
-            elif rel_key == "BR": rel_prop = ns.skos.broadMatch
-            elif rel_key == "CL": rel_prop = ns.skos.closeMatch
-            if rel_prop is None:log_it("ERROR, unknown relation in concept_term:", term)
-            for el in term[rel_key]:
-                #print(". el:", el)
-                iri = self.ctd.getTermIRI(el)
-                #print(". iri: ", iri)
-                prefixed_iri = ns.getPrefixedIRI(iri)
-                #print(" .prefixed IRI")
-                if prefixed_iri is None:
-                    ns.describe(parent_class_IRI, rel_prop, iri)
-                else:
-                    el_id = prefixed_iri.split(":")[1]
-                    # properties in wd: are already explicitly registered as Object/or/DatatypeProperty in their namespace
-                    ns.getNamespace(iri).registerTerm(el_id)
-                    if termIsClass: ns.describe(prefixed_iri, ns.rdf.type, ns.owl.Class) # WARNING: this might be a lie in some cases
-                    el_lbl = self.ctd.getTermLabel(el)
-                    ns.describe(prefixed_iri, ns.rdfs.label, ns.xsd.string(el_lbl))
-                    ns.describe(parent_class_IRI, rel_prop, prefixed_iri)
-
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_annotation_properties(self):
@@ -147,7 +110,7 @@ class OntologyBuilder:
         # describing our own terms as subClass/Prop of terms defined elsewhere 
         # instead of simply using these external terms allow to give them a domain / range
         # and additional semantic relationships to other terms
-        ns.describe(ns.cello.memberOf, ns.rdfs.subPropertyOf, ns.schema.memberOf)
+        ns.describe(ns.cello.isMemberOf, ns.rdfs.subPropertyOf, ns.schema.memberOf)
         ns.describe(ns.cello.city, ns.rdfs.subPropertyOf, ns.schema.location)
         ns.describe(ns.cello.country, ns.rdfs.subPropertyOf, ns.schema.location)
 
@@ -171,26 +134,6 @@ class OntologyBuilder:
         ns.describe(ns.cello.MicrosatelliteInstability, ns.rdfs.subClassOf, ns.OBI._0001404)
         ns.describe(ns.cello.KaryotypicInfoComment, ns.rdfs.subClassOf, ns.OBI._0001404)     
         ns.describe(ns.cello.KaryotypicInfoComment, ns.owl.equivalentClass, ns.OBI._0002769)             
-
-        # obsolete, replaced with HGNC sref
-        # ns.describe(ns.NCIt.C101157, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C190000, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C19409, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C28585, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C29953, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C62758, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C62778, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C70614, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C71259, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C71261, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C71263, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C71265, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.NCIt.C71267, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.OGG._3000003128, ns.rdfs.subClassOf, ns.cello.HLAGene)
-        # ns.describe(ns.OGG._3000003132, ns.rdfs.subClassOf, ns.cello.HLAGene)
-
-        # subclass OBI:0002769 karyotype information  
-        # ...
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -235,13 +178,6 @@ class OntologyBuilder:
         ns.describe(ns.cello.TransgenicRat, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
 
 
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def describe_cell_line_properties(self):
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        for celloPropIRI in self.ctd.getCelloTermKeys("CellLineProperties"):
-            term = self.ctd.getCelloTerm("CellLineProperties", celloPropIRI)
-            self.describe_related_terms(celloPropIRI, term, termIsClass=False)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_ranges_and_domains(self):
@@ -334,8 +270,6 @@ class OntologyBuilder:
     def describe_publication_hierarchy_based_on_fabio_no_redundancy(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         
-        # TODO: add relationshp with dcterms.Bibliographic.... ?
-
         # Publication hierarchy based on fabio Expression
         ns.describe( ns.cello.Publication,              ns.rdfs.subClassOf, ns.fabio.Expression)
         ns.describe( ns.fabio.Book,                     ns.rdfs.subClassOf, ns.cello.Publication)
@@ -374,9 +308,6 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_misc_terms(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # for tk in self.ctd.getCelloTermKeys("MiscClasses"):
-        #     term_data = self.ctd.getCelloTerm("MiscClasses", tk)
-        #     self.describe_related_terms(tk, term_data, termIsClass=True)
 
         # - - - - - - - - 
         # misc classes
@@ -417,8 +348,14 @@ class OntologyBuilder:
         ns.describe(ns.cello.references, ns.rdfs.subPropertyOf, ns.dcterms.references)
         ns.describe(ns.cello.hasXref, ns.rdfs.subPropertyOf, ns.dcterms.references)
 
+        ns.describe(ns.cello.conferenceTitle, ns.rdfs.subPropertyOf, ns.dcterms.title)
+        ns.describe(ns.cello.bookTitle, ns.rdfs.subPropertyOf, ns.dcterms.title)
+        ns.describe(ns.cello.documentTitle, ns.rdfs.subPropertyOf, ns.dcterms.title)
+        ns.describe(ns.cello.documentSerieTitle, ns.rdfs.subPropertyOf, ns.dcterms.title)
+
         ns.describe(ns.cello.hasAnnotation, ns.owl.inverseOf, ns.IAO.is_about_0000136)
 
+        ns.describe(ns.cello.editor, ns.rdfs.subPropertyOf, ns.dcterms.contributor)
         
         ns.describe(ns.cello.hasInternalId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.issn13, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
@@ -427,6 +364,7 @@ class OntologyBuilder:
         ns.describe(ns.fabio.hasPubMedId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.hasISO4JournalTitleAbbreviation, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.prism.volume, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.productId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         
         ns.describe(ns.cello.markerId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.alleleIdentifier, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
@@ -448,10 +386,15 @@ class OntologyBuilder:
         
         ns.describe(ns.cello.includesObservation, ns.rdfs.subPropertyOf, ns.BFO._0000051_has_part)
         ns.describe(ns.cello.hasComponent, ns.rdfs.subPropertyOf, ns.BFO._0000051_has_part)
+        ns.describe(ns.cello.inRegister, ns.rdfs.subPropertyOf, ns.BFO._0000051_has_part)
+        ns.describe(ns.cello.hasAntibodyHeavyChain, ns.rdfs.subPropertyOf, ns.BFO._0000051_has_part)
+        ns.describe(ns.cello.hasAntibodyLightChain, ns.rdfs.subPropertyOf, ns.BFO._0000051_has_part)
+        
         ns.describe(ns.cello.zygosity, ns.rdfs.subPropertyOf, ns.GENO._0000608_has_zygozity)
 
         ns.describe(ns.cello.inGroup, ns.rdfs.subPropertyOf, ns.schema.category)
         ns.describe(ns.cello.belongsTo, ns.rdfs.subPropertyOf, ns.schema.category)
+        ns.describe(ns.cello.hasProvider, ns.rdfs.subPropertyOf, ns.schema.provider)
 
         ns.describe(ns.cello.establishedBy, ns.rdfs.subPropertyOf, ns.dcterms.source)
 
@@ -478,6 +421,41 @@ class OntologyBuilder:
         ns.describe(ns.cello.hasVirologyComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasOmicsComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.comesFromIndividualBelongingToPopulation, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasGeneKnockout, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasGeneticIntegration, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasRegistationRecord, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasDiscontinuationRecord, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasMabIsotype, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasMabTarget, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasMicrosatelliteInstability, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasResistance, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasShortTandemRepeatProfile, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.transformedBy, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+
+        ns.describe(ns.cello.comesFromIndividualWithDisease, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.comesFromIndividualWithDisease, ns.owl.equivalentProperty, ns.wd.P5166_DI)
+
+        ns.describe(ns.cello.comesFromIndividualBelongingToSpecies, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.comesFromIndividualBelongingToSpecies, ns.owl.equivalentProperty, ns.wd.P9072_OX)
+
+        ns.describe(ns.cello.comesFromIndividualWithSex, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.comesFromIndividualWithSex, ns.skos.closeMatch, ns.wd.P21_SX)
+
+        ns.describe(ns.cello.comesFromIndividualAtAge, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+
+        ns.describe(ns.cello.comesFromSameIndividualAs, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.comesFromSameIndividualAs, ns.owl.equivalentProperty, ns.wd.P3578_OI)
+
+        ns.describe(ns.cello.hasParentCellLine, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasParentCellLine, ns.owl.equivalentProperty, ns.wd.P3432_HI)
+        ns.describe(ns.cello.hasParentCellLine, ns.owl.inverseOf, ns.cello.hasChildCellLine)
+
+        ns.describe(ns.cello.hasChildCellLine, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasChildCellLine, ns.owl.inverseOf, ns.cello.hasParentCellLine)
+
+        ns.describe(ns.cello.more_specific_than, ns.owl.equivalentProperty, ns.skos.broader)
+
+        
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -544,10 +522,6 @@ class OntologyBuilder:
         ns.describe(ns.wd.Q107103143, ns.skos.closeMatch, f"<{ns.CLO.url}0037307>" )
         ns.describe(ns.wd.Q27671698, ns.skos.closeMatch, f"<{ns.BTO.url}0005996>" )
         ns.describe(ns.wd.Q27555384, ns.skos.closeMatch, f"<{ns.OMIT.url}0003790>" )
-
-
-
-
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

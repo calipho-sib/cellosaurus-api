@@ -363,12 +363,12 @@ class WikidataWdNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(WikidataWdNamespace, self).__init__("wd", "http://www.wikidata.org/entity/")
-        self.P3289_AC = self.registerDatatypeProperty("P3289")
-        self.P3578_OI = self.registerObjectProperty("P3578")   
-        self.P9072_OX = self.registerObjectProperty("P9072")
-        self.P5166_DI = self.registerObjectProperty("P5166")
-        self.P3432_HI = self.registerObjectProperty("P3432")
-        self.P21_SX = self.registerObjectProperty("P21") # could not figure out how sex is related to cell lines in wikidata
+        self.P3289_AC = self.registerDatatypeProperty("P3289", label="Cellosaurus ID")
+        self.P3578_OI = self.registerObjectProperty("P3578", label="autologous cell line")   
+        self.P9072_OX = self.registerObjectProperty("P9072", label="derived from organism type")
+        self.P5166_DI = self.registerObjectProperty("P5166", label="established from medical condition")
+        self.P3432_HI = self.registerObjectProperty("P3432", label="parent cell line")
+        self.P21_SX = self.registerObjectProperty("P21", label="Sex") # could not figure out how sex is related to cell lines in wikidata
 
         # cell line classes with label as found in cellosaurus.txt
         self.Q23058136 = self.registerClass("Q23058136", label="Cancer cell line")
@@ -414,6 +414,7 @@ class SchemaOrgNamespace(BaseNamespace):
         self.memberOf = self.registerObjectProperty("memberOf", hidden=True)        # only a rdf:Property in original ontology but useful for protege, widoco, ...
         self.Organization = self.registerClass("Organization")
         self.Person = self.registerClass("Person")
+        self.provider = self.registerObjectProperty("provider", hidden=True)
         self.Observation = self.registerClass("Observation")
         self.observationAbout = self.registerObjectProperty("observationAbout", hidden = False)
         self.category = self.registerDatatypeProperty("category", comment="A category for the item.")

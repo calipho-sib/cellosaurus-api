@@ -13,7 +13,6 @@ insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('rdf', 'http://www.w3.org/
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('rdfs', 'http://www.w3.org/2000/01/rdf-schema#');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('skos', 'http://www.w3.org/2004/02/skos/core#');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('owl', 'http://www.w3.org/2002/07/owl#');
-insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('foaf', 'http://xmlns.com/foaf/0.1/');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('dcterms', 'http://purl.org/dc/terms/');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('fabio', 'http://purl.org/spar/fabio/');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('up', 'http://purl.uniprot.org/core/');
@@ -34,4 +33,12 @@ insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('NCIt', 'http://purl.oboli
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('OBI', 'http://purl.obolibrary.org/obo/OBI_');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('OMIT', 'http://purl.obolibrary.org/obo/OMIT_');
 insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('FBcv', 'http://purl.obolibrary.org/obo/FBcv_');
-insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('OGG', 'http://purl.obolibrary.org/obo/OGG_');
+insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('GENO', 'http://purl.obolibrary.org/obo/GENO_');
+insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('CARO', 'http://purl.obolibrary.org/obo/CARO_');
+insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('CL', 'http://purl.obolibrary.org/obo/CL_');
+insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('CHEBI', 'http://purl.obolibrary.org/obo/CHEBI_');
+insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('ORDO', 'http://www.orpha.net/ORDO/Orphanet_');
+insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('IAO', 'http://purl.org/ontology/IAO_');
+insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('EDAM', 'http://edamontology.org/');
+insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('prism', 'http://prismstandard.org/namespaces/basic/2.0/');
+insert into DB.DBA.SYS_XML_PERSISTENT_NS_DECL values ('BFO', 'http://purl.obolibrary.org/obo/BFO_');
