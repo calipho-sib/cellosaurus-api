@@ -341,6 +341,6 @@ class CelloOntologyNamespace(BaseNamespace):
         self.documentTitle = self.registerDatatypeProperty("documentTitle")                                         # described as sub dcterms:title
         self.documentSerieTitle = self.registerDatatypeProperty("documentSerieTitle")                               # described as sub dcterms:title
         
-        comment="Links two concepts where he subject concept is more specific than the object concept. The semantics is similar to skos:broader property but its label less ambiguous."
+        comment="Links two concepts where he subject concept is more specific than the object concept. The semantics is similar to skos:broader."
         self.more_specific_than = self.registerObjectProperty("more_specific_than", comment=comment)                # described as equivalent of skos:broader
         

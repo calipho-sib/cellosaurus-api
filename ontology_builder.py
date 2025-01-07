@@ -453,7 +453,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.hasChildCellLine, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasChildCellLine, ns.owl.inverseOf, ns.cello.hasParentCellLine)
 
-        ns.describe(ns.cello.more_specific_than, ns.owl.equivalentProperty, ns.skos.broader)
+        ns.describe(ns.cello.more_specific_than, ns.rdfs.subPropertyOf, ns.skos.broader)
 
         
 

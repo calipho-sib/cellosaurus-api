@@ -144,7 +144,7 @@ class SkosNamespace(BaseNamespace):
         self.prefLabel = self.registerAnnotationProperty("prefLabel")
         self.altLabel = self.registerAnnotationProperty("altLabel")
         self.hiddenLabel = self.registerAnnotationProperty("hiddenLabel", comment="A hidden lexical label, represented by means of the skos:hiddenLabel property, is a lexical label for a resource, where a KOS designer would like that character string to be accessible to applications performing text-based indexing and search operations, but would not like that label to be visible otherwise. Hidden labels may for instance be used to include misspelled variants of other lexical labels.")
-        self.broader = self.registerTerm("broader")
+        self.broader = self.registerObjectProperty("broader", label="has broader concept")
         self.exactMatch = self.registerTerm("exactMatch")
         self.closeMatch = self.registerTerm("closeMatch")
         self.broadMatch = self.registerTerm("broadMatch")
@@ -304,9 +304,9 @@ class DctermsNamespace(BaseNamespace):
         self.publisher =    self.registerObjectProperty("publisher")
         self.contributor =  self.registerObjectProperty("contributor")
         self.identifier =   self.registerDatatypeProperty("identifier")
-        self.source =       self.registerObjectProperty("source", hidden=True)              # hidden because redundant with cello subprop
-        self.references =   self.registerObjectProperty("references", hidden=True)          # hidden because redundant with cello subprop
-
+        self.source =       self.registerObjectProperty("source", hidden=False)              # not hidden because parent of 2 cello props
+        self.references =   self.registerObjectProperty("references", hidden=False)          # not hidden because parent of 2 cello props
+        
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
