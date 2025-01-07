@@ -1,138 +1,6 @@
 import hashlib
 from ApiCommon import get_rdf_base_IRI, get_help_base_IRI
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class Term:
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self, ns, id, hidden=False):
-        self.ns = ns; self.id = id; self.iri = ":".join([ns, id]); self.props = dict(); self.hidden = hidden
-
-    def __str__(self) -> str:
-        return ":".join([self.ns, self.id])
-    
-    def __repr__(self) -> str:        
-        return f"Term({self.iri}, {self.props})"
-
-    def isA(self, owlType):
-        value_set = self.props.get("rdf:type") or set()
-        result = owlType in value_set
-        #print(">>>", self.iri, result, owlType, "-- in ? --", value_set)
-        return result
-
-    def ttl_lines(self):
-        if self.hidden: return list()
-        ordered_props = [
-            "a", "rdf:type", "rdfs:label", "rdfs:comment", "rdfs:subClassOf", "rdfs:subPropertyOf",
-            "owl:equivalentClass", "owl:equivalentProperty", "owl:inverseOf", "owl:sameAs", 
-            "skos:exactMatch", "skos:closeMatch", "skos:broadMatch", 
-            "domain_comments", "rdfs:domain", "range_comments","rdfs:range", "rdfs:seeAlso", "rdfs:isDefinedBy"]
-        lines = list()
-        lines.append(self.iri)
-        label = self.props.get("rdfs:label")
-        if label is None:
-            if self.ns == "cello" or True:
-                # default label built upon id
-                label = "".join(["\"", self.build_default_label(),"\"", "^^xsd:string"])
-                self.props["rdfs:label"] = { label }
-            else:
-                # unused: label built upon IRI for external ontologies (nicer in widoco)
-                iri_like_label = ":".join([self.ns, self.id])                   
-                label = "".join(["\"", iri_like_label,"\"", "^^xsd:string"])
-                self.props["rdfs:label"] = { label }
-
-        # build composite comment including label, skos relationships (otherwise invisible in widoco)
-        # and textual comment if any
-        self.build_composite_comment()
-
-        for pk in ordered_props:
-            value_set = self.props.get(pk)
-            if value_set is None or value_set == set(): continue
-            if pk in ["rdfs:domain", "rdfs:range"] and len(value_set) > 1:
-                lines.append(f"    {pk} [ a owl:Class ; owl:unionOf (")
-                for value in value_set:
-                    line = "        " + value
-                    lines.append(line)
-                lines.append("        )")
-                lines.append("    ] ;")                             
-            elif pk in ["range_comments", "domain_comments"]:
-                for value in value_set:
-                    lines.append(value)
-            else:
-                values = " , ".join(value_set)
-                lines.append(f"    {pk} {values} ;")
-        lines.append("    .")
-        lines.append("")                        
-        return lines
-
-    def unwrap_xsd_string(self, str):
-        tmp = str
-        # remove left part of the wrapper
-        if tmp.startswith("\"\"\""): tmp = tmp[3:]
-        elif tmp.startswith("\""): tmp = tmp[1:]
-        # remove right part of the wrapper
-        if tmp.endswith("\"\"\"^^xsd:string"): tmp = tmp[:-15]
-        elif tmp.endswith("\"^^xsd:string"): tmp = tmp[:-13]
-        tmp = self.unescape_string(tmp)
-        return tmp
-        
-    def unescape_string(self, str):
-        str = str.replace("\\\\","\\")      # inverse of escape backslashes with double backslashes (\ => \\)
-        str = str.replace("\\\"", "\"")     # inverse of escape double-quotes (" => \")
-        return str
-
-    def build_composite_comment(self):
-        parts = list()
-        # if a real comment preexist (see ontology_builder.describe_comments()), retrieve it
-        existing_elems = list(self.props.get("rdfs:comment") or set())
-        real_comment = None
-        if len(existing_elems) > 0: 
-            real_comment = self.unwrap_xsd_string(existing_elems[0])
-        # if term is from external ns, add original label
-        label = None
-        if self.ns != "cello":
-            label_list = list(self.props.get("rdfs:label"))
-            if len(label_list) > 0: label = self.unwrap_xsd_string(label_list[0])
-        # add skos relationships to other terms
-        for pk in ["skos:exactMatch", "skos:closeMatch", "skos:broadMatch", "rdfs:seeAlso"]:
-            for elem in self.props.get(pk) or set():
-                content = " ".join([pk, elem])
-                parts.append(content)
-        if label is not None: 
-            parts.insert(0, label)
-        if real_comment is not None:
-            parts.append(real_comment)
-        composite_content = " - ".join(parts)
-        quote = "\""
-        if "\"" in composite_content: quote = "\"\"\"" 
-        result = "".join([quote, composite_content, quote, "^^xsd:string"])
-        self.props["rdfs:comment"] = { result }
-
-
-    def build_default_label(self):
-        # 1) insert space instead of "_" and on case change  
-        chars = list()
-        wasupper = False
-        for ch in self.id:
-            if ch.isupper() and not wasupper and len(chars)>0: chars.append(" "); chars.append(ch)
-            elif ch == "_": chars.append(" ")
-            else: chars.append(ch)
-            wasupper = ch.isupper()
-        sentence = "".join(chars).replace("  ", " ")
-        words = sentence.split(" ")
-        # 2) lower all words except first and those having all chars uppercase
-        first = True
-        new_words = list()
-        for w in words:
-            if first: first = False; new_words.append(w)
-            else:
-                allUpper = True
-                for ch in w:
-                    if ch.islower(): allUpper = False
-                if allUpper: new_words.append(w)
-                else: new_words.append(w.lower())
-        return " ".join(new_words)
-
+from namespace_term import Term
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -273,9 +141,9 @@ class SkosNamespace(BaseNamespace):
         self.ConceptScheme = self.registerTerm("ConceptScheme")
         self.inScheme = self.registerTerm("inScheme")
         self.notation = self.registerDatatypeProperty("notation", comment=" Notations are symbols which are not normally recognizable as words or sequences of words in any natural language and are thus usable independently of natural-language contexts. They are typically composed of digits, complemented with punctuation signs and other characters.")
-        self.prefLabel = self.registerTerm("prefLabel")
-        self.altLabel = self.registerTerm("altLabel")
-        self.hiddenLabel = self.registerDatatypeProperty("hiddenLabel", comment="A hidden lexical label, represented by means of the skos:hiddenLabel property, is a lexical label for a resource, where a KOS designer would like that character string to be accessible to applications performing text-based indexing and search operations, but would not like that label to be visible otherwise. Hidden labels may for instance be used to include misspelled variants of other lexical labels.")
+        self.prefLabel = self.registerAnnotationProperty("prefLabel")
+        self.altLabel = self.registerAnnotationProperty("altLabel")
+        self.hiddenLabel = self.registerAnnotationProperty("hiddenLabel", comment="A hidden lexical label, represented by means of the skos:hiddenLabel property, is a lexical label for a resource, where a KOS designer would like that character string to be accessible to applications performing text-based indexing and search operations, but would not like that label to be visible otherwise. Hidden labels may for instance be used to include misspelled variants of other lexical labels.")
         self.broader = self.registerTerm("broader")
         self.exactMatch = self.registerTerm("exactMatch")
         self.closeMatch = self.registerTerm("closeMatch")
@@ -384,7 +252,8 @@ class WikidataWdNamespace(BaseNamespace):
         self.Q27671698 = self.registerClass("Q27671698", label="Stromal cell line")
         self.Q27653701 = self.registerClass("Q27653701", label="Telomerase immortalized cell line")
         self.Q27555384 = self.registerClass("Q27555384", label="Transformed cell line")
-        self.CellLine = self.registerClass("Q21014462", label="Cell line") # with human readable var name because used at several locations
+        comment = "A population of cells that originates from a primary culture, adapted to grow and divide under laboratory conditions. Used in biotechnology to consistently produce biological substances"
+        self.CellLine = self.registerClass("Q21014462", label="Cell line", comment=comment) # with human readable var name because used at several locations
 
 
     def IRI(self, ac): return "wd:" + ac

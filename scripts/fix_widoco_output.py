@@ -20,7 +20,16 @@ for elems in dd_list:
             #print(elems[2].text)
             #print(elems[0].get("href"))
 
-
+nodes_to_be_deleted = list()
+dd_list = tree.xpath('//dd')
+for elems in dd_list:
+    if len(elems)>0 and elems[0].tag == "a" and "_:genid" in elems[0].get("href"):
+        nodes_to_be_deleted.append(elems)
+        print("to be deleted:", elems.tag)
+        nodes_to_be_deleted.append(elems.getprevious())
+        print("to be deleted:", elems.getprevious().tag)
+for node in nodes_to_be_deleted:
+    node.getparent().remove(node)
 
 output_file = input_file + ".fixed"
 f_out = open(output_file, 'wb')

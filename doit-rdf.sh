@@ -1,3 +1,5 @@
+set -e
+
 cd ~/work/cellosaurus-api
 python cellapi_builder.py RDF
 python cellapi_builder.py LOAD_RDF data

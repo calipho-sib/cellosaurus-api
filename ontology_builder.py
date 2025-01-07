@@ -1,12 +1,11 @@
 import sys
 from datetime import datetime
-from namespaces import Term
+from namespace_term import Term
 from namespace_registry import NamespaceRegistry as ns
 from ApiCommon import log_it, split_string, get_onto_preferred_prefix
 from sparql_client import EndpointClient
 from tree_functions import Tree
 from databases import Database, Databases, get_db_category_IRI
-from concept_term import ConceptTermData
 
 
 #-------------------------------------------------
@@ -373,7 +372,8 @@ class OntologyBuilder:
         ns.describe(ns.cello.primaryAccession, ns.owl.equivalentProperty, ns.wd.P3289_AC)
         ns.describe(ns.cello.secondaryAccession, ns.rdfs.subPropertyOf, ns.cello.accession)
         
-        ns.describe(ns.cello.name, ns.owl.equivalentProperty, ns.rdfs.label)
+        ns.describe(ns.cello.name, ns.rdfs.subPropertyOf, ns.rdfs.label)
+        #ns.describe(ns.cello.name, ns.owl.equivalentProperty, ns.rdfs.label)
         ns.describe(ns.cello.shortname, ns.rdfs.subPropertyOf, ns.cello.name)
         ns.describe(ns.cello.registeredName, ns.rdfs.subPropertyOf, ns.cello.name)
         ns.describe(ns.skos.prefLabel, ns.rdfs.subPropertyOf, ns.cello.name)
@@ -441,7 +441,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.comesFromIndividualWithSex, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.comesFromIndividualWithSex, ns.skos.closeMatch, ns.wd.P21_SX)
 
-        ns.describe(ns.cello.comesFromIndividualAtAge, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        # ns.describe(ns.cello.comesFromIndividualAtAge, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation) # no, cos is a datatype prop so far
 
         ns.describe(ns.cello.comesFromSameIndividualAs, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.comesFromSameIndividualAs, ns.owl.equivalentProperty, ns.wd.P3578_OI)
@@ -916,7 +916,9 @@ cello:RegistrationRecord a owl:Class ;
         lines = list()
         for id in nspace.terms:
             term: Term = nspace.terms[id]
-            if owlType is None or term.isA(owlType): lines.extend(term.ttl_lines())
+            if owlType is None or term.isA(owlType):
+                term_lines = ns.ttl_lines_for_ns_term(term)
+                lines.extend(term_lines)
         return lines
     
     

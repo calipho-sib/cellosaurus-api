@@ -200,20 +200,20 @@ class CelloOntologyNamespace(BaseNamespace):
         
 
         comment = "A human-readable version of a resource's name. It is an owl:equivalentProperty of rdfs:label"
-        self.name = self.registerDatatypeProperty("name", comment=comment)                                          # described, as equivalent of rdfs:label
+        self.name = self.registerAnnotationProperty("name", comment=comment)                                          # described, as equivalent of rdfs:label
         comment = "A name which serves as a concise or abbreviated version of a longer name."
-        self.shortname = self.registerDatatypeProperty("shortname")                                                 # described as sub prop of cello:name
+        self.shortname = self.registerAnnotationProperty("shortname")                                                 # described as sub prop of cello:name
 
         comment="Most frequently the name of the cell line as provided in the original publication"
-        self.recommendedName = self.registerDatatypeProperty("recommendedName", comment=comment)                    # described as sub of skos:prefLabel sub of cello:name      
+        self.recommendedName = self.registerAnnotationProperty("recommendedName", comment=comment)                    # described as sub of skos:prefLabel sub of cello:name      
 
         comment="Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms"
-        self.alternativeName = self.registerDatatypeProperty("alternativeName", comment=comment)                    # described as sub of skos:altLabel sub of cello:name
+        self.alternativeName = self.registerAnnotationProperty("alternativeName", comment=comment)                    # described as sub of skos:altLabel sub of cello:name
 
         comment="A name as it appears in some register or official list."        
-        self.registeredName = self.registerDatatypeProperty("registeredName", comment=comment)                      # described as sub of cello:name
+        self.registeredName = self.registerAnnotationProperty("registeredName", comment=comment)                      # described as sub of cello:name
         comment="A misspelling as it appears in some publication or external resource"
-        self.misspellingName = self.registerDatatypeProperty("misspellingName", comment=comment)                    # described as sub of skos:hiddenLabel sub of cello:name
+        self.misspellingName = self.registerAnnotationProperty("misspellingName", comment=comment)                    # described as sub of skos:hiddenLabel sub of cello:name
 
 
         comment="A related resource from which the described resource is derived or originates."
