@@ -271,7 +271,7 @@ class OaNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(OaNamespace, self).__init__("oa", "http://www.w3.org/ns/oa#")
-        self.Annotation = self.registerClass("Annotation")
+        #self.Annotation = self.registerClass("Annotation")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

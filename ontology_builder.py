@@ -380,12 +380,11 @@ class OntologyBuilder:
         ns.describe(ns.cello.secondaryAccession, ns.rdfs.subPropertyOf, ns.cello.accession)
         
         ns.describe(ns.cello.name, ns.rdfs.subPropertyOf, ns.rdfs.label)
-        #ns.describe(ns.cello.name, ns.owl.equivalentProperty, ns.rdfs.label)
+        ns.describe(ns.skos.prefLabel, ns.rdfs.subPropertyOf, ns.rdfs.label)
+        ns.describe(ns.skos.altLabel, ns.rdfs.subPropertyOf, ns.rdfs.label)
+        ns.describe(ns.skos.hiddenLabel, ns.rdfs.subPropertyOf, ns.rdfs.label)
         ns.describe(ns.cello.shortname, ns.rdfs.subPropertyOf, ns.cello.name)
         ns.describe(ns.cello.registeredName, ns.rdfs.subPropertyOf, ns.cello.name)
-        ns.describe(ns.skos.prefLabel, ns.rdfs.subPropertyOf, ns.cello.name)
-        ns.describe(ns.skos.altLabel, ns.rdfs.subPropertyOf, ns.cello.name)
-        ns.describe(ns.skos.hiddenLabel, ns.rdfs.subPropertyOf, ns.cello.name)
         ns.describe(ns.cello.recommendedName, ns.rdfs.subPropertyOf, ns.skos.prefLabel)
         ns.describe(ns.cello.alternativeName, ns.rdfs.subPropertyOf, ns.skos.altLabel)
         ns.describe(ns.cello.misspellingName, ns.rdfs.subPropertyOf, ns.skos.hiddenLabel)
@@ -599,16 +598,11 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         text = """
 
-# Topic individuals
+# Topic individuals based on classes defined outside our ontology
 
 cello:Biotechnology a owl:NamedIndividual, NCIt:C16351 ; 
     rdfs:label "Biotechnology"^^xsd:string ;
     rdfs:comment "The field devoted to applying the techniques of biochemistry, cellular biology, biophysics, and molecular biology to addressing issues related to human beings and the environment."^^xsd:string ;
-    .
-
-cello:Senescence a owl:NamedIndividual, NCIt:C17467 ;
-    rdfs:label "Senescence"^^xsd:string ;
-    rdfs:comment "PDL stands for Population Doubling Level. The process of growing old and showing the effects of time."^^xsd:string ;
     .
 
 cello:DoublingTime a owl:NamedIndividual, NCIt:C94346 ;
@@ -616,20 +610,30 @@ cello:DoublingTime a owl:NamedIndividual, NCIt:C94346 ;
     rdfs:comment "In biology, the amount of time it takes for one cell to divide or for a group of cells (such as a tumor) to double in size. The doubling time is different for different kinds of cancer cells or tumors."^^xsd:string ;
     .
 
-cello:Virology a owl:NamedIndividual, NCIt:C17256 ;
-    rdfs:label "Virology"^^xsd:string ;
-    rdfs:comment "The science that deals with the study of viruses."^^xsd:string ;
-    .
-
 cello:Omics a owl:NamedIndividual, NCIt:C205365 ;
     rdfs:label "Omics"^^xsd:string ;
     rdfs:comment "The fields of research that use large scale sets of bioinformatics data to identify, describe and quantify the entire set of molecules and molecular processes that contribute to the form and function of cells, tissues and organisms."^^xsd:string ;
     .
 
+cello:Senescence a owl:NamedIndividual, NCIt:C17467 ;
+    rdfs:label "Senescence"^^xsd:string ;
+    rdfs:comment "PDL stands for Population Doubling Level. The process of growing old and showing the effects of time."^^xsd:string ;
+    .
+
+cello:Virology a owl:NamedIndividual, NCIt:C17256 ;
+    rdfs:label "Virology"^^xsd:string ;
+    rdfs:comment "The science that deals with the study of viruses."^^xsd:string ;
+    .
+
+
+# Class for topic individuals defined in our ontology
+
 cello:GeneralTopic a owl:Class ;
     rdfs:label "General topic" ;
     rdfs:subClassOf EDAM:topic_0003 ;
     .
+
+# Topic individuals based on classes defined within our ontology
 
 cello:Characteristics a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "Characteristics"^^xsd:string ;
