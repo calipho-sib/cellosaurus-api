@@ -402,8 +402,8 @@ class NCItNamespace(BaseNamespace):
         self.C17262 = self.registerClass("C17262", label="X-ray")                                   # genome modification method subclass
         self.C44386 = self.registerClass("C44386", label="Gamma radiation")                         # genome modification method subclass
         self.C16612 = self.registerClass("C16612", label="Gene", hidden=True)                       # owl:equClass cello:Gene
-        self.C45822 = self.registerClass("C45822", label="Locus", hidden=True)                      # owl:equClass cello:Locus
-        self.C13441_ShortTandemRepeat = self.registerClass("C13441", label="Short Tandem Repeat")   # superclass for cello:Marker
+        #self.C45822 = self.registerClass("C45822", label="Locus", hidden=True)                      # unused owl:equClass cello:Locus
+        self.C13441_ShortTandemRepeat = self.registerClass("C13441", label="Short Tandem Repeat", hidden= True)   # owl:equClass cello:Marker
         self.C16717_IGH = self.registerClass("C16717", label="Immunoglobulin Heavy Chain")
         self.C16720_IGL = self.registerClass("C16720", label="Immunoglobulin Light Chain")
 

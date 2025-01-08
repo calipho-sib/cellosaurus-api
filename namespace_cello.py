@@ -80,10 +80,10 @@ class CelloOntologyNamespace(BaseNamespace):
         self.HLAGene = self.registerClass("HLAGene", label="HLA Gene")          # described as cello:Gene subclass
         self.HLA_Allele = self.registerClass("HLAAllele", label="HLA Allele")   # described as GENO:0000512 subclass, used in HLA, str and later in genetic integration
 
-        self.Locus = self.registerClass("Locus")                                        # descrided as equivalent of NCIt.C45822, used in STR profile    
+        #self.Locus = self.registerClass("Locus")                                        # unused: descrided as equivalent of NCIt.C45822, used in STR profile    
         self.STR_Allele = self.registerClass("STRAllele", label="STR Allele")           # described as GENO:0000512 subclass
-        self.Marker = self.registerClass("Marker", label="Marker")                      # described as NCIT:C45822(Locus) subclass AND as  NCIT:C13441(Short Tandem Repeat) subclass
-        #self.MarkerAlleles = self.registerClass("MarkerAlleles")                       # obsolete, was used in short tandem repeat
+        comment = "Area of repetitive DNA within the genome consisting of multiple, end-to-end copies of a short DNA sequence usually comprised of di-, tri-, or tetranucleotide repeat units."
+        self.Marker = self.registerClass("Marker", label="Marker", comment=comment)  # described as owl:equal NCIT:C13441(Short Tandem Repeat)
         self.ShortTandemRepeatProfile = self.registerClass("ShortTandemRepeatProfile")  # described as subClass of OBI:0001404
         self.hasTarget = self.registerObjectProperty("hasTarget")                       # described as subProp of schema:obserationAbout
         

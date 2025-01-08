@@ -331,10 +331,10 @@ class OntologyBuilder:
         ns.describe(ns.cello.HLAGene, ns.rdfs.subClassOf, ns.cello.Gene)
         ns.describe(ns.cello.HLA_Allele, ns.rdfs.subClassOf, ns.GENO._0000512_Allele)
 
-        ns.describe(ns.cello.Locus, ns.owl.equivalentClass, ns.NCIt.C45822)
+        #ns.describe(ns.cello.Locus, ns.owl.equivalentClass, ns.NCIt.C45822)
         ns.describe(ns.cello.STR_Allele, ns.rdfs.subClassOf, ns.GENO._0000512_Allele)
-        ns.describe(ns.cello.Marker, ns.rdfs.subClassOf, ns.NCIt.C13441_ShortTandemRepeat)
-        ns.describe(ns.cello.Marker, ns.rdfs.subClassOf, ns.cello.Locus)
+        ns.describe(ns.cello.Marker, ns.owl.equivalentClass, ns.NCIt.C13441_ShortTandemRepeat)
+        #ns.describe(ns.cello.Marker, ns.rdfs.subClassOf, ns.cello.Locus)
 
         ns.describe(ns.CHEBI.Protein, ns.rdfs.subClassOf, ns.CHEBI.ChemicalEntity)
         ns.describe(ns.CHEBI.Protein, ns.skos.closeMatch, ns.up.Protein)
