@@ -202,11 +202,18 @@ class OntologyBuilder:
                 domain_dic[value]=count
 
             # simplify domain
-            domain_set = set(domain_dic.keys())
-            if len(domain_set)>3: 
-                domain_set = self.tree.get_close_parent_set(domain_set)
+            domain_set1 = set(domain_dic.keys())
+            if len(domain_set1)>3: 
+                domain_set = self.tree.get_close_parent_set(domain_set1)
+            else:
+                domain_set = set(domain_set1)
             for domain_to_remove in self.rdfs_domain_to_remove.get(term.iri) or {}:
                 domain_set = domain_set - { domain_to_remove }
+            # DEBUG CODE
+            # if domain_set1 != domain_set:
+            #     print("domain simplified for", term_id)
+            #     print("simplified :", domain_set)
+            #     print("original   :", domain_set1)
 
             # gather range datatypes / classes
             log_it("DEBUG", "querying prop_name", term.iri, "ranges")
