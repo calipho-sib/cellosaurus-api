@@ -41,7 +41,7 @@ for elems in dd_list:
             if href.startswith("#"): continue
             if href.startswith("http"): continue
             if href.startswith("_:genid"): continue
-            if href.startswith("webowl"): continue
+            if href.startswith("webvowl"): continue
             elem.set("href", f"#{href}")
             print("modified href:", elem.get("href"))
 
