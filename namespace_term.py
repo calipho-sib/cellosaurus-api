@@ -37,33 +37,6 @@ class Term:
         return str
 
 
-    # def build_composite_comment(self):
-    #     parts = list()
-    #     # if a real comment preexist (see ontology_builder.describe_comments()), retrieve it
-    #     existing_elems = list(self.props.get("rdfs:comment") or set())
-    #     real_comment = None
-    #     if len(existing_elems) > 0: 
-    #         real_comment = self.unwrap_xsd_string(existing_elems[0])
-    #     # if term is from external ns, add original label
-    #     label = None
-    #     if self.ns != "cello":
-    #         label_list = list(self.props.get("rdfs:label"))
-    #         if len(label_list) > 0: label = self.unwrap_xsd_string(label_list[0])
-    #     # add skos relationships to other terms
-    #     for pk in ["skos:exactMatch", "skos:closeMatch", "skos:broadMatch", "rdfs:seeAlso"]:
-    #         for elem in self.props.get(pk) or set():
-    #             content = " ".join([pk, elem])
-    #             parts.append(content)
-    #     if label is not None: 
-    #         parts.insert(0, label)
-    #     if real_comment is not None:
-    #         parts.append(real_comment)
-    #     composite_content = " - ".join(parts)
-    #     quote = "\""
-    #     if "\"" in composite_content: quote = "\"\"\"" 
-    #     result = "".join([quote, composite_content, quote, "^^xsd:string"])
-    #     self.props["rdfs:comment"] = { result }
-
 
     def get_label_str(self):
         label_set = self.props.get("rdfs:label")

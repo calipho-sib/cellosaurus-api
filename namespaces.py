@@ -104,7 +104,7 @@ class RdfsNamespace(BaseNamespace):
         self.label = self.registerTerm("label", hidden=True)
         self.domain = self.registerTerm("domain", hidden=True)
         self.range = self.registerTerm("range", hidden=True)
-        self.seeAlso = self.registerTerm("seeAlso", hidden=True)
+        self.seeAlso = self.registerTerm("seeAlso", hidden=False)
         self.isDefinedBy = self.registerTerm("isDefinedBy", hidden=True)
         self.Literal = self.registerTerm("Literal", hidden=True)
         
@@ -304,8 +304,8 @@ class DctermsNamespace(BaseNamespace):
         self.publisher =    self.registerObjectProperty("publisher")
         self.contributor =  self.registerObjectProperty("contributor")
         self.identifier =   self.registerDatatypeProperty("identifier")
-        self.source =       self.registerObjectProperty("source", hidden=False)              # not hidden because parent of 2 cello props
-        self.references =   self.registerObjectProperty("references", hidden=False)          # not hidden because parent of 2 cello props
+        self.source =       self.registerObjectProperty("source", hidden=False)             # not hidden because parent of 2 cello props
+        self.references =   self.registerAnnotationProperty("references", hidden=True)      # hidden because redundant with cello equivalent
         
 
 

@@ -55,7 +55,8 @@ class OntologyBuilder:
         self.rdfs_domain_to_remove[ns.cello.shortname] = { ns.owl.NamedIndividual }
         self.rdfs_domain_to_remove[ns.cello.more_specific_than] = { ns.cello.Xref  }
         self.rdfs_range_to_remove = dict()
-        self.rdfs_range_to_remove[ns.cello.hasXref] = { ns.skos.Concept }
+        self.rdfs_range_to_remove[ns.cello.seeAlsoXref] = { ns.skos.Concept }
+        self.rdfs_range_to_remove[ns.cello.isIdentifiedByXref] = { ns.skos.Concept }
         self.rdfs_range_to_remove[ns.cello.more_specific_than] = { ns.cello.Xref } 
         self.rdfs_range_to_remove[ns.cello.database] = { ns.owl.NamedIndividual, ns.cello.CelloConceptScheme } 
         #self.rdfs_range_to_remove[ns.cello.hasGenomeModificationMethod] = { ns.owl.NamedIndividual } 
@@ -352,7 +353,8 @@ class OntologyBuilder:
         ns.describe(ns.cello.hasSource, ns.rdfs.subPropertyOf, ns.dcterms.source)
         ns.describe(ns.cello.appearsIn, ns.rdfs.subPropertyOf, ns.dcterms.source)
         ns.describe(ns.cello.references, ns.rdfs.subPropertyOf, ns.dcterms.references)
-        ns.describe(ns.cello.hasXref, ns.rdfs.subPropertyOf, ns.dcterms.references)
+        ns.describe(ns.cello.seeAlsoXref, ns.rdfs.subPropertyOf, ns.rdfs.seeAlso)
+        ns.describe(ns.cello.isIdentifiedByXref, ns.rdfs.subPropertyOf, ns.rdfs.seeAlso)
 
         ns.describe(ns.cello.conferenceTitle, ns.rdfs.subPropertyOf, ns.dcterms.title)
         ns.describe(ns.cello.bookTitle, ns.rdfs.subPropertyOf, ns.dcterms.title)

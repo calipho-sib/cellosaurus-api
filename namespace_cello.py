@@ -148,7 +148,7 @@ class CelloOntologyNamespace(BaseNamespace):
 
         self.Sex = self.registerClass("Sex")                                            # TODO: later, has some special cases like mixed sex
 
-        comment = "An entity which is used as a source of information (mostly a cross-reference, a publication or an organization)"
+        comment = "An entity which is used as a source of information, mostly originating from a cross-reference, a publication or an organization."
         self.Source = self.registerClass("Source", comment=comment)                     # TODO: later, a wrapper of Publication, Organization, Xref (used for direct author submision, from parent cell, ...)
 
 
@@ -223,11 +223,14 @@ class CelloOntologyNamespace(BaseNamespace):
         self.appearsIn = self.registerObjectProperty("appearsIn", comment=comment)                                  # defined as sub prop of dcterms:source
 
         comment="A publication that is referenced, cited, or otherwise pointed to by the described resource."
-        self.references = self.registerObjectProperty("references", comment=comment)                                # defined as subproperty of dcterms:references
+        self.references = self.registerAnnotationProperty("references", comment=comment)                            # defined as subproperty of dcterms:references
 
-        comment="A cross-reference that is referenced, cited, or otherwise pointed to by the described resource."
-        self.hasXref = self.registerObjectProperty("hasXref", label="has cross-reference", comment=comment)         # defined as sub prop of dcterms:references
-        
+        comment="A database cross-reference that is referenced, cited, or otherwise pointed to with the purpose to provide further information about the described resource"
+        self.seeAlsoXref = self.registerAnnotationProperty("seeAlsoXref", label="see also xref", comment=comment)         # defined as sub prop of rdfs:seeAlso
+
+        comment="A database cross-reference that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource."
+        self.isIdentifiedByXref = self.registerAnnotationProperty("isIdentifiedByXref", label="is identified by xref", comment=comment)         # defined as sub prop of rdfs:seeAlso
+
         self.hasGenomeAncestry = self.registerObjectProperty("hasGenomeAncestry")                                   # described as sub cello:hasAnnotation
 
         self.hasComponent = self.registerObjectProperty("hasComponent")                                             # described as sub prop of BFO:has_part 
@@ -330,7 +333,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.created = self.registerDatatypeProperty("created")                                                     # described as sub of dcterms term
         self.modified = self.registerDatatypeProperty("modified")                                                   # described as sub of dcterms term
 
-        self.isOrganization = self.registerObjectProperty("isOrganization")                                         # TODO: later
+        self.originatesFrom = self.registerObjectProperty("originatesFrom")                                         # TODO later
         self.database = self.registerObjectProperty("database")                                                     # TODO: later
         self.isMemberOf = self.registerObjectProperty("isMemberOf")                                                 # described, defined in schema namespace
         self.city = self.registerDatatypeProperty("city")                                                           # described as sub of schema:location
