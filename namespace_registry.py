@@ -192,7 +192,8 @@ class NamespaceRegistry:
         quote = "\""
         if "\"" in composite_content: quote = "\"\"\"" 
         result = "".join([quote, composite_content, quote, "^^xsd:string"])
-        term.props["rdfs:comment"] = { result } 
+        if len(result)>0:
+            term.props["rdfs:comment"] = { result } 
         term.composite_comment_already_built = True       
 
     

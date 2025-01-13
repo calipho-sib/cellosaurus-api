@@ -407,6 +407,13 @@ class NCItNamespace(BaseNamespace):
         self.C16717_IGH = self.registerClass("C16717", label="Immunoglobulin Heavy Chain")
         self.C16720_IGL = self.registerClass("C16720", label="Immunoglobulin Light Chain")
 
+        # Topic classes for comments
+        self.C94346 = self.registerClass("C94346", label="Doubling time")
+        self.C205365 = self.registerClass("C205365", label="Omics")
+        self.C17467 = self.registerClass("C17467", label="Senescence")
+        self.C17256 = self.registerClass("C17256", label="Virology")
+        self.C16351 = self.registerClass("C16351", label="Biotechnology")
+
         # # replace with HGNC xrefs
         # self.C101157 = self.registerClass("C101157", label="HLA-DRA Gene")   # described as a cello:HLAGene subclass
         # self.C190000 = self.registerClass("C190000", label="HLA-DRB2 Gene")   # described as a cello:HLAGene subclass

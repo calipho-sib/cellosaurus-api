@@ -230,11 +230,37 @@ class RdfBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_name_prop(self, parent_node, prop, xsd_label):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+        # this dictionary decides which properties are generated according to the paremeter prop chosen
+        materialization_rule = {
+            ns.rdfs.label : { ns.rdfs.label },
+            ns.cello.name : { ns.rdfs.label, ns.cello.name },
+            ns.skos.prefLabel : { ns.rdfs.label, ns.cello.name, ns.skos.prefLabel },
+            ns.skos.altLabel : { ns.rdfs.label, ns.cello.name, ns.skos.altLabel },
+            ns.skos.hiddenLabel : { ns.rdfs.label, ns.cello.name, ns.skos.hiddenLabel },
+            ns.cello.registeredName : { ns.rdfs.label, ns.cello.name, ns.cello.registeredName },
+            ns.cello.recommendedName : { ns.rdfs.label, ns.cello.name, ns.skos.prefLabel, ns.cello.recommendedName },
+            ns.cello.alternativeName : { ns.rdfs.label, ns.cello.name, ns.skos.altLabel, ns.cello.alternativeName },
+            ns.cello.misspellingName : { ns.rdfs.label, ns.cello.name, ns.skos.hiddenLabel, ns.cello.misspellingName },
+            ns.skos.notation : { ns.rdfs.label, ns.cello.name, ns.skos.notation },
+            ns.cello.hgvs : { ns.rdfs.label, ns.cello.name, ns.skos.notation, ns.cello.hgvs }
+        }
+
+        triples = TripleList()
+        for p in materialization_rule[prop]:
+            triples.append(parent_node, p, xsd_label)
+        return triples
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_amelogenin_gene_instance(self, gene_BN, chr):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         triples.append(gene_BN, ns.rdf.type, ns.cello.Gene)
         triples.append(gene_BN, ns.rdfs.label, ns.xsd.string(f"AMEL{chr}"))
+        #triples.extend(gene_BN, ns.cello.name, ns.xsd.string(f"AMEL{chr}"))
         xref_IRI = self.get_amelogenin_gene_xref_IRI(chr)
         triples.append(gene_BN, ns.cello.isIdentifiedByXref, xref_IRI)
         return triples
