@@ -33,6 +33,12 @@ class BaseNamespace:
             self.terms[id] = t
         return self.terms[id].iri
 
+    def registerNamedIndividual(self, id, label=None, comment=None, hidden=False):
+        iri = self.registerTerm(id, p="rdf:type", v={ "owl:NamedIndividual" }, hidden=hidden)
+        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
+        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
+        return iri
+    
     def registerClass(self, id, label=None, comment=None, hidden=False):
         iri = self.registerTerm(id, p="rdf:type", v={ "owl:Class" }, hidden=hidden)
         if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
@@ -467,7 +473,8 @@ class OBINamespace(BaseNamespace):
         super(OBINamespace, self).__init__("OBI", "http://purl.obolibrary.org/obo/OBI_")
 
         # most generic class for genome modification methods and its subclasses
-        self.GenomeModificationMethod = self.registerClass("0600043", label="Genome modification method")  
+        comment = "The introduction, alteration or integration of genetic material into a cell or organism."
+        self.GeneticTransformation = self.registerClass("0600043", label="Genetic transformation", comment=comment, hidden=False) # not hidden because cello:GenomeModificationMethod has not the same label
         self._0001152 = self.registerClass("0001152", label="Transfection")   
         self._0001154 = self.registerClass("0001154", label="Mutagenesis")
         self._0002626 = self.registerClass("0002626", label="siRNA knockdown")

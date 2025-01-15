@@ -43,6 +43,9 @@ class GenomeModificationMethods:
     def get(self, k):
         return self.method_dic.get(k)
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# OBSOLETE
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_method_class_IRI(label):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 

@@ -910,8 +910,13 @@ if __name__ == "__main__":
     # -------------------------------------------------------
 
         # be aware that
-        # here we use api data and indexes created when args0="BUILD"
-    
+        # here we use api data and indexes created with args0="BUILD"
+
+        # we need the OntologyBuilder class to be initialized so that the description
+        # of GenomeModificationMethod named individuals are completed
+
+        ob = OntologyBuilder(describe_ranges_and_domains=False)
+
         known_orgs = KnownOrganizations()
         known_orgs.loadInstitutions(input_dir + "institution_list")
         known_orgs.loadOnlineResources(input_dir + "cellosaurus_xrefs.txt")
@@ -982,7 +987,6 @@ if __name__ == "__main__":
                 if db not in cited_terms: cited_terms[db] = set()
                 cited_terms[db].add(ac)
         log_it("INFO:", f"looked up xrefs: {item_cnt} / {len(xr_dict)}")
-
 
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # get relevant set of terms to be RDFized and serialize them
@@ -1083,7 +1087,15 @@ if __name__ == "__main__":
         sexes = Sexes()
         for k in sexes.keys():
             s = sexes.get(k)
-            file_out.write(bytes(rb.get_ttl_for_sex(s) + "\n", "utf-8"))                        
+            file_out.write(bytes(rb.get_ttl_for_sex(s) + "\n", "utf-8"))
+        log_it("INFO:", f"2) serializing OWL for genome modification methods")        
+        for line in rb.get_ttl_for_local_gem_class():
+            file_out.write(bytes(line + "\n", "utf-8"))  
+        for k in rb.gem_ni:
+            term_iri = rb.gem_ni[k]
+            term = ns_reg.term(term_iri)
+            file_out.write(bytes(rb.get_ttl_for_gem_individual(term) + "\n", "utf-8"))  
+
         file_out.close()
         log_it("INFO:", f"serialized OWL definitions for other entities")
 
@@ -1144,12 +1156,11 @@ if __name__ == "__main__":
 
         version = "1.0"
         if len(args)>1: version = args[1]
-
         out_dir = "rdf_data/"
         file_out = open(out_dir + "ontology.ttl", "wb")
-        log_it("INFO:", f"serializing OWL cellosaurus ontology")
-        builder = OntologyBuilder()
-        lines = builder.get_onto_pretty_ttl_lines(version)
+        log_it("INFO:", f"serializing OWL cellosaurus ontology")        
+        ob = OntologyBuilder()
+        lines = ob.get_onto_pretty_ttl_lines(version)
         count = 0
         for line in lines:
             count += 1

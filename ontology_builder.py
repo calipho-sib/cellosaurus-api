@@ -13,7 +13,7 @@ class OntologyBuilder:
 #-------------------------------------------------
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def __init__(self):
+    def __init__(self, describe_ranges_and_domains=True):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         
         # - - - - - - - - - - - - - - - - - - - - - - - - - - -         
@@ -51,8 +51,10 @@ class OntologyBuilder:
         self.rdfs_domain_to_remove[ns.cello.accession] = { ns.skos.Concept }
         #self.rdfs_domain_to_remove[ns.cello.category] = { ns.skos.Concept, ns.owl.NamedIndividual  }
         self.rdfs_domain_to_remove[ns.cello.database] = { ns.skos.Concept  }
-        self.rdfs_domain_to_remove[ns.cello.hasVersion] = { ns.owl.NamedIndividual }
-        self.rdfs_domain_to_remove[ns.cello.shortname] = { ns.owl.NamedIndividual }
+        self.rdfs_domain_to_remove[ns.cello.hasVersion] = { ns.owl.NamedIndividual, ns.cello.Database }
+        self.rdfs_domain_to_remove[ns.cello.alternativeName] = { ns.owl.NamedIndividual }
+        self.rdfs_domain_to_remove[ns.cello.recommendedName] = { ns.owl.NamedIndividual }
+        self.rdfs_domain_to_remove[ns.cello.name] = { ns.owl.NamedIndividual }
         self.rdfs_domain_to_remove[ns.cello.more_specific_than] = { ns.cello.Xref  }
         self.rdfs_range_to_remove = dict()
         self.rdfs_range_to_remove[ns.cello.seeAlsoXref] = { ns.skos.Concept }
@@ -72,7 +74,7 @@ class OntologyBuilder:
         self.describe_terminology_database_and_subclasses()
         self.describe_organization_related_terms()
         self.describe_misc_terms()
-        self.describe_ranges_and_domains()
+        if describe_ranges_and_domains: self.describe_ranges_and_domains()
         self.describe_annotation_properties()
         
 
@@ -139,44 +141,64 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_genome_editing_method_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        ns.describe(ns.FBcv._0003008, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.NCIt.C17262, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.NCIt.C44386, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.OBI._0001152, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.OBI._0001154, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.OBI._0002626, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.OBI._0003134, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.OBI._0003135, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.OBI._0003137, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.OBI._0600059, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.BacHomologousRecombination, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.CreLoxp, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.CrisprCas9N, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.EbvBasedVectorSirnaKnockdown, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.FloxingCreRecombination, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.GeneTargetedKoMouse, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.HelperDependentAdenoviralVector, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.HomologousRecombination, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.KnockoutFirstConditional, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.KoMouse, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.KoPig, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.MirnaKnockdown, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.NullMutation, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.PElement, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.PiggybacTransposition, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.PrimeEditing, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.PromoterlessGeneTargeting, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.RecombinantAdenoAssociatedVirus, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.ShrnaKnockdown, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.SleepingBeautyTransposition, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.SpontaneousMutation, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.TargetedIntegration, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.TransductionTransfection, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.TransfectionTransduction, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.TransgenicFish, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.TransgenicMouse, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
-        ns.describe(ns.cello.TransgenicRat, ns.rdfs.subClassOf, ns.OBI.GenomeModificationMethod)
 
+        # NOTE: the description of cello:GenomeModificationMethod is done
+        # in RdfBuilder.get_ttl_for_local_gem_class() because it 
+        # requires a member variable of RdfBuilder
+
+        # external classes for genome modification methods
+        ns.describe(ns.FBcv._0003008, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.NCIt.C17262, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.NCIt.C44386, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.OBI._0001152, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.OBI._0001154, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.OBI._0002626, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.OBI._0003134, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.OBI._0003135, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.OBI._0003137, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.OBI._0600059, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
+
+        # local named individuals of external classes for genome modification methods
+        ns.describe(ns.cello.CrispCas9, ns.rdf.type, ns.FBcv._0003008)
+        ns.describe(ns.cello.XRay, ns.rdf.type, ns.NCIt.C17262)
+        ns.describe(ns.cello.GammaRadiation, ns.rdf.type, ns.NCIt.C44386)
+        ns.describe(ns.cello.Transfection, ns.rdf.type, ns.OBI._0001152)
+        ns.describe(ns.cello.Mutagenesis, ns.rdf.type, ns.OBI._0001154)
+        ns.describe(ns.cello.SiRNAKnockdown, ns.rdf.type, ns.OBI._0002626)
+        ns.describe(ns.cello.TALEN, ns.rdf.type, ns.OBI._0003134)
+        ns.describe(ns.cello.ZFN, ns.rdf.type, ns.OBI._0003135)
+        ns.describe(ns.cello.GeneTrap, ns.rdf.type, ns.OBI._0003137)
+        ns.describe(ns.cello.Transduction, ns.rdf.type, ns.OBI._0600059)
+
+        # local named individuals of generic local class genome modification method
+        ns.describe(ns.cello.GenomeModificationMethodNOS, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.BacHomologousRecombination, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.CreLoxp, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.CrisprCas9N, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.EbvBasedVectorSirnaKnockdown, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.FloxingCreRecombination, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.GeneTargetedKoMouse, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.HelperDependentAdenoviralVector, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.HomologousRecombination, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.KnockoutFirstConditional, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.KoMouse, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.KoPig, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.MirnaKnockdown, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.NullMutation, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.PElement, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.PiggybacTransposition, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.PrimeEditing, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.PromoterlessGeneTargeting, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.RecombinantAdenoAssociatedVirus, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.ShrnaKnockdown, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.SleepingBeautyTransposition, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.SpontaneousMutation, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.TargetedIntegration, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.TransductionTransfection, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.TransfectionTransduction, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.TransgenicFish, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.TransgenicMouse, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.TransgenicRat, ns.rdf.type, ns.cello.GenomeModificationMethod)
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -385,7 +407,7 @@ class OntologyBuilder:
         ns.describe(ns.skos.prefLabel, ns.rdfs.subPropertyOf, ns.rdfs.label)
         ns.describe(ns.skos.altLabel, ns.rdfs.subPropertyOf, ns.rdfs.label)
         ns.describe(ns.skos.hiddenLabel, ns.rdfs.subPropertyOf, ns.rdfs.label)
-        ns.describe(ns.cello.shortname, ns.rdfs.subPropertyOf, ns.cello.name)
+        #ns.describe(ns.cello.shortname, ns.rdfs.subPropertyOf, ns.cello.name)
         ns.describe(ns.cello.registeredName, ns.rdfs.subPropertyOf, ns.cello.name)
         ns.describe(ns.cello.recommendedName, ns.rdfs.subPropertyOf, ns.skos.prefLabel)
         ns.describe(ns.cello.alternativeName, ns.rdfs.subPropertyOf, ns.skos.altLabel)
@@ -595,8 +617,10 @@ class OntologyBuilder:
         return lines
 
 
+
+
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_topic_comments(self):
+    def get_topic_and_topic_annotations(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         text = """
 
@@ -604,26 +628,31 @@ class OntologyBuilder:
 
 cello:Biotechnology a owl:NamedIndividual, NCIt:C16351 ; 
     rdfs:label "Biotechnology"^^xsd:string ;
+    cello:name "Biotechnology"^^xsd:string ;
     rdfs:comment "The field devoted to applying the techniques of biochemistry, cellular biology, biophysics, and molecular biology to addressing issues related to human beings and the environment."^^xsd:string ;
     .
 
 cello:DoublingTime a owl:NamedIndividual, NCIt:C94346 ;
     rdfs:label "Doubling time"^^xsd:string ;
+    cello:name "Doubling time"^^xsd:string ;
     rdfs:comment "In biology, the amount of time it takes for one cell to divide or for a group of cells (such as a tumor) to double in size. The doubling time is different for different kinds of cancer cells or tumors."^^xsd:string ;
     .
 
 cello:Omics a owl:NamedIndividual, NCIt:C205365 ;
     rdfs:label "Omics"^^xsd:string ;
+    cello:name "Omics"^^xsd:string ;
     rdfs:comment "The fields of research that use large scale sets of bioinformatics data to identify, describe and quantify the entire set of molecules and molecular processes that contribute to the form and function of cells, tissues and organisms."^^xsd:string ;
     .
 
 cello:Senescence a owl:NamedIndividual, NCIt:C17467 ;
     rdfs:label "Senescence"^^xsd:string ;
+    cello:name "Senescence"^^xsd:string ;
     rdfs:comment "PDL stands for Population Doubling Level. The process of growing old and showing the effects of time."^^xsd:string ;
     .
 
 cello:Virology a owl:NamedIndividual, NCIt:C17256 ;
     rdfs:label "Virology"^^xsd:string ;
+    cello:name "Virology"^^xsd:string ;
     rdfs:comment "The science that deals with the study of viruses."^^xsd:string ;
     .
 
@@ -639,48 +668,56 @@ cello:GeneralTopic a owl:Class ;
 
 cello:Characteristics a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "Characteristics"^^xsd:string ;
+    cello:name "Characteristics"^^xsd:string ;
     rdfs:comment "Production process or specific biological properties of the cell line"^^xsd:string ;
     .
 
 cello:Discontinuation a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "Discontinuation"^^xsd:string ;
+    cello:name "Discontinuation"^^xsd:string ;
     rdfs:comment "Discontinuation status of the cell line in a cell line catalog."^^xsd:string ;
  	.
      
 cello:Miscellaneous a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "Miscellaneous"^^xsd:string ;
+    cello:name "Miscellaneous"^^xsd:string ;
     rdfs:comment "Miscellaneous remarks about the cell line."^^xsd:string ;
     .
 
 cello:Caution a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "Caution"^^xsd:string ;
+    cello:name "Caution"^^xsd:string ;
     rdfs:comment "Errors, inconsistencies, ambiguities regarding the origin or other aspects of the cell line."^^xsd:string ;
     .
 
 cello:Anecdotal a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "Anecdotal"^^xsd:string ;
+    cello:name "Anecdotal"^^xsd:string ;
     rdfs:comment "Anecdotal details regarding the cell line (its origin, its name or any other particularity)."^^xsd:string ;
     .
 
 cello:Misspelling a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "Misspelling"^^xsd:string ;
+    cello:name "Misspelling"^^xsd:string ;
     rdfs:comment "Identified misspelling(s) of the cell line name with in some case the specific publication or external resource entry where it appears."^^xsd:string ;
     .
 
 cello:DonorInfo a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "DonorInfo"^^xsd:string ;
+    cello:name "DonorInfo"^^xsd:string ;
     rdfs:comment "Miscellaneous information relevant to the donor of the cell line."^^xsd:string ;
     .
 
 cello:Registration a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "Registration"^^xsd:string ;
+    cello:name "Registration"^^xsd:string ;
     rdfs:comment "Register or official list in which the cell line is registered."^^xsd:string ;
     .
 
     
 
 
-# Define some of these external terms as Topic subclasses
+# Define cell line annotation topic class as a list of members (owl:oneOf)
 
 cello:CellLineAnnotationTopic a owl:Class ;
     rdfs:label "Cell line annotation topic"^^xsd:string ;
@@ -958,7 +995,7 @@ cello:RegistrationRecord a owl:Class ;
         lines.extend(self.get_onto_terms(ns.owl.ObjectProperty))
         lines.append("#\n# Datatype Properties used in ontology\n#\n")
         lines.extend(self.get_onto_terms(ns.owl.DatatypeProperty))
-        lines.extend(self.get_topic_comments())
+        lines.extend(self.get_topic_and_topic_annotations())
         return lines
 
 

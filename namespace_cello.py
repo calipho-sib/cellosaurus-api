@@ -31,37 +31,51 @@ class CelloOntologyNamespace(BaseNamespace):
         #self.ConferencePublication = self.registerClass("ConferencePublication")    # described, defined if fabio namespace
 
         #self.CellLine = self.registerClass("CellLine")                                                                         # described, defined in wd namespace
-        #self.GenomeModificationMethod = self.registerClass("GenomeModificationMethod", "Genome Modification Method NOS")       # described, defined in OBI namespace
+        
+        # described as sub of OBI class with owl:oneOf local NIs defined below (see onto builder)
+        self.GenomeModificationMethod = self.registerClass("GenomeModificationMethod", hidden=True)       
+        # Genome modification method individuals
+        # which are instances of external classes
+        self.GenomeModificationMethodNOS = self.registerNamedIndividual("GenomeModificationMethodNOS", label="Genome modification method NOS")   
+        self.CrispCas9 = self.registerNamedIndividual("CrispCas9", label="CRISPR/Cas9")   
+        self.XRay = self.registerNamedIndividual("XRay", label="X-ray")                                  
+        self.GammaRadiation = self.registerNamedIndividual("GammaRadiation", label="Gamma radiation")                         
+        self.Transfection = self.registerNamedIndividual("Transfection", label="Transfection")   
+        self.Mutagenesis = self.registerNamedIndividual("Mutagenesis", label="Mutagenesis")
+        self.SiRNAKnockdown = self.registerNamedIndividual("SiRNAKnockdown", label="siRNA knockdown")
+        self.TALEN = self.registerNamedIndividual("TALEN", label="TALEN")
+        self.ZFN = self.registerNamedIndividual("ZFN", label="ZFN")
+        self.GeneTrap = self.registerNamedIndividual("GeneTrap", label="Gene trap")
+        self.Transduction = self.registerNamedIndividual("Transduction", label="Transduction")
+        # which are instances of local classes
+        self.BacHomologousRecombination = self.registerNamedIndividual("BacHomologousRecombination", label="BAC homologous recombination")                    # described
+        self.CreLoxp = self.registerNamedIndividual("CreLoxp", label="Cre/loxP")                                                                              # described
+        self.CrisprCas9N = self.registerNamedIndividual("CrisprCas9N", label="CRISPR/Cas9n")                                                                  # described
+        self.EbvBasedVectorSirnaKnockdown = self.registerNamedIndividual("EbvBasedVectorSirnaKnockdown", label="EBV-based vector siRNA knockdown")            # described
+        self.FloxingCreRecombination = self.registerNamedIndividual("FloxingCreRecombination", label="Floxing/Cre recombination")                             # described
+        self.GeneTargetedKoMouse = self.registerNamedIndividual("GeneTargetedKoMouse", label="Gene-targeted KO mouse")                                        # described
+        self.HelperDependentAdenoviralVector = self.registerNamedIndividual("HelperDependentAdenoviralVector", label="Helper-dependent adenoviral vector")    # described
+        self.HomologousRecombination = self.registerNamedIndividual("HomologousRecombination", label="Homologous recombination")                              # described
+        self.KnockoutFirstConditional = self.registerNamedIndividual("KnockoutFirstConditional", label="Knockout-first conditional")                          # described
+        self.KoMouse = self.registerNamedIndividual("KoMouse", label="KO mouse")                                                              # described
+        self.KoPig = self.registerNamedIndividual("KoPig", label="KO pig")                                                                    # described
+        self.MirnaKnockdown = self.registerNamedIndividual("MirnaKnockdown", label="miRNA knockdown")                                         # described
+        self.NullMutation = self.registerNamedIndividual("NullMutation", label="Null mutation")                                               # described
+        self.PElement = self.registerNamedIndividual("PElement", label="P-element")                                                           # described
+        self.PiggybacTransposition = self.registerNamedIndividual("PiggybacTransposition", label="PiggyBac transposition")                    # described
+        self.PrimeEditing = self.registerNamedIndividual("PrimeEditing", label="Prime editing")                                               # described
+        self.PromoterlessGeneTargeting = self.registerNamedIndividual("PromoterlessGeneTargeting", label="Promoterless gene targeting")       # described
+        self.RecombinantAdenoAssociatedVirus = self.registerNamedIndividual("RecombinantAdenoAssociatedVirus", label="Recombinant Adeno-Associated Virus")    # described
+        self.ShrnaKnockdown = self.registerNamedIndividual("ShrnaKnockdown", label="shRNA knockdown")                                                         # described
+        self.SleepingBeautyTransposition = self.registerNamedIndividual("SleepingBeautyTransposition", label="Sleeping Beauty transposition")                 # described
+        self.SpontaneousMutation = self.registerNamedIndividual("SpontaneousMutation", label="Spontaneous mutation")                          # described
+        self.TargetedIntegration = self.registerNamedIndividual("TargetedIntegration", label="Targeted integration")                          # described
+        self.TransductionTransfection = self.registerNamedIndividual("TransductionTransfection", label="Transduction/transfection")           # described
+        self.TransfectionTransduction = self.registerNamedIndividual("TransfectionTransduction", label="Transfection/transduction")           # described
+        self.TransgenicFish = self.registerNamedIndividual("TransgenicFish", label="Transgenic fish")                                         # described
+        self.TransgenicMouse = self.registerNamedIndividual("TransgenicMouse", label="Transgenic mouse")                                      # described
+        self.TransgenicRat = self.registerNamedIndividual("TransgenicRat", label="Transgenic rat")                                            # described
 
-        # Genome modification methods sublasses not found in NCIt, OBI, FBcv
-        # WARNING: labels must match what's found in cellosaurus.txt !!!
-        self.BacHomologousRecombination = self.registerClass("BacHomologousRecombination", label="BAC homologous recombination")                    # described
-        self.CreLoxp = self.registerClass("CreLoxp", label="Cre/loxP")                                                                              # described
-        self.CrisprCas9N = self.registerClass("CrisprCas9N", label="CRISPR/Cas9n")                                                                  # described
-        self.EbvBasedVectorSirnaKnockdown = self.registerClass("EbvBasedVectorSirnaKnockdown", label="EBV-based vector siRNA knockdown")            # described
-        self.FloxingCreRecombination = self.registerClass("FloxingCreRecombination", label="Floxing/Cre recombination")                             # described
-        self.GeneTargetedKoMouse = self.registerClass("GeneTargetedKoMouse", label="Gene-targeted KO mouse")                                        # described
-        self.HelperDependentAdenoviralVector = self.registerClass("HelperDependentAdenoviralVector", label="Helper-dependent adenoviral vector")    # described
-        self.HomologousRecombination = self.registerClass("HomologousRecombination", label="Homologous recombination")                              # described
-        self.KnockoutFirstConditional = self.registerClass("KnockoutFirstConditional", label="Knockout-first conditional")                          # described
-        self.KoMouse = self.registerClass("KoMouse", label="KO mouse")                                                              # described
-        self.KoPig = self.registerClass("KoPig", label="KO pig")                                                                    # described
-        self.MirnaKnockdown = self.registerClass("MirnaKnockdown", label="miRNA knockdown")                                         # described
-        self.NullMutation = self.registerClass("NullMutation", label="Null mutation")                                               # described
-        self.PElement = self.registerClass("PElement", label="P-element")                                                           # described
-        self.PiggybacTransposition = self.registerClass("PiggybacTransposition", label="PiggyBac transposition")                    # described
-        self.PrimeEditing = self.registerClass("PrimeEditing", label="Prime editing")                                               # described
-        self.PromoterlessGeneTargeting = self.registerClass("PromoterlessGeneTargeting", label="Promoterless gene targeting")       # described
-        self.RecombinantAdenoAssociatedVirus = self.registerClass("RecombinantAdenoAssociatedVirus", label="Recombinant Adeno-Associated Virus")    # described
-        self.ShrnaKnockdown = self.registerClass("ShrnaKnockdown", label="shRNA knockdown")                                                         # described
-        self.SleepingBeautyTransposition = self.registerClass("SleepingBeautyTransposition", label="Sleeping Beauty transposition")                 # described
-        self.SpontaneousMutation = self.registerClass("SpontaneousMutation", label="Spontaneous mutation")                          # described
-        self.TargetedIntegration = self.registerClass("TargetedIntegration", label="Targeted integration")                          # described
-        self.TransductionTransfection = self.registerClass("TransductionTransfection", label="Transduction/transfection")           # described
-        self.TransfectionTransduction = self.registerClass("TransfectionTransduction", label="Transfection/transduction")           # described
-        self.TransgenicFish = self.registerClass("TransgenicFish", label="Transgenic fish")                                         # described
-        self.TransgenicMouse = self.registerClass("TransgenicMouse", label="Transgenic mouse")                                      # described
-        self.TransgenicRat = self.registerClass("TransgenicRat", label="Transgenic rat")                                            # described
 
         self.Database = self.registerClass("Database")                          # described
 
@@ -199,10 +213,10 @@ class CelloOntologyNamespace(BaseNamespace):
         self.secondaryAccession = self.registerDatatypeProperty("secondaryAccession", comment=comment)              # described as subProp of dcterms:identifier
         
 
-        comment = "A human-readable version of a resource's name. It is an owl:equivalentProperty of rdfs:label"
-        self.name = self.registerAnnotationProperty("name", comment=comment)                                          # described, as equivalent of rdfs:label
-        comment = "A name which serves as a concise or abbreviated version of a longer name."
-        self.shortname = self.registerAnnotationProperty("shortname")                                                 # described as sub prop of cello:name
+        comment = "A human-readable version of a resource's name."
+        self.name = self.registerAnnotationProperty("name", comment=comment)                                          # described, as sub prop of rdfs:label
+        #comment = "A name which serves as a concise or abbreviated version of a longer name."
+        #self.shortname = self.registerAnnotationProperty("shortname")                                                 # described as sub prop of cello:name
 
         comment="Most frequently the name of the cell line as provided in the original publication"
         self.recommendedName = self.registerAnnotationProperty("recommendedName", comment=comment)                    # described as sub of skos:prefLabel sub of cello:name      
@@ -253,7 +267,7 @@ class CelloOntologyNamespace(BaseNamespace):
         comment="Laboratory, research institute, university having established the cell line."
         self.establishedBy = self.registerObjectProperty("establishedBy", comment=comment)                          # described as sub prop of dcterms:source # cannot use function name "from" (is python reserved word)
         
-        self.commentedSequenceVariation = self.registerObjectProperty("commentedSequenceVariation")                 # TODO: later
+        #self.commentedSequenceVariation = self.registerObjectProperty("commentedSequenceVariation")                 # unused: we use cello:hasTarget instead
         
         self.zygosity = self.registerDatatypeProperty("zygosity")                                                   # described as sub prop of GENO:_0000608_has_zygozity
 
