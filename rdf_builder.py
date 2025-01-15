@@ -120,16 +120,35 @@ class RdfBuilder:
             "Transgenic rat": ns.cello.TransgenicRat,
         }
 
+        # cell line labels => class
+        # labels MUST be those found in cellosaurus data
+        self.clcat_clazz = {
+            "Cancer cell line": ns.cello.CancerCellLine,
+            "Conditionally immortalized cell line": ns.cello.ConditionallyImmortalizedCellLine,
+            "Embryonic stem cell": ns.cello.EmbryonicStemCell,
+            "Factor-dependent cell line": ns.cello.FactorDependentCellLine,
+            "Finite cell line": ns.cello.FiniteCellLine,
+            "Hybrid cell line": ns.cello.HybridCellLine,
+            "Hybridoma": ns.cello.Hybridoma,
+            "Induced pluripotent stem cell": ns.cello.InducedPluripotentStemCell,
+            "Somatic stem cell": ns.cello.SomaticStemCell,
+            "Spontaneously immortalized cell line": ns.cello.SpontaneouslyImmortalizedCellLine,
+            "Stromal cell line": ns.cello.StromalCellLine,
+            "Telomerase immortalized cell line": ns.cello.TelomeraseImmortalizedCellLine,
+            "Transformed cell line": ns.cello.TransformedCellLine,
+            "Cell line": ns.cello.CellLine,
+            "Undefined cell line type": ns.cello.CellLine # generic cell line (in data)
+        }
 
         # cell line category => cell line class
-        self.clcat_clazz = dict()
-        for id in ns.wd.terms:
-            term = ns.wd.terms[id]
-            if "owl:Class" in term.props["rdf:type"]:
-                xsdlabel = term.props["rdfs:label"].pop()
-                label = xsdlabel.split("\"")[1]
-                self.clcat_clazz[label] = term.iri
-        self.clcat_clazz["Undefined cell line type"] = ns.wd.CellLine # generic cell line
+        # self.clcat_clazz = dict()
+        # for id in ns.wd.terms:
+        #     term = ns.wd.terms[id]
+        #     if "owl:Class" in term.props["rdf:type"]:
+        #         xsdlabel = term.props["rdfs:label"].pop()
+        #         label = xsdlabel.split("\"")[1]
+        #         self.clcat_clazz[label] = term.iri
+        # self.clcat_clazz["Undefined cell line type"] = ns.wd.CellLine # generic cell line
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -346,7 +365,7 @@ class RdfBuilder:
         clazz = self.clcat_clazz.get(category_label)
         if clazz is None:
             log_it("ERROR", f"unexpected cell line category '{category_label}'")
-            clazz = ns.wd.CellLine # default, most generic
+            clazz = ns.cello.CellLine # default, most generic
         return clazz
 
 
@@ -834,7 +853,7 @@ class RdfBuilder:
         if ca is not None:
             triples.append(cl_IRI, ns.rdf.type, self.get_cl_category_class_IRI(ca))
         else:
-            triples.append(cl_IRI, ns.rdf.type, ns.wd.CellLine)
+            triples.append(cl_IRI, ns.rdf.type, ns.cello.CellLine)
             
 
         # fields DT, dtc, dtu, dtv

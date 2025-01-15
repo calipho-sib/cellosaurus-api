@@ -245,21 +245,20 @@ class WikidataWdNamespace(BaseNamespace):
         self.P21_SX = self.registerObjectProperty("P21", label="Sex") # could not figure out how sex is related to cell lines in wikidata
 
         # cell line classes with label as found in cellosaurus.txt
-        self.Q23058136 = self.registerClass("Q23058136", label="Cancer cell line")
-        self.Q27653145 = self.registerClass("Q27653145", label="Conditionally immortalized cell line")
-        self.Q107102664 = self.registerClass("Q107102664", label="Embryonic stem cell")
-        self.Q27627225 = self.registerClass("Q27627225", label="Factor-dependent cell line")
-        self.Q27671617 = self.registerClass("Q27671617", label="Finite cell line")
-        self.Q27555050 = self.registerClass("Q27555050", label="Hybrid cell line")
-        self.Q27554370 = self.registerClass("Q27554370", label="Hybridoma")
-        self.Q107103143 = self.registerClass("Q107103143", label="Induced pluripotent stem cell")
-        self.Q107103129 = self.registerClass("Q107103129", label="Somatic stem cell")
-        self.Q27555319 = self.registerClass("Q27555319", label="Spontaneously immortalized cell line")
-        self.Q27671698 = self.registerClass("Q27671698", label="Stromal cell line")
-        self.Q27653701 = self.registerClass("Q27653701", label="Telomerase immortalized cell line")
-        self.Q27555384 = self.registerClass("Q27555384", label="Transformed cell line")
-        comment = "A population of cells that originates from a primary culture, adapted to grow and divide under laboratory conditions. Used in biotechnology to consistently produce biological substances"
-        self.CellLine = self.registerClass("Q21014462", label="Cell line", comment=comment) # with human readable var name because used at several locations
+        self.Q23058136 = self.registerClass("Q23058136", label="Cancer cell line", hidden=True)
+        self.Q27653145 = self.registerClass("Q27653145", label="Conditionally immortalized cell line", hidden=True)
+        self.Q107102664 = self.registerClass("Q107102664", label="Embryonic stem cell", hidden=True)
+        self.Q27627225 = self.registerClass("Q27627225", label="Factor-dependent cell line", hidden=True)
+        self.Q27671617 = self.registerClass("Q27671617", label="Finite cell line", hidden=True)
+        self.Q27555050 = self.registerClass("Q27555050", label="Hybrid cell line", hidden=True)
+        self.Q27554370 = self.registerClass("Q27554370", label="Hybridoma", hidden=True)
+        self.Q107103143 = self.registerClass("Q107103143", label="Induced pluripotent stem cell", hidden=True)
+        self.Q107103129 = self.registerClass("Q107103129", label="Somatic stem cell", hidden=True)
+        self.Q27555319 = self.registerClass("Q27555319", label="Spontaneously immortalized cell line", hidden=True)
+        self.Q27671698 = self.registerClass("Q27671698", label="Stromal cell line", hidden=True)
+        self.Q27653701 = self.registerClass("Q27653701", label="Telomerase immortalized cell line", hidden=True)
+        self.Q27555384 = self.registerClass("Q27555384", label="Transformed cell line", hidden=True)
+        self.Q21014462 = self.registerClass("Q21014462", label="Cell line", hidden=True)
 
 
     def IRI(self, ac): return "wd:" + ac

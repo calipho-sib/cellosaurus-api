@@ -544,26 +544,51 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_cell_line_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # generate rdfs:subClass links between wd.CellLine and others
-        for id in ns.wd.terms:
-            term = ns.wd.terms[id]
-            if "owl:Class" in term.props["rdf:type"]:
-                if term.iri != ns.wd.CellLine:
-                    ns.describe(term.iri, ns.rdfs.subClassOf, ns.wd.CellLine)
+
+        # describe cell line class hierarchy
+        ns.describe(ns.cello.CancerCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.ConditionallyImmortalizedCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.EmbryonicStemCell, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.FactorDependentCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.FiniteCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.HybridCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.Hybridoma, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.InducedPluripotentStemCell, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.SomaticStemCell, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.SpontaneouslyImmortalizedCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.StromalCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.TelomeraseImmortalizedCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.TransformedCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
+
+        # describe equivalent classes in wikidata
+        ns.describe(ns.cello.CancerCellLine, ns.owl.equivalentClass, ns.wd.Q23058136)
+        ns.describe(ns.cello.ConditionallyImmortalizedCellLine, ns.owl.equivalentClass, ns.wd.Q27653145)
+        ns.describe(ns.cello.EmbryonicStemCell, ns.owl.equivalentClass, ns.wd.Q107102664)
+        ns.describe(ns.cello.FactorDependentCellLine, ns.owl.equivalentClass, ns.wd.Q27627225)
+        ns.describe(ns.cello.FiniteCellLine, ns.owl.equivalentClass, ns.wd.Q27671617)
+        ns.describe(ns.cello.HybridCellLine, ns.owl.equivalentClass, ns.wd.Q27555050)
+        ns.describe(ns.cello.Hybridoma, ns.owl.equivalentClass, ns.wd.Q27554370)
+        ns.describe(ns.cello.InducedPluripotentStemCell, ns.owl.equivalentClass, ns.wd.Q107103143)
+        ns.describe(ns.cello.SomaticStemCell, ns.owl.equivalentClass, ns.wd.Q107103129)
+        ns.describe(ns.cello.SpontaneouslyImmortalizedCellLine, ns.owl.equivalentClass, ns.wd.Q27555319)
+        ns.describe(ns.cello.StromalCellLine, ns.owl.equivalentClass, ns.wd.Q27671698)
+        ns.describe(ns.cello.TelomeraseImmortalizedCellLine, ns.owl.equivalentClass, ns.wd.Q27653701)
+        ns.describe(ns.cello.TransformedCellLine, ns.owl.equivalentClass, ns.wd.Q27555384)
+        ns.describe(ns.cello.CellLine, ns.owl.equivalentClass, ns.wd.Q21014462)
 
         # describe how CellLine classes relate in the universe 
-        ns.describe(ns.wd.CellLine, ns.skos.closeMatch, "<http://purl.obolibrary.org/obo/CLO_0000031>")
-        ns.describe(ns.wd.CellLine, ns.skos.closeMatch, "<http://id.nlm.nih.gov/mesh/D002460>")
-        ns.describe(ns.wd.CellLine, ns.rdfs.seeAlso, "<https://www.cellosaurus.org/>")
-        ns.describe(ns.wd.Q23058136, ns.skos.closeMatch, f"<{ns.OBI.url}0001906>" )
-        ns.describe(ns.wd.Q107102664, ns.skos.closeMatch, f"<{ns.BTO.url}0001581>" )
-        ns.describe(ns.wd.Q107102664, ns.skos.closeMatch, f"<{ns.CLO.url}0037279>" )
-        ns.describe(ns.wd.Q27671617, ns.skos.closeMatch, f"<{ns.CLO.url}0009829>" )
-        ns.describe(ns.wd.Q27554370, ns.skos.closeMatch, f"<{ns.BTO.url}0001926>" )
-        ns.describe(ns.wd.Q27554370, ns.skos.closeMatch, f"<{ns.CLO.url}0036932>" )
-        ns.describe(ns.wd.Q107103143, ns.skos.closeMatch, f"<{ns.CLO.url}0037307>" )
-        ns.describe(ns.wd.Q27671698, ns.skos.closeMatch, f"<{ns.BTO.url}0005996>" )
-        ns.describe(ns.wd.Q27555384, ns.skos.closeMatch, f"<{ns.OMIT.url}0003790>" )
+        ns.describe(ns.cello.CellLine, ns.skos.closeMatch, "<http://purl.obolibrary.org/obo/CLO_0000031>")
+        ns.describe(ns.cello.CellLine, ns.skos.closeMatch, "<http://id.nlm.nih.gov/mesh/D002460>")
+        ns.describe(ns.cello.CellLine, ns.rdfs.seeAlso, "<https://www.cellosaurus.org/>")
+        ns.describe(ns.cello.CancerCellLine, ns.skos.closeMatch, f"<{ns.OBI.url}0001906>" )
+        ns.describe(ns.cello.EmbryonicStemCell, ns.skos.closeMatch, f"<{ns.BTO.url}0001581>" )
+        ns.describe(ns.cello.EmbryonicStemCell, ns.skos.closeMatch, f"<{ns.CLO.url}0037279>" )
+        ns.describe(ns.cello.FiniteCellLine, ns.skos.closeMatch, f"<{ns.CLO.url}0009829>" )
+        ns.describe(ns.cello.Hybridoma, ns.skos.closeMatch, f"<{ns.BTO.url}0001926>" )
+        ns.describe(ns.cello.Hybridoma, ns.skos.closeMatch, f"<{ns.CLO.url}0036932>" )
+        ns.describe(ns.cello.InducedPluripotentStemCell, ns.skos.closeMatch, f"<{ns.CLO.url}0037307>" )
+        ns.describe(ns.cello.StromalCellLine, ns.skos.closeMatch, f"<{ns.BTO.url}0005996>" )
+        ns.describe(ns.cello.TransformedCellLine, ns.skos.closeMatch, f"<{ns.OMIT.url}0003790>" )
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

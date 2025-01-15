@@ -30,8 +30,25 @@ class CelloOntologyNamespace(BaseNamespace):
         #self.BookChapter = self.registerClass("BookChapter")                    # described, defined if fabio namespace
         #self.ConferencePublication = self.registerClass("ConferencePublication")    # described, defined if fabio namespace
 
-        #self.CellLine = self.registerClass("CellLine")                                                                         # described, defined in wd namespace
-        
+
+        # cell line classes with label as found in cellosaurus.txt
+        comment = "A population of cells that originates from a primary culture, adapted to grow and divide under laboratory conditions. Used in biotechnology to consistently produce biological substances"
+        self.CellLine = self.registerClass("CellLine", comment=comment) # with human readable var name because used at several locations
+        self.CancerCellLine = self.registerClass("CancerCellLine")
+        self.ConditionallyImmortalizedCellLine = self.registerClass("ConditionallyImmortalizedCellLine")
+        self.EmbryonicStemCell = self.registerClass("EmbryonicStemCell")
+        self.FactorDependentCellLine = self.registerClass("FactorDependentCellLine")
+        self.FiniteCellLine = self.registerClass("FiniteCellLine")
+        self.HybridCellLine = self.registerClass("HybridCellLine")
+        self.Hybridoma = self.registerClass("Hybridoma")
+        self.InducedPluripotentStemCell = self.registerClass("InducedPluripotentStemCell")
+        self.SomaticStemCell = self.registerClass("SomaticStemCell")
+        self.SpontaneouslyImmortalizedCellLine = self.registerClass("SpontaneouslyImmortalizedCellLine")
+        self.StromalCellLine = self.registerClass("StromalCellLine")
+        self.TelomeraseImmortalizedCellLine = self.registerClass("TelomeraseImmortalizedCellLine")
+        self.TransformedCellLine = self.registerClass("TransformedCellLine")
+
+
         # described as sub of OBI class with owl:oneOf local NIs defined below (see onto builder)
         self.GenomeModificationMethod = self.registerClass("GenomeModificationMethod", hidden=True)       
         # Genome modification method individuals
