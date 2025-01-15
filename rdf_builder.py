@@ -1101,18 +1101,18 @@ class RdfBuilder:
         #      12 varmut | Gene amplification | Extensive
 
         if var_type == "Mutation":
-            if mut_type.startswith("Simple"): return ns.NCIt.GeneMutation
+            if mut_type.startswith("Simple"): return ns.cello.GeneMutation
             if mut_type.startswith("Repeat"): return ns.cello.RepeatExpansion
-            if mut_type.startswith("Unexplicit"): return ns.NCIt.GeneMutation
-            if mut_type == "None_reported": return ns.NCIt.GeneMutation
-        elif var_type == "Gene fusion": return ns.NCIt.GeneFusion
-        elif var_type == "Gene deletion": return ns.NCIt.GeneDeletion
+            if mut_type.startswith("Unexplicit"): return ns.cello.GeneMutation
+            if mut_type == "None_reported": return ns.cello.GeneMutation
+        elif var_type == "Gene fusion": return ns.cello.GeneFusion
+        elif var_type == "Gene deletion": return ns.cello.GeneDeletion
         elif var_type == "Gene amplification":
             if mut_type == "Triplication": return ns.cello.GeneTriplication
             if mut_type == "Duplication": return ns.cello.GeneDuplication
             if mut_type == "Quadruplication": return ns.cello.GeneQuadruplication
             if mut_type == "Extensive": return ns.cello.GeneExtensiveAmplification
-            if mut_type == "None_reported": return ns.NCIt.GeneAmplification # not in data but we never know    
+            if mut_type == "None_reported": return ns.cello.GeneAmplification # not in data but we never know    
         raise DataError("SequenceVariation", f"Unexpected variation-type / mutation-type combination: {var_type} / {mut_type}")
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

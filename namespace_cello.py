@@ -118,20 +118,26 @@ class CelloOntologyNamespace(BaseNamespace):
         self.GeneKnockout = self.registerClass("GeneKnockout")                          # described as child of OBI:0001364 : characteristics of genetic alteration
         self.GeneticIntegration = self.registerClass("GeneticIntegration")              # described as child of OBI:0001364 : characteristics of genetic alteration
         self.SequenceVariationComment = self.registerClass("SequenceVariationComment")  # described as child of OBI:0001364 : characteristics of genetic alteration
-        # ...
-        #self.SequenceVariation = self.registerClass("SequenceVariation")        # # defined as NCIt:C36391 - Molecular genetic varation
-        #self.GeneAmplification = self.registerClass("GeneAmplification")       # defined as NCIt:C45581
-        self.GeneDuplication = self.registerClass("GeneDuplication")            # described as child of NCIt:C45581 - gene amplification
-        self.GeneTriplication = self.registerClass("GeneTriplication")          # described as child of NCIt:C45581 - gene amplification
-        self.GeneQuadruplication = self.registerClass("GeneQuadruplication")    # described as child of NCIt:C45581 - gene amplification
-        self.GeneExtensiveAmplification = self.registerClass("GeneExtensiveAmplification")  # described as child of NCIt:C45581 - gene amplification
-        #self.GeneDeletion = self.registerClass("GeneDeletion")                  # defined in NCIt namespace
-        #self.GeneFusion = self.registerClass("GeneFusion")                      # defined in NCIt namespace
-        #self.GeneMutation = self.registerClass("GeneMutation")                  # defined in NCIt namespace
-        self.RepeatExpansion = self.registerClass("RepeatExpansion")            # described as child of NCIt:C18093 (gene mutation)
+        # - - - gene variation classes - - -
+        comment = "A variation in or modification of the molecular sequence of a gene or gene product." 
+        self.SequenceVariation = self.registerClass("SequenceVariation", comment=comment)          # generic class, described as owl:Equiv NCIt:C36391
+        comment="An increase in the copy number of a particular gene. This type of abnormality can be either inherited or somatic"
+        self.GeneAmplification = self.registerClass("GeneAmplification", comment=comment)          # described as owl:Equiv NCIt:C45581
+        comment="A deletion that results in the loss of a DNA segment encompassing an entire gene sequence"
+        self.GeneDeletion = self.registerClass("GeneDeletion", comment=comment)                    # described as owl:Equiv NCIt:C...
+        comment="Any hybrid gene formed from two previously separate genes. Such fusions occur as a result of translocation, intersititial deletion or chromosomal inversion, and often result in gene products with functions different from the two fusion partners. Gene fusions are associated frequently with hematological cancers, sarcomas and prostate cancer"
+        self.GeneFusion = self.registerClass("GeneFusion", comment=comment)                        # described as owl:Equiv NCIt:C...
+        comment="The result of any gain, loss or alteration of the sequences comprising a gene, including all sequences transcribed into RN"
+        self.GeneMutation = self.registerClass("GeneMutation", comment=comment)                    # described as owl:Equiv NCIt:C...
+        #
+        self.GeneDuplication = self.registerClass("GeneDuplication")            # described as child of gene amplification
+        self.GeneTriplication = self.registerClass("GeneTriplication")          # described as child of gene amplification
+        self.GeneQuadruplication = self.registerClass("GeneQuadruplication")    # described as child of gene amplification
+        self.GeneExtensiveAmplification = self.registerClass("GeneExtensiveAmplification")  # described as child of gene amplification
+        self.RepeatExpansion = self.registerClass("RepeatExpansion")            # described as child of gene mutation
         #self.SimpleMutation = self.registerClass("SimpleMutation")              # unused 
         #self.UnexplicitMutation = self.registerClass("UnexplicitMutation")      # unused
-
+        # - - - 
         comment = "A part of a cellular organism that is either an immaterial entity or a material entity with granularity above the level of a protein complex. Or, a substance produced by a cellular organism with granularity above the level of a protein complex."
         self.AnatomicalEntity = self.registerClass("AnatomicalEntity", comment=comment)        # defined as equiv CARO:0000000
         comment="A material entity of anatomical origin (part of or deriving from an organism) that has as its parts a maximally connected cell compartment surrounded by a plasma membrane. The definition of cell is intended to represent all cells, and thus a cell is defined as a material entity and not an anatomical structure, which implies that it is part of an organism (or the entirety of one)."

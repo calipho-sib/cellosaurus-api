@@ -436,16 +436,17 @@ class NCItNamespace(BaseNamespace):
         # self.C71267 = self.registerClass("C71267", label="HLA-DPA1 Gene")   # described as a cello:HLAGene subclass
 
         # SequenceVariation class, aleternative 1)
-        comment = "A variation in or modification of the molecular sequence of a gene or gene product."
-        self.SequenceVariation = self.registerClass("C36391", label = "Molecular Genetic Variation", comment = comment) # as generic class for SequenceVariation
         # SequenceVariation class, aleternative 2) Note: Gene Abnormality is a direct subclass of Molecular Genetic Variation
         #comment = "A variation in or modification of the nucleic acid sequence of a gene that can alter its expression and may result in either a congenital disorder or the clinical presentation of a disease."
         #self.SequenceVariation = self.registerClass("C36327", label = "Gene Abnormality", comment = comment) # as generic class for SequenceVariation
         # ... sub classes first level        
-        self.GeneAmplification = self.registerClass("C45581", label="Gene Amplification Abnormality", comment="An increase in the copy number of a particular gene. This type of abnormality can be either inherited or somatic")
-        self.GeneDeletion = self.registerClass("C16606", label="Gene Deletion", comment="A deletion that results in the loss of a DNA segment encompassing an entire gene sequence")
-        self.GeneFusion = self.registerClass("C45584", label="Gene Fusion Abnormality", comment="Any hybrid gene formed from two previously separate genes. Such fusions occur as a result of translocation, intersititial deletion or chromosomal inversion, and often result in gene products with functions different from the two fusion partners. Gene fusions are associated frequently with hematological cancers, sarcomas and prostate cancer")
-        self.GeneMutation = self.registerClass("C18093", label="Gene Mutation", comment="The result of any gain, loss or alteration of the sequences comprising a gene, including all sequences transcribed into RN")
+        
+        self.SequenceVariation = self.registerClass("C36391", hidden=True, label = "Molecular Genetic Variation", comment = "A variation in or modification of the molecular sequence of a gene or gene product.") # as generic class for SequenceVariation
+        self.GeneAmplification = self.registerClass("C45581", hidden=True, label="Gene Amplification Abnormality", comment="An increase in the copy number of a particular gene. This type of abnormality can be either inherited or somatic")
+        self.GeneDeletion = self.registerClass("C16606", hidden=True, label="Gene Deletion", comment="A deletion that results in the loss of a DNA segment encompassing an entire gene sequence")
+        self.GeneFusion = self.registerClass("C45584", hidden=True, label="Gene Fusion Abnormality", comment="Any hybrid gene formed from two previously separate genes. Such fusions occur as a result of translocation, intersititial deletion or chromosomal inversion, and often result in gene products with functions different from the two fusion partners. Gene fusions are associated frequently with hematological cancers, sarcomas and prostate cancer")
+        self.GeneMutation = self.registerClass("C18093", hidden=True, label="Gene Mutation", comment="The result of any gain, loss or alteration of the sequences comprising a gene, including all sequences transcribed into RN")
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class GENONamespace(BaseNamespace):
