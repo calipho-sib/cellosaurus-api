@@ -1373,7 +1373,7 @@ class RdfBuilder:
         site_type = site["site-type"]
         label = site["value"]
         triples.append(cl_IRI, ns.cello.isDerivedFromSite, site_BN)
-        triples.append(site_BN, ns.rdf.type, ns.CARO.AnatomicalEntity)
+        triples.append(site_BN, ns.rdf.type, ns.cello.AnatomicalEntity)
         triples.append(site_BN, ns.cello.siteType, ns.xsd.string(site_type))
         #triples.append(site_BN, ns.rdfs.label, ns.xsd.string(label))
         triples.extend(self.get_ttl_for_name_prop(site_BN, ns.cello.name, ns.xsd.string(label)))
@@ -1393,8 +1393,7 @@ class RdfBuilder:
         else:
             label, cv = (annot["value"], annot.get("xref"))
         triples.append(cl_IRI, ns.cello.isDerivedFromCellType, ct_BN)
-        triples.append(ct_BN, ns.rdf.type, ns.CL.CellType)
-        #triples.append(ct_BN, ns.rdfs.label, ns.xsd.string(label))    
+        triples.append(ct_BN, ns.rdf.type, ns.cello.CellType)
         triples.extend(self.get_ttl_for_name_prop(ct_BN, ns.cello.name, ns.xsd.string(label)) )   
         if cv is not None: triples.append(ct_BN, ns.cello.isIdentifiedByXref, self.get_xref_IRI(cv))
         return triples
@@ -1525,12 +1524,12 @@ class RdfBuilder:
                 triples.append(annot_BN, ns.rdf.type, ns.cello.MabIsotype)
                 igh_BN = self.get_blank_node()
                 triples.append(annot_BN, ns.cello.hasAntibodyHeavyChain, igh_BN)
-                triples.append(igh_BN, ns.rdf.type, ns.NCIt.C16717_IGH)
+                triples.append(igh_BN, ns.rdf.type, ns.cello.ImmunoglobulinHeavyChain)
                 #triples.append(igh_BN, ns.rdfs.label, ns.xsd.string(h))
                 triples.extend(self.get_ttl_for_name_prop(igh_BN, ns.cello.name, ns.xsd.string(h)))
                 igl_BN = self.get_blank_node()
                 triples.append(annot_BN, ns.cello.hasAntibodyLightChain, igl_BN)
-                triples.append(igl_BN, ns.rdf.type, ns.NCIt.C16720_IGL)
+                triples.append(igl_BN, ns.rdf.type, ns.cello.ImmunoglobulinLightChain)
                 #triples.append(igl_BN, ns.rdfs.label, ns.xsd.string(l))
                 triples.extend(self.get_ttl_for_name_prop(igl_BN, ns.cello.name, ns.xsd.string(l)))
                 triples.extend(self.get_ttl_for_sources(annot_BN, sources))
@@ -1542,7 +1541,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         annot_BN = self.get_blank_node()
-        clazz = ns.CHEBI.ChemicalEntity # default when we have no xref
+        clazz = ns.cello.ChemicalEntity # default when we have no xref
 
         # we might get a simple string in annot (the name of the antigen)
         if type(annot) == str:
@@ -1563,9 +1562,9 @@ class RdfBuilder:
             xref_IRI = self.get_xref_IRI(xref)
             db = self.get_xref_db(xref)
             if db in [ "UniProtKB", "FPbase" ]: 
-                clazz = ns.CHEBI.Protein
+                clazz = ns.cello.Protein
             elif db == "ChEBI":
-                clazz = ns.CHEBI.ChemicalEntity
+                clazz = ns.cello.ChemicalEntity
             else:
                 raise DataError("Monoclonal antibody target", "Unexpected xref database: " + db)
 
@@ -1587,7 +1586,7 @@ class RdfBuilder:
         triples = TripleList()
         annot_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.cello.hasResistance, annot_BN)
-        triples.append(annot_BN, ns.rdf.type, ns.CHEBI.ChemicalEntity)
+        triples.append(annot_BN, ns.rdf.type, ns.cello.ChemicalEntity)
         # we might get a simple string in annot (the name of the chemical)
         if type(annot) == str:
             #triples.append(annot_BN, ns.rdfs.label, ns.xsd.string(annot))
@@ -1608,7 +1607,7 @@ class RdfBuilder:
         triples = TripleList()
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.cello.transformedBy, inst_BN)
-        triples.append(inst_BN, ns.rdf.type, ns.CHEBI.ChemicalEntity)
+        triples.append(inst_BN, ns.rdf.type, ns.cello.ChemicalEntity)
 
         # we might get a simple string in annot (the name of the chemical)
         if type(cc) == str:
@@ -1620,7 +1619,7 @@ class RdfBuilder:
             term = cc.get("xref") # optional too
             inst_BN = self.get_blank_node()
             triples.append(cl_IRI, ns.cello.transformedBy, inst_BN)
-            triples.append(inst_BN, ns.rdf.type, ns.CHEBI.ChemicalEntity)
+            triples.append(inst_BN, ns.rdf.type, ns.cello.ChemicalEntity)
             if term is not None:
                 triples.append(inst_BN, ns.cello.isIdentifiedByXref, self.get_xref_IRI(term))
                 label = self.get_xref_label(term)

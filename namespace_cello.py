@@ -101,8 +101,18 @@ class CelloOntologyNamespace(BaseNamespace):
         self.ShortTandemRepeatProfile = self.registerClass("ShortTandemRepeatProfile")  # described as subClass of OBI:0001404
         self.hasTarget = self.registerObjectProperty("hasTarget")                       # described as subProp of schema:obserationAbout
         
-        #self.ChemicalAgent = self.registerClass("ChemicalAgent")               # unused, defined as CHEBI:24431: instances are drugbank, ncit, chebi xrefs (+free text)
-        #self.Protein = self.registerClass("Protein")                           # unused, defined as CHEBI:36080, a child of CHEBI:24431
+        comment = "A chemical entity is a physical entity of interest in chemistry including molecular entities, parts thereof, and chemical substances."
+        self.ChemicalEntity = self.registerClass("ChemicalEntity", comment=comment)     # defined as equiv of CHEBI:24431: instances are drugbank, ncit, chebi xrefs (+free text)
+
+        comment = "A biological macromolecule minimally consisting of one polypeptide chain synthesized at the ribosome."
+        self.Protein = self.registerClass("Protein", comment=comment)                   # defined as CHEBI:36080, a child of CHEBI:24431
+
+        comment="A protein complex that consists of two heavy chains (gamma, alpha, delta, epsilon or mu). The larger of the two immunoglobulin chain types determines the immunoglobulin class (G, A, D, E or M, respectively). The heavy chain molecules exhibit the same structure and composition, which consists of constant, variable, and hypervariable regions."
+        self.ImmunoglobulinHeavyChain = self.registerClass("ImmunoglobulinHeavyChain", comment=comment)
+
+        comment="A protein complex that consists of two light chains (kappa and lambda). The light chain molecules are of the same structure and composition, consisting of constant, variable, and hypervariable regions."
+        self.ImmunoglobulinLightChain = self.registerClass("ImmunoglobulinLightChain", comment=comment)
+
         #self.TransformantAgent = self.registerClass("TransformantAgent")       # synonym of CHEBI:24431, instances are ChEBI, NCBI_TaxID, NCIt, DrugBank (+free text)
 
         self.GeneKnockout = self.registerClass("GeneKnockout")                          # described as child of OBI:0001364 : characteristics of genetic alteration
@@ -122,8 +132,10 @@ class CelloOntologyNamespace(BaseNamespace):
         #self.SimpleMutation = self.registerClass("SimpleMutation")              # unused 
         #self.UnexplicitMutation = self.registerClass("UnexplicitMutation")      # unused
 
-        #self.AnatomicalElement = self.registerClass("AnatomicalElement")        # replaced with CARO:0000000
-        #self.CellType = self.registerClass("CellType")                          # replaced with CL:0000000
+        comment = "A part of a cellular organism that is either an immaterial entity or a material entity with granularity above the level of a protein complex. Or, a substance produced by a cellular organism with granularity above the level of a protein complex."
+        self.AnatomicalEntity = self.registerClass("AnatomicalEntity", comment=comment)        # defined as equiv CARO:0000000
+        comment="A material entity of anatomical origin (part of or deriving from an organism) that has as its parts a maximally connected cell compartment surrounded by a plasma membrane. The definition of cell is intended to represent all cells, and thus a cell is defined as a material entity and not an anatomical structure, which implies that it is part of an organism (or the entirety of one)."
+        self.CellType = self.registerClass("CellType", comment=comment)                          # defined as equiv to CL:0000000
 
         self.Disease = self.registerClass("Disease")                            # described as superclass of ORDO clinical entity and NCIt disorder
         self.Species = self.registerClass("Species")                            # described as subClassOf NCIt taxon

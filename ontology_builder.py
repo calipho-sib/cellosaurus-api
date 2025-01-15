@@ -61,7 +61,7 @@ class OntologyBuilder:
         self.rdfs_range_to_remove[ns.cello.isIdentifiedByXref] = { ns.skos.Concept }
         self.rdfs_range_to_remove[ns.cello.more_specific_than] = { ns.cello.Xref } 
         self.rdfs_range_to_remove[ns.cello.database] = { ns.owl.NamedIndividual, ns.cello.CelloConceptScheme } 
-        #self.rdfs_range_to_remove[ns.cello.hasGenomeModificationMethod] = { ns.owl.NamedIndividual } 
+        self.rdfs_range_to_remove[ns.cello.hasGenomeModificationMethod] = { ns.owl.NamedIndividual } 
         self.rdfs_range_to_remove[ns.cello.comesFromIndividualWithSex] = { ns.owl.NamedIndividual }
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # add description of terms (subClasses, ...) to terms in namespaces
@@ -120,11 +120,10 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_genetic_characteristics_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
+        # For info
         # OBI:0001404 - genetic characteristics information
         # OBI:0001364 - genetic alteration information = superclass for seq var + gen.int + gen.ko)
         # OBI:0001225 - genetic population background information
-
         ns.describe(ns.OBI._0001225, ns.rdfs.subClassOf, ns.OBI._0001404)     
         ns.describe(ns.OBI._0001364, ns.rdfs.subClassOf, ns.OBI._0001404)     
         ns.describe(ns.cello.GeneticIntegration, ns.rdfs.subClassOf, ns.OBI._0001364)
@@ -333,7 +332,6 @@ class OntologyBuilder:
         ns.describe( ns.cello.VeterinaryMedicalDegreeThesis, ns.skos.broadMatch, ns.up.Thesis_Citation)
 
 
-
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_misc_terms(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -341,6 +339,17 @@ class OntologyBuilder:
         # - - - - - - - - 
         # misc classes
         # - - - - - - - - 
+
+        # local classes defined as equivalent of external classes for practical reasons
+        ns.describe(ns.cello.AnatomicalEntity, ns.owl.equivalentClass, ns.CARO.AnatomicalEntity)
+        ns.describe(ns.cello.CellType, ns.owl.equivalentClass, ns.CL.CellType)
+        ns.describe(ns.cello.ChemicalEntity, ns.owl.equivalentClass, ns.CHEBI.ChemicalEntity)
+        ns.describe(ns.cello.Protein, ns.owl.equivalentClass, ns.CHEBI.Protein)
+        ns.describe(ns.cello.ImmunoglobulinLightChain, ns.owl.equivalentClass, ns.NCIt.C16720_IGL)
+        ns.describe(ns.cello.ImmunoglobulinHeavyChain, ns.owl.equivalentClass, ns.NCIt.C16717_IGH)
+
+
+
 
         # describe our disease class as a superclass of ncit disorder and ordo clinical entities
         ns.describe(ns.NCIt.C2991_Disease, ns.rdfs.subClassOf, ns.cello.Disease)
@@ -354,15 +363,15 @@ class OntologyBuilder:
         ns.describe(ns.cello.HLAGene, ns.rdfs.subClassOf, ns.cello.Gene)
         ns.describe(ns.cello.HLA_Allele, ns.rdfs.subClassOf, ns.GENO._0000512_Allele)
 
-        #ns.describe(ns.cello.Locus, ns.owl.equivalentClass, ns.NCIt.C45822)
+        #ns.describe(ns.cello.Locus, ns.owl.equivalentClass, ns.NCIt.C45822) # locus unused
         ns.describe(ns.cello.STR_Allele, ns.rdfs.subClassOf, ns.GENO._0000512_Allele)
         ns.describe(ns.cello.Marker, ns.owl.equivalentClass, ns.NCIt.C13441_ShortTandemRepeat)
-        #ns.describe(ns.cello.Marker, ns.rdfs.subClassOf, ns.cello.Locus)
+        #ns.describe(ns.cello.Marker, ns.rdfs.subClassOf, ns.cello.Locus) # locus unused
 
-        ns.describe(ns.CHEBI.Protein, ns.rdfs.subClassOf, ns.CHEBI.ChemicalEntity)
-        ns.describe(ns.CHEBI.Protein, ns.skos.closeMatch, ns.up.Protein)
-        ns.describe(ns.NCIt.C16717_IGH, ns.rdfs.subClassOf, ns.CHEBI.Protein)
-        ns.describe(ns.NCIt.C16720_IGL, ns.rdfs.subClassOf, ns.CHEBI.Protein)
+        ns.describe(ns.cello.Protein, ns.rdfs.subClassOf, ns.cello.ChemicalEntity)
+        ns.describe(ns.cello.Protein, ns.skos.closeMatch, ns.up.Protein)
+        ns.describe(ns.cello.ImmunoglobulinLightChain, ns.rdfs.subClassOf, ns.cello.Protein)
+        ns.describe(ns.cello.ImmunoglobulinHeavyChain, ns.rdfs.subClassOf, ns.cello.Protein)
 
         # - - - - - - - - 
         # misc properties
@@ -820,7 +829,7 @@ cello:DiscontinuationRecord a owl:Class ;
         )
     ] .
 
-cello:MiscellaneousComment a owl:Class ;
+cello:MiscellaneousInfoComment a owl:Class ;
     rdfs:subClassOf IAO:0000027 ;
     owl:equivalentClass [
         owl:intersectionOf (

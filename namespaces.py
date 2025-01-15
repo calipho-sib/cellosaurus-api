@@ -217,7 +217,7 @@ class UniProtCoreNamespace(BaseNamespace):
         #self.volume = self.registerDatatypeProperty("volume")
         #self.title = self.registerDatatypeProperty("title")
 
-        #self.version = self.registerDatatypeProperty("version")   # warning: invompatible domain (Protein, Sequence, Cluster)
+        #self.version = self.registerDatatypeProperty("version")   # warning: incompatible domain (Protein, Sequence, Cluster)
         #self.modified = self.registerDatatypeProperty("modified") # warning: incompatible domain (Protein, Sequence, Cluster)
         #self.created = self.registerDatatypeProperty("created")   # warning: incompatible domain (Protein, Sequence, Cluster)
 
@@ -410,8 +410,8 @@ class NCItNamespace(BaseNamespace):
         self.C16612 = self.registerClass("C16612", label="Gene", hidden=True)                       # owl:equClass cello:Gene
         #self.C45822 = self.registerClass("C45822", label="Locus", hidden=True)                      # unused owl:equClass cello:Locus
         self.C13441_ShortTandemRepeat = self.registerClass("C13441", label="Short Tandem Repeat", hidden= True)   # owl:equClass cello:Marker
-        self.C16717_IGH = self.registerClass("C16717", label="Immunoglobulin Heavy Chain")
-        self.C16720_IGL = self.registerClass("C16720", label="Immunoglobulin Light Chain")
+        self.C16717_IGH = self.registerClass("C16717", label="Immunoglobulin Heavy Chain", hidden=True) # has owl:equClass in cello:
+        self.C16720_IGL = self.registerClass("C16720", label="Immunoglobulin Light Chain", hidden=True) # has owl:equClass in cello:
 
         # Topic classes for comments
         self.C94346 = self.registerClass("C94346", label="Doubling time")
@@ -420,7 +420,7 @@ class NCItNamespace(BaseNamespace):
         self.C17256 = self.registerClass("C17256", label="Virology")
         self.C16351 = self.registerClass("C16351", label="Biotechnology")
 
-        # # replace with HGNC xrefs
+        # # replaced with HGNC xrefs
         # self.C101157 = self.registerClass("C101157", label="HLA-DRA Gene")   # described as a cello:HLAGene subclass
         # self.C190000 = self.registerClass("C190000", label="HLA-DRB2 Gene")   # described as a cello:HLAGene subclass
         # self.C19409 = self.registerClass("C19409", label="HLA-DRB1 Gene")   # described as a cello:HLAGene subclass
@@ -520,7 +520,7 @@ class CARONamespace(BaseNamespace):
         super(CARONamespace, self).__init__("CARO", "http://purl.obolibrary.org/obo/CARO_")
         # superclass for UBERON and PO anatomical entities
         comment = "A part of a cellular organism that is either an immaterial entity or a material entity with granularity above the level of a protein complex. Or, a substance produced by a cellular organism with granularity above the level of a protein complex."
-        self.AnatomicalEntity = self.registerClass("0000000", label="Anatomical entity", comment=comment)   
+        self.AnatomicalEntity = self.registerClass("0000000", label="Anatomical entity", comment=comment, hidden=True)   
         
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -530,7 +530,7 @@ class CLNamespace(BaseNamespace):
         super(CLNamespace, self).__init__("CL", "http://purl.obolibrary.org/obo/CL_")
         # superclass for CL cell types
         # see also https://ontobee.org/ontology/rdf/CL?iri=http://purl.obolibrary.org/obo/CL_0000000
-        self.CellType = self.registerClass("0000000", label="Cell type")
+        self.CellType = self.registerClass("0000000", label="Cell type", hidden=True)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -541,9 +541,9 @@ class CHEBINamespace(BaseNamespace):
         # superclass for Chemical substances
         # see also https://ontobee.org/ontology/rdf/CHEBI?iri=http://purl.obolibrary.org/obo/CHEBI_24431
         comment = "A chemical entity is a physical entity of interest in chemistry including molecular entities, parts thereof, and chemical substances."
-        self.ChemicalEntity = self.registerClass("24431", label="Chemical Entity", comment=comment)
+        self.ChemicalEntity = self.registerClass("24431", label="Chemical Entity", comment=comment, hidden=True)
         comment = "A biological macromolecule minimally consisting of one polypeptide chain synthesized at the ribosome."
-        self.Protein = self.registerClass("36080", label="Protein", comment=comment)
+        self.Protein = self.registerClass("36080", label="Protein", comment=comment, hidden=True)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
