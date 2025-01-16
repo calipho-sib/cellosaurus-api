@@ -17,7 +17,7 @@ echo "preforming checkpoint and restarting virtuoso triple store...."
 $base_dir/sparql_service.sh restart
 
 echo "reloading rdf ontology file"
-$scripts_dir
+$scripts_dir/load_ttl_files.sh onto no_checkpoint
 
 echo "reloading rdf void file"
 $scripts_dir/load_ttl_files.sh void no_checkout

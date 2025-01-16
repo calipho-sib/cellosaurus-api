@@ -31,7 +31,7 @@ fi
 echo "building archive with content of $src_dir"
 cd $base_dir
 tar cvzf $archive_name $files
-echo "pushing archive $archive_name to $trg_host:$trg_dir"
+echo "pushing archive $archive_name to $trg_dir"
 scp $archive_name $trg_dir/
 echo "done"
 
