@@ -354,6 +354,23 @@ class OntologyBuilder:
         ns.describe(ns.cello.GeneAmplification, ns.owl.equivalentClass, ns.NCIt.GeneAmplification)
         ns.describe(ns.cello.GeneDeletion, ns.owl.equivalentClass, ns.NCIt.GeneDeletion)
 
+        # some local props defined as sub props of external props for practical reasons
+        ns.describe(ns.cello.publisher, ns.rdfs.subPropertyOf, ns.dcterms.publisher)
+        ns.describe(ns.cello.creator, ns.rdfs.subPropertyOf, ns.dcterms.creator)
+        ns.describe(ns.fabio.hasPubMedCentralId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.hasPubMedCentralId, ns.rdfs.subPropertyOf, ns.fabio.hasPubMedCentralId)
+        ns.describe(ns.fabio.hasPubMedId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.hasPubMedId, ns.rdfs.subPropertyOf, ns.fabio.hasPubMedId)
+        ns.describe(ns.cello.hasPublicationYear, ns.rdfs.subPropertyOf, ns.fabio.hasPublicationYear)
+        ns.describe(ns.prism.hasDOI, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.hasDOI, ns.rdfs.subPropertyOf, ns.prism.hasDOI)
+        ns.describe(ns.prism.volume, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.volume, ns.rdfs.subPropertyOf, ns.prism.volume)
+        ns.describe(ns.cello.startingPage, ns.rdfs.subPropertyOf, ns.prism.startingPage)
+        ns.describe(ns.cello.endingPage, ns.rdfs.subPropertyOf, ns.prism.endingPage)
+        ns.describe(ns.cello.publicationDate, ns.rdfs.subPropertyOf, ns.prism.publicationDate)
+
+
         # describe our disease class as a superclass of ncit disorder and ordo clinical entities
         ns.describe(ns.NCIt.C2991_Disease, ns.rdfs.subClassOf, ns.cello.Disease)
         ns.describe(ns.ORDO.C001_Clinical_Entity, ns.rdfs.subClassOf, ns.cello.Disease)
@@ -401,11 +418,7 @@ class OntologyBuilder:
         
         ns.describe(ns.cello.hasInternalId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.issn13, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
-        ns.describe(ns.prism.hasDOI, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
-        ns.describe(ns.fabio.hasPubMedCentralId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
-        ns.describe(ns.fabio.hasPubMedId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.hasISO4JournalTitleAbbreviation, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
-        ns.describe(ns.prism.volume, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.productId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         
         ns.describe(ns.cello.markerId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)

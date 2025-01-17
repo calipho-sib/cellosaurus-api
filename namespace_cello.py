@@ -212,15 +212,19 @@ class CelloOntologyNamespace(BaseNamespace):
 
         #self.hasIdentifier = self.registerDatatypeProperty("hasIdentifier") # generic prop, parent of hasDOI, hasPubMedId # we use the  as an ancestor
         self.hasInternalId = self.registerDatatypeProperty("hasInternalId", label="has Internal Identifier")        # described as sub dcterms:identifier
-        #self.hasDOI = self.registerDatatypeProperty("hasDOI"label=)                     # described as sub dcterms:identifier: see prism
-        #self.hasPubMedId = self.registerDatatypeProperty("hasPubMedId")                 # described as sub dcterms:identifier: see fabio
-        #self.hasPMCId = self.registerDatatypeProperty("hasPMCId")                       # described as sub dcterms:identifier, see fabio
+
+        self.hasPubMedCentralId = self.registerDatatypeProperty("hasPubMedCentralId", label="has PubMed Central Identifier")    # described as sub prop of fabio:haspmcid which is a subprop of dcterms:identifier
+        self.hasPubMedId = self.registerDatatypeProperty("hasPubMedId", label="has PubMed Identifier")                          # described as sub prop of fabio:haspmid which is a subprop of dcterms:identifier
+        self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear", label="has Publication Year")             # described as sub prop of fabio:hasPublicationYear
+
         self.issn13 = self.registerDatatypeProperty("issn13", label="has ISSN13")                                   # described as sub dcterms:identifier
 
-        #self.publicationDate = self.registerDatatypeProperty("publicationDate")         # described in prism
-        #self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear")   # described in dcterms
-        # self.startingPage = self.registerDatatypeProperty("startingPage" )              # described in prism
-        # self.endingPage = self.registerDatatypeProperty("endingPage")                   # described in prism
+        comment="An identifier for a particular volume of a resource, such as a journal or a multi-volume book."
+        self.volume = self.registerDatatypeProperty("volume", comment=comment)             # described as sub of prism:volume which is sub of dcterms:identifier  
+        self.hasDOI = self.registerDatatypeProperty("doi", label="has DOI")                # described as sub of prism:volume which is sub of dcterms:identifier
+        self.publicationDate = self.registerDatatypeProperty("publicationDate", label="has publication date")   # described as sub of prism term
+        self.startingPage = self.registerDatatypeProperty("startingPage" )                                      # described as sub of prism term
+        self.endingPage = self.registerDatatypeProperty("endingPage")                                           # described as sub of prism term
 
         # journal abbreviation, see also:
         # https://ftp.ncbi.nih.gov/pubmed/J_Medline.txt
@@ -232,9 +236,8 @@ class CelloOntologyNamespace(BaseNamespace):
             label="has ISO4 Journal Title Abbreviation") 
         
         #self.title = self.registerDatatypeProperty("title")                             # defined in dcterms
-        #self.volume = self.registerDatatypeProperty("volume")                           # defined as sub dcterms:identifier: see prism
-        #self.creator = self.registerObjectProperty("creator")                           # see dcterms
-        #self.publisher = self.registerObjectProperty("publisher")                       # see dcterms
+        self.creator = self.registerObjectProperty("creator")                            # defined as sub prop of dcterms equivalent
+        self.publisher = self.registerObjectProperty("publisher")                        # sdefined as sub prop of dcterms equivalent
         
         self.editor = self.registerObjectProperty("editor")                                                         # described as sub of dcterms:contributor
 

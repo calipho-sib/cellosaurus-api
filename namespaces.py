@@ -174,9 +174,9 @@ class FabioNamespace(BaseNamespace):
         self.ConferencePaper = self.registerClass("ConferencePaper")
         self.ReportDocument = self.registerClass("ReportDocument")
 
-        self.hasPubMedCentralId = self.registerDatatypeProperty("hasPubMedCentralId", label="has PubMed Central Identifier")
-        self.hasPubMedId = self.registerDatatypeProperty("hasPubMedId", label="has PubMed Identifier")
-        self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear", label="has Publication Year")
+        self.hasPubMedCentralId = self.registerDatatypeProperty("hasPubMedCentralId", label="has PubMed Central Identifier") # not hidden because super of cello:term ans sub of dcterms:term
+        self.hasPubMedId = self.registerDatatypeProperty("hasPubMedId", label="has PubMed Identifier")                       # not hidden because super of cello:term ans sub of dcterms:term
+        self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear", label="has Publication Year", hidden=True)
 
 
 
@@ -185,13 +185,13 @@ class PrismNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(PrismNamespace, self).__init__("prism", "http://prismstandard.org/namespaces/basic/2.0/")
-        self.hasDOI = self.registerDatatypeProperty("doi", label="has DOI")
-        self.publicationDate = self.registerDatatypeProperty("publicationDate", label="has publication date")
-        self.startingPage = self.registerDatatypeProperty("startingPage" )              
-        self.endingPage = self.registerDatatypeProperty("endingPage")    
 
         comment="An identifier for a particular volume of a resource, such as a journal or a multi-volume book."
-        self.volume = self.registerDatatypeProperty("volume", comment=comment)    
+        self.volume = self.registerDatatypeProperty("volume", comment=comment)      # not hidden because super of cello:term ans sub of dcterms:term   
+        self.hasDOI = self.registerDatatypeProperty("doi", label="has DOI")         # not hidden because super of cello:term ans sub of dcterms:term
+        self.publicationDate = self.registerDatatypeProperty("publicationDate", label="has publication date", hidden=True)
+        self.startingPage = self.registerDatatypeProperty("startingPage", hidden=True )              
+        self.endingPage = self.registerDatatypeProperty("endingPage", hidden=True)    
         
                        
 
@@ -305,8 +305,8 @@ class DctermsNamespace(BaseNamespace):
         self.license =      self.registerDatatypeProperty("license", hidden=True)       # hidden because irrelevant to cello data
         self.abstract =     self.registerDatatypeProperty("abstract", hidden=True)      # hidden because irrelevant to cello data
         self.title =        self.registerDatatypeProperty("title")
-        self.creator =      self.registerObjectProperty("creator")
-        self.publisher =    self.registerObjectProperty("publisher")
+        self.creator =      self.registerObjectProperty("creator", hidden=True)         # hidden because redundant with cello equivalent
+        self.publisher =    self.registerObjectProperty("publisher", hidden=True)       # hidden because redundant with cello equivalent
         self.contributor =  self.registerObjectProperty("contributor")
         self.identifier =   self.registerDatatypeProperty("identifier")
         self.source =       self.registerObjectProperty("source", hidden=False)             # not hidden because parent of 2 cello props
