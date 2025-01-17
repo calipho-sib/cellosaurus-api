@@ -176,7 +176,7 @@ class FabioNamespace(BaseNamespace):
 
         self.hasPubMedCentralId = self.registerDatatypeProperty("hasPubMedCentralId", label="has PubMed Central Identifier") # not hidden because super of cello:term ans sub of dcterms:term
         self.hasPubMedId = self.registerDatatypeProperty("hasPubMedId", label="has PubMed Identifier")                       # not hidden because super of cello:term ans sub of dcterms:term
-        self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear", label="has Publication Year", hidden=True)
+        self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear", label="has publication year", hidden=True)
 
 
 
@@ -304,7 +304,7 @@ class DctermsNamespace(BaseNamespace):
         self.description =  self.registerDatatypeProperty("description", hidden=True)   # hidden because irrelevant to cello data
         self.license =      self.registerDatatypeProperty("license", hidden=True)       # hidden because irrelevant to cello data
         self.abstract =     self.registerDatatypeProperty("abstract", hidden=True)      # hidden because irrelevant to cello data
-        self.title =        self.registerDatatypeProperty("title")
+        self.title =        self.registerDatatypeProperty("title", hidden=True)         # hidden because redundant with cello equivalent
         self.creator =      self.registerObjectProperty("creator", hidden=True)         # hidden because redundant with cello equivalent
         self.publisher =    self.registerObjectProperty("publisher", hidden=True)       # hidden because redundant with cello equivalent
         self.contributor =  self.registerObjectProperty("contributor")

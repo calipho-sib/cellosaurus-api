@@ -210,19 +210,18 @@ class CelloOntologyNamespace(BaseNamespace):
         # see also https://sibils.text-analytics.ch/doc/api/sparql/sibils-ontology.html
 
 
-        #self.hasIdentifier = self.registerDatatypeProperty("hasIdentifier") # generic prop, parent of hasDOI, hasPubMedId # we use the  as an ancestor
-        self.hasInternalId = self.registerDatatypeProperty("hasInternalId", label="has Internal Identifier")        # described as sub dcterms:identifier
+        self.internalId = self.registerDatatypeProperty("internalId", label="internal identifier")        # described as sub dcterms:identifier
 
-        self.hasPubMedCentralId = self.registerDatatypeProperty("hasPubMedCentralId", label="has PubMed Central Identifier")    # described as sub prop of fabio:haspmcid which is a subprop of dcterms:identifier
-        self.hasPubMedId = self.registerDatatypeProperty("hasPubMedId", label="has PubMed Identifier")                          # described as sub prop of fabio:haspmid which is a subprop of dcterms:identifier
-        self.hasPublicationYear = self.registerDatatypeProperty("hasPublicationYear", label="has Publication Year")             # described as sub prop of fabio:hasPublicationYear
+        self.pmcId = self.registerDatatypeProperty("pmcId", label="pmcId")      # described as sub prop of fabio:haspmcid which is a subprop of dcterms:identifier
+        self.pmid = self.registerDatatypeProperty("pmid", label="pmid")                          # described as sub prop of fabio:haspmid which is a subprop of dcterms:identifier
+        self.publicationYear = self.registerDatatypeProperty("publicationYear", label="publication year")             # described as sub prop of fabio:hasPublicationYear
 
-        self.issn13 = self.registerDatatypeProperty("issn13", label="has ISSN13")                                   # described as sub dcterms:identifier
+        self.issn13 = self.registerDatatypeProperty("issn13", label="ISSN13")                                   # described as sub dcterms:identifier
 
         comment="An identifier for a particular volume of a resource, such as a journal or a multi-volume book."
         self.volume = self.registerDatatypeProperty("volume", comment=comment)             # described as sub of prism:volume which is sub of dcterms:identifier  
-        self.hasDOI = self.registerDatatypeProperty("doi", label="has DOI")                # described as sub of prism:volume which is sub of dcterms:identifier
-        self.publicationDate = self.registerDatatypeProperty("publicationDate", label="has publication date")   # described as sub of prism term
+        self.doi = self.registerDatatypeProperty("doi", label="DOI")                # described as sub of prism:volume which is sub of dcterms:identifier
+        self.publicationDate = self.registerDatatypeProperty("publicationDate", label="publication date")   # described as sub of prism term
         self.startingPage = self.registerDatatypeProperty("startingPage" )                                      # described as sub of prism term
         self.endingPage = self.registerDatatypeProperty("endingPage")                                           # described as sub of prism term
 
@@ -231,11 +230,10 @@ class CelloOntologyNamespace(BaseNamespace):
         # https://en.wikipedia.org/wiki/ISO_4
 
         # described as sub dcterms:identifier: # Amos uses abbreviation also used by UniProt based on ISO4
-        self.hasISO4JournalTitleAbbreviation = self.registerDatatypeProperty(                                       # described, see line above
-            "hasISO4JournalTitleAbbreviation",
-            label="has ISO4 Journal Title Abbreviation") 
+        self.iso4JournalTitleAbbreviation = self.registerDatatypeProperty(                                       # described, see line above
+            "iso4JournalTitleAbbreviation", label="ISO4 Journal Title Abbreviation") 
         
-        #self.title = self.registerDatatypeProperty("title")                             # defined in dcterms
+        self.title = self.registerDatatypeProperty("title")                             # defined as sub prop of dcterms
         self.creator = self.registerObjectProperty("creator")                            # defined as sub prop of dcterms equivalent
         self.publisher = self.registerObjectProperty("publisher")                        # sdefined as sub prop of dcterms equivalent
         
@@ -300,7 +298,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.ofGene = self.registerObjectProperty("ofGene")                                                         # TODO: later
 
         comment="The belonging to a specific panel or collection of cell lines"
-        self.belongsTo = self.registerDatatypeProperty("belongsTo", comment=comment)                                # described as sub prop of schema:category
+        self.inCollection = self.registerDatatypeProperty("inCollection", comment=comment)                                # described as sub prop of schema:category
 
         comment="Laboratory, research institute, university having established the cell line."
         self.establishedBy = self.registerObjectProperty("establishedBy", comment=comment)                          # described as sub prop of dcterms:source # cannot use function name "from" (is python reserved word)
@@ -357,7 +355,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.hasProvider = self.registerObjectProperty("hasProvider")                                               # described as sub of schema:provider
         self.productId = self.registerDatatypeProperty("productId", label="product Identifier")                     # described as sub of dcterms:identifier
 
-        self.msiValue = self.registerDatatypeProperty("msiValue", label="has microsatellite instability value")     # TODO: later
+        self.msiValue = self.registerDatatypeProperty("msiValue", label="microsatellite instability value")     # TODO: later
 
         self.hasMicrosatelliteInstability = self.registerObjectProperty("hasMicrosatelliteInstability")             # described as cello:hasAnnotation        
         self.hasMabIsotype = self.registerObjectProperty("hasMabIsotype", label="has monoclonal antibody isotype")  # described as cello:hasAnnotation
@@ -381,7 +379,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.hasChildCellLine = self.registerObjectProperty("hasChildCellLine")                                     # described as cello:hasAnnot, inverse of parentCellLine
         
 
-        self.hasVersion = self.registerDatatypeProperty("hasVersion")                                               # described as sub of dcterms term
+        self.version = self.registerDatatypeProperty("version")                                                    # described as sub of dcterms term
         self.created = self.registerDatatypeProperty("created")                                                     # described as sub of dcterms term
         self.modified = self.registerDatatypeProperty("modified")                                                   # described as sub of dcterms term
 

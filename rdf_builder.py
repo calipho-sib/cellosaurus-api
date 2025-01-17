@@ -416,7 +416,7 @@ class RdfBuilder:
         triples.extend(self.get_ttl_for_name_prop(termi_IRI, ns.cello.alternativeName, ns.xsd.string(termi.name), no_rdfs_label=True)) # onto NI (long name is the alternative one)        
         #triples.append(termi_IRI, ns.cello.shortname, ns.xsd.string(termi.abbrev))
         triples.extend(self.get_ttl_for_name_prop(termi_IRI, ns.cello.recommendedName, ns.xsd.string(termi.abbrev))) # onto NI (short name is the recommended one)        
-        triples.append(termi_IRI, ns.cello.hasVersion, ns.xsd.string(termi.version))
+        triples.append(termi_IRI, ns.cello.version, ns.xsd.string(termi.version))
         triples.append(termi_IRI, ns.rdfs.seeAlso, "<" + termi.url + ">")
         url = ns.cello.url
         if url.endswith("#"): url = url[:-1]
@@ -644,7 +644,7 @@ class RdfBuilder:
 
         # internal id (mandatory) for debug purpose
         ref_id = ref_data["internal-id"]
-        triples.append(ref_IRI, ns.cello.hasInternalId, ns.xsd.string(ref_id))    
+        triples.append(ref_IRI, ns.cello.internalId, ns.xsd.string(ref_id))    
         #print("debug", ref_id)
 
         # authors (mandatory)
@@ -664,12 +664,12 @@ class RdfBuilder:
 
         # title (mandatory)
         ttl = ref_data["title"]
-        triples.append(ref_IRI, ns.dcterms.title, ns.xsd.string(ttl))
+        triples.append(ref_IRI, ns.cello.title, ns.xsd.string(ttl))
 
         # date (mandatory)
         dt = ref_data["date"]
         year = dt[-4:]
-        triples.append(ref_IRI, ns.cello.hasPublicationYear, ns.xsd.string(year))
+        triples.append(ref_IRI, ns.cello.publicationYear, ns.xsd.string(year))
         if len(dt) > 4:
             if len(dt) != 11: raise DataError("Publication", "Unexpecting date format in " + ref_id)
             day = dt[0:2]
@@ -680,9 +680,9 @@ class RdfBuilder:
         # xref-list (mandatory), we create and xref and a direct link to the url via rdfs:seeAlso
         for xref in ref_data["xref-list"]:
             accession = xref["accession"]
-            if self.get_xref_db(xref) == "PubMed": triples.append(ref_IRI, ns.cello.hasPubMedId, ns.xsd.string(accession))
-            elif self.get_xref_db(xref) == "DOI": triples.append(ref_IRI, ns.cello.hasDOI, ns.xsd.string3(accession))
-            elif self.get_xref_db(xref) == "PMCID": triples.append(ref_IRI, ns.cello.hasPubMedCentralId, ns.xsd.string(accession))
+            if self.get_xref_db(xref) == "PubMed": triples.append(ref_IRI, ns.cello.pmid, ns.xsd.string(accession))
+            elif self.get_xref_db(xref) == "DOI": triples.append(ref_IRI, ns.cello.doi, ns.xsd.string3(accession))
+            elif self.get_xref_db(xref) == "PMCID": triples.append(ref_IRI, ns.cello.pmcId, ns.xsd.string(accession))
             xref_IRI = self.get_xref_IRI(xref)
             triples.append(ref_IRI, ns.cello.seeAlsoXref, xref_IRI)
             url = "". join(["<", self.encode_url(xref["url"]), ">"])
@@ -697,7 +697,7 @@ class RdfBuilder:
         vol = ref_data.get("volume")
         if vol is not None: triples.append(ref_IRI, ns.cello.volume, ns.xsd.string(vol))
         jou = ref_data.get("journal-name")
-        if jou is not None: triples.append(ref_IRI, ns.cello.hasISO4JournalTitleAbbreviation, ns.xsd.string(jou))
+        if jou is not None: triples.append(ref_IRI, ns.cello.iso4JournalTitleAbbreviation, ns.xsd.string(jou))
         
         # city, country, institution and publisher
         city = ref_data.get("city")
@@ -859,7 +859,7 @@ class RdfBuilder:
         # fields DT, dtc, dtu, dtv
         triples.append(cl_IRI, ns.cello.created, ns.xsd.date(cl_data["created"]))
         triples.append(cl_IRI, ns.cello.modified, ns.xsd.date(cl_data["last-updated"]))
-        triples.append(cl_IRI, ns.cello.hasVersion, ns.xsd.string(cl_data["entry-version"]))
+        triples.append(cl_IRI, ns.cello.version, ns.xsd.string(cl_data["entry-version"]))
 
         # fields: CC, genome-ancestry
         annot = cl_data.get("genome-ancestry")
@@ -1154,7 +1154,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         label = cc["value"]
-        triples.append(cl_IRI, ns.cello.belongsTo, ns.xsd.string(label))
+        triples.append(cl_IRI, ns.cello.inCollection, ns.xsd.string(label))
         return triples
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

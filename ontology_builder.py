@@ -51,7 +51,7 @@ class OntologyBuilder:
         self.rdfs_domain_to_remove[ns.cello.accession] = { ns.skos.Concept }
         #self.rdfs_domain_to_remove[ns.cello.category] = { ns.skos.Concept, ns.owl.NamedIndividual  }
         self.rdfs_domain_to_remove[ns.cello.database] = { ns.skos.Concept  }
-        self.rdfs_domain_to_remove[ns.cello.hasVersion] = { ns.owl.NamedIndividual, ns.cello.Database }
+        self.rdfs_domain_to_remove[ns.cello.version] = { ns.owl.NamedIndividual, ns.cello.Database }
         self.rdfs_domain_to_remove[ns.cello.alternativeName] = { ns.owl.NamedIndividual }
         self.rdfs_domain_to_remove[ns.cello.recommendedName] = { ns.owl.NamedIndividual }
         self.rdfs_domain_to_remove[ns.cello.name] = { ns.owl.NamedIndividual }
@@ -101,7 +101,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_annotation_properties(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        ns.describe(ns.cello.hasVersion, ns.rdfs.subPropertyOf, ns.dcterms.hasVersion)
+        ns.describe(ns.cello.version, ns.rdfs.subPropertyOf, ns.dcterms.hasVersion)
         ns.describe(ns.cello.modified, ns.rdfs.subPropertyOf, ns.dcterms.modified)
         ns.describe(ns.cello.created, ns.rdfs.subPropertyOf, ns.dcterms.created)
 
@@ -358,12 +358,12 @@ class OntologyBuilder:
         ns.describe(ns.cello.publisher, ns.rdfs.subPropertyOf, ns.dcterms.publisher)
         ns.describe(ns.cello.creator, ns.rdfs.subPropertyOf, ns.dcterms.creator)
         ns.describe(ns.fabio.hasPubMedCentralId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
-        ns.describe(ns.cello.hasPubMedCentralId, ns.rdfs.subPropertyOf, ns.fabio.hasPubMedCentralId)
+        ns.describe(ns.cello.pmcId, ns.rdfs.subPropertyOf, ns.fabio.hasPubMedCentralId)
         ns.describe(ns.fabio.hasPubMedId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
-        ns.describe(ns.cello.hasPubMedId, ns.rdfs.subPropertyOf, ns.fabio.hasPubMedId)
-        ns.describe(ns.cello.hasPublicationYear, ns.rdfs.subPropertyOf, ns.fabio.hasPublicationYear)
+        ns.describe(ns.cello.pmid, ns.rdfs.subPropertyOf, ns.fabio.hasPubMedId)
+        ns.describe(ns.cello.publicationYear, ns.rdfs.subPropertyOf, ns.fabio.hasPublicationYear)
         ns.describe(ns.prism.hasDOI, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
-        ns.describe(ns.cello.hasDOI, ns.rdfs.subPropertyOf, ns.prism.hasDOI)
+        ns.describe(ns.cello.doi, ns.rdfs.subPropertyOf, ns.prism.hasDOI)
         ns.describe(ns.prism.volume, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.volume, ns.rdfs.subPropertyOf, ns.prism.volume)
         ns.describe(ns.cello.startingPage, ns.rdfs.subPropertyOf, ns.prism.startingPage)
@@ -407,18 +407,19 @@ class OntologyBuilder:
         ns.describe(ns.cello.seeAlsoXref, ns.rdfs.subPropertyOf, ns.rdfs.seeAlso)
         ns.describe(ns.cello.isIdentifiedByXref, ns.rdfs.subPropertyOf, ns.rdfs.seeAlso)
 
-        ns.describe(ns.cello.conferenceTitle, ns.rdfs.subPropertyOf, ns.dcterms.title)
-        ns.describe(ns.cello.bookTitle, ns.rdfs.subPropertyOf, ns.dcterms.title)
-        ns.describe(ns.cello.documentTitle, ns.rdfs.subPropertyOf, ns.dcterms.title)
-        ns.describe(ns.cello.documentSerieTitle, ns.rdfs.subPropertyOf, ns.dcterms.title)
+        ns.describe(ns.cello.title, ns.rdfs.subPropertyOf, ns.dcterms.title)
+        ns.describe(ns.cello.conferenceTitle, ns.rdfs.subPropertyOf, ns.cello.title)
+        ns.describe(ns.cello.bookTitle, ns.rdfs.subPropertyOf, ns.cello.title)
+        ns.describe(ns.cello.documentTitle, ns.rdfs.subPropertyOf, ns.cello.title)
+        ns.describe(ns.cello.documentSerieTitle, ns.rdfs.subPropertyOf, ns.cello.title)
 
         ns.describe(ns.cello.hasAnnotation, ns.owl.inverseOf, ns.IAO.is_about_0000136)
 
         ns.describe(ns.cello.editor, ns.rdfs.subPropertyOf, ns.dcterms.contributor)
         
-        ns.describe(ns.cello.hasInternalId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.internalId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.issn13, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
-        ns.describe(ns.cello.hasISO4JournalTitleAbbreviation, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
+        ns.describe(ns.cello.iso4JournalTitleAbbreviation, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         ns.describe(ns.cello.productId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
         
         ns.describe(ns.cello.markerId, ns.rdfs.subPropertyOf, ns.dcterms.identifier)
@@ -448,7 +449,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.zygosity, ns.rdfs.subPropertyOf, ns.GENO._0000608_has_zygozity)
 
         ns.describe(ns.cello.inGroup, ns.rdfs.subPropertyOf, ns.schema.category)
-        ns.describe(ns.cello.belongsTo, ns.rdfs.subPropertyOf, ns.schema.category)
+        ns.describe(ns.cello.inCollection, ns.rdfs.subPropertyOf, ns.schema.category)
         ns.describe(ns.cello.hasProvider, ns.rdfs.subPropertyOf, ns.schema.provider)
 
         ns.describe(ns.cello.establishedBy, ns.rdfs.subPropertyOf, ns.dcterms.source)
