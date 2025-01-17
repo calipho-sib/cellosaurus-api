@@ -15,7 +15,7 @@
       <span style="float:right">version 1.3</span>
     </div>
     <div>
-      <h2>Displying RDF entities in different formats</h2>
+      <h2>Displaying RDF entities in different formats</h2>
       The following formats can be chosen by adding the paramter ?format=<format> where format is one of html, n3, ttl, rdf, jsonld.<br>
       HTML is the default
       <ul>

@@ -81,6 +81,7 @@ three_media_types_responses = { "description": "Successful response", "content" 
 subns_dict = dict()
 for ns in [ns_reg.cvcl, ns_reg.xref, ns_reg.orga, ns_reg.pub, ns_reg.cello, ns_reg.db ]:
   subdir = ns.url.split("/")[-2]
+  #print(">>> subdir:", subdir)
   subns_dict[subdir] = subdir
 
 SubNs = Enum('SubNs', subns_dict)
@@ -559,7 +560,7 @@ async def search_cell_line(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/entity/ontology/" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
+@app.get("/describe/entity/ontology/" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_onto(
         request: Request,
@@ -577,17 +578,17 @@ async def describe_onto(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/entity/{dir}/{ac}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
+@app.get("/describe/entity/{prefix}/{id}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_entity(
         request: Request,
-        dir: SubNs = Path(        
-            title="Namespace of the entity",
-            description="The namespace of the IRI"            
+        prefix: SubNs = Path(        
+            title="Prefix of the entity ",
+            description="The prefix (or namespace) of the entity IRI as defined in the Cellosaurus ontology, i.e. 'cello' in cello:CellLine"            
             ),
-        ac: str = Path(
+        id: str = Path(
             title="Identifier of the entity",
-            description="The accession number (field AC) is a unique identifier for cell-lines. Example: 'CVCL_S151'"
+            description="The identifier of the entity in its namespace (prefix), i.e. 'CellLine' in cello:CellLine"
             ),
         format: RdfFormat = Query(
             default= None,
@@ -599,13 +600,13 @@ async def describe_entity(
             If both the format parameter and the Accept header are undefined, then the response will use the ld+json format."""
             )
         ):
-    return describe_any(dir, ac, format, request)
+    return describe_any(prefix, id, format, request)
 
 
 
 def describe_any(dir, ac, format, request):
     t0 = datetime.datetime.now()
-    print("dir", dir, "ac", ac)
+    log_it("INFO", f"called describe_any(dir=\"{dir.value}\", ac=\"{ac}\")")
 
     # precedence of format over request headers (does NOT work from swagger page !!! but of from curl)
     #print(">>>> format 1", format, format== RdfFormat.jsonld)
