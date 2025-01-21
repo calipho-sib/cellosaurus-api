@@ -406,6 +406,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.references, ns.rdfs.subPropertyOf, ns.dcterms.references)
         ns.describe(ns.cello.seeAlsoXref, ns.rdfs.subPropertyOf, ns.rdfs.seeAlso)
         ns.describe(ns.cello.isIdentifiedByXref, ns.rdfs.subPropertyOf, ns.rdfs.seeAlso)
+        ns.describe(ns.cello.isIdentifiedByIRI, ns.rdfs.subPropertyOf, ns.rdfs.seeAlso)
 
         ns.describe(ns.cello.title, ns.rdfs.subPropertyOf, ns.dcterms.title)
         ns.describe(ns.cello.conferenceTitle, ns.rdfs.subPropertyOf, ns.cello.title)
@@ -651,6 +652,13 @@ class OntologyBuilder:
         lines.append("    " + ns.widoco.ntSerialization + " " + ns.help.IRI("ontology.nt") + " ;")      
         lines.append("    " + ns.widoco.turtleSerialization + " " + ns.help.IRI("ontology.ttl") + " ;")      
         lines.append("    " + ns.widoco.jsonldSerialization + " " + ns.help.IRI("ontology.jsonld") + " ;")
+        lines.append("    " + ns.dcterms.contributor + " " + "<https://orcid.org/0000-0003-2826-6444>" + " ;")
+        lines.append("    " + ns.dcterms.contributor + " " + "<https://orcid.org/0000-0002-0819-0473>" + " ;")
+        lines.append("    " + ns.dcterms.contributor + " " + "<https://orcid.org/0000-0002-7023-1045>" + " ;")
+        lines.append("    " + ns.dcterms.creator + " " + "<https://orcid.org/0000-0002-7023-1045>" + " ;")
+        lines.append("    " + ns.dcterms.publisher + " " + "<https://www.sib.swiss>" + " ;")
+        lines.append("    " + ns.dcterms.bibliographicCitation + " " + ns.xsd.string("(to be defined)") + " ;")
+        
 
         # shacl declaration of prefixes for void tools        
         for elem in ns.namespaces:
@@ -660,8 +668,25 @@ class OntologyBuilder:
             lines.append("        " + ns.sh._prefix  + " " + ns.xsd.string(pfx) + " ;")
             lines.append("        " + ns.sh.namespace  + " " + ns.xsd.string(elem.url) + " ;")
             lines.append("    ] ;")
-
         lines.append("    .")
+        lines.append("")
+
+        # lines.append("<https://orcid.org/0000-0003-2826-6444>")
+        # lines.append("    " + "<http://www.w3.org/ns/org#memberOf>" + " " + "<https://www.sib.swiss>" + " ;")
+        # lines.append("    " + "<http://xmlns.com/foaf/0.1/name>" + " " + ns.xsd.string("Amos Bairoch") + " ;")
+        # lines.append("    .")
+
+        # lines.append("")
+        # lines.append("<https://orcid.org/0000-0002-0819-0473>")
+        # lines.append("    " + "<http://www.w3.org/ns/org#memberOf>" + " " + "<https://www.sib.swiss>" + " ;")
+        # lines.append("    " + "<http://xmlns.com/foaf/0.1/name>" + " " + ns.xsd.string("Paula Duek") + " ;")
+        # lines.append("    .")
+
+        # lines.append("")
+        # lines.append("<https://orcid.org/0000-0002-7023-1045>")
+        # lines.append("    " + "<http://www.w3.org/ns/org#memberOf>" + " " + "<https://www.sib.swiss>" + " ;")
+        # lines.append("    " + "<http://xmlns.com/foaf/0.1/name>" + " " + ns.xsd.string("Pierre-André Michel") + " ;")
+        # lines.append("    .")
 
         lines.extend(self.get_query_examples())
 

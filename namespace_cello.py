@@ -170,6 +170,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.KaryotypicInfoComment = self.registerClass("KaryotypicInfoComment")    # described as subclass of OBI:Genetic info & equiv as OBI:Karyotype info
         self.MicrosatelliteInstability = self.registerClass("MicrosatelliteInstability")    # described as subclass of OBI:Genetic info
 
+        self.GeneralTopic = self.registerClass("GeneralTopic")
         self.BiotechnologyComment = self.registerClass("BiotechnologyComment")          # described as a Data iterm cello:GeneralTopic
         self.SenescenceComment = self.registerClass("SenescenceComment")                # described as an IAO:Topic
         self.DoublingTimeComment = self.registerClass("DoublingTimeComment")            # described as an IAO:Topic
@@ -280,6 +281,10 @@ class CelloOntologyNamespace(BaseNamespace):
 
         comment="A database cross-reference that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource."
         self.isIdentifiedByXref = self.registerAnnotationProperty("isIdentifiedByXref", label="is identified by xref", comment=comment)         # defined as sub prop of rdfs:seeAlso
+
+        comment="An IRI that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource."
+        self.isIdentifiedByIRI = self.registerAnnotationProperty("isIdentifiedByIRI", label="is identified by IRI", comment=comment)         # defined as sub prop of rdfs:seeAlso
+
 
         self.hasGenomeAncestry = self.registerObjectProperty("hasGenomeAncestry")                                   # described as sub cello:hasAnnotation
 

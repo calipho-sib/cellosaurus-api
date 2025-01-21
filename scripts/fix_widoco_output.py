@@ -1,6 +1,16 @@
 from lxml import html
 import sys
 
+
+def append_dd_link(parent_node, href, text):
+    dd = html.Element("dd")
+    a = html.Element("a")
+    a.set("href", href)
+    a.text = text
+    dd.append(a)
+    parent_node.addnext(dd)
+     
+
 input_file = sys.argv[1]
 f_in = open(input_file, 'r', encoding='utf-8')
 html_content = f_in.read()
@@ -44,6 +54,39 @@ for elems in dd_list:
             if href.startswith("webvowl"): continue
             elem.set("href", f"#{href}")
             print("modified href:", elem.get("href"))
+
+
+# impove HTML for authors, contributors and publisher
+# example: replace 
+# <dt>Publisher:</dt>
+# <dd>https://www.sib.swiss</dd>
+# with
+# <dt>Publisher:</dt>
+# <dd><a href="https://www.sib.swiss">SIB Swiss Institute of Bioinformatics</a></dd>
+
+nodes_to_be_deleted = list()
+dt_list = tree.xpath('//dt')
+for elems in dt_list:
+        if elems.text in ["Authors:", "Contributors:", "Publisher:"]:
+            dd = elems.getnext()
+            while True:
+                if dd.tag != "dd": break
+                nodes_to_be_deleted.append(dd)             
+                dd = dd.getnext()
+for node in nodes_to_be_deleted:
+    node.getparent().remove(node)
+
+dt_list = tree.xpath('//dt')
+for elems in dt_list:
+        if elems.text in ["Authors:", "Contributors:", "Publisher:"]:
+            if elems.text == "Contributors:":
+                append_dd_link(elems, "https://orcid.org/0000-0003-2826-6444", "Amos Bairoch (SIB)")
+                append_dd_link(elems, "https://orcid.org/0000-0002-0819-0473", "Paula Duek (SIB)")
+                append_dd_link(elems, "https://orcid.org/0000-0002-7023-1045", "Pierre-André Michel (SIB)")
+            elif elems.text == "Authors:":
+                append_dd_link(elems, "https://orcid.org/0000-0002-7023-1045", "Pierre-André Michel (SIB)")
+            elif elems.text == "Publisher:":
+                append_dd_link(elems, "https://www.sib.swiss", "SIB Swiss Institute of Bioinformatics")
 
 
 

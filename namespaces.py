@@ -278,6 +278,20 @@ class OaNamespace(BaseNamespace):
         super(OaNamespace, self).__init__("oa", "http://www.w3.org/ns/oa#")
         #self.Annotation = self.registerClass("Annotation")
 
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# class FoafNamespace(BaseNamespace):
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#     def __init__(self): 
+#         super(FoafNamespace, self).__init__("foaf", "http://xmlns.com/foaf/0.1/")
+#         self.name = self.registerProperty("name", hidden=True)
+
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# class OrgNamespace(BaseNamespace):
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#     def __init__(self): 
+#         super(OrgNamespace, self).__init__("org", "http://www.w3.org/ns/org#")
+#         self.memberOf = self.registerProperty("memberOf", hidden=True)
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class SchemaOrgNamespace(BaseNamespace):
@@ -311,6 +325,7 @@ class DctermsNamespace(BaseNamespace):
         self.identifier =   self.registerDatatypeProperty("identifier")
         self.source =       self.registerObjectProperty("source", hidden=False)             # not hidden because parent of 2 cello props
         self.references =   self.registerAnnotationProperty("references", hidden=True)      # hidden because redundant with cello equivalent
+        self.bibliographicCitation = self.registerAnnotationProperty("bibliographicCitation", hidden=True) 
         
 
 

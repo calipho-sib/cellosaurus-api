@@ -172,7 +172,7 @@ class NamespaceRegistry:
                 domId = dom.split(":")[1]
                 if dom.startswith("cello:"):
                     domTerm = NamespaceRegistry.term(dom)
-                    print(">>>> term", term, "dom:", dom)
+                    #print(">>>> term", term, "dom:", dom)
                     domLabel = domTerm.get_label_str()
                     domUrl = "/".join([get_rdf_base_IRI(), domId]) 
                     domainElems.append(f"<a href=\"#{domId}\" title=\"{domUrl}\">{domLabel}</a>")
