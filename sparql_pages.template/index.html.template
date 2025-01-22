@@ -20,6 +20,7 @@
     <div>
       <sparql-editor
         endpoint="$sparql_IRI"
+        examples-repository="https://github.com/sib-swiss/sparql-examples/blob/master/examples/Cellosaurus"
         examples-repo-add-url="https://github.com/sib-swiss/sparql-examples/new/master/examples/Cellosaurus"
         examples-on-main-page="10"
         style="--btn-color: white; --btn-bg-color: #00709b;"

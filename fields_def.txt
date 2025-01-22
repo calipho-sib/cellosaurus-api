@@ -132,7 +132,7 @@ XP   /publication/attribute::internal-id
 TG   ww
 DE   Web page related to the cell line
 PR   WW
-XP   /cell-line/web-page-list/url
+XP   /cell-line/web-page-list/web-page
 //
 TG   genome-ancestry
 DE   Estimated ethnic ancestry of the donor of a human cell line based on the analysis of its genome.

@@ -792,7 +792,8 @@ class RdfBuilder:
     
         # fields: WW
         for ww in cl_data.get("web-page-list") or []:
-            ww_iri = "".join(["<", ww, ">"])
+            # TODO: handle the 4 fields category, specifier, institution, not only url
+            ww_iri = "".join(["<", ww["url"], ">"])
             triples.append(cl_IRI, ns.rdfs.seeAlso, ww_iri)
         
         # fields: SX
