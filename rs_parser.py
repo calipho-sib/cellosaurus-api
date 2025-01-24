@@ -164,8 +164,10 @@ class Rs_Parser:
     # - - - - - - - - - - - - - - - - - - 
     def to_cellostyle(self, id):
     # - - - - - - - - - - - - - - - - - - 
-        # in cellosaurus RS accessions are represented as 'RS:nnnnnnn'
-        return id.replace("RS_", "RS:")
+        return id
+        # Note: what's below is not true any more
+        # in cellosaurus RS accessions are represented as 'RS:nnnnnnn' 
+        #return id.replace("RS_", "RS:")
 
 
 
