@@ -1496,8 +1496,8 @@ class RdfBuilder:
         for h in heavy.split("+"):
             for l in light.split("+"):
                 annot_BN = self.get_blank_node()
-                triples.append(cl_IRI, ns.cello.hasMabIsotype, annot_BN)
-                triples.append(annot_BN, ns.rdf.type, ns.cello.MabIsotype)
+                triples.append(cl_IRI, ns.cello.hasMoAbIsotype, annot_BN)
+                triples.append(annot_BN, ns.rdf.type, ns.cello.MoAbIsotype)
                 igh_BN = self.get_blank_node()
                 triples.append(annot_BN, ns.cello.hasAntibodyHeavyChain, igh_BN)
                 triples.append(igh_BN, ns.rdf.type, ns.cello.ImmunoglobulinHeavyChain)
@@ -1519,7 +1519,7 @@ class RdfBuilder:
 
         # we might get a simple string in annot (the name of the antigen)
         if type(annot) == str:
-            triples.append(cl_IRI, ns.cello.hasMabTarget, annot_BN)
+            triples.append(cl_IRI, ns.cello.hasMoAbTarget, annot_BN)
             triples.append(annot_BN, ns.rdf.type, clazz)
             triples.extend(self.get_triples_for_name_prop(annot_BN, ns.cello.name, ns.xsd.string(annot)))
             return triples
@@ -1541,7 +1541,7 @@ class RdfBuilder:
             else:
                 raise DataError("Monoclonal antibody target", "Unexpected xref database: " + db)
 
-        triples.append(cl_IRI, ns.cello.hasMabTarget, annot_BN)
+        triples.append(cl_IRI, ns.cello.hasMoAbTarget, annot_BN)
         triples.append(annot_BN, ns.rdf.type, clazz)
         triples.extend(self.get_triples_for_name_prop(annot_BN, ns.cello.name, ns.xsd.string(name)))
         if comment is not None:

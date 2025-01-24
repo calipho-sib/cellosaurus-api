@@ -186,8 +186,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.RegistrationRecord = self.registerClass("RegistrationRecord")              # described as an IAO:Topic
 
 
-        #self.MabTarget = self.registerClass("MabTarget")
-        self.MabIsotype = self.registerClass("MabIsotype", label="Monoclonal antibody isotype") # TODO:0
+        self.MoAbIsotype = self.registerClass("MoAbIsotype", label="Monoclonal antibody isotype") # TODO:0
 
         # next 3 lines as some kind of experiment result
         self.detectedTarget = self.registerDatatypeProperty("detectedTarget")           # TODO later
@@ -363,8 +362,8 @@ class CelloOntologyNamespace(BaseNamespace):
         self.msiValue = self.registerDatatypeProperty("msiValue", label="microsatellite instability value")     # TODO: later
 
         self.hasMicrosatelliteInstability = self.registerObjectProperty("hasMicrosatelliteInstability")             # described as cello:hasAnnotation        
-        self.hasMabIsotype = self.registerObjectProperty("hasMabIsotype", label="has monoclonal antibody isotype")  # described as cello:hasAnnotation
-        self.hasMabTarget = self.registerObjectProperty("hasMabTarget", label="has monoclonal antibody target")     # described as cello:hasAnnotation
+        self.hasMoAbIsotype = self.registerObjectProperty("hasMoAbIsotype", label="has monoclonal antibody isotype")  # described as cello:hasAnnotation
+        self.hasMoAbTarget = self.registerObjectProperty("hasMoAbTarget", label="has monoclonal antibody target")     # described as cello:hasAnnotation
         
         self.hasAntibodyHeavyChain = self.registerObjectProperty("hasAntibodyHeavyChain")                           # described as sub prop of BFO:part_of
         self.hasAntibodyLightChain = self.registerObjectProperty("hasAntibodyLightChain")                           # described as sub prop of BFO:part_of

@@ -815,10 +815,13 @@ def get_cell_line_solr_xml_doc_from_text(text, fldDef):
                     # normal handler
                     else:
                         fld = etree.SubElement(doc_node, "field")
+                        #print(">>>> fieldname:", fname)
                         fld.set("name", fname)
                         value = line[len(pr):]
+                        #print(">>>> line     :", line)
                         if value.startswith(":"): value = value[1:]
                         value = value.strip()
+                        #print(">>>> value    :", value)
                         fld.text = value
                         # we need the additional field ac_str which is the unique key for solr
                         if fname == "ac":
@@ -1208,6 +1211,7 @@ if __name__ == "__main__":
                 f_out.write(bytes("<add>\n","utf-8"))
 
             data = get_txt_multi_cell([ac], None, cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in)
+            #print(">>>> ac:", ac)
             doc = get_cell_line_solr_xml_doc_from_text(data, fldDef)
             data_bytes = etree.tostring(doc, encoding="utf-8", pretty_print=True)
             f_out.write(data_bytes)
