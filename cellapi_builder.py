@@ -997,7 +997,7 @@ if __name__ == "__main__":
         for k in terminologies.termi_dict:
             termi: Terminology = terminologies.get(k)
             log_it("INFO:", f"Serializing terminology {k} ...")
-            file_out = open(out_dir + "data_" + termi.abbrev + ".ttl", "wb")
+            file_out = open(out_dir + "data_" + termi.abbrev + ".ttl", "wb")    
             file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
             parser = getattr(__import__("__main__"), termi.parser_name)(k)
             # we get version from parser, will be used in RDF defining terminologies as NamedIndividual
