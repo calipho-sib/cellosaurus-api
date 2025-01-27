@@ -191,14 +191,14 @@ class FldDef:
         f_out.close()
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def build_help_page(self):
+    def get_content_of_field_help_page(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         # read HTML template
         f=open("html.templates/api-fields-help.template.html","r")
         template = f.read()
         f.close()
         
-        # build final help file from template and fld def
+        # build help file from template and by iterating over elements in fld def
         rows = ""
         for tag in self.fld_dic.keys():
             #print("tag",tag)
@@ -213,13 +213,11 @@ class FldDef:
             row_data.append("</tr>")
             rows += "\n".join(row_data)
         content = template.replace("$rows", rows).replace("$version",CELLAPI_VERSION)
-        f_out = open("static/api-fields-help.html", "w")
-        f_out.write(content)
-        f_out.close()
+        return content
+        # f_out = open("static/api-fields-help.template.html", "w")
+        # f_out.write(content)
+        # f_out.close()
         
-        # f_out.write("#\n# Generated : " + datetime.datetime.now().isoformat().replace('T',' ')[:19] + "\n#\n\n")
-        # f_out.write("from enum import Enum\n\n")
-        # f_out.write("class Fields(str, Enum):\n")
 
 # ===========================================================================================
 if __name__ == "__main__":
@@ -230,8 +228,8 @@ if __name__ == "__main__":
     fldDef.build_enum()
     print("Built file fields_enum.py")
     
-    fldDef.build_help_page()
-    print("Built file static/api-fields-help.py")
+    # fldDef.build_help_page()
+    # print("Built static/api-fields-help.template.py")
     
     print("End")
 

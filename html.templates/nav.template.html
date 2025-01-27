@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Website</title>
+    <link rel="stylesheet" href="navstyles.css">
+</head>
+<body>
+    <nav>
+        <a href="https://www.cellosaurus.org" class="logo">
+            <img src="static/cellosaurus.png" alt="Cellosaurus website">
+        </a>        
+        <ul>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">API</a>
+                <div class="dropdown-content">
+                    <a href="/">Introduction</a>
+                    <a href="/help-methods">Methods</a>
+                    <a href="/help-fields">Fields</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">RDF</a>
+                <div class="dropdown-content">
+                    <a href="$rdf_onto_url">Ontology</a>
+                    <a href="$rdf_deref_url">Dereferencing service</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">SPARQL</a>
+                <div class="dropdown-content">
+                    <a href="$sparql_service_url">SPARQL service</a>
+                    <a href="$sparql_editor_url">SPARQL editor</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>
