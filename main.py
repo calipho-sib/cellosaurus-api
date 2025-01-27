@@ -312,7 +312,7 @@ async def get_cell_line(
             description="""Optional list of fields to return in the response.
             All the fields are returned if undefined.
             Values passed in parameter <i>fld</i> takes precedence over values passed in parameter <i>fields</i>.
-            More information on content of fields <a href="static/fields_help.html">here</a>.
+            More information on content of fields <a href="static/api-fields-help.html">here</a>.
             """
             ),
         fields: str = Query(
@@ -323,7 +323,7 @@ async def get_cell_line(
             Examples: 'id,sy,cc,rx', 'id,ac,ox'.
             All the fields are returned if undefined.
             Values passed in parameter <i>fld</i> takes precedence over values passed in parameter <i>fields</i>.
-            More information on content of fields <a href="static/fields_help.html">here</a>.
+            More information on content of fields <a href="static/api-fields-help.html">here</a>.
             """
             )
 
@@ -472,7 +472,7 @@ async def search_cell_line(
             description="""Optional list of fields to return in the response.
             All the fields are returned in the response if undefined.
             Values passed in parameter <i>fld</i> takes precedence over values passed in parameter <i>fields</i>.
-            More information on content of fields <a href="static/fields_help.html">here</a>.
+            More information on content of fields <a href="static/api-fields-help.html">here</a>.
             """
             ),
         fields: str = Query(
@@ -483,7 +483,7 @@ async def search_cell_line(
             Examples: 'id,ac,sy,cc', 'id,ac,ox'.
             All the fields are returned if undefined.
             Values passed in parameter <i>fld</i> takes precedence over values passed in parameter <i>fields</i>.
-            More information on fields <a href="static/fields_help.html">here</a>.
+            More information on fields <a href="static/api-fields-help.html">here</a>.
             """
             ),
         sort: str = Query(
@@ -493,7 +493,7 @@ async def search_cell_line(
             Every field name must be followed with a space and the sort direction (ASCending or DESCending).
             When multiple fields are used as the value of this parameter, they must be separated by a comma.
             Example: 'group asc,derived-from-site desc'
-            All the fields described <a href="static/fields_help.html">here</a> in are sortable. 
+            All the fields described <a href="static/api-fields-help.html">here</a> in are sortable. 
             When this parameter is undefined, the search result rows are sorted by relevance.
             """
             )
@@ -784,7 +784,7 @@ async def basic_help(request: Request):
     #print(">>> scope", scope, "version", request.app.version)
 
     # read HTML template
-    f=open("basic_help.template.html","r")
+    f=open("html.templates/api-basic-help.template.html","r")
     content = f.read()
     f.close()
 
@@ -809,7 +809,7 @@ async def search_form(request: Request, q: str = Query(
     #print(">>> scope", scope)
 
     # read HTML template
-    f=open("search_form.template.html","r")
+    f=open("html.templates/api-search-form.template.html","r")
     content = f.read()
     f.close()
 
@@ -922,7 +922,7 @@ async def fullsearch_form(
 
     # build response and send it
         # read HTML template
-    f=open("fullsearch_form.template.html","r")
+    f=open("html.templates/api-fullsearch-form.template.html","r")
     content = f.read()
     f.close()
 

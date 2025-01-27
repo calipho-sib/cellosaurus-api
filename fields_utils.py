@@ -194,7 +194,7 @@ class FldDef:
     def build_help_page(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         # read HTML template
-        f=open("fields_help_page.template.html","r")
+        f=open("html.templates/api-fields-help.template.html","r")
         template = f.read()
         f.close()
         
@@ -213,7 +213,7 @@ class FldDef:
             row_data.append("</tr>")
             rows += "\n".join(row_data)
         content = template.replace("$rows", rows).replace("$version",CELLAPI_VERSION)
-        f_out = open("static/fields_help.html", "w")
+        f_out = open("static/api-fields-help.html", "w")
         f_out.write(content)
         f_out.close()
         
@@ -231,7 +231,7 @@ if __name__ == "__main__":
     print("Built file fields_enum.py")
     
     fldDef.build_help_page()
-    print("Built file static/fields_help.py")
+    print("Built file static/api-fields-help.py")
     
     print("End")
 

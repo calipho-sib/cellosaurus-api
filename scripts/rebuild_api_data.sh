@@ -17,7 +17,7 @@ cd $base_dir
 # stop the api service
 ./api_service.sh stop
 
-# rebuild static files ./fields_enum.py and ./static/fields_help.py 
+# rebuild static files ./fields_enum.py and ./static/api-fields-help.py 
 $mypython fields_utils.py
 
 # rebuild api indexes in ./serial directory 
