@@ -17,3 +17,12 @@ solr-8.11.1/
 solr_data/
 rdf_data/
 *.tgz
+sparql_pages/
+tech-corner/
+tmp.py
+virtuoso.ini
+scratch.py
+*.ttl
+deref/
+static/sparql/
+

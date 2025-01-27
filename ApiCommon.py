@@ -20,6 +20,7 @@ FLDDEF_FILE = "./fields_def.txt"
 CELLAPI_VERSION="1.0.4"
 
 platform_key = "local"
+#platform_key = "test"
 
 platform_dict = {
     # no final "/", please !
