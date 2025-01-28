@@ -1107,23 +1107,6 @@ if __name__ == "__main__":
     # -------------------------------------------------------
     if args[0]=="SPARQL_PAGES":
     # -------------------------------------------------------
-        f_in = open("html.templates/sparql-editor.html.template")
-        f_out = open("tmp-sparql-editor.html", "w")
-        for line in f_in.readlines():
-            line = line.replace("$sparql_IRI", ApiCommon.get_sparql_service_IRI())
-            f_out.write(line)
-        f_in.close()
-        f_out.close()
-        log_it("INFO", "Created tmp-sparql-editor.html" )
-
-        f_in = open("html.templates/resolver-examples.template")
-        f_out = open("tmp-resolver-examples.html", "w")
-        for line in f_in.readlines():
-            line = line.replace("$base_IRI", ApiCommon.get_rdf_base_IRI())
-            f_out.write(line)
-        f_in.close()
-        f_out.close()
-        log_it("INFO", "Created tmp-resolver-examples.html" )
         
         result = subprocess.run(['bash', './scripts/prepare_sparql_pages.sh'], capture_output=True, text=True)
         log_it("INFO", "Rebuilt sparql_pages directory, status", result.stdout)

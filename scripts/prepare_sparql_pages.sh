@@ -10,9 +10,6 @@ base_dir=$(pwd)
 rm -rf $base_dir/sparql_pages/*
 mkdir -p $base_dir/sparql_pages/sparql
 
-mv $base_dir/tmp-sparql-editor.html $base_dir/sparql_pages/sparql/sparql-editor.html
-mv $base_dir/tmp-resolver-examples.html $base_dir/sparql_pages/sparql/resolver-examples.html
-
 cp -r $base_dir/../widoco/cello.html/doc $base_dir/sparql_pages/sparql
 cd $base_dir/sparql_pages/sparql
 

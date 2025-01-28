@@ -4,7 +4,7 @@ body {
     padding: 0;
 }
 
-nav {
+.nav {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -16,7 +16,7 @@ nav {
     display: flex;
 }
 
-nav ul {
+.nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -24,11 +24,11 @@ nav ul {
     display: flex;
 }
 
-nav li {
+.nav li {
     float: left;
 }
 
-nav li a, .dropbtn {
+.nav li a, .dropbtn {
     display: inline-block;
     color: white;
     text-align: center;
@@ -36,7 +36,7 @@ nav li a, .dropbtn {
     text-decoration: none;
 }
 
-nav li a:hover, .dropdown:hover .dropbtn {
+.nav li a:hover, .dropdown:hover .dropbtn {
     background-color: #111;
 }
 

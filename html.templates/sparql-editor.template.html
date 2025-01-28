@@ -9,15 +9,17 @@
     <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/f/f3/Rdf_logo.svg" />
     <!-- Import the module from a CDN -->
     <script type="module" src="https://unpkg.com/@sib-swiss/sparql-editor"></script>
+    <style>
+      h1 {
+        font-size: 36px;
+        margin-left: 80px;
+      }
+    </style>    
   </head>
 
-  <body style="padding:5px; display:grid; ">
-    <div style="width:100%;background-color: antiquewhite; margin-top: 10px; margin-left: 0px; margin-right: 0px; margin-bottom: 15px; padding: 5px; display:inline;">
-        <span style="float:left; padding-right: 10px;"><a href="doc/index-en.html">Ontology</a></span>
-        <span style="float:none"><a href="resolver-examples.html">Resolver examples</a></span>  
-      <span style="float:right">version 1.3</span>
-    </div>
-    <div>
+  <body>
+    <h1>SPARQL editor</h1>
+    <div style="padding-left:80px;">
       <sparql-editor
         endpoint="$sparql_IRI"
         examples-repository="https://github.com/sib-swiss/sparql-examples/blob/master/examples/Cellosaurus"

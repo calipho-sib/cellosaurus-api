@@ -148,8 +148,6 @@ app = FastAPI(
     )
 
 
-# this is necessary for fastapi / swagger to know where the static files are served i.e. cellosaurus.ng above)
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # local hosting of js / css for swagger and redocs
 # see https://fastapi.tiangolo.com/advanced/extending-openapi/
@@ -777,7 +775,7 @@ async def fsearch_cell_line(
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 @app.get("/", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-async def basic_help(request: Request):
+async def get_basic_help(request: Request):
     scope = request.scope.get("root_path")
     if scope is None or scope == "/": scope = ""
     #print(">>> scope", scope, "version", request.app.version)
@@ -795,10 +793,71 @@ async def basic_help(request: Request):
     return responses.Response(content=final_content,media_type="text/html")
 
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+@app.get("/help-resolver", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def get_help_resolver(request: Request):
+    scope = request.scope.get("root_path")
+    if scope is None or scope == "/": scope = ""
+    #print(">>> scope", scope, "version", request.app.version)
+
+    # read HTML template
+    f=open("html.templates/rdf-resolver-help.template.html","r")
+    content = f.read()
+    f.close()
+    # build response and send it
+    content = content.replace("$base_IRI", ApiCommon.get_rdf_base_IRI())
+    content_tree = html.fromstring(content)
+    htmlBuilder.add_nav_css_link_to_head(content_tree)
+    htmlBuilder.add_nav_node_to_body(content_tree)
+    final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
+    return responses.Response(content=final_content,media_type="text/html")
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+@app.get("/sparql-editor", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def get_sparql_editor(request: Request):
+    scope = request.scope.get("root_path")
+    if scope is None or scope == "/": scope = ""
+    #print(">>> scope", scope, "version", request.app.version)
+    # read HTML template
+    f=open("html.templates/sparql-editor.template.html","r")
+    content = f.read()
+    f.close()
+    # build response and send it
+    content = content.replace("$sparql_IRI", ApiCommon.get_sparql_service_IRI())
+    content_tree = html.fromstring(content)
+    htmlBuilder.add_nav_css_link_to_head(content_tree)
+    htmlBuilder.add_nav_node_to_body(content_tree)
+    final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
+    return responses.Response(content=final_content,media_type="text/html")
+
+
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# @app.get("/static/toto.txt", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
+# # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# async def handle_toto(request: Request):
+#     scope = request.scope.get("root_path")
+#     if scope is None or scope == "/": scope = ""
+#     #print(">>> scope", scope, "version", request.app.version)
+
+#     content = "<html><head></head><body>Hello toto</body></html"
+#     # build response and send it
+#     content_tree = html.fromstring(content)
+#     htmlBuilder.add_nav_css_link_to_head(content_tree)
+#     htmlBuilder.add_nav_node_to_body(content_tree)
+#     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
+#     return responses.Response(content=final_content,media_type="text/html")
+
+
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 @app.get("/help-fields", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-async def basic_help(request: Request):
+async def get_help_fields(request: Request):
     scope = request.scope.get("root_path")
     if scope is None or scope == "/": scope = ""
 
@@ -975,6 +1034,18 @@ async def fullsearch_form(
     log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
 
     return responses.Response(content=final_content,media_type="text/html")
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# NOTE: mounting /static at the end of this file rather than just after app creation allows
+# for app.get() methods defined above to override the default behaviour for static files directory
+# see example app.get("/static/toto")
+
+# this is necessary for fastapi / swagger to know where the static files are served i.e. cellosaurus.ng above)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 
 

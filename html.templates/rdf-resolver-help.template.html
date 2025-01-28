@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cellosaurus RDF resolver examples</title>
+    <meta name="description" content="SPARQL RDF resolver examples page" />
+    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/f/f3/Rdf_logo.svg" />
+    <style>
+      h1 {
+        font-size: 36px;
+        margin-left: 80px;
+      }
+    </style>    
+  </head>
+
+  <body>
+      <h1>Getting description of RDF entities in different formats</h1>
+    <div style="padding-left: 80px;">
+      Several formats are supported. The format can be chosen by adding the parameter ?format=&lt;format&gt;<br>
+      where format is one of:
+      <ul>
+        <li>html (default)</li>
+        <li>n3</li>
+        <li>ttl</li>
+        <li>rdf</li>
+        <li>jsonld</li>
+      </ul> 
+        Examples
+        <ul>
+        <li>the ontology in jsonld <a target=_blank" href="$base_IRI/ontology/?format=jsonld">$base_IRI/ontology/?format=jsonld</a></li>
+        <li>the cello:CancerCellLine class in HTML <a target=_blank" href="$base_IRI/ontology/CancerCellLine">$base_IRI/ontology/CancerCellLine</a></li>
+        <li>the cello:Xref class in rdf <a target=_blank" href="$base_IRI/ontology/Xref?format=rdf">$base_IRI/ontology/Xref?format=rdf</a></li>
+        <li>the cell line CVCL_0030 in ttl <a target=_blank" href="$base_IRI/cvcl/CVCL_0030?format=ttl">$base_IRI/cvcl/CVCL_0030?format=ttl</a></li>
+      </ul>
+      <h2>Resolving RDF entities with a script</h2>
+      <p>
+      The SPARQL protocol is based on the HTTP content negotiation. Instead of using the parameter <i>format</i> as described above, <br>
+      you can use the 'Accept' header to tell the SPARQL server which mime-type you would like to have in the response.
+      </p>
+      <p>The following mime-type can be used:</p>
+      <ul>
+        <li>text/turtle</li>
+        <li>application/rdf+xml</li>
+        <li>application/n-triples</li>
+        <li>application/ld+json</li>
+        <li>text/html</li>
+      </ul>
+    
+      Get cello:Xref resolved using ttl format
+      <pre>
+      curl -H "Accept:text/turtle" $base_IRI/ontology/Xref
+      </pre>
+
+    </div>
+
+  </body>
+</html>
