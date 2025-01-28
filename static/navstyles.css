@@ -1,3 +1,22 @@
+/*
+  It seems that widoco uses variables to choose color in some conditions
+  For the navigation layout of rdf-ontology page to be the same as in other
+  pages served by FastAPI (i.e. help-resolver, sparql-editor,...) we need
+  to set these variables for some ot the classes used in our navigation menu
+  otherwise styles defined for the navigation are overriden by widoco
+*/
+
+.dropbtn {
+    --link: white;
+}
+.dropdown-content a:hover {
+    --href-hover: #f1f1f1;
+}
+
+/*
+    styles defined for navigation
+*/
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -27,6 +46,8 @@ nav ul {
 nav li {
     float: left;
 }
+
+
 
 nav li a, .dropbtn {
     display: inline-block;

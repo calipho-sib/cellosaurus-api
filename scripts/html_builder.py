@@ -1,5 +1,5 @@
 from lxml import html
-
+from ApiCommon import get_sparql_service_IRI
 
 # - - - - - - - - - - - - - - - - - - 
 class HtmlBuilder:
@@ -16,8 +16,10 @@ class HtmlBuilder:
     def get_navigation_node(self):
     # - - - - - - - - - - - - - - - - - - 
         input_file = "./html.templates/nav.template.html"
-        tree = self.get_html_tree(input_file)
-        return tree.xpath('//nav')[0]
+        content = self.get_file_content(input_file)
+        content = content.replace("$sparql_service_url", get_sparql_service_IRI())
+        html_tree = html.fromstring(content)
+        return html_tree.xpath('//nav')[0]
 
     # - - - - - - - - - - - - - - - - - - 
     def add_nav_node_to_body(self, some_tree):
@@ -38,13 +40,29 @@ class HtmlBuilder:
         lnk.set("href", "static/navstyles.css")
         head_node.insert(0, lnk)
 
+    # - - - - - - - - - - - - - - - - - - 
+    def fix_ontology_css_collisions(self, some_tree):
+    # - - - - - - - - - - - - - - - - - - 
+        body = some_tree.xpath("/html/body")[0]
+        body.set("style", "padding: 0px;")
+        cont = body.xpath("./div[@class='container']")[0]
+        cont.set("style", "padding-left: 80px;")
+        stat = cont.xpath("./div[@class='status']")[0]
+        stat.set("style", "top: 80px;")
+        
+
+    # - - - - - - - - - - - - - - - - - - 
+    def get_file_content(self, filename):
+    # - - - - - - - - - - - - - - - - - - 
+        f_in = open(filename, 'r', encoding='utf-8')
+        file_content = f_in.read()
+        f_in.close()
+        return file_content
 
     # - - - - - - - - - - - - - - - - - - 
     def get_html_tree(self, filename):
     # - - - - - - - - - - - - - - - - - - 
-        f_in = open(filename, 'r', encoding='utf-8')
-        html_content = f_in.read()
-        f_in.close()
+        html_content = self.get_file_content(filename)
         return html.fromstring(html_content)
 
 
