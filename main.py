@@ -817,7 +817,7 @@ async def basic_help(request: Request):
     return responses.Response(content=final_content,media_type="text/html")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/search/form.html", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
+@app.get("/search-form", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def search_form(request: Request, q: str = Query(
     default="id:HeLa",
@@ -869,19 +869,27 @@ async def search_form(request: Request, q: str = Query(
     content = content.replace("$idsFound", "\n".join(idsFound))
     content = content.replace("$scope", scope)
 
+    content_tree = html.fromstring(content)
+    htmlBuilder.add_nav_css_link_to_head(content_tree)
+    htmlBuilder.add_nav_node_to_body(content_tree)
+    final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
+
     log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
-    return responses.Response(content=content,media_type="text/html")
+
+    return responses.Response(content=final_content,media_type="text/html")
+    
+
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/fullsearch/form.html", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
+@app.get("/fullsearch-form", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def fullsearch_form(
     request: Request, 
     q: str = Query(default="id:HeLa"),
     fields: str = Query(default="id,ac,ox"),
     sort: str = Query(default="score desc"),
-    rows: int = Query(default=20),
+    rows: int = Query(default=8),
 ):
 
     t0 = datetime.datetime.now()
@@ -893,7 +901,7 @@ async def fullsearch_form(
     if q is None or q == "": q = "id:HeLa"
     if fields is None or fields == "": fields = "ac,id,ox"
     if sort is None or sort == "": sort = "score desc"
-    if rows is None or rows == 0: rows = 20
+    if rows is None or rows == 0: rows = 8
 
     # make sure we have 'ac' field
     if "ac" not in fields.lower(): fields = "ac," + fields
@@ -959,8 +967,15 @@ async def fullsearch_form(
     content = content.replace("$resultRows", resultHeader + "".join(resultRows))
     content = content.replace("$scope", scope)
 
+    content_tree = html.fromstring(content)
+    htmlBuilder.add_nav_css_link_to_head(content_tree)
+    htmlBuilder.add_nav_node_to_body(content_tree)
+    final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
+
     log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
-    return responses.Response(content=content,media_type="text/html")
+
+    return responses.Response(content=final_content,media_type="text/html")
+
 
 
 # INFO

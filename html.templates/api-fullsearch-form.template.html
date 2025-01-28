@@ -10,19 +10,21 @@
           border: 1px solid black;
           border-collapse: collapse;
         }
-        
         h1 {
-          color: maroon;
-          margin-left: 40px;
+          font-size: 36px;
+          margin-left: 80px;
+        }
+        form {
+            padding-left: 80px;
         }
         </style>    
 </head>
 <html>
     <body>
-        <form>
-            <table>
-                <tbody>
-                    <tr><td><h3>Fulll search form</h3></td></tr>
+            <h1>API Full search form</h1>
+            <form>
+                <table>
+                   <tbody>
                     <tr>
                         <td>Search criteria</td>
                         <td><input style="width:600px;" type"text" name="q" value="$q" /></td>
@@ -59,9 +61,10 @@
                         <h3>Useful links</h3>
                         <ul>
                             <li><a target="_blank" href="https://solr.apache.org/guide/8_11/the-standard-query-parser.html">Solr search syntax</href></li>
-                            <li><a target="_blank" href="$scope/help-fields">Comprehensive description of Cellosaurus cell line fields</href></li>
+                            <li><a href="$scope/help-fields">Comprehensive description of Cellosaurus cell line fields</href></li>
                         </ul>
-                    </td></tr>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </form>
