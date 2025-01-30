@@ -12,7 +12,7 @@ from enum import Enum
 from namespace_registry import NamespaceRegistry as ns_reg
 
 
-#import os
+import os
 #import sys
 import json
 import argparse
@@ -113,6 +113,12 @@ rdf_media_types_responses = { "description": "Successful response", "content" : 
   }
 }
 
+# for some reason, rdf_is_visible, a global variable used as a parameter value in some @app.get(...) 
+# must be declared and set before the @app.get(...) methods
+rdf_is_visible = (os.getenv("RDF_IS_VISIBLE","False").upper() == "TRUE")
+log_it("INFO:", "reading / getting default for env variable", f"RDF_IS_VISIBLE={rdf_is_visible}")
+
+
 # documentation for categories containng the API methods in the display, see also tags=["..."] below
 tags_metadata = [
     {   "name": "General",
@@ -120,7 +126,10 @@ tags_metadata = [
     },{ "name": "Cell lines",
         "description": "Get all or part of the information related to cell lines",
     }]
-#tags_metadata.append({ "name": "RDF", "description": "RDF desciption of entities" })
+if rdf_is_visible:
+    tags_metadata.append({ "name": "RDF", "description": "RDF description of entities" })
+
+
 
 # general documentation in the header of the page
 app = FastAPI(
@@ -201,7 +210,7 @@ async def swagger_ui_redirect():
 async def startup_event():
 
     # load cellosaurus data
-    global cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in, cl_xml_f_in, rf_xml_f_in, fldDef , release_info, clid_dict, htmlBuilder
+    global cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in, cl_xml_f_in, rf_xml_f_in, fldDef , release_info, clid_dict, htmlBuilder, rdf_is_visible
 
     t0 = datetime.datetime.now()
     release_info = api.load_pickle(ApiCommon.RI_FILE)
@@ -570,7 +579,7 @@ async def search_cell_line(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/entity/ontology/" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
+@app.get("/describe/entity/ontology/" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=rdf_is_visible)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_onto(
         request: Request,
@@ -588,7 +597,7 @@ async def describe_onto(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/entity/{prefix}/{id}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=True)
+@app.get("/describe/entity/{prefix}/{id}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=rdf_is_visible)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_entity(
         request: Request,
