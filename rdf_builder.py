@@ -802,7 +802,10 @@ class RdfBuilder:
         # fields: WW
         for ww in cl_data.get("web-page-list") or []:
             # TODO: handle the 4 fields category, specifier, institution, not only url
-            ww_iri = "".join(["<", ww["url"], ">"])
+            if type(ww) == str:
+                ww_iri = "".join(["<", ww, ">"])        # data_release < or = 51
+            else:
+                ww_iri = "".join(["<", ww["url"], ">"]) # data release > 51
             triples.append(cl_IRI, ns.rdfs.seeAlso, ww_iri)
         
         # fields: SX
