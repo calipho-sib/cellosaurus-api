@@ -19,25 +19,31 @@ FLDDEF_FILE = "./fields_def.txt"
 # used in main.py and in fields_utils.py
 CELLAPI_VERSION="1.0.4"
 
-platform_key = "local"
+#platform_key = "local"
 #platform_key = "test"
+platform_key = "prod"
 
 platform_dict = {
-    # no final "/", please !
+    # ---------------------------------
+    # WARNING: no final "/", please !
+    # ---------------------------------
     "local": {
         "base_IRI": "http://localhost/rdf",
-        "help_IRI": "http://localhost/sparql/doc",
+        #"help_IRI": "http://localhost:8082/static/sparql/doc",     # http://localhost:8082/static/sparql/doc/ontology.ttl 
+        "help_IRI": "http://localhost:8082",                        # http://localhost:8082/ontology.ttl thanks to main.app.mount())
         "sparql_IRI": "http://localhost/sparql/service"
     },
     "test": {
         "base_IRI": "https://www.mix-id1.cellosaurus.org/rdf",
-        "help_IRI": "https://test-sparql.cellosaurus.org/sparql/doc",
+        #"help_IRI": "https://test-sparql.cellosaurus.org/sparql/doc",
+        "help_IRI": "https://test-api.cellosaurus.org",
         "sparql_IRI": "https://test-sparql.cellosaurus.org/sparql/service"
     },
     "prod": {
-        "base_IRI": "https://purl.expasy.org/cellosaurus",
-        "help_IRI": "https://sparql.cellosaurus.org/sparql/doc",
-        "sparql_IRI": "https://sparql.cellosaurus.org/sparql/service"
+        "base_IRI": "https://purl.expasy.org/cellosaurus/rdf",
+        "help_IRI": "https://api.cellosaurus.org",
+        "sparql_IRI": "https://sparql.cellosaurus.org/sparql"
+        #"sparql_IRI": "https://sparql.cellosaurus.org/sparql/service"
     }
 }
 
