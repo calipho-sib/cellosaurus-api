@@ -20,8 +20,8 @@ FLDDEF_FILE = "./fields_def.txt"
 CELLAPI_VERSION="1.0.4"
 
 #platform_key = "local"
-#platform_key = "test"
-platform_key = "prod"
+platform_key = "test"
+#platform_key = "prod"
 
 platform_dict = {
     # ---------------------------------
@@ -37,7 +37,7 @@ platform_dict = {
         "base_IRI": "https://www.mix-id1.cellosaurus.org/rdf",
         #"help_IRI": "https://test-sparql.cellosaurus.org/sparql/doc",
         "help_IRI": "https://test-api.cellosaurus.org",
-        "sparql_IRI": "https://test-sparql.cellosaurus.org/sparql/service"
+        "sparql_IRI": "https://test-sparql.cellosaurus.org/sparql"
     },
     "prod": {
         "base_IRI": "https://purl.expasy.org/cellosaurus/rdf",
