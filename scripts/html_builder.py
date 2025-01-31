@@ -19,12 +19,12 @@ class HtmlBuilder:
         content = self.get_file_content(input_file)
         content = content.replace("$sparql_service_url", get_sparql_service_IRI())
         html_tree = html.fromstring(content)
-        return html_tree.xpath('//nav')[0]
+        return html_tree.xpath('/html/body/nav')[0]
 
     # - - - - - - - - - - - - - - - - - - 
     def add_nav_node_to_body(self, some_tree):
     # - - - - - - - - - - - - - - - - - - 
-        body_node = some_tree.xpath('//body')[0]
+        body_node = some_tree.xpath('/html/body')[0]
         nav_node = self.get_navigation_node()
         body_node.insert(0, nav_node)
 
@@ -33,11 +33,11 @@ class HtmlBuilder:
     def add_nav_css_link_to_head(self, some_tree):
     # - - - - - - - - - - - - - - - - - - 
         # <link type="text/css" rel="stylesheet" href="navstyles.css">
-        head_node = some_tree.xpath("//head")[0]
+        head_node = some_tree.xpath("/html/head")[0]
         lnk = html.Element("link")
         lnk.set("type", "text/css")
         lnk.set("rel", "stylesheet")
-        lnk.set("href", "static/navstyles.css")
+        lnk.set("href", "/static/navstyles.css")
         head_node.insert(0, lnk)
 
     # - - - - - - - - - - - - - - - - - - 
