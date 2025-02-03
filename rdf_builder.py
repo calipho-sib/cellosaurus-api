@@ -656,7 +656,7 @@ class RdfBuilder:
             #print("mydate",year,month,day)
             triples.append(ref_IRI, ns.cello.publicationDate, ns.xsd.date("-".join([year, month, day])))
 
-        # xref-list (mandatory), we create and xref and a direct link to the url via rdfs:seeAlso
+        # xref-list (mandatory), we create a xref and a direct link to the url via cello:seeAlsoXref
         for xref in ref_data["xref-list"]:
             accession = xref["accession"]
             if self.get_xref_db(xref) == "PubMed": triples.append(ref_IRI, ns.cello.pmid, ns.xsd.string(accession))

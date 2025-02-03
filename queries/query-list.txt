@@ -1,0 +1,342 @@
+
+
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+## Description of the format
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+## blank lines or lines starting with ## are ignored
+## ID: unique id of query (numeric)
+## LB: query label 
+## KW: keyword(s) separated by a comma
+## other lines are considered as the SPARQL query itself
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+
+## ------------------------------------------------------
+ID: 101
+LB: Count of publications referenced by publication type
+KW: publication, stats
+## ------------------------------------------------------
+
+select ?pub_type (count(?cl) as ?cnt) where { 
+  ?pub_type rdfs:subClassOf* cello:Publication .
+  optional {?cl rdf:type ?pub_type. }
+}
+group by ?pub_type
+order by desc(count(*))
+
+
+## ------------------------------------------------------
+ID: 102
+LB: Count of cell lines by cell line category
+KW: category, stats
+## ------------------------------------------------------
+
+select ?class_name (count(?cl) as ?cnt) where { 
+  ?class rdfs:subClassOf cello:CellLine . # cell line generic class
+  ?class rdfs:label ?class_name .
+  optional {?cl rdf:type ?class. }
+}
+group by ?class_name
+order by desc(count(*))
+
+
+## ------------------------------------------------------
+ID: 103
+LB: Count of cross-references by database
+KW: database, stats
+## ------------------------------------------------------
+select ?db_class ?db (count(*) as ?cnt) where { 
+  ?xref a cello:Xref .
+  ?xref cello:database ?db .
+  ?db a ?db_class .
+  ?db_class rdfs:subClassOf cello:Database .
+} 
+group by ?db_class ?db
+order by desc(count(*))
+
+
+## ------------------------------------------------------
+ID: 104
+LB: Count of sequence variation annotations by sequence variation type and status
+KW: sequence variation, stats
+## ------------------------------------------------------
+select ?sv_name ?status (count(?annot) as ?annot_cnt) where { 
+  ?annot a cello:SequenceVariationComment .
+  ?annot cello:hasTarget ?sv .
+  ?sv a ?sv_type .
+  ?sv_type rdfs:label ?sv_name .
+  ?annot cello:variationStatus ?status .  
+}
+group by ?sv_name ?status
+order by ?sv_name ?status
+
+
+## ------------------------------------------------------
+ID: 105
+LB: Count of sequence variation annotations by sequence variation type and other characteristics
+KW: sequence variation, stats
+## ------------------------------------------------------
+select ?sv_name ?with_none_reported ?with_hgvs ?with_comment ?gene_cnt (count(*) as ?cases_cnt) {
+select ?sv ?sv_name ?nr ?with_none_reported ?hgvs ?with_hgvs ?comment ?with_comment (count(?gene) as ?gene_cnt) where { 
+	?sv_type rdfs:subClassOf* cello:SequenceVariation .
+    ?sv_type rdfs:label ?sv_name .
+    ?sv a ?sv_type .
+    ?sv cello:ofGene ?gene .
+    optional { ?sv cello:hgvs ?hgvs . }
+    optional { ?sv cello:noneReported ?nr . }
+    optional { ?sv rdfs:comment ?comment . }
+  	bind (if(bound(?hgvs), "Yes", "No") as ?with_hgvs)
+  	bind (if(?nr = 1, "Yes", "No") as ?with_none_reported)
+  	bind (if(bound(?comment), "Yes", "No") as ?with_comment)
+} 
+group by ?sv ?sv_name ?nr ?with_none_reported ?hgvs ?with_hgvs ?comment ?with_comment
+}
+group by ?sv_name ?with_none_reported ?with_hgvs ?with_comment ?gene_cnt
+order by ?sv_name ?with_none_reported
+
+
+## ------------------------------------------------------
+ID: 106
+LB: Short tandem repeat profile of a chosen cell line
+KW: STR, short tandem repeat profile
+## ------------------------------------------------------
+PREFIX cello: <https://www.mix-id1.cellosaurus.org/rdf/ontology/>
+SELECT ?cl (str(?obs_name) as ?observation) (str(?marker) as ?marker_name) ?detected ?repeat_number ?conflicting (group_concat(?src,' ') as ?sources)  
+where {
+  values ?cl { cvcl:CVCL_0025 }
+  ?cl cello:hasShortTandemRepeatProfile / cello:includesObservation ?obs .
+  ?obs rdfs:label ?obs_name .
+  ?obs cello:conflicting ?conflict .
+  ?obs cello:hasTarget ?trg .
+  optional { ?trg rdfs:label ?trg_label . }
+  optional { ?trg cello:markerId ?trg_id . }
+  bind(coalesce(?trg_label, ?trg_id) as ?marker)
+  optional { ?obs cello:detectedTarget ?dt . }
+  optional { ?obs cello:detectedAllele / cello:repeatNumber ?allele . }
+  optional { 
+    ?obs cello:source ?s . {
+        { ?s cello:xref / cello:database / cello:shortname ?xr }  union 
+    	{ ?s cello:reference / cello:hasInternalId ?rf }  union 
+    	{ ?s cello:organization / cello:shortname ?org }  union 
+    	{ ?s rdfs:label ?lb }
+  	}
+  }
+  bind (coalesce(?xr, ?rf, ?org, ?lb, '-') as ?src)
+  bind (if(bound(?dt), if(?dt=1, 'yes', 'no'), 'n/a') as ?detected) .
+  bind (if(bound(?allele), concat('n=',?allele), 'n/a') as ?repeat_number) .
+    bind (if(?conflict, 'yes', 'no') as ?conflicting)
+} 
+group by ?cl ?obs_name ?marker ?detected ?repeat_number ?conflicting
+order by ?cl ?obs_name ?marker ?detected ?repeat_number ?conflicting
+limit 500
+
+
+## ------------------------------------------------------
+ID: 107
+LB: HLA typing of a chosen cell line
+KW: HLA
+## ------------------------------------------------------
+select (str(?gene_name) as ?gene) (str(?allele_id) as ?allele_name)  where { 
+  	values ?cl { cvcl:CVCL_E549 }
+	?cl cello:hasHLAtyping ?hasHLAtyping .
+    ?hasHLAtyping cello:includesObservation ?obs .
+	?obs cello:hasTarget ?gene .
+    ?gene rdfs:label ?gene_name .
+    ?gene rdf:type ?gene_class .
+    ?obs cello:detectedAllele ?allele .
+    ?allele cello:alleleIdentifier ?allele_id .
+}
+order by ?gene_name
+
+
+## ------------------------------------------------------
+ID: 108
+LB: Monoclonal antibody isotype of two chosen cell lines
+KW: MoAb, isotype
+## ------------------------------------------------------
+select ?cl ?hc_label ?lc_label
+where { 
+  values ?cl { cvcl:CVCL_B375 cvcl:CVCL_B0T9 }
+  ?cl cello:hasMoAbIsotype ?annot .
+  ?annot a cello:MoAbIsotype .
+  ?annot cello:hasAntibodyHeavyChain / rdfs:label ?hc_label .
+  ?annot cello:hasAntibodyLightChain / rdfs:label ?lc_label .
+}
+order by ?cl
+
+
+## ------------------------------------------------------
+ID: 109
+LB: Statistics of methods used for gene knockout ang gene integration
+KW: KO, gene knockout, gene integration
+## ------------------------------------------------------
+select  ?proc_class ?gem_class  ?gem_name (count(*) as ?cnt) where { 
+  ?proc_inst cello:hasGenomeModificationMethod ?gem_inst .
+  ?proc_inst a ?proc_class .
+  ?proc_class rdfs:subClassOf OBI:0001364 . # parent cello:GeneIntegration and cello:GeneKnockdown
+  ?gem_inst a ?gem_class .
+  #?gem_class rdfs:subClassOf OBI:0600043 . # genome modification method
+  ?gem_class rdfs:label ?gem_name .
+}
+group by  ?proc_class ?gem_class ?gem_name
+order by  ?proc_class desc(count(*)) ?gem_class ?gem_name
+
+
+## ------------------------------------------------------
+ID: 110
+LB: Identifiers and names of cell lines
+KW: id, ac, accession, name, primaryAccession, secondaryAccession, preferredName, alternativeName
+## ------------------------------------------------------
+select ?cl (str(?ac) as ?id) (str(?pref_name) as ?rec_name) 
+(group_concat(str(?old_ac), ' ') as ?old_acs) (group_concat(str(?alt_name), ' ') as ?alt_names) 
+where {
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:primaryAccession ?ac .                 		# cell line identifier
+  ?cl cello:recommendedName ?pref_name .				# cell line preferred name
+  optional { ?cl cello:secondaryAccession ?old_ac . } 	# cell line obsoleted identifier(s)
+  optional { ?cl cello:alternativeName ?alt_name . }	# cell line alternative name(s)
+  #filter (bound(?old_ac))
+}
+group by ?cl ?ac
+limit 100
+
+
+## ------------------------------------------------------
+ID: 111
+LB: Count of cell lines established by organization
+KW: from, provided, established by, organization, stats
+## ------------------------------------------------------
+select 
+(str(?oname) as ?org_name) 		# organization name
+(str(?pname) as ?person_name)   # name of contact person (optional)
+(count(?cl) as ?cl_count)		# count of cell linesknown as etablished by organization
+where {
+  #values ?cl { cvcl:CVCL_C2T2 }   
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:establishedBy ?org. 
+  ?org a schema:Organization.
+  ?org cello:name ?oname .
+  optional {  
+    ?person cello:isMemberOf ?org.
+    ?person a schema:Person .
+    ?person cello:name ?pname .
+  }
+}
+group by ?oname ?pname
+order by desc(count(?cl))
+
+
+## ------------------------------------------------------
+ID: 112
+LB: Top 100 most referenced publications in cell line records
+KW: ref, publication, reference, stats
+## ------------------------------------------------------
+select ?publi ?publi_identifiers (count(distinct(?cl_ac)) as ?cl_count) where {
+  select  
+  	?publi 
+  	(group_concat(distinct str(?pac); separator = ', ') as ?publi_identifiers)
+    ?cl_ac
+  	where {
+      ?cl a / rdfs:subClassOf cello:CellLine .
+  	  ?cl cello:primaryAccession ?cl_ac .
+      ?cl cello:references ?publi.
+      ?publi a ?publiClass .
+      ?publi cello:seeAlsoXref / cello:accession ?pac.      
+    }
+    group by ?publi ?cl_ac
+}
+group by ?publi ?publi_identifiers
+order by desc(count(distinct(?cl_ac)))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 113
+LB: Top 100 contributors (authors) of publications referenced in cell line records
+KW: author, contributor, publication, stats
+## ------------------------------------------------------
+select 
+(str(?person_name) as ?author_name) 
+(count(distinct ?publi) as ?publi_count)
+where {
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:references ?publi .
+  ?publi ?p ?contr .
+  ?contr a schema:Person .
+  ?contr cello:name ?person_name .
+}
+group by ?person_name
+order by desc(count(distinct(?publi)))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 114
+LB: Top 100 most represented species and breed in cell line records
+KW: ox, species, breed, stats
+## ------------------------------------------------------
+select ?species_ac ?species_name ?breed_ac ?breed_name (count(distinct(?cl)) as ?cnt) where {
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:comesFromIndividualBelongingToSpecies ?species .
+  ?species cello:isIdentifiedByXref / cello:accession ?species_ac .
+  ?species cello:name ?species_name .
+  optional {
+    ?cl cello:comesFromIndividualBelongingToBreed ?breed .
+    ?breed cello:isIdentifiedByXref / cello:accession ?breed_ac .
+    ?breed cello:name ?breed_name .
+  }
+}
+group by ?species_ac ?species_name ?breed_ac ?breed_name
+order by desc(count(distinct(?cl)))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 115 
+LB: Top 100 most represented cell types in cell line records
+KW: cell type, stats
+## ------------------------------------------------------
+select ?ct_class ?ct_ac ?ct_name (count(distinct ?cl) as ?cell_line_count) where {
+    ?cl a / rdfs:subClassOf cello:CellLine .
+    ?cl cello:isDerivedFromCellType ?ct.
+    ?ct a ?ct_class.
+    ?ct cello:name ?ct_name .
+    optional {
+    	?ct cello:isIdentifiedByXref / cello:accession ?ct_ac .
+    }
+  }
+group by ?ct_class ?ct_ac ?ct_name
+order by desc(count(distinct(?cl)))
+limit 100
+
+## ------------------------------------------------------
+ID: 116
+LB: Top 100 cell lines from which the most other cell lines have been derived (child cell lines)
+KW: ch, child, stats
+## ------------------------------------------------------
+select ?cl ?cl_name (count(?child) as ?child_count) where {
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:hasChildCellLine ?child .
+} 
+group by ?cl ?cl_name
+order by desc(count(?child))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 117
+LB: Body part, tissue or organ (and related info) from which cell lines are derived from
+KW: site, tissue
+## ------------------------------------------------------
+select ?cl ?site_class ?site_name ?site_type ?site_ac ?note
+where {
+    ?cl a / rdfs:subClassOf cello:CellLine .
+    ?cl cello:isDerivedFromSite ?site .
+    ?site cello:name ?site_name .
+    ?site cello:siteType ?site_type .
+    optional { ?site rdfs:comment ?note }
+    optional {?site cello:isIdentifiedByXref / cello:accession ?site_ac }
+  }
+limit 10
