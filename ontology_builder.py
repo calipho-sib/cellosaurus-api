@@ -688,8 +688,6 @@ class OntologyBuilder:
         # lines.append("    " + "<http://xmlns.com/foaf/0.1/name>" + " " + ns.xsd.string("Pierre-André Michel") + " ;")
         # lines.append("    .")
 
-        lines.extend(self.get_query_examples())
-
         lines.append("")
         return lines
 
@@ -974,24 +972,6 @@ cello:RegistrationRecord a owl:Class ;
 """
         return text.split("\n")
 
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_query_examples(self):
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        lines = list()
-        px = get_onto_preferred_prefix()
-        lines.append("")
-        lines.append(px + ":Query_001 a sh:SPARQLExecutable ;")
-        lines.append("""    rdfs:comment "Count of cell lines" ; """)
-        lines.append("""    sh:select "select (count(*) as ?cnt) where { ?cl rdf:type / rdfs:subClassOf cello:CellLine . }" ; """)
-        lines.append("    .")
-        lines.append("")
-        lines.append(px +":Query_002 a sh:SPARQLExecutable ;")
-        lines.append("""    rdfs:comment "Count of publication citations" ; """)
-        lines.append("""    sh:select "select (count(*) as ?cnt) where { ?cl rdf:type / rdfs:subClassOf cello:Publication . }" ; """)
-        lines.append("    .")
-        lines.append("")
-        return lines
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
