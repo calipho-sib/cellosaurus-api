@@ -16,7 +16,7 @@ import requests
 import subprocess
 
 import ApiCommon
-from ApiCommon import log_it
+from ApiCommon import log_it, get_rdf_base_IRI
 from fields_utils import FldDef
 from namespace_registry import NamespaceRegistry as ns_reg
 
@@ -27,6 +27,7 @@ from terminologies import Terminologies, Terminology
 from ontology_builder import OntologyBuilder
 from databases import Database, Databases
 from sexes import Sexes, Sex
+from queries_utils import QueryFileReader, Query
 
 # no not remove imports below, parsers are called dynamically
 from ncbi_taxid_parser import NcbiTaxid_Parser
@@ -900,10 +901,10 @@ if __name__ == "__main__":
 # ===========================================================================================
     parser = OptionParser()
     (options, args) = parser.parse_args()
-    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, SPARQL_PAGES or TEST")
+    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, SPARQL_PAGES, QUERIES or TEST")
 
-    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "SPARQL_PAGES", "TEST" ]: 
-        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, SPARQL_PAGES or TEST")
+    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "SPARQL_PAGES", "QUERIES", "TEST" ]: 
+        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, SPARQL_PAGES, QUERIES or TEST")
 
     input_dir = "data_in/"
     if input_dir[-1] != "/" : input_dir + "/"
@@ -1127,8 +1128,11 @@ if __name__ == "__main__":
         elif args[1].lower() == "void":
             result = subprocess.run(['bash', './scripts/reload_rdf_void.sh'], capture_output=True, text=True)
             log_it("INFO", "LOADED void metadata, status", result.stdout)
+        elif args[1].lower() == "queries":
+            result = subprocess.run(['bash', './scripts/reload_rdf_queries.sh'], capture_output=True, text=True)
+            log_it("INFO", "LOADED queries, status", result.stdout)
         else:
-            log_it("Invalid argument after LOAD, expected data, onto or void")
+            log_it("Invalid argument after LOAD, expected data, onto, void or queries")
             sys.exit(10)
 
     # -------------------------------------------------------
@@ -1154,6 +1158,34 @@ if __name__ == "__main__":
             file_out.write(bytes(line + "\n", "utf-8"))
         log_it("INFO", f"writing line {count} / {len(lines)}")
         log_it("INFO:", f"serialized OWL cellosaurus ontology")
+
+
+    # -------------------------------------------------------
+    if args[0]=="QUERIES":
+    # -------------------------------------------------------
+
+        # create ttl file containing a list of example SPARQL queries 
+ 
+        out_dir = "rdf_data/"
+        file_out = open(out_dir + "queries.ttl", "wb")
+        log_it("INFO:", f"serializing example SPARQL queries")   
+        reader = QueryFileReader()
+        file_out.write(bytes("#\n", "utf-8"))
+        file_out.write(bytes("# example SPARQL queries\n", "utf-8"))
+        file_out.write(bytes("#\n\n", "utf-8"))
+        file_out.write(bytes("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . \n", "utf-8"))
+        file_out.write(bytes("@prefix sh: <http://www.w3.org/ns/shacl#> . \n", "utf-8"))
+        file_out.write(bytes(f"@prefix cello: <{ns_reg.cello.url}> .\n", "utf-8"))
+        #file_out.write(bytes("@prefix cello: <https://purl.expasy.org/cellosaurus/rdf/ontology/> .\n", "utf-8"))
+        file_out.write(bytes("\n\n", "utf-8"))
+        count = 0
+        for q in reader.query_list:    
+            query : Query = q
+            count += 1
+            ttl = query.get_ttl_for_sparql_endpoint()
+            file_out.write(bytes(ttl + "\n\n", "utf-8"))
+        log_it("INFO", f"wrote {count} queries")
+        log_it("INFO:", f"serialized example SPARQL queries")
 
 
     # -------------------------------------------------------
