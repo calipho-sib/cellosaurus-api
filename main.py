@@ -579,6 +579,18 @@ async def search_cell_line(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+@app.get("/describe/entity/ontology/.{format}" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=rdf_is_visible)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def describe_onto(
+        request: Request,
+        format: RdfFormat = Path(
+            title="Response format",
+            description="Response output format"
+            ),
+        ):
+    return describe_any(SubNs["ontology"], "", format, request)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 @app.get("/describe/entity/ontology/" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=rdf_is_visible)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_onto(
@@ -594,6 +606,28 @@ async def describe_onto(
             )
         ):
     return describe_any(SubNs["ontology"], "", format, request)
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# TODO: decide whether we keep it or not
+@app.get("/describe/entity/{prefix}/{id}.{format}" , name="RDF description of a cellosaurus entity", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=rdf_is_visible)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def describe_entity(
+        request: Request,
+        prefix: SubNs = Path(        
+            title="Prefix of the entity ",
+            description="The prefix (or namespace) of the entity IRI as defined in the Cellosaurus ontology, i.e. 'cello' in cello:CellLine"            
+            ),
+        id: str = Path(
+            title="Identifier of the entity",
+            description="The identifier of the entity in its namespace (prefix), i.e. 'CellLine' in cello:CellLine"
+            ),
+        format: RdfFormat = Path(
+            title="Response format",
+            description="Response output format"
+            ),
+        ):
+    return describe_any(prefix, id, format, request)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -620,6 +654,7 @@ async def describe_entity(
             )
         ):
     return describe_any(prefix, id, format, request)
+
 
 
 
