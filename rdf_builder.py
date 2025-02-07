@@ -1,7 +1,7 @@
 import uuid
 import unicodedata
 from namespace_registry import NamespaceRegistry as ns
-from ApiCommon import log_it, split_string
+from ApiCommon import log_it, split_string, check_structure_IRI
 from organizations import Organization
 from terminologies import Term, Terminologies, Terminology
 from databases import Database, Databases, get_db_category_IRI
@@ -804,10 +804,14 @@ class RdfBuilder:
         for ww in cl_data.get("web-page-list") or []:
             # TODO: handle the 4 fields category, specifier, institution, not only url
             if type(ww) == str:
-                ww_iri = "".join(["<", ww, ">"])        # data_release < or = 51
+                ww_iri = str       # data_release < or = 51
             else:
-                ww_iri = "".join(["<", ww["url"], ">"]) # data release > 51
-            triples.append(cl_IRI, ns.rdfs.seeAlso, ww_iri)
+                ww_iri = ww["url"] # data release > 51
+            if check_structure_IRI(ww_iri):
+                triples.append(cl_IRI, ns.rdfs.seeAlso, "".join(["<", ww_iri, ">"]))
+            else:
+                log_it("ERROR", f"Web page (WW) with Invalid IRI: {ww_iri}")
+
         
         # fields: SX
         sx = cl_data.get("sex")
@@ -1416,6 +1420,15 @@ class RdfBuilder:
             lbl = src.get("value")
             if lbl is not None:
                 triples.extend(self.get_materialized_triples_for_prop(src_BN, ns.cello.name, ns.xsd.string(lbl)))
+            inst = src.get("institution")
+            if inst is not None:
+                # build an org object from field 'institution' and get 
+                # optional params from known orgs 
+                # BEFORE we build the IRI and store the params 
+                org = Organization(inst, "", "", "", "")
+                org = self.get_org_merged_with_known_org(org)
+                orga_IRI = ns.orga.IRI(org.name, org.shortname, org.city, org.country, org.contact, store=True)
+                triples.append(src_BN, ns.cello.originatesFrom, orga_IRI)
             xref = src.get("xref")
             if xref is not None:
                 triples.append(src_BN, ns.cello.originatesFrom, self.get_xref_IRI(xref))

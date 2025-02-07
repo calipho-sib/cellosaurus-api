@@ -1116,6 +1116,8 @@ if __name__ == "__main__":
     # -------------------------------------------------------
     if args[0]=="LOAD_RDF":
     # -------------------------------------------------------
+        exit_code = 0
+
         if args[1].lower() == "data":
             setup_file = './scripts/virtuoso_setup.sql'
             save_virtuoso_isql_setup_file(setup_file)
@@ -1134,6 +1136,12 @@ if __name__ == "__main__":
         else:
             log_it("Invalid argument after LOAD, expected data, onto, void or queries")
             sys.exit(10)
+        
+        exit_code = result.returncode
+        log_it("INFO", f"sub-process status code: {exit_code}")
+        if exit_code != 0:
+            log_it("ERROR", f"Error while running sub process, exit code = {exit_code}")
+            sys.exit(exit_code)
 
     # -------------------------------------------------------
     if args[0]=="ONTO":

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 scripts_dir="$(dirname $0)"
 base_dir=$scripts_dir/..
 

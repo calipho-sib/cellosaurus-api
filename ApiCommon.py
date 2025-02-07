@@ -119,6 +119,13 @@ def get_sparql_service_IRI():
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def check_structure_IRI(iri):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    for ch in ["<", ">", "\""]:
+        if ch in iri: return False
+    return True
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_properties(env):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     props = dict()
