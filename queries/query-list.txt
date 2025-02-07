@@ -341,4 +341,149 @@ where {
   }
 limit 10
 
+## ------------------------------------------------------
+ID: 118
+LB: Direct and indirect parent cell lines from which some cell line originates
+KW: hi, parent
+## ------------------------------------------------------
+select * where {
+  values ?cl1 {	cvcl:CVCL_D5AX }
+  ?cl1 a cello:CancerCellLine .
+  ?cl1 cello:hasParentCellLine+ ?cl2 .
+}
+order by ?cl1
+limit 100
+
+
+## ------------------------------------------------------
+ID: 119
+LB: Count of cell lines of each each insect taxon
+KW: ox, taxon, species
+## ------------------------------------------------------
+select ?taxon ?name (count(?cl) as ?cl_cnt) where {
+?cl cello:comesFromIndividualBelongingToSpecies  / cello:isIdentifiedByXref ?taxon.
+?taxon skos:prefLabel ?name.
+?taxon cello:more_specific_than* / skos:prefLabel "Insecta"^^xsd:string
+}
+group by ?taxon ?name
+order by desc(count(?cl))
+limit 300
+
+
+## ------------------------------------------------------
+ID: 120
+LB: Cell lines a karyotypic comment
+KW: kar, karyotype
+## ------------------------------------------------------
+select ?cl ?comment_class ?comment where { 
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:hasKaryotypicInfoComment ?annot.
+  ?annot a ?comment_class .
+  ?annot rdfs:comment ?comment .
+}
+limit 3000
+
+
+## ------------------------------------------------------
+ID: 121
+LB: Cell lines with gene knockout
+KW: ko, knockout, gene
+## ------------------------------------------------------
+select ?cl ?annot_class ?method ?gene_name ?gene_ac ?cm where { 
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:hasGeneKnockout ?annot.
+  ?annot a ?annot_class .
+  ?annot cello:hasGenomeModificationMethod ?method .
+  ?annot cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref / cello:accession ?gene_ac  .
+  ?gene cello:name ?gene_name .
+  optional {?annot rdfs:comment ?cm . }
+  #filter (bound(?cm))
+  limit 100
+}
+
+
+## ------------------------------------------------------
+ID: 122
+LB: Cell lines with an antibody target
+KW: MoAb, mabt, protein, chemical
+## ------------------------------------------------------
+select ?cl ?ct_class (substr(str(?target_name),0,30) as ?name) ?target_ac (str(?comment) as ?note) where {
+   ?cl a / rdfs:subClassOf cello:CellLine .
+   ?cl cello:hasMoAbTarget ?annot.
+   ?annot a ?ct_class .
+   ?annot rdfs:label ?target_name .
+   optional {?annot rdfs:comment ?comment }
+   optional {
+    ?annot cello:isIdentifiedByXref ?xref .
+    ?xref cello:accession ?target_ac .
+  	} 
+    filter (bound(?comment)) # comment this filter to also retrieve those without comment
+    filter (bound(?xref))    # comment this filter to also retrieve targets not identified by a cross-reference
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 123
+LB: Cell lines with a miscellaneous comment
+KW: misc, miscellaneous
+## ------------------------------------------------------
+select ?cl ?ct_class ?comment where { 
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:hasMiscellaneousInfoComment ?annot.
+  ?annot a ?ct_class .
+  ?annot rdfs:comment ?comment .
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 124
+LB: Cell lines with misspelling record
+KW: miss, misspelling
+## ------------------------------------------------------
+select ?cl ?misspelling_name ?src ?note
+where {
+  ?cl a / rdfs:subClassOf cello:CellLine.
+  ?cl cello:hasMisspellingRecord ?rec.
+  ?rec cello:misspellingName ?misspelling_name .
+  optional { ?rec cello:appearsIn ?src. }
+  optional {?rec rdfs:comment ?note. }
+  # filter (!bound(?src)) # uncomment to get misspelling not linked to a particular source
+  # filter (bound(?note)) # uncomment to get misspelling with an additional note
+}
+
+
+## ------------------------------------------------------
+ID: 125
+LB: Get micro satellite instability data of some cell lines
+KW: msi
+## ------------------------------------------------------
+select ?cl ?ct_class ?value ?src_ori ?src_name ?comment where {
+   ?cl a / rdfs:subClassOf cello:CellLine .
+   ?cl cello:hasMicrosatelliteInstability ?annot.
+   ?annot a ?ct_class .
+   ?annot cello:msiValue ?value .
+   ?annot cello:hasSource ?src .
+   optional { ?src cello:originatesFrom ?src_ori . }
+   optional { ?src cello:name ?src_name . }
+   optional {?annot rdfs:comment ?comment }
+   #filter (bound(?comment))    # uncomment to get only annotations with a comment
+   #filter (bound(?src_name))   # uncomment to get only direct author submissions
+   #filter (bound(?src_ori))	# uncomment to get only sources that are publications, organizations, cross-references
+}
+limit 100
+
+## ------------------------------------------------------
+ID: 
+LB: 
+KW: 
+## ------------------------------------------------------
+
+## ------------------------------------------------------
+ID: 
+LB: 
+KW: 
+## ------------------------------------------------------
 
