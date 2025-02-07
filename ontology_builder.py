@@ -158,7 +158,7 @@ class OntologyBuilder:
         ns.describe(ns.OBI._0600059, ns.rdfs.subClassOf, ns.cello.GenomeModificationMethod)
 
         # local named individuals of external classes for genome modification methods
-        ns.describe(ns.cello.CrispCas9, ns.rdf.type, ns.FBcv._0003008)
+        ns.describe(ns.cello.CrisprCas9, ns.rdf.type, ns.FBcv._0003008)
         ns.describe(ns.cello.XRay, ns.rdf.type, ns.NCIt.C17262)
         ns.describe(ns.cello.GammaRadiation, ns.rdf.type, ns.NCIt.C44386)
         ns.describe(ns.cello.Transfection, ns.rdf.type, ns.OBI._0001152)
@@ -189,6 +189,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.PrimeEditing, ns.rdf.type, ns.cello.GenomeModificationMethod)
         ns.describe(ns.cello.PromoterlessGeneTargeting, ns.rdf.type, ns.cello.GenomeModificationMethod)
         ns.describe(ns.cello.RecombinantAdenoAssociatedVirus, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.RMCE, ns.rdf.type, ns.cello.GenomeModificationMethod)
         ns.describe(ns.cello.ShrnaKnockdown, ns.rdf.type, ns.cello.GenomeModificationMethod)
         ns.describe(ns.cello.SleepingBeautyTransposition, ns.rdf.type, ns.cello.GenomeModificationMethod)
         ns.describe(ns.cello.SpontaneousMutation, ns.rdf.type, ns.cello.GenomeModificationMethod)

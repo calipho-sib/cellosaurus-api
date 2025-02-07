@@ -81,7 +81,7 @@ class RdfBuilder:
         # labels MUST be those found in cellosaurus data
         self.gem_ni = {
             "Not specified": ns.cello.GenomeModificationMethodNOS,
-            "CRISPR/Cas9": ns.cello.CrispCas9,
+            "CRISPR/Cas9": ns.cello.CrisprCas9,
             "X-ray": ns.cello.XRay,
             "Gamma radiation": ns.cello.GammaRadiation,
             "Transfection": ns.cello.Transfection,
@@ -109,6 +109,7 @@ class RdfBuilder:
             "Prime editing": ns.cello.PrimeEditing,
             "Promoterless gene targeting": ns.cello.PromoterlessGeneTargeting,
             "Recombinant Adeno-Associated Virus": ns.cello.RecombinantAdenoAssociatedVirus,
+            "Recombinase-mediated cassette exchange": ns.cello.RMCE,
             "shRNA knockdown": ns.cello.ShrnaKnockdown,
             "Sleeping Beauty transposition": ns.cello.SleepingBeautyTransposition,
             "Spontaneous mutation": ns.cello.SpontaneousMutation,

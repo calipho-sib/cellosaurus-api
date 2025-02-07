@@ -54,7 +54,7 @@ class CelloOntologyNamespace(BaseNamespace):
         # Genome modification method individuals
         # which are instances of external classes
         self.GenomeModificationMethodNOS = self.registerNamedIndividual("GenomeModificationMethodNOS", label="Genome modification method NOS")   
-        self.CrispCas9 = self.registerNamedIndividual("CrispCas9", label="CRISPR/Cas9")   
+        self.CrisprCas9 = self.registerNamedIndividual("CrisprCas9", label="CRISPR/Cas9")   
         self.XRay = self.registerNamedIndividual("XRay", label="X-ray")                                  
         self.GammaRadiation = self.registerNamedIndividual("GammaRadiation", label="Gamma radiation")                         
         self.Transfection = self.registerNamedIndividual("Transfection", label="Transfection")   
@@ -83,6 +83,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.PrimeEditing = self.registerNamedIndividual("PrimeEditing", label="Prime editing")                                               # described
         self.PromoterlessGeneTargeting = self.registerNamedIndividual("PromoterlessGeneTargeting", label="Promoterless gene targeting")       # described
         self.RecombinantAdenoAssociatedVirus = self.registerNamedIndividual("RecombinantAdenoAssociatedVirus", label="Recombinant Adeno-Associated Virus")    # described
+        self.RMCE = self.registerNamedIndividual("RMCE", label="Recombinase-mediated cassette exchange")                                      # described
         self.ShrnaKnockdown = self.registerNamedIndividual("ShrnaKnockdown", label="shRNA knockdown")                                                         # described
         self.SleepingBeautyTransposition = self.registerNamedIndividual("SleepingBeautyTransposition", label="Sleeping Beauty transposition")                 # described
         self.SpontaneousMutation = self.registerNamedIndividual("SpontaneousMutation", label="Spontaneous mutation")                          # described
