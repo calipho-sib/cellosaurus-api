@@ -476,14 +476,33 @@ select ?cl ?ct_class ?value ?src_ori ?src_name ?comment where {
 limit 100
 
 ## ------------------------------------------------------
-ID: 
-LB: 
-KW: 
+ID: 126
+LB: Usage of name properties for instances of each class defined in cello: ontology
+KW: id, sy, miss, misspelling, reg, registration, label, name, recommendedName, misspellingName
 ## ------------------------------------------------------
+select distinct ?entity_type ?sub_prop
+where {
+  # values ?entity_type { cello:CellLine } # uncomment to see name properties used for cello:CellLine instances
+  ?sub_prop rdfs:subPropertyOf* rdfs:label .
+  ?entity ?sub_prop ?_ .
+  ?entity a ?entity_type .
+  filter strstarts(str(?entity_type), (str(cello:)))
+}
+order by ?entity_type
+limit 1000
+
 
 ## ------------------------------------------------------
-ID: 
-LB: 
-KW: 
+ID: 127
+LB: Cell lines originating from same individual as some cell line (sister cell lines)
+KW: oi, sister, comesFromSameIndividualAs
 ## ------------------------------------------------------
+select ?cl ?cl_name ?sister_cl ?sister_name where 
+{
+  values ?cl { cvcl:CVCL_X038 } # the IRI of the cell line which we look the sisters for
+  ?cl cello:comesFromSameIndividualAs ?sister_cl .  
+  ?cl cello:recommendedName ?cl_name .
+  ?sister_cl cello:recommendedName ?sister_name .
+} 
+limit 1000
 
