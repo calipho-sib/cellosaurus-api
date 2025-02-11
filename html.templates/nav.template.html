@@ -5,8 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Website</title>
     <link rel="stylesheet" href="navstyles.css">
+
+<!-- the script part is used and injected into other templates -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const anchors = document.querySelectorAll("a[href^='#']");
+        anchors.forEach((anchor) => {
+            anchor.addEventListener("click", (e) => {
+                e.preventDefault();
+                const href = anchor.getAttribute("href");
+                const targetElement = document.querySelector(href);
+                const offsetTop = targetElement.getBoundingClientRect().top + window.scrollY - 50; // Adjust 100 to match your menu height
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: "smooth"
+                });
+            });
+        });
+    });        
+    </script>
 </head>
-<!-- only the body part is used and injected into other templates -->
+
+<!-- the body part is used and injected into other templates -->
 <body>
     <nav class="nav">
         <a href="https://www.cellosaurus.org" class="logo">

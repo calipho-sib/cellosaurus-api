@@ -620,8 +620,7 @@ class OntologyBuilder:
         onto_url = "<" + self.get_onto_url() + ">"
         
         # set ontology description
-        onto_descr = """The Cellosaurus ontology describes the concepts used to build the Cellosaurus knowledge resource on cell lines. 
-        The Cellosaurus attempts to describe all cell lines used in biomedical research."""
+        onto_descr = """Cellosaurus is a manually curated resource that attempts to extensively describe all cell lines used in biomedical research."""
         
         # set ontology abstract
         onto_abstract = onto_descr
@@ -648,7 +647,7 @@ class OntologyBuilder:
         #lines.append("    " + ns.bibo.status + " <http://purl.org/ontology/bibo/status/published> ;")
         lines.append("    " + ns.bibo.status + " <http://purl.org/ontology/bibo/status/draft> ;")
         lines.append("    " + ns.widoco.introduction + " " + ns.xsd.string3(onto_intro) + " ;")
-        # lines.append("    " + ns.rdfs.seeAlso + " " + ns.help.IRI("index-en.html") + " ;")      
+        lines.append("    " + ns.rdfs.seeAlso + " " + ns.help.IRI("rdf-ontology") + " ;")   
         lines.append("    " + ns.widoco.rdfxmlSerialization + " " + ns.help.IRI("ontology.owl") + " ;")      
         lines.append("    " + ns.widoco.ntSerialization + " " + ns.help.IRI("ontology.nt") + " ;")      
         lines.append("    " + ns.widoco.turtleSerialization + " " + ns.help.IRI("ontology.ttl") + " ;")      

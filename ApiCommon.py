@@ -29,13 +29,11 @@ platform_dict = {
     # ---------------------------------
     "local": {
         "base_IRI": "http://localhost/rdf",
-        #"help_IRI": "http://localhost:8082/static/sparql/doc",     # http://localhost:8082/static/sparql/doc/ontology.ttl 
         "help_IRI": "http://localhost:8082",                        # http://localhost:8082/ontology.ttl thanks to main.app.mount())
         "sparql_IRI": "http://localhost/sparql/service"
     },
     "test": {
         "base_IRI": "https://www.mix-id1.cellosaurus.org/rdf",
-        #"help_IRI": "https://test-sparql.cellosaurus.org/sparql/doc",
         "help_IRI": "https://test-api.cellosaurus.org",
         "sparql_IRI": "https://test-sparql.cellosaurus.org/sparql"
     },
@@ -43,7 +41,6 @@ platform_dict = {
         "base_IRI": "https://purl.expasy.org/cellosaurus/rdf",
         "help_IRI": "https://api.cellosaurus.org",
         "sparql_IRI": "https://sparql.cellosaurus.org/sparql"
-        #"sparql_IRI": "https://sparql.cellosaurus.org/sparql/service"
     }
 }
 

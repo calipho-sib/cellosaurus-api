@@ -21,12 +21,30 @@ class HtmlBuilder:
         html_tree = html.fromstring(content)
         return html_tree.xpath('/html/body/nav')[0]
 
+
     # - - - - - - - - - - - - - - - - - - 
     def add_nav_node_to_body(self, some_tree):
     # - - - - - - - - - - - - - - - - - - 
         body_node = some_tree.xpath('/html/body')[0]
         nav_node = self.get_navigation_node()
         body_node.insert(0, nav_node)
+
+
+    # - - - - - - - - - - - - - - - - - - 
+    def get_script_node(self):
+    # - - - - - - - - - - - - - - - - - - 
+        input_file = "./html.templates/nav.template.html"
+        content = self.get_file_content(input_file)
+        html_tree = html.fromstring(content)
+        return html_tree.xpath('/html/head/script')[0]
+
+
+    # - - - - - - - - - - - - - - - - - - 
+    def add_script_node_to_head(self, some_tree):
+    # - - - - - - - - - - - - - - - - - - 
+        head_node = some_tree.xpath('/html/head')[0]
+        script_node = self.get_script_node()
+        head_node.append(script_node)
 
 
     # - - - - - - - - - - - - - - - - - - 
