@@ -275,7 +275,7 @@ XP   /cell-line/monoclonal-antibody-target-list/monoclonal-antibody-target
 TG   omics
 DE   "Omics" study(ies) carried out on the cell line.
 PR   CC   Omics
-XP   /cell-line/comment-list/comment[@category="Omics"]
+XP   /cell-line/omics-list/omics
 //
 TG   part-of
 DE   The cell line belongs to a specific panel or collection of cell lines.

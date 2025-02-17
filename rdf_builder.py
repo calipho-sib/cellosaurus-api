@@ -1335,7 +1335,10 @@ class RdfBuilder:
     def get_triples_for_cc_omics_info(self, cl_IRI, cc):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
-        comment = cc["value"]
+        branch = cc["branch"]
+        value = cc.get("value")
+        comment = branch
+        if value is not None and len(value) > 0: comment = "; ".join([branch, value])
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.cello.hasOmicsComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.OmicsComment)
