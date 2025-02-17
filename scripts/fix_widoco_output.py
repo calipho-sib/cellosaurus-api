@@ -37,9 +37,9 @@ dd_list = tree.xpath('//dd')
 for elems in dd_list:
     if len(elems)>0 and elems[0].tag == "a" and "_:genid" in elems[0].get("href"):
         nodes_to_be_deleted.append(elems)
-        print("to be deleted:", elems.tag)
+        #print("to be deleted:", elems.tag)
         nodes_to_be_deleted.append(elems.getprevious())
-        print("to be deleted:", elems.getprevious().tag)
+        #print("to be deleted:", elems.getprevious().tag)
 for node in nodes_to_be_deleted:
     node.getparent().remove(node)
 
@@ -53,7 +53,7 @@ for elems in dd_list:
             if href.startswith("_:genid"): continue
             if href.startswith("webvowl"): continue
             elem.set("href", f"#{href}")
-            print("modified href:", elem.get("href"))
+            #print("modified href:", elem.get("href"))
 
 
 # impove HTML for authors, contributors and publisher
@@ -89,6 +89,23 @@ for elems in dt_list:
                 append_dd_link(elems, "https://www.sib.swiss", "SIB Swiss Institute of Bioinformatics")
 
 
+# fix invalid ids and and related local hrefs:
+# ids are built from term Id but when it is not local, the full IRI is used instead
+# which makes the id invalid in html doc and any href pointing such an id fails
+
+elems_with_id_attr = tree.xpath('//*[@id]')
+for elem in elems_with_id_attr:
+    id = elem.get("id")
+    if id.startswith("http"):
+        new_id = id.replace(":", "").replace("/","").replace(".","").replace("#","")        # remove invalid chars
+        elem.set("id", new_id)
+elems_with_href_attr = tree.xpath('//*[@href]')
+for elem in elems_with_href_attr:
+    href = elem.get("href")
+    if href.startswith("#http"):
+        new_href = href.replace(":", "").replace("/","").replace(".","").replace("#","")    # remove same invalid chars
+        elem.set("href", "#" + new_href)
+        
 
 output_file = input_file + ".fixed"
 f_out = open(output_file, 'wb')

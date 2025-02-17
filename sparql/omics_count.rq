@@ -18,7 +18,7 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 select (count(*) as ?omics_count) where {
 #select * where {
    ?cl a :CellLine .
-   ?cl :hasOmicsComment ?annot.
+   ?cl :hasOmicsInfo ?annot.
    ?annot a ?ctClass .
    ?annot rdfs:comment ?comment
 }

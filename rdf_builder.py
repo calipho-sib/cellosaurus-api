@@ -816,17 +816,17 @@ class RdfBuilder:
         # fields: SX
         sx = cl_data.get("sex")
         if sx is not None:
-            triples.append(cl_IRI, ns.cello.comesFromIndividualWithSex, get_sex_IRI(sx))
+            triples.append(cl_IRI, ns.cello.derivedFromIndividualWithSex, get_sex_IRI(sx))
 
         # fields: AG
         ag = cl_data.get("age")
         if ag is not None:
-            triples.append(cl_IRI, ns.cello.comesFromIndividualAtAge, ns.xsd.string(ag))
+            triples.append(cl_IRI, ns.cello.derivedFromIndividualAtAge, ns.xsd.string(ag))
 
         # fields: OI
         for oi in cl_data.get("same-origin-as") or []:
             oi_iri = ns.cvcl.IRI(oi["accession"])
-            triples.append(cl_IRI, ns.cello.comesFromSameIndividualAs, oi_iri)
+            triples.append(cl_IRI, ns.cello.derivedFromSameIndividualAs, oi_iri)
 
         # fields: HI
         for hi in cl_data.get("derived-from") or []:
@@ -1028,8 +1028,8 @@ class RdfBuilder:
             triples = TripleList()
 
             annot_BN = self.get_blank_node()
-            triples.append(cl_IRI, ns.cello.hasSequenceVariationComment, annot_BN)
-            triples.append(annot_BN, ns.rdf.type, ns.cello.SequenceVariationComment)
+            triples.append(cl_IRI, ns.cello.hasSequenceVariationInfo, annot_BN)
+            triples.append(annot_BN, ns.rdf.type, ns.cello.SequenceVariationInfo)
             mut_type = annot.get("mutation-type")
             variationStatus = "Natural"
             if mut_type is not None and "edited" in mut_type: variationStatus = "Edited"
@@ -1340,8 +1340,8 @@ class RdfBuilder:
         comment = branch
         if value is not None and len(value) > 0: comment = "; ".join([branch, value])
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.hasOmicsComment, inst_BN)
-        triples.append(inst_BN, ns.rdf.type, ns.cello.OmicsComment)
+        triples.append(cl_IRI, ns.cello.hasOmicsInfo, inst_BN)
+        triples.append(inst_BN, ns.rdf.type, ns.cello.OmicsInfo)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         return triples
 
@@ -1351,7 +1351,7 @@ class RdfBuilder:
         triples = TripleList()
         nameOrNames = cc["value"]
         inst_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.comesFromIndividualBelongingToPopulation, inst_BN)
+        triples.append(cl_IRI, ns.cello.derivedFromIndividualBelongingToPopulation, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.Population)
         triples.extend(self.get_materialized_triples_for_prop(inst_BN, ns.cello.name, ns.xsd.string(nameOrNames)))
         return triples
@@ -1367,7 +1367,7 @@ class RdfBuilder:
         site = annot["site"]
         site_type = site["site-type"]
         label = site["value"]
-        triples.append(cl_IRI, ns.cello.isDerivedFromSite, site_BN)
+        triples.append(cl_IRI, ns.cello.derivedFromSite, site_BN)
         triples.append(site_BN, ns.rdf.type, ns.cello.AnatomicalEntity)
         triples.append(site_BN, ns.cello.siteType, ns.xsd.string(site_type))
         triples.extend(self.get_materialized_triples_for_prop(site_BN, ns.cello.name, ns.xsd.string(label)))
@@ -1387,7 +1387,7 @@ class RdfBuilder:
             label, cv = (annot, None)
         else:
             label, cv = (annot["value"], annot.get("xref"))
-        triples.append(cl_IRI, ns.cello.isDerivedFromCellType, ct_BN)
+        triples.append(cl_IRI, ns.cello.derivedFromCellType, ct_BN)
         triples.append(ct_BN, ns.rdf.type, ns.cello.CellType)
         triples.extend(self.get_materialized_triples_for_prop(ct_BN, ns.cello.name, ns.xsd.string(label)) )   
         if cv is not None: 
@@ -1488,8 +1488,8 @@ class RdfBuilder:
         duration = annot["doubling-time-value"]
         comment = annot.get("doubling-time-note")
         sources = annot.get("source-list") or [] 
-        triples.append(cl_IRI, ns.cello.hasDoublingTimeComment, annot_BN)
-        triples.append(annot_BN, ns.rdf.type, ns.cello.DoublingTimeComment)
+        triples.append(cl_IRI, ns.cello.hasDoublingTime, annot_BN)
+        triples.append(annot_BN, ns.rdf.type, ns.cello.DoublingTime)
         triples.append(annot_BN, ns.cello.duration, ns.xsd.string(duration))
         if comment is not None: triples.append(annot_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_triples_for_sources(annot_BN, sources))
@@ -1505,7 +1505,7 @@ class RdfBuilder:
         sources = annot.get("source-list") or [] 
         triples.append(cl_IRI, ns.cello.hasMicrosatelliteInstability, annot_BN)
         triples.append(annot_BN, ns.rdf.type, ns.cello.MicrosatelliteInstability)
-        triples.append(annot_BN, ns.cello.msiValue, ns.xsd.string(value))
+        triples.append(annot_BN, ns.cello.microsatelliteInstabilityStatus, ns.xsd.string(value))
         if comment is not None: triples.append(annot_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_triples_for_sources(annot_BN, sources))
         return triples
@@ -1734,7 +1734,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         annot_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.comesFromIndividualWithDisease, annot_BN)
+        triples.append(cl_IRI, ns.cello.derivedFromIndividualWithDisease, annot_BN)
         triples.append(annot_BN, ns.rdf.type, ns.cello.Disease)
         name = self.get_xref_label(cvterm)
         xref_IRI = self.get_xref_IRI(cvterm)
@@ -1748,7 +1748,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         triples = TripleList()
         annot_BN = self.get_blank_node()
-        triples.append(cl_IRI, ns.cello.comesFromIndividualBelongingToSpecies, annot_BN)
+        triples.append(cl_IRI, ns.cello.derivedFromIndividualBelongingToSpecies, annot_BN)
         triples.append(annot_BN, ns.rdf.type, ns.cello.Species)
         name = self.get_xref_label(xref)
         xref_IRI = self.get_xref_IRI(xref)

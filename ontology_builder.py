@@ -62,7 +62,7 @@ class OntologyBuilder:
         self.rdfs_range_to_remove[ns.cello.more_specific_than] = { ns.cello.Xref } 
         self.rdfs_range_to_remove[ns.cello.database] = { ns.owl.NamedIndividual, ns.cello.CelloConceptScheme } 
         self.rdfs_range_to_remove[ns.cello.hasGenomeModificationMethod] = { ns.owl.NamedIndividual } 
-        self.rdfs_range_to_remove[ns.cello.comesFromIndividualWithSex] = { ns.owl.NamedIndividual }
+        self.rdfs_range_to_remove[ns.cello.derivedFromIndividualWithSex] = { ns.owl.NamedIndividual }
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # add description of terms (subClasses, ...) to terms in namespaces
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -127,7 +127,7 @@ class OntologyBuilder:
         ns.describe(ns.OBI._0001225, ns.rdfs.subClassOf, ns.OBI._0001404)     
         ns.describe(ns.OBI._0001364, ns.rdfs.subClassOf, ns.OBI._0001404)     
         ns.describe(ns.cello.GeneticIntegration, ns.rdfs.subClassOf, ns.OBI._0001364)
-        ns.describe(ns.cello.SequenceVariationComment, ns.rdfs.subClassOf, ns.OBI._0001364)
+        ns.describe(ns.cello.SequenceVariationInfo, ns.rdfs.subClassOf, ns.OBI._0001364)
         ns.describe(ns.cello.GeneKnockout, ns.rdfs.subClassOf, ns.OBI._0001364)
         ns.describe(ns.cello.GenomeAncestry, ns.rdfs.subClassOf, ns.OBI._0001225)
         ns.describe(ns.cello.HLATyping, ns.rdfs.subClassOf, ns.OBI._0001404)
@@ -456,13 +456,13 @@ class OntologyBuilder:
 
         ns.describe(ns.cello.establishedBy, ns.rdfs.subPropertyOf, ns.dcterms.source)
 
-        ns.describe(ns.cello.isDerivedFromCellType, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
-        ns.describe(ns.cello.isDerivedFromSite, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.derivedFromCellType, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.derivedFromSite, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
 
         ns.describe(ns.cello.hasGenomeAncestry, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasHLAtyping, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.comesFomIndividualBelongingToBreed, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
-        ns.describe(ns.cello.hasSequenceVariationComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasSequenceVariationInfo, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         
         ns.describe(ns.cello.hasAnecdotalComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasCautionComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
@@ -471,14 +471,14 @@ class OntologyBuilder:
         
 
         ns.describe(ns.cello.hasDonorInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
-        ns.describe(ns.cello.hasDoublingTimeComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasDoublingTime, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasKaryotypicInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasMiscellaneousInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasMisspellingRecord, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasSenescenceComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasVirologyComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
-        ns.describe(ns.cello.hasOmicsComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
-        ns.describe(ns.cello.comesFromIndividualBelongingToPopulation, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasOmicsInfo, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.derivedFromIndividualBelongingToPopulation, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasGeneKnockout, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasGeneticIntegration, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasRegistationRecord, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
@@ -490,19 +490,19 @@ class OntologyBuilder:
         ns.describe(ns.cello.hasShortTandemRepeatProfile, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.transformedBy, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
 
-        ns.describe(ns.cello.comesFromIndividualWithDisease, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
-        ns.describe(ns.cello.comesFromIndividualWithDisease, ns.owl.equivalentProperty, ns.wd.P5166_DI)
+        ns.describe(ns.cello.derivedFromIndividualWithDisease, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.derivedFromIndividualWithDisease, ns.owl.equivalentProperty, ns.wd.P5166_DI)
 
-        ns.describe(ns.cello.comesFromIndividualBelongingToSpecies, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
-        ns.describe(ns.cello.comesFromIndividualBelongingToSpecies, ns.owl.equivalentProperty, ns.wd.P9072_OX)
+        ns.describe(ns.cello.derivedFromIndividualBelongingToSpecies, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.derivedFromIndividualBelongingToSpecies, ns.owl.equivalentProperty, ns.wd.P9072_OX)
 
-        ns.describe(ns.cello.comesFromIndividualWithSex, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
-        ns.describe(ns.cello.comesFromIndividualWithSex, ns.skos.closeMatch, ns.wd.P21_SX)
+        ns.describe(ns.cello.derivedFromIndividualWithSex, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.derivedFromIndividualWithSex, ns.skos.closeMatch, ns.wd.P21_SX)
 
-        # ns.describe(ns.cello.comesFromIndividualAtAge, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation) # no, cos is a datatype prop so far
+        # ns.describe(ns.cello.derivedFromIndividualAtAge, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation) # no, cos is a datatype prop so far
 
-        ns.describe(ns.cello.comesFromSameIndividualAs, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
-        ns.describe(ns.cello.comesFromSameIndividualAs, ns.owl.equivalentProperty, ns.wd.P3578_OI)
+        ns.describe(ns.cello.derivedFromSameIndividualAs, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.derivedFromSameIndividualAs, ns.owl.equivalentProperty, ns.wd.P3578_OI)
 
         ns.describe(ns.cello.hasParentCellLine, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasParentCellLine, ns.owl.equivalentProperty, ns.wd.P3432_HI)
@@ -619,18 +619,22 @@ class OntologyBuilder:
         # set ontology URL
         onto_url = "<" + self.get_onto_url() + ">"
         
-        # set ontology description
-        onto_descr = """Cellosaurus is a manually curated resource that attempts to extensively describe all cell lines used in biomedical research."""
-        
-        # set ontology abstract
-        onto_abstract = onto_descr
+        basic_descr = """Cellosaurus is a manually curated resource that attempts to extensively describe all cell lines used in biomedical research."""
 
-        # set preferred prefix for ontology
-        onto_prefix = "cls" 
+        # set ontology abstract
+        # appears in abstract onto page
+        onto_abstract = basic_descr
 
         # set ontology introduction
-        onto_intro = onto_descr
+        # appears in onto page, section 1
+        # TODO: pam approach
+        onto_intro = "(ongoing work)"
 
+        # set ontology description
+        # appears in onto page, section 3 under webowl
+        # TODO: pam approach
+        onto_descr = "(ongoing work)"
+        
         # Note: all the prefixes are declared in namespace.py but not necessarily all the properties because used only once...
         lines.append(onto_url)
         lines.append("    a " + ns.owl.Ontology + " ;")
@@ -847,7 +851,7 @@ cello:SenescenceComment a owl:Class ;
         )
     ] .
 
-cello:DoublingTimeComment a owl:Class ;
+cello:DoublingTime a owl:Class ;
     rdfs:subClassOf IAO:0000027 ;
     owl:equivalentClass [
         owl:intersectionOf (
@@ -859,7 +863,7 @@ cello:DoublingTimeComment a owl:Class ;
         )
     ] .
 
-cello:OmicsComment a owl:Class ;
+cello:OmicsInfo a owl:Class ;
     rdfs:subClassOf IAO:0000027 ;
     owl:equivalentClass [
         owl:intersectionOf (

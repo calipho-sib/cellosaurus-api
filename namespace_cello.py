@@ -135,7 +135,7 @@ class CelloOntologyNamespace(BaseNamespace):
 
         self.GeneKnockout = self.registerClass("GeneKnockout")                          # described as child of OBI:0001364 : characteristics of genetic alteration
         self.GeneticIntegration = self.registerClass("GeneticIntegration")              # described as child of OBI:0001364 : characteristics of genetic alteration
-        self.SequenceVariationComment = self.registerClass("SequenceVariationComment")  # described as child of OBI:0001364 : characteristics of genetic alteration
+        self.SequenceVariationInfo = self.registerClass("SequenceVariationInfo")  # described as child of OBI:0001364 : characteristics of genetic alteration
         # - - - gene variation classes - - -
         comment = "A variation in or modification of the molecular sequence of a gene or gene product." 
         self.SequenceVariation = self.registerClass("SequenceVariation", comment=comment)          # generic class, described as owl:Equiv NCIt:C36391
@@ -174,9 +174,9 @@ class CelloOntologyNamespace(BaseNamespace):
         self.GeneralTopic = self.registerClass("GeneralTopic")
         self.BiotechnologyComment = self.registerClass("BiotechnologyComment")          # described as a Data iterm cello:GeneralTopic
         self.SenescenceComment = self.registerClass("SenescenceComment")                # described as an IAO:Topic
-        self.DoublingTimeComment = self.registerClass("DoublingTimeComment")            # described as an IAO:Topic
+        self.DoublingTime = self.registerClass("DoublingTime")            # described as an IAO:Topic
         self.VirologyComment = self.registerClass("VirologyComment")                    # described as an IAO:Topic
-        self.OmicsComment = self.registerClass("OmicsComment")                          # described as an IAO:Topic
+        self.OmicsInfo = self.registerClass("OmicsInfo")                                 # described as an IAO:Topic
         self.CharacteristicsComment = self.registerClass("CharacteristicsComment")      # described as an IAO:Topic
         self.MiscellaneousInfoComment = self.registerClass("MiscellaneousInfoComment")  # described as an IAO:Topic
         self.CautionComment = self.registerClass("CautionComment")                      # described as an IAO:Topic
@@ -211,11 +211,11 @@ class CelloOntologyNamespace(BaseNamespace):
         # see also https://sibils.text-analytics.ch/doc/api/sparql/sibils-ontology.html
 
 
-        self.internalId = self.registerDatatypeProperty("internalId", label="internal identifier")        # described as sub dcterms:identifier
+        self.internalId = self.registerDatatypeProperty("internalId", label="internal identifier")              # described as sub dcterms:identifier
 
-        self.pmcId = self.registerDatatypeProperty("pmcId", label="pmcId")      # described as sub prop of fabio:haspmcid which is a subprop of dcterms:identifier
-        self.pmid = self.registerDatatypeProperty("pmid", label="pmid")                          # described as sub prop of fabio:haspmid which is a subprop of dcterms:identifier
-        self.publicationYear = self.registerDatatypeProperty("publicationYear", label="publication year")             # described as sub prop of fabio:hasPublicationYear
+        self.pmcId = self.registerDatatypeProperty("pmcId", label="PMCID")                                      # described as sub prop of fabio:haspmcid which is a subprop of dcterms:identifier
+        self.pmid = self.registerDatatypeProperty("pmid", label="PMID")                                         # described as sub prop of fabio:haspmid which is a subprop of dcterms:identifier
+        self.publicationYear = self.registerDatatypeProperty("publicationYear", label="publication year")       # described as sub prop of fabio:hasPublicationYear
 
         self.issn13 = self.registerDatatypeProperty("issn13", label="ISSN13")                                   # described as sub dcterms:identifier
 
@@ -313,12 +313,12 @@ class CelloOntologyNamespace(BaseNamespace):
         self.zygosity = self.registerDatatypeProperty("zygosity")                                                   # described as sub prop of GENO:_0000608_has_zygozity
 
         comment="Notation acoording to the HGVS Nomenclature. HGVS is an internationally-recognized standard for the description of DNA, RNA, and protein sequence variants."
-        self.hgvs = self.registerDatatypeProperty("hgvs", comment=comment)                                          # described as sub of skos:notation ?
+        self.hgvs = self.registerDatatypeProperty("hgvs", label="HGVS", comment=comment)                            # described as sub of skos:notation ?
         self.noneReported = self.registerDatatypeProperty("noneReported")                                           # TODO: later
         self.variationStatus = self.registerDatatypeProperty("variationStatus")                                     # TODO: later
 
-        self.comesFomIndividualBelongingToBreed = self.registerObjectProperty("comesFromIndividualBelongingToBreed") # described as cello:hasAnnotation
-        self.hasSequenceVariationComment = self.registerObjectProperty("hasSequenceVariationComment")                # described as cello:hasAnnotation
+        self.comesFomIndividualBelongingToBreed = self.registerObjectProperty("derivedFromIndividualBelongingToBreed") # described as cello:hasAnnotation
+        self.hasSequenceVariationInfo = self.registerObjectProperty("hasSequenceVariationInfo")                # described as cello:hasAnnotation
 
         self.hasAnecdotalComment = self.registerObjectProperty("hasAnecdotalComment")                               # described as cello:hasAnnotation
         self.hasCharacteristicsComment = self.registerObjectProperty("hasCharacteristicsComment")                   # described as cello:hasAnnotation
@@ -327,18 +327,18 @@ class CelloOntologyNamespace(BaseNamespace):
 
         self.siteType = self.registerDatatypeProperty("siteType")                                                   # TODO:later
 
-        self.isDerivedFromSite = self.registerObjectProperty("isDerivedFromSite")                                   # described as cello:hasAnnotation
-        self.isDerivedFromCellType = self.registerObjectProperty("isDerivedFromCellType" )                          # described as cello:hasAnnotation
+        self.derivedFromSite = self.registerObjectProperty("derivedFromSite")                                   # described as cello:hasAnnotation
+        self.derivedFromCellType = self.registerObjectProperty("derivedFromCellType" )                          # described as cello:hasAnnotation
 
         self.hasDonorInfoComment = self.registerObjectProperty("hasDonorInfoComment")                               # described as cello:hasAnnotation
-        self.hasDoublingTimeComment = self.registerObjectProperty("hasDoublingTimeComment")                         # described as cello:hasAnnotation
+        self.hasDoublingTime = self.registerObjectProperty("hasDoublingTime")                         # described as cello:hasAnnotation
         self.hasKaryotypicInfoComment = self.registerObjectProperty("hasKaryotypicInfoComment")                     # described as cello:hasAnnotation
         self.hasMiscellaneousInfoComment = self.registerObjectProperty("hasMiscellaneousInfoComment")               # described as cello:hasAnnotation
         self.hasMisspellingRecord = self.registerObjectProperty("hasMisspellingRecord")                             # described as cello:hasAnnotation
         self.hasSenescenceComment = self.registerObjectProperty("hasSenescenceComment")                             # described as cello:hasAnnotation
         self.hasVirologyComment = self.registerObjectProperty("hasVirologyComment")                                 # described as cello:hasAnnotation
-        self.hasOmicsComment = self.registerObjectProperty("hasOmicsComment")                                       # described as cello:hasAnnotation
-        self.comesFromIndividualBelongingToPopulation = self.registerObjectProperty("comesFromIndividualBelongingToPopulation")       # described as cello:hasAnnotation
+        self.hasOmicsInfo = self.registerObjectProperty("hasOmicsInfo")                                       # described as cello:hasAnnotation
+        self.derivedFromIndividualBelongingToPopulation = self.registerObjectProperty("derivedFromIndividualBelongingToPopulation")       # described as cello:hasAnnotation
 
         comment="Population doubling-time of the cell line. Expressed in hours, days, weeks, months or qualitatively."
         self.duration = self.registerDatatypeProperty("duration", comment=comment)                                  # TODO: later
@@ -360,7 +360,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.hasProvider = self.registerObjectProperty("hasProvider")                                               # described as sub of schema:provider
         self.productId = self.registerDatatypeProperty("productId", label="product Identifier")                     # described as sub of dcterms:identifier
 
-        self.msiValue = self.registerDatatypeProperty("msiValue", label="microsatellite instability value")     # TODO: later
+        self.microsatelliteInstabilityStatus = self.registerDatatypeProperty("microsatelliteInstabilityStatus")     # TODO: later
 
         self.hasMicrosatelliteInstability = self.registerObjectProperty("hasMicrosatelliteInstability")             # described as cello:hasAnnotation        
         self.hasMoAbIsotype = self.registerObjectProperty("hasMoAbIsotype", label="has monoclonal antibody isotype")  # described as cello:hasAnnotation
@@ -374,12 +374,12 @@ class CelloOntologyNamespace(BaseNamespace):
         self.hasShortTandemRepeatProfile = self.registerObjectProperty("hasShortTandemRepeatProfile")               # described as cello:hasAnnotation
 
 
-        self.comesFromIndividualWithDisease = self.registerObjectProperty("comesFromIndividualWithDisease")         # described as cello:hasAnnot, = wd:P5166_DI
-        self.comesFromIndividualBelongingToSpecies = self.registerObjectProperty("comesFromIndividualBelongingToSpecies")     # described as cello:hasAnnot, = wd:
-        self.comesFromIndividualWithSex = self.registerObjectProperty("comesFromIndividualWithSex")                 # described as cello:hasAnnot, close to wd:
-        self.comesFromIndividualAtAge = self.registerDatatypeProperty("comesFromIndividualAtAge")                   # described as cello:hasAnnot
+        self.derivedFromIndividualWithDisease = self.registerObjectProperty("derivedFromIndividualWithDisease")         # described as cello:hasAnnot, = wd:P5166_DI
+        self.derivedFromIndividualBelongingToSpecies = self.registerObjectProperty("derivedFromIndividualBelongingToSpecies")     # described as cello:hasAnnot, = wd:
+        self.derivedFromIndividualWithSex = self.registerObjectProperty("derivedFromIndividualWithSex")                 # described as cello:hasAnnot, close to wd:
+        self.derivedFromIndividualAtAge = self.registerDatatypeProperty("derivedFromIndividualAtAge")                   # described as cello:hasAnnot
 
-        self.comesFromSameIndividualAs = self.registerObjectProperty("comesFromSameIndividualAs")                   # described as cello:hasAnnot, = wd:P3578
+        self.derivedFromSameIndividualAs = self.registerObjectProperty("derivedFromSameIndividualAs")                   # described as cello:hasAnnot, = wd:P3578
         self.hasParentCellLine = self.registerObjectProperty("hasParentCellLine")                                   # described as cello:hasAnnot, = wd:P3432_HI , inverse of parentCellLine
         self.hasChildCellLine = self.registerObjectProperty("hasChildCellLine")                                     # described as cello:hasAnnot, inverse of parentCellLine
         
