@@ -16,7 +16,7 @@ import requests
 import subprocess
 
 import ApiCommon
-from ApiCommon import log_it, get_rdf_base_IRI
+from ApiCommon import log_it
 from fields_utils import FldDef
 from namespace_registry import NamespaceRegistry as ns_reg
 

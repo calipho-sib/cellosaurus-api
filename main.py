@@ -23,7 +23,7 @@ import datetime
 from lxml import etree, html
 import cellapi_builder as api
 import ApiCommon
-from ApiCommon import log_it, get_search_result_txt_header, get_search_result_txt_header_as_lines, get_format_from_headers, get_rdf_base_IRI
+from ApiCommon import log_it, get_search_result_txt_header, get_search_result_txt_header_as_lines, get_format_from_headers
 #from ApiCommon import get_properties
 from fields_utils import FldDef
 from fields_enum import Fields
@@ -117,6 +117,8 @@ rdf_media_types_responses = { "description": "Successful response", "content" : 
 # must be declared and set before the @app.get(...) methods
 rdf_is_visible = (os.getenv("RDF_IS_VISIBLE","False").upper() == "TRUE")
 log_it("INFO:", "reading / getting default for env variable", f"RDF_IS_VISIBLE={rdf_is_visible}")
+ApiCommon.platform_key = os.getenv("PLATFORM_KEY","prod").lower()
+log_it("INFO:", "reading / getting default for env variable", f"PLATFORM_KEY={ApiCommon.platform_key}")
 
 
 # documentation for categories containng the API methods in the display, see also tags=["..."] below
@@ -677,17 +679,15 @@ def describe_any(dir, ac, format, request):
     #     log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
     #     return responses.RedirectResponse(url=url, status_code=301) # 301: Permanent redirect
 
-    url = "http://localhost:8890/sparql"
-    prefix_declaration = ns_reg.cvcl.getSparqlPrefixDeclaration()
-    #query = f"""DEFINE sql:describe-mode "CBD" {prefix_declaration} describe cvcl:{ac}"""
-    iri = f"<{get_rdf_base_IRI()}/{dir.value}/{ac}>"
+    sparql_service = ApiCommon.get_private_sparql_service_IRI()
+    iri = f"<{ApiCommon.get_rdf_base_IRI()}/{dir.value}/{ac}>"
     query = f"""DEFINE sql:describe-mode "CBD" describe {iri}"""
     print("query:", query)
     payload = {"query": query}
     if format == RdfFormat.html: payload["format"] = "application/x-nice-microdata"
     mimetype = format2mimetype.get(format)
     headers = { "Content-Type": "application/x-www-form-urlencoded" , "Accept" : mimetype }    
-    response = requests.post(url, data=urlencode(payload), headers=headers)
+    response = requests.post(sparql_service, data=urlencode(payload), headers=headers)
     log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
     return responses.Response(content=response.text, media_type=mimetype )
 
@@ -865,7 +865,7 @@ async def get_sparql_editor(request: Request):
     content = f.read()
     f.close()
     # build response and send it
-    content = content.replace("$sparql_IRI", ApiCommon.get_sparql_service_IRI())
+    content = content.replace("$sparql_IRI", ApiCommon.get_public_sparql_service_IRI())
     content_tree = html.fromstring(content)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)

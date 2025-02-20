@@ -107,7 +107,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.PopulationPercentage = self.registerClass("PopulationPercentage")  # LATER: define as restriction
 
 
-        self.HLATyping = self.registerClass("HLATyping", label="HLA Typing")    # described as OBI:0001404 subclass
+        self.HLAtyping = self.registerClass("HLAtyping", label="HLA typing")    # described as OBI:0001404 subclass
         self.Gene = self.registerClass("Gene")                                  # described as equivalent as NCIt:C16612
         self.HLAGene = self.registerClass("HLAGene", label="HLA Gene")          # described as cello:Gene subclass
         self.HLA_Allele = self.registerClass("HLAAllele", label="HLA Allele")   # described as GENO:0000512 subclass, used in HLA, str and later in genetic integration
@@ -292,7 +292,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.hasPopulation = self.registerObjectProperty("hasPopulation")                                           # TODO: later # as link between PopulationPercentage and Population
         self.percentage = self.registerDatatypeProperty("percentage")                                               # TODO: later # as link between PopulationPercentage and percentage
 
-        self.hasHLAtyping = self.registerObjectProperty("hasHLAtyping", label="has HLA Typing")                     # described as sub cello:hasAnnotation
+        self.hasHLAtyping = self.registerObjectProperty("hasHLAtyping", label="has HLA typing")                     # described as sub cello:hasAnnotation
         #self.hasAllele = self.registerObjectProperty("hasAllele")                                                  # unused, described as ns.GENO:0000413 subprop
         #self.isAlleleOf = self.registerObjectProperty("isAlleleOf")                                                # unused, described as ns.GENO:0000408 subprop
         self.alleleIdentifier = self.registerDatatypeProperty("alleleIdentifier")                                   # described as dcterms:identifier subprop

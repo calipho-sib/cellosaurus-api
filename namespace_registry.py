@@ -1,11 +1,13 @@
 from namespaces import *
 from namespace_cello import CelloOntologyNamespace
 from namespace_term import Term
-
+import ApiCommon
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class NamespaceRegistry:    
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    print("executing class NamespaceRegistry")
+
     # instanciate local namespaces
     cello = CelloOntologyNamespace()
     cvcl = OurCellLineNamespace()
@@ -30,10 +32,11 @@ class NamespaceRegistry:
     GENO = GENONamespace(); CARO = CARONamespace(); CL = CLNamespace()
     CHEBI = CHEBINamespace(); ORDO = ORDONamespace(); IAO = IAONamespace()
     EDAM = EDAMNamespace(); prism = PrismNamespace(); BFO = BFONamespace()
+    OLS = OLSNamespace()
 
     namespaces = [cello, cvcl, xref, pub, orga, db, xsd, rdf, rdfs, skos, owl, dcterms, 
                   fabio, up, bibo, widoco, vann, oa, wdt, wd, sh, schema, help, pubmed,
-                  BAO, BTO, CLO, NCIt, OBI, OMIT, FBcv, GENO, CARO, CL, CHEBI, ORDO, IAO, EDAM, prism, BFO ]
+                  BAO, BTO, CLO, NCIt, OBI, OMIT, FBcv, GENO, CARO, CL, CHEBI, ORDO, IAO, EDAM, prism, BFO, OLS ]
 
     pfx2ns = dict()
     for ns in namespaces: pfx2ns[ns.pfx] = ns
@@ -174,7 +177,7 @@ class NamespaceRegistry:
                     domTerm = NamespaceRegistry.term(dom)
                     #print(">>>> term", term, "dom:", dom)
                     domLabel = domTerm.get_label_str()
-                    domUrl = "/".join([get_rdf_base_IRI(), domId]) 
+                    domUrl = "/".join([ApiCommon.get_rdf_base_IRI(), domId]) 
                     domainElems.append(f"<a href=\"#{domId}\" title=\"{domUrl}\">{domLabel}</a>")
                 else:
                     domNs = NamespaceRegistry.getNamespace(dom)

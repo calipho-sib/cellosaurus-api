@@ -879,7 +879,7 @@ class RdfBuilder:
         for annot in cl_data.get("hla-typing-list") or []:
             annot_BN = self.get_blank_node()
             triples.append(cl_IRI, ns.cello.hasHLAtyping, annot_BN)
-            triples.append(annot_BN, ns.rdf.type ,ns.cello.HLATyping)
+            triples.append(annot_BN, ns.rdf.type ,ns.cello.HLAtyping)
             src = annot.get("source")
             if src is not None: 
                 triples.extend(self.get_triples_for_source(annot_BN, src))

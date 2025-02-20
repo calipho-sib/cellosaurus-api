@@ -399,6 +399,10 @@ class BTONamespace(BaseNamespace):
 class CLONamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): super(CLONamespace, self).__init__("CLO", "http://purl.obolibrary.org/obo/CLO_")
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class OLSNamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): super(OLSNamespace, self).__init__("OLS", "http://purl.obolibrary.org/obo/")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

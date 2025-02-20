@@ -1,6 +1,8 @@
 import datetime
 import os
 
+print("executing ApiCommon")
+
 SERIAL_DIR = "./serial/"
 
 RI_FILE = SERIAL_DIR + "ri.bin"
@@ -19,9 +21,11 @@ FLDDEF_FILE = "./fields_def.txt"
 # used in main.py and in fields_utils.py
 CELLAPI_VERSION="1.0.4"
 
-platform_key = "local"
-#platform_key = "test"
-#platform_key = "prod"
+# the value of platform_key must be set from elsewhere:
+# - in main.py by reading ENV variable
+# - in cellapi_builder.py by a script argument
+# expected values are: local, test, prod
+platform_key = "undefined"
 
 platform_dict = {
     # ---------------------------------
@@ -30,17 +34,20 @@ platform_dict = {
     "local": {
         "base_IRI": "http://localhost/rdf",
         "help_IRI": "http://localhost:8082",                        # http://localhost:8082/ontology.ttl thanks to main.app.mount())
-        "sparql_IRI": "http://localhost/sparql/service"
+        "public_sparql_IRI": "http://localhost/sparql/service",
+        "private_sparql_IRI" : "http://localhost:8890/sparql"
     },
     "test": {
         "base_IRI": "https://www.mix-id1.cellosaurus.org/rdf",
         "help_IRI": "https://test-api.cellosaurus.org",
-        "sparql_IRI": "https://test-sparql.cellosaurus.org/sparql"
+        "public_sparql_IRI": "https://test-sparql.cellosaurus.org/sparql",
+        "private_sparql_IRI" : "http://localhost:8890/sparql"
     },
     "prod": {
         "base_IRI": "https://purl.expasy.org/cellosaurus/rdf",
         "help_IRI": "https://api.cellosaurus.org",
-        "sparql_IRI": "https://sparql.cellosaurus.org/sparql"
+        "public_sparql_IRI": "https://sparql.cellosaurus.org/sparql",
+        "private_sparql_IRI" : "http://localhost:8890/sparql"
     }
 }
 
@@ -107,12 +114,19 @@ def get_help_base_IRI():
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_sparql_service_IRI():
+def get_public_sparql_service_IRI():
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     # it is the public URL of the sparql service !!!
-    # not the sparql page path !
     # used on building sparql-editor related pages
-    return platform_dict[platform_key]["sparql_IRI"]
+    return platform_dict[platform_key]["public_sparql_IRI"]
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def get_private_sparql_service_IRI():
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # it is the private URL of the sparql service !!!
+    # internal use for API only
+    return platform_dict[platform_key]["private_sparql_IRI"]
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

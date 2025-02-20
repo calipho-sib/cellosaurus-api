@@ -130,7 +130,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.SequenceVariationInfo, ns.rdfs.subClassOf, ns.OBI._0001364)
         ns.describe(ns.cello.GeneKnockout, ns.rdfs.subClassOf, ns.OBI._0001364)
         ns.describe(ns.cello.GenomeAncestry, ns.rdfs.subClassOf, ns.OBI._0001225)
-        ns.describe(ns.cello.HLATyping, ns.rdfs.subClassOf, ns.OBI._0001404)
+        ns.describe(ns.cello.HLAtyping, ns.rdfs.subClassOf, ns.OBI._0001404)
         ns.describe(ns.cello.ShortTandemRepeatProfile, ns.rdfs.subClassOf, ns.OBI._0001404)
         ns.describe(ns.cello.MicrosatelliteInstability, ns.rdfs.subClassOf, ns.OBI._0001404)
         ns.describe(ns.cello.KaryotypicInfoComment, ns.rdfs.subClassOf, ns.OBI._0001404)     
