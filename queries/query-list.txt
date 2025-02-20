@@ -29,7 +29,7 @@ order by desc(count(*))
 ## ------------------------------------------------------
 ID: 102
 LB: Count of cell lines by cell line category
-KW: category, stats
+KW: ca, category, stats
 ## ------------------------------------------------------
 
 select ?class_name (count(?cl) as ?cnt) where { 
@@ -61,15 +61,16 @@ ID: 104
 LB: Count of sequence variation annotations by sequence variation type and status
 KW: sequence variation, stats
 ## ------------------------------------------------------
-select ?sv_name ?status (count(?annot) as ?annot_cnt) where { 
-  ?annot a cello:SequenceVariationComment .
-  ?annot cello:hasTarget ?sv .
-  ?sv a ?sv_type .
-  ?sv_type rdfs:label ?sv_name .
-  ?annot cello:variationStatus ?status .  
+select ?svc ?status ?has_src (count(distinct ?annot) as ?cnt) where {
+ ?annot a cello:SequenceVariationInfo .
+ optional { ?annot cello:hasTarget ?sv . ?sv a ?svc  }
+ optional { ?annot  cello:variationStatus ?status }
+ optional { ?annot  cello:hasSource ?src }  
+ bind( if (bound(?src), 1, 0) as ?has_src)
 }
-group by ?sv_name ?status
-order by ?sv_name ?status
+group by ?svc ?status ?has_src 
+order by ?svc ?status ?has_src
+
 
 
 ## ------------------------------------------------------
@@ -169,7 +170,7 @@ order by ?cl
 ## ------------------------------------------------------
 ID: 109
 LB: Statistics of methods used for gene knockout ang gene integration
-KW: KO, gene knockout, gene integration
+KW: ko, int, integrated, knockout, gene knockout, gene integration
 ## ------------------------------------------------------
 select  ?proc_class ?gem_class  ?gem_name (count(*) as ?cnt) where { 
   ?proc_inst cello:hasGenomeModificationMethod ?gem_inst .
@@ -186,7 +187,7 @@ order by  ?proc_class desc(count(*)) ?gem_class ?gem_name
 ## ------------------------------------------------------
 ID: 110
 LB: Identifiers and names of cell lines
-KW: id, ac, accession, name, primaryAccession, secondaryAccession, preferredName, alternativeName
+KW: id, sy, ac, accession, name, primaryAccession, secondaryAccession, preferredName, alternativeName
 ## ------------------------------------------------------
 select ?cl (str(?ac) as ?id) (str(?pref_name) as ?rec_name) 
 (group_concat(str(?old_ac), ' ') as ?old_acs) (group_concat(str(?alt_name), ' ') as ?alt_names) 
@@ -230,7 +231,7 @@ order by desc(count(?cl))
 ## ------------------------------------------------------
 ID: 112
 LB: Top 100 most referenced publications in cell line records
-KW: ref, publication, reference, stats
+KW: rx, ref, reference, publication, stats
 ## ------------------------------------------------------
 select ?publi ?publi_identifiers (count(distinct(?cl_ac)) as ?cl_count) where {
   select  
@@ -295,7 +296,7 @@ limit 100
 ## ------------------------------------------------------
 ID: 115 
 LB: Top 100 most represented cell types in cell line records
-KW: cell type, stats
+KW: cell-type, cell, stats
 ## ------------------------------------------------------
 select ?ct_class ?ct_ac ?ct_name (count(distinct ?cl) as ?cell_line_count) where {
     ?cl a / rdfs:subClassOf cello:CellLine .
@@ -587,7 +588,7 @@ limit 100
 ## ------------------------------------------------------
 ID: 132
 LB: Title, year and type of publication refernced by some cell lines
-KW: rx, references, title, year, publication, patent, thesis
+KW: rx, rt, references, title, year, publication, patent, thesis
 ## ------------------------------------------------------
 select ?cl ?ref_class ?year_str ?id_str ?title_str where {
   ?cl a / rdfs:subClassOf cello:CellLine .
@@ -636,6 +637,172 @@ limit 100
 
 ## ------------------------------------------------------
 ID: 134
-LB: 
-KW: 
+LB: Count of cell lines by sex of the individual from which the cell line originates
+KW: sx, sex
 ## ------------------------------------------------------
+select (count(*) as ?cl_count) ?sex where {
+  ?cl a / rdfs:subClassOf cello:CellLine.
+  optional { ?cl cello:derivedFromIndividualWithSex ?sex. }
+} 
+group by ?sex
+order by ?sex
+
+
+## ------------------------------------------------------
+ID: 135
+LB: Some hybrid cell lines with the species from which they originate
+KW: ox, species, hybrid
+## ------------------------------------------------------
+select 
+  ?cl_class ?cl 
+  (count(?species_name) as ?species_cnt) 
+  (group_concat(?species_name ; separator = ', ') as ?species_list) 
+  where { 
+    select ?cl_class ?cl ?species_name 
+      where {
+      ?cl a ?cl_class .
+      ?cl cello:derivedFromIndividualBelongingToSpecies / rdfs:label ?species_name .
+    }
+}
+group by ?cl_class ?cl having (count(?species_name) > 1)
+order by desc(count(?species_name)) 
+limit 100
+
+
+## ------------------------------------------------------
+ID: 136
+LB: Super class and equivalent class of each class defined in the cello ontology
+KW: ontology, class
+## ------------------------------------------------------
+select ?cello_class ?hasSuperClass ?rdfs_superClass ?hasEqClass ?owl_equivalentClass  where {
+  ?cello_class a owl:Class .
+  ?cello_class rdfs:isDefinedBy cello: .
+  optional { ?cello_class owl:equivalentClass ?owl_equivalentClass . }
+  optional { ?cello_class rdfs:subClassOf ?rdfs_superClass . }
+  bind(if(bound(?owl_equivalentClass),"yes", "no") as ?hasEqClass)
+  bind(if(bound(?rdfs_superClass),"yes", "no") as ?hasSuperClass)
+}
+order by ?rdfs_superClass ?owl_equivalentClass ?parent ?cello_class
+
+
+## ------------------------------------------------------
+ID: 137
+LB: Super property and equivalent property of each property defined in the cello ontology
+KW: ontology, property
+## ------------------------------------------------------
+select ?cello_prop ?hasSuperProp ?rdfs_superProp ?hasEqProp ?owl_equivalentProp  where {
+  ?cello_prop a rdf:Property .
+  ?cello_prop rdfs:isDefinedBy cello: .
+  optional { ?cello_prop owl:equivalentProperty ?owl_equivalentProp . }
+  optional { ?cello_prop rdfs:subPropertyOf ?rdfs_superProp . }
+  bind(if(bound(?owl_equivalentProp),"yes", "no") as ?hasEqProp)
+  bind(if(bound(?rdfs_superProp),"yes", "no") as ?hasSuperProp)
+}
+order by ?rdfs_superProp ?owl_equivalentProp ?parent ?cello_prop
+
+
+## ------------------------------------------------------
+ID: 138
+LB: Top 100 agents used to transform cell lines 
+KW: tfor, transformant
+## ------------------------------------------------------
+select ?transformant_name (count(distinct ?cl) as ?cl_count) where { 
+  ?cl cello:transformedBy ?annot.
+  ?annot rdfs:label ?transformant_name .
+}
+group by ?transformant_name
+order by desc(count(?annot))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 139
+LB: Some cell lines with the the name and cross-reference of their transformant
+KW: tfor, transformant
+## ------------------------------------------------------
+select   ?cl (str(?lbl) as ?transformant_name) ?db ?ac (str(?cm) as ?comment) 
+  where {
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:transformedBy ?annot.
+  ?annot rdfs:label ?lbl .
+  ?annot a ?annot_class .
+  optional {?annot rdfs:comment ?cm . }
+  optional {?annot cello:isIdentifiedByXref ?xr . ?xr cello:database ?db ; cello:accession ?ac .}
+ #filter ( ! bound(?xr)) # uncomment to see only transformants not identified by a cross-reference
+ #filter ( bound(?cm) )  # uncomment to see transformants with a non empty optional comment
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 140
+LB: Typical triples found in cellosaurus RDF (without filtering some irrelevant tuples)
+KW: ontology, range, domain, class, property, subject, object, datatype
+## ------------------------------------------------------
+select ?subject_class ?property ?object_type (count(*) as ?triple_count) where {
+  GRAPH <https://www.cellosaurus.org/rdf/graphs/main> {
+    ?s ?property ?o.
+    ?s a ?subject_class.
+    optional {?o a ?o_class }
+    bind(coalesce(?o_class, datatype(?o), 'IRI') as ?object_type)
+  }
+}
+group by ?subject_class ?property ?object_type
+order by ?subject_class ?property ?object_type
+
+
+## ------------------------------------------------------
+ID: 141
+LB: Some cell lines with their virology comments
+KW: vir, virology
+## ------------------------------------------------------
+select ?cl ?annot_class ?has_src
+  (if( strlen(?cm) > 60, concat(substr(str(?cm),0,90), '...'), str(?cm)) as ?comment)
+where { 
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:hasVirologyComment ?annot.
+  ?annot a ?annot_class .
+  ?annot rdfs:comment ?cm .
+  optional { ?annot  cello:hasSource ?src }  
+  bind( if (bound(?src), 'yes', 'no') as ?has_src)
+  # filter ( bound(?src))  # uncomment so get only sourced virology comment
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 142
+LB: A cell line with all its cross-references
+KW: dr, xref
+## ------------------------------------------------------
+select ?cl ?xref ?db ?ac where {
+values ?cl { cvcl:CVCL_1100 }
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:seeAlsoXref ?xref .
+  ?xref cello:database ?db.
+  ?xref cello:accession ?ac.
+}
+order by ?db ?ac
+
+
+## ------------------------------------------------------
+ID: 143
+LB: Example (sample) of a cross-reference with its properties from each database
+KW: dr, xref, disc, discontinued
+## ------------------------------------------------------
+select ?db_class ?db (sample(?ac) as ?sample_ac) (sample(str(?disc)) as ?sample_disc) (sample(?lbl) as ?sample_label) (sample(?url) as ?sample_url) where {
+  ?xref a cello:Xref .
+  ?xref cello:database ?db.
+  ?xref cello:accession ?ac.
+  ?db a ?db_class .
+  ?db_class rdfs:subClassOf cello:Database . # (useful to get rid of irrelevant owl:NamedIndividual)
+  optional { ?xref cello:discontinued ?disc  }.
+  optional { ?xref rdfs:label ?lbl  }.
+  optional { ?xref rdfs:seeAlso ?url } .
+  # filter (bound(?disc))  # uncomment to see xrefs identifying a discontinued product reference in a catalog
+  # filter (bound(?lbl))   # uncomment to see xrefs having a label (genes, chemicals, anatomy, ...)
+  # filter (! bound(?url)) # uncomment to see xrefs having NO url (discontinued products, ...)
+}
+group by ?db_class ?db 
+order by ?db_class ?db 
+limit 300
