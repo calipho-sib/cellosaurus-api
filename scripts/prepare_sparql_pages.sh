@@ -20,10 +20,10 @@ rm doc/index-en.html.ori doc/webvowl/data/ontology.json.ori
 
 echo "copying rdf_data to static"
 cd $base_dir
-tar cvzf cellosaurus.tar.gz rdf_data/*
+tar cvzf cellosaurus.ttl.gz rdf_data/*
 mkdir -p $base_dir/static/downloads
-rm -f $base_dir/static/downloads/cellosaurus.tar.gz
-mv cellosaurus.tar.gz static/downloads/
+rm -f $base_dir/static/downloads/cellosaurus.ttl.gz
+mv cellosaurus.ttl.gz static/downloads/
 
 echo "done"
 
