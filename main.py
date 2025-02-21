@@ -841,6 +841,24 @@ async def get_basic_help(request: Request):
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+@app.get("/rdf-downloads", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def get_rdf_downloads(request: Request):
+    scope = request.scope.get("root_path")
+    if scope is None or scope == "/": scope = ""
+    # print(">>> scope", scope, "version", request.app.version)
+    # read HTML template
+    content = htmlBuilder.get_file_content("html.templates/rdf-downloads.template.html")
+    # build response and send it
+    #content = content.replace("$base_IRI", platform.get_rdf_base_IRI()) # no variable to set so far
+    content_tree = html.fromstring(content)
+    htmlBuilder.add_nav_css_link_to_head(content_tree)
+    htmlBuilder.add_nav_node_to_body(content_tree)
+    final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
+    return responses.Response(content=final_content,media_type="text/html")
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 @app.get("/help-resolver", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def get_help_resolver(request: Request):

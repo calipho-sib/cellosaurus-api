@@ -1122,8 +1122,16 @@ if __name__ == "__main__":
     if args[0]=="SPARQL_PAGES":
     # -------------------------------------------------------
         
+        log_it("INFO", "running ./scripts/prepare_sparql_pages.sh ...")
         result = subprocess.run(['bash', './scripts/prepare_sparql_pages.sh'], capture_output=True, text=True)
-        log_it("INFO", "Rebuilt sparql_pages directory, status", result.stdout)
+        exit_code = result.returncode
+        print(result.stdout)
+        print(result.stderr)
+        if exit_code == 0:
+            log_it("INFO", f"sub-process status code: {exit_code}")
+        else:
+            log_it("ERROR", f"while running sub process, exit code = {exit_code}")
+            sys.exit(exit_code)
 
 
     # -------------------------------------------------------
@@ -1151,8 +1159,11 @@ if __name__ == "__main__":
             sys.exit(10)
         
         exit_code = result.returncode
-        log_it("INFO", f"sub-process status code: {exit_code}")
-        if exit_code != 0:
+        print(result.stdout)
+        print(result.stderr)
+        if exit_code == 0:
+            log_it("INFO", f"sub-process status code: {exit_code}")
+        else:
             log_it("ERROR", f"Error while running sub process, exit code = {exit_code}")
             sys.exit(exit_code)
 

@@ -14,22 +14,17 @@ rm -rf $base_dir/static/sparql
 mkdir $base_dir/static/sparql
 cp -r $base_dir/../widoco/cello.html/doc $base_dir/static/sparql/
 
-# clean useless files
+echo "clean useless files"
 cd $base_dir/static/sparql
-rm doc/index-en.html.ori doc/index-en.htmlbak doc/webvowl/data/ontology.json.ori
+rm doc/index-en.html.ori doc/webvowl/data/ontology.json.ori
+
+echo "copying rdf_data to static"
+cd $base_dir
+tar cvzf cellosaurus.tar.gz rdf_data/*
+mkdir -p $base_dir/static/downloads
+rm -f $base_dir/static/downloads/cellosaurus.tar.gz
+mv cellosaurus.tar.gz static/downloads/
+
+echo "done"
 
 
-# rm -rf $base_dir/sparql_pages/*
-# mkdir -p $base_dir/sparql_pages/sparql
-
-# cp -r $base_dir/../widoco/cello.html/doc $base_dir/sparql_pages/sparql
-# cd $base_dir/sparql_pages/sparql
-
-# clean widoco directories
-# rm doc/index-en.html.ori doc/index-en.htmlbak doc/webvowl/data/ontology.json.ori
-
-# # copy everything in api static directory
-# echo "copying to static"
-# cd $base_dir
-# rm -rf ./static/sparql
-# cp -r sparql_pages/sparql ./static/
