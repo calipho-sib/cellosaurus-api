@@ -1,4 +1,4 @@
-from namespace_registry import NamespaceRegistry as ns_reg
+from namespace_registry import NamespaceRegistry
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class Query:
@@ -27,7 +27,7 @@ class Query:
     
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def set_necessary_sparql_prefixes(self):
+    def set_necessary_sparql_prefixes(self, ns_reg: NamespaceRegistry):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         self.prefixed = list()
         for ns in ns_reg.namespaces:
@@ -40,7 +40,7 @@ class Query:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_ttl_for_sparql_endpoint(self):
+    def get_ttl_for_sparql_endpoint(self, ns_reg: NamespaceRegistry):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         #
         # Output example:
@@ -53,7 +53,7 @@ class Query:
         lines.append(f"cello:Query_{self.id} a sh:SPARQLExecutable ;")
         lines.append(f"    rdfs:comment \"{self.label}\"^^xsd:string ; ")
         lines.append(f"    sh:select \"\"\"")
-        self.set_necessary_sparql_prefixes()
+        self.set_necessary_sparql_prefixes(ns_reg)
         for line in self.prefixes: lines.append(f"{line}")
         for line in self.sparql: lines.append(f"{line}")
         lines.append(f"    \"\"\"")

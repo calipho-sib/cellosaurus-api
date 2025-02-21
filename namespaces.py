@@ -1,5 +1,5 @@
 import hashlib
-from ApiCommon import get_rdf_base_IRI, get_help_base_IRI
+from api_platform import ApiPlatform
 from namespace_term import Term
 
 
@@ -577,15 +577,15 @@ class PubMedNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurCellLineNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): super(OurCellLineNamespace, self).__init__("cvcl", get_rdf_base_IRI() + "/cvcl/")
+    def __init__(self, platform: ApiPlatform): super(OurCellLineNamespace, self).__init__("cvcl", platform.get_rdf_base_IRI() + "/cvcl/")
     def IRI(self, primaryAccession): return "cvcl:" + primaryAccession
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurXrefNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     dbac_dict = dict()
-    def __init__(self): 
-        super(OurXrefNamespace, self).__init__("xref", get_rdf_base_IRI() + "/xref/")
+    def __init__(self, platform: ApiPlatform): 
+        super(OurXrefNamespace, self).__init__("xref", platform.get_rdf_base_IRI() + "/xref/")
     def cleanDb(self, db):
         return db.replace("/", "-") # necessary for db="IPD-IMGT/HLA" otherwise IRI contains SLASH which is forbidden
     def IRI(self, db, ac, props, store=True):
@@ -609,7 +609,7 @@ class OurOrganizationNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # we store name, shortname, country, city, contact
     nccc_dict = dict()
-    def __init__(self): super(OurOrganizationNamespace, self).__init__("orga", get_rdf_base_IRI() + "/orga/")
+    def __init__(self, platform: ApiPlatform): super(OurOrganizationNamespace, self).__init__("orga", platform.get_rdf_base_IRI() + "/orga/")
     def IRI(self, name, shortname, city, country, contact, store=True):
         our_dict = OurOrganizationNamespace.nccc_dict
         # store name, shortname, city, country, contact tuples for which an IRI was requested 
@@ -634,23 +634,23 @@ class OurOrganizationNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class HelpNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): 
-        super(HelpNamespace, self).__init__("help", get_help_base_IRI() + "/")
+    def __init__(self, platform: ApiPlatform): 
+        super(HelpNamespace, self).__init__("help", platform.get_help_base_IRI() + "/")
     def IRI(self, page): return "help:" + page
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurDatabaseAndTerminologyNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): 
-        super(OurDatabaseAndTerminologyNamespace, self).__init__("db", get_rdf_base_IRI() + "/db/")
+    def __init__(self, platform: ApiPlatform): 
+        super(OurDatabaseAndTerminologyNamespace, self).__init__("db", platform.get_rdf_base_IRI() + "/db/")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class OurPublicationNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     dbac_set = set()
-    def __init__(self): super(OurPublicationNamespace, self).__init__("pub", get_rdf_base_IRI() + "/pub/")
+    def __init__(self, platform: ApiPlatform): super(OurPublicationNamespace, self).__init__("pub", platform.get_rdf_base_IRI() + "/pub/")
     def IRI(self, db, ac):
         pub_key = "".join([db, "|", ac])
         # store requested db ac pairs for which an IRI was requested so that we can describe Xref afterwards

@@ -1,10 +1,11 @@
-from namespaces import BaseNamespace, get_rdf_base_IRI
+from namespaces import BaseNamespace
+from api_platform import ApiPlatform
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class CelloOntologyNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def __init__(self): 
-        super(CelloOntologyNamespace, self).__init__("cello", get_rdf_base_IRI() + "/ontology/")
+    def __init__(self, platform: ApiPlatform): 
+        super(CelloOntologyNamespace, self).__init__("cello", platform.get_rdf_base_IRI() + "/ontology/")
 
         #
         # Classes

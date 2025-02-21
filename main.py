@@ -9,8 +9,7 @@ from pydantic import BaseModel
 from urllib.parse import urlencode
 import uvicorn
 from enum import Enum
-from namespace_registry import NamespaceRegistry as ns_reg
-
+from namespace_registry import NamespaceRegistry
 
 import os
 #import sys
@@ -23,6 +22,7 @@ import datetime
 from lxml import etree, html
 import cellapi_builder as api
 import ApiCommon
+from api_platform import ApiPlatform
 from ApiCommon import log_it, get_search_result_txt_header, get_search_result_txt_header_as_lines, get_format_from_headers
 #from ApiCommon import get_properties
 from fields_utils import FldDef
@@ -80,6 +80,17 @@ three_media_types_responses = { "description": "Successful response", "content" 
   }
 }
 
+
+# for some reason, rdf_is_visible, a global variable used as a parameter value in some @app.get(...) 
+# must be declared and set before the @app.get(...) methods
+rdf_is_visible = (os.getenv("RDF_IS_VISIBLE","False").upper() == "TRUE")
+log_it("INFO:", "reading / getting default for env variable", f"RDF_IS_VISIBLE={rdf_is_visible}")
+platform_key = os.getenv("PLATFORM_KEY","prod").lower()
+log_it("INFO:", "reading / getting default for env variable", f"PLATFORM_KEY={platform_key}")
+platform = ApiPlatform(platform_key)
+ns_reg = NamespaceRegistry(platform)
+
+
 subns_dict = dict()
 for ns in [ns_reg.cvcl, ns_reg.xref, ns_reg.orga, ns_reg.pub, ns_reg.cello, ns_reg.db ]:
   subdir = ns.url.split("/")[-2]
@@ -112,13 +123,6 @@ rdf_media_types_responses = { "description": "Successful response", "content" : 
     "text/html": {},
   }
 }
-
-# for some reason, rdf_is_visible, a global variable used as a parameter value in some @app.get(...) 
-# must be declared and set before the @app.get(...) methods
-rdf_is_visible = (os.getenv("RDF_IS_VISIBLE","False").upper() == "TRUE")
-log_it("INFO:", "reading / getting default for env variable", f"RDF_IS_VISIBLE={rdf_is_visible}")
-ApiCommon.platform_key = os.getenv("PLATFORM_KEY","prod").lower()
-log_it("INFO:", "reading / getting default for env variable", f"PLATFORM_KEY={ApiCommon.platform_key}")
 
 
 # documentation for categories containng the API methods in the display, see also tags=["..."] below
@@ -212,7 +216,8 @@ async def swagger_ui_redirect():
 async def startup_event():
 
     # load cellosaurus data
-    global cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in, cl_xml_f_in, rf_xml_f_in, fldDef , release_info, clid_dict, htmlBuilder, rdf_is_visible
+    global cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in, cl_xml_f_in, rf_xml_f_in, fldDef , release_info, clid_dict, htmlBuilder 
+    global rdf_is_visible, platform, ns_reg
 
     t0 = datetime.datetime.now()
     release_info = api.load_pickle(ApiCommon.RI_FILE)
@@ -224,7 +229,7 @@ async def startup_event():
     rf_xml_f_in = open(ApiCommon.RF_XML_FILE,"rb")
     fldDef = FldDef(ApiCommon.FLDDEF_FILE)
     clid_dict = api.get_clid_dic(fldDef)
-    htmlBuilder = HtmlBuilder()
+    htmlBuilder = HtmlBuilder(platform)
     
     # Customizing uvicorn native log is done below in __main__()
     # Note: log_it() is self-made, unrelated to fastAPI / uvicorn /gunicorn logging system
@@ -679,8 +684,8 @@ def describe_any(dir, ac, format, request):
     #     log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
     #     return responses.RedirectResponse(url=url, status_code=301) # 301: Permanent redirect
 
-    sparql_service = ApiCommon.get_private_sparql_service_IRI()
-    iri = f"<{ApiCommon.get_rdf_base_IRI()}/{dir.value}/{ac}>"
+    sparql_service = platform.get_private_sparql_service_IRI()
+    iri = f"<{platform.get_rdf_base_IRI()}/{dir.value}/{ac}>"
     query = f"""DEFINE sql:describe-mode "CBD" describe {iri}"""
     print("query:", query)
     payload = {"query": query}
@@ -845,7 +850,7 @@ async def get_help_resolver(request: Request):
     # read HTML template
     content = htmlBuilder.get_file_content("html.templates/rdf-resolver-help.template.html")
     # build response and send it
-    content = content.replace("$base_IRI", ApiCommon.get_rdf_base_IRI())
+    content = content.replace("$base_IRI", platform.get_rdf_base_IRI())
     content_tree = html.fromstring(content)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
@@ -865,7 +870,7 @@ async def get_sparql_editor(request: Request):
     content = f.read()
     f.close()
     # build response and send it
-    content = content.replace("$sparql_IRI", ApiCommon.get_public_sparql_service_IRI())
+    content = content.replace("$sparql_IRI", platform.get_public_sparql_service_IRI())
     content_tree = html.fromstring(content)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
@@ -1120,7 +1125,7 @@ app.mount("/", StaticFiles(directory="static/sparql/doc"), name="widoco")
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if __name__ == '__main__':
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    print("I was in __main__")
+    #print("I was in __main__")
 
     parser = argparse.ArgumentParser(description="Run a simple HTTP proxy for cellapi services")
     parser.add_argument("-s", "--server", default="localhost", help="IP address on which the server listens")

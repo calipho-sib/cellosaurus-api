@@ -1,8 +1,8 @@
-from SPARQLWrapper import SPARQLWrapper, JSON
-import json
 import sys
 import datetime
-from namespace_registry import NamespaceRegistry as ns_reg
+from SPARQLWrapper import SPARQLWrapper, JSON
+from api_platform import ApiPlatform
+from namespace_registry import NamespaceRegistry
 
 # see https://github.com/RDFLib/sparqlwrapper/tree/master
 
@@ -10,8 +10,9 @@ from namespace_registry import NamespaceRegistry as ns_reg
 class EndpointClient:
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def __init__(self, server_url):
+    def __init__(self, server_url, ns_reg: NamespaceRegistry):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        self.ns_reg = ns_reg
         self.server_url = server_url
         self.endpoint = SPARQLWrapper(server_url)
         self.prefixes = dict()
@@ -73,7 +74,7 @@ class EndpointClient:
     def term_parent_query(self, concept_id, path_modifier):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         elems = list()
-        for ns in ns_reg.namespaces: elems.append(ns.getSparqlPrefixDeclaration())
+        for ns in self.ns_reg.namespaces: elems.append(ns.getSparqlPrefixDeclaration())
         elems.append("select ?term_IRI (str(?t_lbl) as ?term_lbl) ?parent_IRI (str(?p_lbl) as ?parent_lbl) where {")
         elems.append("  values ?term_IRI { sibilc:" + concept_id + " } .")
         if path_modifier is None:
@@ -96,7 +97,7 @@ class EndpointClient:
     def term_children_query(self, concept_id, path_modifier):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         elems = list()
-        for ns in ns_reg.namespaces: elems.append(ns.getSparqlPrefixDeclaration())
+        for ns in self.ns_reg.namespaces: elems.append(ns.getSparqlPrefixDeclaration())
         elems.append("select ?term_IRI (str(?t_lbl) as ?term_lbl) ?child_IRI (str(?c_lbl) as ?child_lbl) where {")
         elems.append("  values ?term_IRI { sibilc:" + concept_id + " } .")
         if path_modifier is None:
@@ -188,7 +189,8 @@ class EndpointClient:
 if __name__ == '__main__' :
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
 
-    client = EndpointClient("http://localhost:8890/sparql")
+    myns = NamespaceRegistry(ApiPlatform("local"))
+    client = EndpointClient("http://localhost:8890/sparql", myns)
 
     #print(client.apply_prefixes("http://purl.org/spar/fabio/Thesis, http://localhost/rdf/ontology/Thesis"))
     #sys.exit()
@@ -200,7 +202,7 @@ if __name__ == '__main__' :
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     if sys.argv[1]== "prefixes":
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        for ns in ns_reg.namespaces: 
+        for ns in myns.namespaces: 
             print(ns.getSparqlPrefixDeclaration())
         sys.exit()
 

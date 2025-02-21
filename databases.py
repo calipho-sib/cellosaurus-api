@@ -1,10 +1,10 @@
-from namespace_registry import NamespaceRegistry as ns
-
+from namespace_registry import NamespaceRegistry
+from api_platform import ApiPlatform
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class Database:
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def __init__(self, abbrev, name, url, cat, in_up):
+    def __init__(self, abbrev, name, url, cat, in_up, ns):
         self.abbrev = abbrev
         self.rdf_id = ns.xref.cleanDb(abbrev)
         self.name = name
@@ -20,7 +20,7 @@ class Databases:
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def __init__(self, src_file="data_in/cellosaurus_xrefs.txt"):
+    def __init__(self, ns, src_file="data_in/cellosaurus_xrefs.txt"):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
         f_in = open("uniprot-db-abbr.txt")
@@ -50,7 +50,7 @@ class Databases:
                 cat = line[8:]
             elif line.startswith("//"):
                 in_up = abbrev in self.uniprot_set
-                self.db_dict[abbrev] = Database(abbrev, name, url, cat, in_up)
+                self.db_dict[abbrev] = Database(abbrev, name, url, cat, in_up, ns)
         f_in.close()
 
         self.cats = dict()
@@ -58,7 +58,7 @@ class Databases:
             db = self.db_dict[db_key]
             cat = db.cat
             if cat not in self.cats: 
-                self.cats[cat] = { "label": cat, "count": 0, "IRI": get_db_category_IRI(cat)}
+                self.cats[cat] = { "label": cat, "count": 0, "IRI": get_db_category_IRI(cat, ns)}
             rec = self.cats[cat]
             rec["count"] += 1
 
@@ -82,7 +82,7 @@ class Databases:
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_db_category_IRI(label):
+def get_db_category_IRI(label, ns):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     prefix = ns.cello.pfx
     name = label.title().replace(" ", "").replace("(", "").replace(")", "").replace("/","").replace("-","")
@@ -92,7 +92,8 @@ def get_db_category_IRI(label):
 # = = = = = = = = = = = = = = = = = = = = = = = = = = =
 if __name__ == '__main__':
 # = = = = = = = = = = = = = = = = = = = = = = = = = = =
-    dbs = Databases()
+    ns = NamespaceRegistry(ApiPlatform("local"))
+    dbs = Databases(ns)
     for abbrev in dbs.keys():
         db = dbs.get(abbrev) 
         print(abbrev, "==>", db )

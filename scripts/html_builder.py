@@ -1,5 +1,5 @@
 from lxml import html
-from ApiCommon import get_public_sparql_service_IRI
+from api_platform import ApiPlatform
 
 # - - - - - - - - - - - - - - - - - - 
 class HtmlBuilder:
@@ -7,9 +7,11 @@ class HtmlBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - 
-    def __init__(self):
+    def __init__(self, platform: ApiPlatform):
     # - - - - - - - - - - - - - - - - - - 
+        self.platform = platform
         self.nav_node = self.get_navigation_node()
+        
 
 
     # - - - - - - - - - - - - - - - - - - 
@@ -17,7 +19,7 @@ class HtmlBuilder:
     # - - - - - - - - - - - - - - - - - - 
         input_file = "./html.templates/nav.template.html"
         content = self.get_file_content(input_file)
-        content = content.replace("$sparql_service_url", get_public_sparql_service_IRI())
+        content = content.replace("$sparql_service_url", self.platform.get_public_sparql_service_IRI())
         html_tree = html.fromstring(content)
         return html_tree.xpath('/html/body/nav')[0]
 

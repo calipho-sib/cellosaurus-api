@@ -1,5 +1,5 @@
 cd ~/work/widoco
-./doit-cello.sh
+./doit-cello.sh $1
 cd ~/work/cellosaurus-api
-python cellapi_builder.py SPARQL_PAGES
+python cellapi_builder.py --platform=$1 SPARQL_PAGES
 

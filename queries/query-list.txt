@@ -189,17 +189,17 @@ ID: 110
 LB: Identifiers and names of cell lines
 KW: id, sy, ac, accession, name, primaryAccession, secondaryAccession, preferredName, alternativeName
 ## ------------------------------------------------------
-select ?cl (str(?ac) as ?id) (str(?pref_name) as ?rec_name) 
-(group_concat(str(?old_ac), ' ') as ?old_acs) (group_concat(str(?alt_name), ' ') as ?alt_names) 
+select ?cl (str(?ac) as ?id) (str(?pref_name) as ?rec_name)
+(group_concat(str(?old_ac); separator= ' ') as ?old_acs) (group_concat(str(?alt_name); separator= ' ') as ?alt_names)
 where {
   ?cl a / rdfs:subClassOf cello:CellLine .
-  ?cl cello:primaryAccession ?ac .                 		# cell line identifier
-  ?cl cello:recommendedName ?pref_name .				# cell line preferred name
-  optional { ?cl cello:secondaryAccession ?old_ac . } 	# cell line obsoleted identifier(s)
-  optional { ?cl cello:alternativeName ?alt_name . }	# cell line alternative name(s)
+  ?cl cello:primaryAccession ?ac .                       # cell line identifier
+  ?cl cello:recommendedName ?pref_name .                 # cell line preferred name
+  optional { ?cl cello:secondaryAccession ?old_ac . }    # cell line obsoleted identifier(s)
+  optional { ?cl cello:alternativeName ?alt_name . }     # cell line alternative name(s)
   #filter (bound(?old_ac))
 }
-group by ?cl ?ac
+group by ?cl ?ac ?pref_name
 limit 100
 
 

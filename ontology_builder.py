@@ -1,8 +1,9 @@
 import sys
 from datetime import datetime
 from namespace_term import Term
-from namespace_registry import NamespaceRegistry as ns
-from ApiCommon import log_it, split_string, get_onto_preferred_prefix
+from namespace_registry import NamespaceRegistry
+from ApiCommon import log_it, split_string
+from api_platform import ApiPlatform
 from sparql_client import EndpointClient
 from tree_functions import Tree
 from databases import Database, Databases, get_db_category_IRI
@@ -13,22 +14,24 @@ class OntologyBuilder:
 #-------------------------------------------------
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def __init__(self, describe_ranges_and_domains=True):
+    def __init__(self, platform: ApiPlatform, describe_ranges_and_domains=True):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         
         # - - - - - - - - - - - - - - - - - - - - - - - - - - -         
         # load info from data_in used later by describe...() functions
         # - - - - - - - - - - - - - - - - - - - - - - - - - - -         
+        self.platform = platform
+        self.ns = NamespaceRegistry(platform)
         self.prefixes = list()
-        for space in ns.namespaces: self.prefixes.append(space.getTtlPrefixDeclaration())
-
+        for space in self.ns.namespaces: self.prefixes.append(space.getTtlPrefixDeclaration())
         lines = list()
-        for space in ns.namespaces: lines.append(space.getSparqlPrefixDeclaration())
+        for space in self.ns.namespaces: lines.append(space.getSparqlPrefixDeclaration())
         rqPrefixes = "\n".join(lines)
+
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # store queries used to retrieve ranges and domains of properties from sparql endpoint
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        self.client = EndpointClient("http://localhost:8890/sparql")
+        self.client = EndpointClient(platform.get_builder_sparql_service_IRI(), self.ns)
         self.domain_query_template = rqPrefixes + """
             select ?prop ?value (count(distinct ?s) as ?count) where {
                 values ?prop { $prop }
@@ -44,9 +47,25 @@ class OntologyBuilder:
                 IF (bound(?cl) , ?cl,  IF ( isIRI(?o), 'rdfs:Resource', datatype(?o))
                 ) as ?value)
             } group by ?prop ?value"""
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # domain / ranges to remove
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+        self.setup_domains_ranges_to_remove()
+        self.describe_cell_line_and_subclasses()
+        self.describe_genetic_characteristics_and_subclasses()
+        self.describe_genome_editing_method_and_subclasses()
+        self.describe_sequence_variation_and_subclasses()
+        self.describe_publication_hierarchy_based_on_fabio_no_redundancy()
+        self.describe_terminology_database_and_subclasses()
+        self.describe_organization_related_terms()
+        self.describe_misc_terms()
+        if describe_ranges_and_domains: self.describe_ranges_and_domains()
+        self.describe_annotation_properties()
+        
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def setup_domains_ranges_to_remove(self):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
         self.rdfs_domain_to_remove = dict()
         self.rdfs_domain_to_remove[ns.cello.accession] = { ns.skos.Concept }
         #self.rdfs_domain_to_remove[ns.cello.category] = { ns.skos.Concept, ns.owl.NamedIndividual  }
@@ -63,24 +82,12 @@ class OntologyBuilder:
         self.rdfs_range_to_remove[ns.cello.database] = { ns.owl.NamedIndividual, ns.cello.CelloConceptScheme } 
         self.rdfs_range_to_remove[ns.cello.hasGenomeModificationMethod] = { ns.owl.NamedIndividual } 
         self.rdfs_range_to_remove[ns.cello.derivedFromIndividualWithSex] = { ns.owl.NamedIndividual }
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        # add description of terms (subClasses, ...) to terms in namespaces
-        # - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        self.describe_cell_line_and_subclasses()
-        self.describe_genetic_characteristics_and_subclasses()
-        self.describe_genome_editing_method_and_subclasses()
-        self.describe_sequence_variation_and_subclasses()
-        self.describe_publication_hierarchy_based_on_fabio_no_redundancy()
-        self.describe_terminology_database_and_subclasses()
-        self.describe_organization_related_terms()
-        self.describe_misc_terms()
-        if describe_ranges_and_domains: self.describe_ranges_and_domains()
-        self.describe_annotation_properties()
-        
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def build_class_tree(self, local_only=False):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
         # NOW build tree with (local) child - parent relationships based on rdfs:subClassOf()
         edges = dict()
         relevant_namespaces = ns.namespaces
@@ -101,6 +108,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_annotation_properties(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
         ns.describe(ns.cello.version, ns.rdfs.subPropertyOf, ns.dcterms.hasVersion)
         ns.describe(ns.cello.modified, ns.rdfs.subPropertyOf, ns.dcterms.modified)
         ns.describe(ns.cello.created, ns.rdfs.subPropertyOf, ns.dcterms.created)
@@ -109,6 +117,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_organization_related_terms(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
         # describing our own terms as subClass/Prop of terms defined elsewhere 
         # instead of simply using these external terms allow to give them a domain / range
         # and additional semantic relationships to other terms
@@ -120,6 +129,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_genetic_characteristics_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
         # For info
         # OBI:0001404 - genetic characteristics information
         # OBI:0001364 - genetic alteration information = superclass for seq var + gen.int + gen.ko)
@@ -140,6 +150,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_genome_editing_method_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
 
         # NOTE: the description of cello:GenomeModificationMethod is done
         # in RdfBuilder.get_ttl_for_local_gem_class() because it 
@@ -205,7 +216,7 @@ class OntologyBuilder:
     def describe_ranges_and_domains(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         self.build_class_tree()
-
+        ns = self.ns
         for term_id in ns.cello.terms:
             term: Term = ns.cello.terms[term_id]
             if not term.isA(ns.rdf.Property): continue
@@ -298,7 +309,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_publication_hierarchy_based_on_fabio_no_redundancy(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        
+        ns = self.ns
         # Publication hierarchy based on fabio Expression
         ns.describe( ns.cello.Publication,              ns.rdfs.subClassOf, ns.fabio.Expression)
         ns.describe( ns.fabio.Book,                     ns.rdfs.subClassOf, ns.cello.Publication)
@@ -336,7 +347,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_misc_terms(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
+        ns = self.ns
         # - - - - - - - - 
         # misc classes
         # - - - - - - - - 
@@ -519,6 +530,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_terminology_database_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
         # Describe root cellosaurus terminology class
         ns.describe(ns.cello.CelloConceptScheme, ns.rdfs.subClassOf, ns.skos.ConceptScheme)
 
@@ -529,11 +541,11 @@ class OntologyBuilder:
         
         # we add programmaticaly the subClassOf relationships between Database and its children
         # so that we can take advantage of close_parent_set() method during computation of domain / ranges of related properties
-        databases = Databases()
+        databases = Databases(ns)
         for k in databases.categories():
             cat = databases.categories()[k]
             cat_label = cat["label"]
-            cat_IRI = get_db_category_IRI(cat_label)
+            cat_IRI = get_db_category_IRI(cat_label, ns)
             cat_id = cat_IRI.split(":")[1]
             ns.cello.registerClass(cat_id)
             ns.describe(cat_IRI, ns.rdfs.subClassOf, ns.cello.Database)
@@ -543,6 +555,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_sequence_variation_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
         # describe children of SequenceVariation class
         ns.describe( ns.cello.GeneMutation, ns.rdfs.subClassOf, ns.cello.SequenceVariation )
         ns.describe( ns.cello.GeneFusion, ns.rdfs.subClassOf, ns.cello.SequenceVariation  )
@@ -560,7 +573,7 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def describe_cell_line_and_subclasses(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
+        ns = self.ns
         # describe cell line class hierarchy
         ns.describe(ns.cello.CancerCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
         ns.describe(ns.cello.ConditionallyImmortalizedCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
@@ -610,6 +623,8 @@ class OntologyBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_onto_header(self, version="alpha"):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
+
         lines = list()
 
         # set last modification date for ontology
@@ -644,10 +659,13 @@ class OntologyBuilder:
         lines.append("    " + ns.dcterms.description + " " + ns.xsd.string3(onto_descr) + " ;")
         lines.append("    " + ns.dcterms.license + " <http://creativecommons.org/licenses/by/4.0> ;")
         lines.append("    " + ns.dcterms.title + " " + ns.xsd.string("Cellosaurus ontology") + " ;")
+
+        version = " - ".join([version, str(datetime.now()), self.platform.platform_key])
+
         lines.append("    " + ns.dcterms.hasVersion + " " + ns.xsd.string(version) + " ;")
         lines.append("    " + ns.owl.versionInfo + " " + ns.xsd.string(version) + " ;")
         lines.append("    " + ns.dcterms.abstract + " " + ns.xsd.string3(onto_abstract) + " ;")
-        lines.append("    " + ns.vann.preferredNamespacePrefix + " " + ns.xsd.string(get_onto_preferred_prefix()) + " ;")
+        lines.append("    " + ns.vann.preferredNamespacePrefix + " " + ns.xsd.string(self.platform.get_onto_preferred_prefix()) + " ;")
         #lines.append("    " + ns.bibo.status + " <http://purl.org/ontology/bibo/status/published> ;")
         lines.append("    " + ns.bibo.status + " <http://purl.org/ontology/bibo/status/draft> ;")
         lines.append("    " + ns.widoco.introduction + " " + ns.xsd.string3(onto_intro) + " ;")
@@ -981,7 +999,7 @@ cello:RegistrationRecord a owl:Class ;
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_onto_url(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        onto_url = ns.cello.url
+        onto_url = self.ns.cello.url
         if onto_url.endswith("#"): onto_url = onto_url[:-1]
         return onto_url
 
@@ -994,6 +1012,7 @@ cello:RegistrationRecord a owl:Class ;
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_imported_terms(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
         lines = list()
         
         allButCello = list(ns.namespaces)
@@ -1028,7 +1047,7 @@ cello:RegistrationRecord a owl:Class ;
         for id in nspace.terms:
             term: Term = nspace.terms[id]
             if owlType is None or term.isA(owlType):
-                term_lines = ns.ttl_lines_for_ns_term(term)
+                term_lines = self.ns.ttl_lines_for_ns_term(term)
                 lines.extend(term_lines)
         return lines
     
@@ -1036,12 +1055,13 @@ cello:RegistrationRecord a owl:Class ;
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_onto_terms(self, owlType=None):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        return self.get_terms(ns.cello, owlType)
+        return self.get_terms(self.ns.cello, owlType)
     
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_onto_pretty_ttl_lines(self, version):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
         lines = list()    
         lines.extend(self.get_onto_prefixes())
         lines.append("\n#\n# Ontology properties\n#\n")
@@ -1064,6 +1084,6 @@ cello:RegistrationRecord a owl:Class ;
 if __name__ == '__main__':
 # =============================================
 
-    ob = OntologyBuilder()
+    ob = OntologyBuilder(plaform=ApiPlatform("local"))
     lines = ob.get_onto_pretty_ttl_lines("dev version")
     for l in lines: print(l)

@@ -1,85 +1,93 @@
 from namespaces import *
 from namespace_cello import CelloOntologyNamespace
 from namespace_term import Term
-import ApiCommon
+from api_platform import ApiPlatform
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class NamespaceRegistry:    
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    print("executing class NamespaceRegistry")
 
-    # instanciate local namespaces
-    cello = CelloOntologyNamespace()
-    cvcl = OurCellLineNamespace()
-    xref = OurXrefNamespace()
-    pub = OurPublicationNamespace(); orga = OurOrganizationNamespace(); db = OurDatabaseAndTerminologyNamespace()
-    # instanciate other used namespaces
-    xsd  = XsdNamespace(); rdf = RdfNamespace(); rdfs = RdfsNamespace(); owl = OwlNamespace()
-    skos = SkosNamespace(); dcterms = DctermsNamespace()
-    fabio = FabioNamespace(); up = UniProtCoreNamespace() 
-    bibo = BiboNamespace(); widoco = WidocoNamespace()
-    vann = VannNamespace(); pubmed = PubMedNamespace()
-    oa = OaNamespace()
-    # org = W3OrgNamespace()
-    wdt = WikidataWdtNamespace(); wd = WikidataWdNamespace()
-    sh = ShaclNamespace();
-    schema = SchemaOrgNamespace()
-    #cello = CelloWebsiteNamespace()
-    help = HelpNamespace()
-    BAO = BAONamespace(); BTO = BTONamespace(); CLO = CLONamespace()
-    NCIt = NCItNamespace(); OBI = OBINamespace(); OMIT = OMITNamespace()
-    FBcv = FBcvNamespace() 
-    GENO = GENONamespace(); CARO = CARONamespace(); CL = CLNamespace()
-    CHEBI = CHEBINamespace(); ORDO = ORDONamespace(); IAO = IAONamespace()
-    EDAM = EDAMNamespace(); prism = PrismNamespace(); BFO = BFONamespace()
-    OLS = OLSNamespace()
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self, platform: ApiPlatform):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    namespaces = [cello, cvcl, xref, pub, orga, db, xsd, rdf, rdfs, skos, owl, dcterms, 
-                  fabio, up, bibo, widoco, vann, oa, wdt, wd, sh, schema, help, pubmed,
-                  BAO, BTO, CLO, NCIt, OBI, OMIT, FBcv, GENO, CARO, CL, CHEBI, ORDO, IAO, EDAM, prism, BFO, OLS ]
+        self.platform = platform
 
-    pfx2ns = dict()
-    for ns in namespaces: pfx2ns[ns.pfx] = ns
+        # instanciate local namespaces
+        self.cello = CelloOntologyNamespace(platform)
+        self.cvcl = OurCellLineNamespace(platform)
+        self.xref = OurXrefNamespace(platform)
+        self.pub = OurPublicationNamespace(platform)
+        self.orga = OurOrganizationNamespace(platform) 
+        self.db = OurDatabaseAndTerminologyNamespace(platform)
+        # instanciate other used namespaces
+        self.help = HelpNamespace(platform)
+        self.xsd  = XsdNamespace(); self.rdf = RdfNamespace(); 
+        self.rdfs = RdfsNamespace(); self.owl = OwlNamespace()
+        self.skos = SkosNamespace(); self.dcterms = DctermsNamespace()
+        self.fabio = FabioNamespace(); self.up = UniProtCoreNamespace() 
+        self.bibo = BiboNamespace(); self.widoco = WidocoNamespace()
+        self.vann = VannNamespace(); self.pubmed = PubMedNamespace()
+        self.oa = OaNamespace()
+        # org = W3OrgNamespace()
+        self.wdt = WikidataWdtNamespace(); self.wd = WikidataWdNamespace()
+        self.sh = ShaclNamespace();self.schema = SchemaOrgNamespace()
+        #cello = CelloWebsiteNamespace()
+        self.BAO = BAONamespace(); self.BTO = BTONamespace(); self.CLO = CLONamespace()
+        self.NCIt = NCItNamespace(); self.OBI = OBINamespace(); self.OMIT = OMITNamespace()
+        self.GENO = GENONamespace(); self.CARO = CARONamespace(); self.CL = CLNamespace()
+        self.CHEBI = CHEBINamespace(); self.ORDO = ORDONamespace(); self.IAO = IAONamespace()
+        self.EDAM = EDAMNamespace(); self.prism = PrismNamespace(); self.BFO = BFONamespace()
+        self.FBcv = FBcvNamespace(); self.OLS = OLSNamespace()
+
+        self.namespaces = [
+            self.cello, self.cvcl, self.xref, self.pub, self.orga, self.db, self.xsd, self.rdf, self.rdfs, self.skos, self.owl, self.dcterms, 
+            self.fabio, self.up, self.bibo, self.widoco, self.vann, self.oa, self.wdt, self.wd, self.sh, self.schema, self.help, self.pubmed,
+            self.BAO, self.BTO, self.CLO, self.NCIt, self.OBI, self.OMIT, self.FBcv, self.GENO, self.CARO, self.CL, self.CHEBI, self.ORDO, 
+            self.IAO, self.EDAM, self.prism, self.BFO, self.OLS ]
+
+        self.pfx2ns = dict()
+        for ns in self.namespaces: self.pfx2ns[ns.pfx] = ns
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     # seems unused
-    def getPrefixedIRI(IRI):
+    def getPrefixedIRI(self, IRI):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         url = IRI 
         if url.startswith("<"): url = url[1:]
         if url.endswith(">"): url = url[:-1]
-        for ns in NamespaceRegistry.namespaces:
+        for ns in self.namespaces:
             if url.startswith(ns.url):
                 return ":".join([ns.pfx, url[len(ns.url):]])
         return None
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def getNamespace(IRI):
+    def getNamespace(self, IRI):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         url = IRI 
         if url.startswith("<"): url = url[1:]
         if url.endswith(">"): url = url[:-1]
-        for ns in NamespaceRegistry.namespaces:
+        for ns in self.namespaces:
             if url.startswith(ns.url): return ns
             if url.startswith(ns.pfx + ":"): return ns
         return None
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def describe(subj_prefixed_iri, prop_iri, value):
+    def describe(self, subj_prefixed_iri, prop_iri, value):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         pfx = subj_prefixed_iri.split(":")[0]
-        NamespaceRegistry.pfx2ns[pfx].describe(subj_prefixed_iri, prop_iri, value)             
+        self.pfx2ns[pfx].describe(subj_prefixed_iri, prop_iri, value)             
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def term(prefixed_iri):
+    def term(self, prefixed_iri):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         pfx, id = prefixed_iri.split(":")
-        return NamespaceRegistry.pfx2ns[pfx].term(prefixed_iri)
+        return self.pfx2ns[pfx].term(prefixed_iri)
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def ttl_lines_for_ns_term(term: Term):
+    def ttl_lines_for_ns_term(self, term: Term):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     # Note:
     # the class Term cannot have its own ttl_line() method because if requires the usage of
@@ -100,7 +108,7 @@ class NamespaceRegistry:
 
         # build composite comment including label, skos relationships (otherwise invisible in widoco)
         # and textual comment if any
-        NamespaceRegistry.build_composite_comment(term)
+        self.build_composite_comment(term)
 
         for pk in ordered_props:
             value_set = term.props.get(pk)
@@ -124,7 +132,7 @@ class NamespaceRegistry:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def build_composite_comment(term: Term):
+    def build_composite_comment(self, term: Term):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     # Note:
     # the class Term cannot have its own build_composite_comment() method because if requires the usage of
@@ -155,9 +163,10 @@ class NamespaceRegistry:
                     obj = f"<a href=\"{href}\">{href}</a>"
                 else:
                     objId = elem.split(":")[1]
-                    objNs = NamespaceRegistry.getNamespace(elem)
+                    objNs = self.getNamespace(elem)
+                    #print(f"obj id: {objId} ns: {objNs.pfx}")
                     if objNs is not None:
-                        objTerm = NamespaceRegistry.term(elem)
+                        objTerm = self.term(elem)
                         objLabel = objTerm.get_label_str()
                         objUrl = "".join([objNs.url, objId])
                         obj = f"<a href=\"#{objUrl}\" title=\"{objUrl}\">{objLabel}</a>"
@@ -174,15 +183,15 @@ class NamespaceRegistry:
             for dom in term.props.get("rdfs:domain") or set():
                 domId = dom.split(":")[1]
                 if dom.startswith("cello:"):
-                    domTerm = NamespaceRegistry.term(dom)
+                    domTerm = self.term(dom)
                     #print(">>>> term", term, "dom:", dom)
                     domLabel = domTerm.get_label_str()
-                    domUrl = "/".join([ApiCommon.get_rdf_base_IRI(), domId]) 
+                    domUrl = "/".join([self.platform.get_rdf_base_IRI(), domId]) 
                     domainElems.append(f"<a href=\"#{domId}\" title=\"{domUrl}\">{domLabel}</a>")
                 else:
-                    domNs = NamespaceRegistry.getNamespace(dom)
+                    domNs = self.getNamespace(dom)
                     if domNs is not None:
-                        domTerm = NamespaceRegistry.term(dom)
+                        domTerm = self.term(dom)
                         domLabel = domTerm.get_label_str()
                         domUrl = "".join([domNs.url, domId])
                         domainElems.append(f"<a href=\"#{domUrl}\" title=\"{domUrl}\">{domLabel}</a>")
@@ -206,33 +215,34 @@ class NamespaceRegistry:
 if __name__ == '__main__':
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-    ns = NamespaceRegistry
+    ns = NamespaceRegistry(ApiPlatform("local"))
 
     for space in [ns.up, ns.fabio, ns.dcterms, ns.cello, ns.FBcv]:
         for id in space.terms:
-            term = space.terms[id]
-            for line in term.ttl_lines():
-                print(line)
+            term = space.terms[id]       
+            lines = ns.ttl_lines_for_ns_term(term)     
+            for line in lines: print(line)
 
     print("----")
     ns.up.registerClass("TestClass", "my nice registered label")
     ns.describe("up:TestClass", ns.rdfs.comment, ns.xsd.string("""this is my " real comment"""))
-    #ns.describe("up:TestClass", ns.rdfs.label, ns.xsd.string("Test Class label"))
-    ns.describe("up:TestClass", ns.skos.broadMatch, "OBI:broader")
-    ns.describe("up:TestClass", ns.skos.exactMatch, "OBI:exact")
-    ns.describe("up:TestClass", ns.skos.closeMatch, "OBI:close")
+    ns.describe("up:TestClass", ns.skos.broadMatch, ns.OBI.GeneticTransformation)
+    ns.describe("up:TestClass", ns.skos.exactMatch, ns.OBI.GeneticTransformation)
+    ns.describe("up:TestClass", ns.skos.closeMatch, ns.OBI.GeneticTransformation)
     t = ns.up.terms["TestClass"]
-    print("\n".join(t.ttl_lines()))
+    lines = ns.ttl_lines_for_ns_term(t)
+    print("\n".join(lines))
 
     print("----")
     ns.cello.registerClass("TestClass")
     ns.describe("cello:TestClass", ns.rdfs.comment, ns.xsd.string("""this is my " real comment"""))
     ns.describe("cello:TestClass", ns.rdfs.label, ns.xsd.string("Test Class label"))
-    ns.describe("cello:TestClass", ns.skos.broadMatch, "OBI:broader")
-    ns.describe("cello:TestClass", ns.skos.exactMatch, "OBI:exact")
-    ns.describe("cello:TestClass", ns.skos.closeMatch, "OBI:close")
+    ns.describe("cello:TestClass", ns.skos.broadMatch, ns.OBI.GeneticTransformation)
+    ns.describe("cello:TestClass", ns.skos.exactMatch, ns.OBI.GeneticTransformation)
+    ns.describe("cello:TestClass", ns.skos.closeMatch, ns.OBI.GeneticTransformation)
     t = ns.cello.terms["TestClass"]
-    print("\n".join(t.ttl_lines()))
+    lines = ns.ttl_lines_for_ns_term(t)
+    print("\n".join(lines))
 
     print("----")
     for id in ns.wd.terms:

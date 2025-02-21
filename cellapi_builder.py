@@ -17,8 +17,9 @@ import subprocess
 
 import ApiCommon
 from ApiCommon import log_it
+from api_platform import ApiPlatform
 from fields_utils import FldDef
-from namespace_registry import NamespaceRegistry as ns_reg
+from namespace_registry import NamespaceRegistry
 
 from rdf_builder import RdfBuilder
 from organizations import KnownOrganizations, Organization
@@ -26,7 +27,7 @@ from organizations import KnownOrganizations, Organization
 from terminologies import Terminologies, Terminology
 from ontology_builder import OntologyBuilder
 from databases import Database, Databases
-from sexes import Sexes, Sex
+from sexes import Sexes
 from queries_utils import QueryFileReader, Query
 
 # no not remove imports below, parsers are called dynamically
@@ -882,7 +883,7 @@ def get_clid_dic(fldDef):
     return clid_dict
 
 # - - - - - - - - - - - - - - - - - - - - 
-def save_virtuoso_isql_setup_file(output_file):
+def save_virtuoso_isql_setup_file(output_file, ns_reg: NamespaceRegistry):
 # - - - - - - - - - - - - - - - - - - - - 
     lines = []
     lines.append("""grant select on "DB.DBA.SPARQL_SINV_2" to "SPARQL";""")
@@ -900,7 +901,16 @@ def save_virtuoso_isql_setup_file(output_file):
 if __name__ == "__main__":
 # ===========================================================================================
     parser = OptionParser()
+    parser.add_option(
+        "-p", "--platform", action="store", type="string", dest="platform_key", default="(none)",
+        help="API platform key: test,prod, or local")
+
     (options, args) = parser.parse_args()
+
+    platform_key = options.platform_key.lower()
+    if platform_key not in ["local", "test", "prod"]: 
+        sys.exit("Invalid --platform option, expected local, test, or prod")
+
     if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, SPARQL_PAGES, QUERIES or TEST")
 
     if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "SPARQL_PAGES", "QUERIES", "TEST" ]: 
@@ -908,6 +918,9 @@ if __name__ == "__main__":
 
     input_dir = "data_in/"
     if input_dir[-1] != "/" : input_dir + "/"
+
+    platform = ApiPlatform(platform_key)
+    ns_reg = NamespaceRegistry(platform)
 
     # -------------------------------------------------------
     if args[0]=="RDF":
@@ -917,9 +930,9 @@ if __name__ == "__main__":
         # here we use api data and indexes created with args0="BUILD"
 
         # we need the OntologyBuilder class to be initialized so that the description
-        # of GenomeModificationMethod named individuals are completed
+        # of GenomeModificationMethod named individuals are completed        
 
-        ob = OntologyBuilder(describe_ranges_and_domains=False)
+        ob = OntologyBuilder(platform, describe_ranges_and_domains=False)
 
         known_orgs = KnownOrganizations()
         known_orgs.loadInstitutions(input_dir + "institution_list")
@@ -927,7 +940,7 @@ if __name__ == "__main__":
 
         terminologies = Terminologies()
 
-        rb = RdfBuilder(known_orgs)
+        rb = RdfBuilder(known_orgs, ns_reg)
 
         cl_dict = load_pickle(ApiCommon.CL_IDX_FILE)
         rf_dict = load_pickle(ApiCommon.RF_IDX_FILE)
@@ -1075,7 +1088,7 @@ if __name__ == "__main__":
         file_out = open(out_dir + "data_databases.ttl", "wb")
         log_it("INFO:", f"serializing OWL for database individuals")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
-        databases = Databases()                        
+        databases = Databases(ns_reg)                        
         for k in databases.keys():
             db: Database = databases.get(k)
             file_out.write(bytes(rb.get_ttl_for_cello_database_individual(db) + "\n", "utf-8"))
@@ -1088,7 +1101,7 @@ if __name__ == "__main__":
         file_out = open(out_dir + "data_other_entities.ttl", "wb")
         log_it("INFO:", f"1) serializing OWL for sexes")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
-        sexes = Sexes()
+        sexes = Sexes(ns_reg)
         for k in sexes.keys():
             s = sexes.get(k)
             file_out.write(bytes(rb.get_ttl_for_sex(s) + "\n", "utf-8"))
@@ -1120,7 +1133,7 @@ if __name__ == "__main__":
 
         if args[1].lower() == "data":
             setup_file = './scripts/virtuoso_setup.sql'
-            save_virtuoso_isql_setup_file(setup_file)
+            save_virtuoso_isql_setup_file(setup_file, ns_reg)
             log_it("INFO", "Created", setup_file )
             result = subprocess.run(['bash', './scripts/reload_rdf_data.sh'], capture_output=True, text=True)
             log_it("LOADED data, status", result.stdout)
@@ -1154,10 +1167,11 @@ if __name__ == "__main__":
 
         version = "1.0"
         if len(args)>1: version = args[1]
+
         out_dir = "rdf_data/"
         file_out = open(out_dir + "ontology.ttl", "wb")
         log_it("INFO:", f"serializing OWL cellosaurus ontology")        
-        ob = OntologyBuilder()
+        ob = OntologyBuilder(platform)
         lines = ob.get_onto_pretty_ttl_lines(version)
         count = 0
         for line in lines:
@@ -1190,7 +1204,7 @@ if __name__ == "__main__":
         for q in reader.query_list:    
             query : Query = q
             count += 1
-            ttl = query.get_ttl_for_sparql_endpoint()
+            ttl = query.get_ttl_for_sparql_endpoint(ns_reg)
             file_out.write(bytes(ttl + "\n\n", "utf-8"))
         log_it("INFO", f"wrote {count} queries")
         log_it("INFO:", f"serialized example SPARQL queries")

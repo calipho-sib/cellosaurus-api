@@ -1,8 +1,6 @@
 import datetime
 import os
 
-print("executing ApiCommon")
-
 SERIAL_DIR = "./serial/"
 
 RI_FILE = SERIAL_DIR + "ri.bin"
@@ -20,36 +18,6 @@ FLDDEF_FILE = "./fields_def.txt"
 
 # used in main.py and in fields_utils.py
 CELLAPI_VERSION="1.0.4"
-
-# the value of platform_key must be set from elsewhere:
-# - in main.py by reading ENV variable
-# - in cellapi_builder.py by a script argument
-# expected values are: local, test, prod
-platform_key = "undefined"
-
-platform_dict = {
-    # ---------------------------------
-    # WARNING: no final "/", please !
-    # ---------------------------------
-    "local": {
-        "base_IRI": "http://localhost/rdf",
-        "help_IRI": "http://localhost:8082",                        # http://localhost:8082/ontology.ttl thanks to main.app.mount())
-        "public_sparql_IRI": "http://localhost/sparql/service",
-        "private_sparql_IRI" : "http://localhost:8890/sparql"
-    },
-    "test": {
-        "base_IRI": "https://www.mix-id1.cellosaurus.org/rdf",
-        "help_IRI": "https://test-api.cellosaurus.org",
-        "public_sparql_IRI": "https://test-sparql.cellosaurus.org/sparql",
-        "private_sparql_IRI" : "http://localhost:8890/sparql"
-    },
-    "prod": {
-        "base_IRI": "https://purl.expasy.org/cellosaurus/rdf",
-        "help_IRI": "https://api.cellosaurus.org",
-        "public_sparql_IRI": "https://sparql.cellosaurus.org/sparql",
-        "private_sparql_IRI" : "http://localhost:8890/sparql"
-    }
-}
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -81,52 +49,6 @@ def log_it(*things, duration_since=None):
         print(now, pid, *things, flush=True)
 
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_rdf_graph_IRI():
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # no final "/", please !
-    # CAREFUL if you change this:
-    # to be sync'ed with ./scripts/load_ttl_files.sh
-    return "https://www.cellosaurus.org/rdf/graphs/main"
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_onto_preferred_prefix():
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # used as a descripor of the ontology in its ttl file
-    return "cello"
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_rdf_base_IRI():
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # used as a base for all IRIs for cello, xref, 
-    # org and cvcl namespaces  
-    return platform_dict[platform_key]["base_IRI"]
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_help_base_IRI():
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # used as a base for all IRIs for cello, xref, 
-    # org and cvcl namespaces  
-    return platform_dict[platform_key]["help_IRI"]
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_public_sparql_service_IRI():
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # it is the public URL of the sparql service !!!
-    # used on building sparql-editor related pages
-    return platform_dict[platform_key]["public_sparql_IRI"]
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def get_private_sparql_service_IRI():
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    # it is the private URL of the sparql service !!!
-    # internal use for API only
-    return platform_dict[platform_key]["private_sparql_IRI"]
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
