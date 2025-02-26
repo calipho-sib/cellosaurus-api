@@ -634,21 +634,25 @@ class OntologyBuilder:
         # set ontology URL
         onto_url = "<" + self.get_onto_url() + ">"
         
-        basic_descr = """Cellosaurus is a manually curated resource that attempts to extensively describe all cell lines used in biomedical research."""
-
         # set ontology abstract
         # appears in abstract onto page
-        onto_abstract = basic_descr
+        onto_abstract = open('html.templates/onto_abstract.md', 'r').read()
+        onto_abstract = onto_abstract.replace("$public_sparql_URL", self.platform.get_public_sparql_service_IRI())
 
         # set ontology introduction
         # appears in onto page, section 1
         # TODO: pam approach
-        onto_intro = "(ongoing work)"
+        onto_intro = open('html.templates/onto_intro.md', 'r').read()
+        onto_intro = onto_intro.replace("$cello_url", ns.cello.url)
+        onto_intro = onto_intro.replace("$cvcl_url", ns.cvcl.url)
+        onto_intro = onto_intro.replace("$orga_url", ns.orga.url)
+        onto_intro = onto_intro.replace("$db_url", ns.db.url)
+        onto_intro = onto_intro.replace("$xref_url", ns.xref.url)
 
         # set ontology description
         # appears in onto page, section 3 under webowl
         # TODO: pam approach
-        onto_descr = "(ongoing work)"
+        onto_descr = open('html.templates/onto_descr.md', 'r').read()
         
         # Note: all the prefixes are declared in namespace.py but not necessarily all the properties because used only once...
         lines.append(onto_url)

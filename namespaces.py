@@ -390,6 +390,7 @@ class WidocoNamespace(BaseNamespace):
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# TODO: check UNUSED ?
 class BAONamespace(BaseNamespace):
     def __init__(self): super(BAONamespace, self).__init__("BAO", "http://www.bioassayontology.org/bao#BAO_")
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
