@@ -48,35 +48,19 @@ trg_host="myserver"
 ssh mac-098
 cd /work/cellosaurus-api
 
-# 
-# 1. Choose platform
-#
-
-vi ApiCommon.py
-=> platform_key = "test"
-or
-=> platform_key = "prod"
+#  
+# 1. Generate RDF for platform local, test or prod
+#  
+./doit-rdf.sh prod
 
 #  
-# 2. Generate RDF for platform
-#  
-./doit-rdf.sh
-
-#  
-# 3. Send code and rdf_data to server
+# 2. Send code and rdf_data to server
 #  
 ./scripts/deploy_api_code.sh $trg_host
 ./push_dir rdf_data $trg_host
 
 #  
-# 4. Deploy ontology doc and sparql page
-#  
-cp sparql_pages.tar.gz /share/sib/common/cellosaurus/sparql.cellosaurus.org/sparql/
-cd /share/sib/common/cellosaurus/sparql.cellosaurus.org/sparql/
-tar xvzf sparql_pages.tar.gz
-
-#  
-# 5. Deploy code and load rdf_data
+# 3. Deploy code and load rdf_data
 #  
 ssh $trg_host
 cd /work/cellapi
@@ -87,9 +71,10 @@ rm rdf_data/*; tar xvzf rdf_data.tar.gz
 ./scripts/reload_rdf_all.sh
 
 #  
-# 6. TESTs
+# 4. TESTs
 #  
-https://test-sparql.cellosaurus.org/sparql/
+https://test-api.cellosaurus.org/sparql-editor
+https://api.cellosaurus.org/sparql-editor
 
 end
 

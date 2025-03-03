@@ -2,7 +2,7 @@ The Cellosaurus is a comprehensive knowledge resource on cell lines used in biom
 
 Delivering a RDF version of the Cellosaurus is an important step towards FAIRification and making it available from our [SPARQL endpoint]($public_sparql_URL) is key to Linked Open Data (LOD) perspective and for improving interoperability in particular thanks to federated queries.
 
-The OWL Cellosaurus ontology was developed to serve as the semantic model for all the diverse information contained in the Cellosaurus  RDF.
+The OWL Cellosaurus ontology was developed to serve as the semantic model for all the diverse information contained in the Cellosaurus RDF.
 Two key principles guided its construction:
 
   * Anchorage and reuse. A common vocabulary is essential for RDF to allow good interoperability so reusing terms defined in standard ontologies was a priority.
