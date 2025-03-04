@@ -359,7 +359,7 @@ class BiboNamespace(BaseNamespace):
 class IAONamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
-        super(IAONamespace, self).__init__("IAO", "http://purl.org/ontology/IAO_")
+        super(IAONamespace, self).__init__("IAO", "http://purl.obolibrary.org/obo/IAO_")
         comment = "A (currently) primitive relation that relates an information artifact to an entity."
         self.is_about_0000136 = self.registerObjectProperty("0000136", label="is about", comment=comment)
         comment = "An information content entity that is intended to be a truthful statement about something (modulo, e.g., measurement precision or other systematic errors) and is constructed/acquired by a method which reliably tends to produce (approximately) truthful statements."
