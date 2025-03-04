@@ -1,0 +1,12 @@
+construct { 
+  ?child rdfs:subClassOf ?anyParent 
+}  where {
+  ?child rdfs:subClassOf ?directParent .
+  ?child rdfs:subClassOf* ?anyParent .
+  bind(str(?child) as ?child_str)
+  filter(
+    ! strstarts(?child_str, "http://www.w3.org/2002/07/owl") &&
+    ! strstarts(?child_str, "http://www.w3.org/ns/ldp")
+  )
+}
+

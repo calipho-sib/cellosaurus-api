@@ -1,0 +1,12 @@
+construct { 
+  ?child rdfs:subPropertyOf ?anyParent 
+}  where {
+  ?child rdfs:subPropertyOf ?directParent .
+  ?child rdfs:subPropertyOf* ?anyParent .
+  bind(str(?child) as ?child_str)
+  filter(
+    ! strstarts(?child_str, "http://www.w3.org/2002/07/owl") 
+  )
+}
+
+

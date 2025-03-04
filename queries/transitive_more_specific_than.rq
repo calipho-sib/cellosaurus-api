@@ -1,0 +1,9 @@
+PREFIX cello: <http://localhost/rdf/ontology/>
+
+construct { 
+  ?child rdfs:more_specific_than ?anyParent 
+}  where {
+  ?child cello:more_specific_than ?directParent .
+  ?child cello:more_specific_than* ?anyParent .
+  bind(str(?child) as ?child_str)
+}

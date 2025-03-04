@@ -911,10 +911,10 @@ if __name__ == "__main__":
     if platform_key not in ["local", "test", "prod"]: 
         sys.exit("Invalid --platform option, expected local, test, or prod")
 
-    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, SPARQL_PAGES, QUERIES or TEST")
+    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, INFERRED, SPARQL_PAGES, QUERIES or TEST")
 
-    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "SPARQL_PAGES", "QUERIES", "TEST" ]: 
-        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, SPARQL_PAGES, QUERIES or TEST")
+    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "INFERRED", "SPARQL_PAGES", "QUERIES", "TEST" ]: 
+        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, INFERRED, SPARQL_PAGES, QUERIES or TEST")
 
     input_dir = "data_in/"
     if input_dir[-1] != "/" : input_dir + "/"
@@ -1191,6 +1191,29 @@ if __name__ == "__main__":
             file_out.write(bytes(line + "\n", "utf-8"))
         log_it("INFO", f"writing line {count} / {len(lines)}")
         log_it("INFO:", f"serialized OWL cellosaurus ontology")
+
+    # -------------------------------------------------------
+    if args[0]=="INFERRED":
+    # -------------------------------------------------------
+        #
+        # create files containing inferred triples in rdf_data/materialized_*
+        #
+        # generate platform-dependent query template
+        content = open('queries/transitive_more_specific_than.rq.template', 'r').read()
+        content = content.replace("$cello_url", ns_reg.cello.url)
+        with open("queries/transitive_more_specific_than.rq", "w") as f: f.write(content)
+
+        # run queries from shell script
+        log_it("INFO", "running ./scripts/create_ttl_for_inferred_triples.sh ...")
+        result = subprocess.run(['bash', './scripts/create_ttl_for_inferred_triples.sh'], capture_output=True, text=True)
+        exit_code = result.returncode
+        print(result.stdout)
+        print(result.stderr)
+        if exit_code == 0:
+            log_it("INFO", f"sub-process status code: {exit_code}")
+        else:
+            log_it("ERROR", f"while running sub process, exit code = {exit_code}")
+            sys.exit(exit_code)
 
 
     # -------------------------------------------------------
