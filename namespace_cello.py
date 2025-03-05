@@ -180,6 +180,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.OmicsInfo = self.registerClass("OmicsInfo")                                 # described as an IAO:Topic
         self.CharacteristicsComment = self.registerClass("CharacteristicsComment")      # described as an IAO:Topic
         self.MiscellaneousInfoComment = self.registerClass("MiscellaneousInfoComment")  # described as an IAO:Topic
+        self.ProblematicCellLineComment = self.registerClass("ProblematicCellLineComment")  # described as an IAO:Topic
         self.CautionComment = self.registerClass("CautionComment")                      # described as an IAO:Topic
         self.AnecdotalComment = self.registerClass("AnecdotalComment")                  # described as an IAO:Topic
         self.MisspellingRecord = self.registerClass("MisspellingRecord")                # described as an IAO:Topic
@@ -335,6 +336,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.hasDoublingTime = self.registerObjectProperty("hasDoublingTime")                         # described as cello:hasAnnotation
         self.hasKaryotypicInfoComment = self.registerObjectProperty("hasKaryotypicInfoComment")                     # described as cello:hasAnnotation
         self.hasMiscellaneousInfoComment = self.registerObjectProperty("hasMiscellaneousInfoComment")               # described as cello:hasAnnotation
+        self.hasProblematicCellLineComment = self.registerObjectProperty("hasProblematicCellLineComment")               # described as cello:hasAnnotation
         self.hasMisspellingRecord = self.registerObjectProperty("hasMisspellingRecord")                             # described as cello:hasAnnotation
         self.hasSenescenceComment = self.registerObjectProperty("hasSenescenceComment")                             # described as cello:hasAnnotation
         self.hasVirologyComment = self.registerObjectProperty("hasVirologyComment")                                 # described as cello:hasAnnotation

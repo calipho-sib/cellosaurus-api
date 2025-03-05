@@ -485,6 +485,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.hasDoublingTime, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasKaryotypicInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasMiscellaneousInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasProblematicCellLineComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasMisspellingRecord, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasSenescenceComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasVirologyComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
@@ -785,6 +786,12 @@ cello:Miscellaneous a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:comment "Miscellaneous remarks about the cell line."^^xsd:string ;
     .
 
+cello:ProblematicCellLine a owl:NamedIndividual, cello:GeneralTopic ;
+    rdfs:label "Problematic cell line"^^xsd:string ;
+    cello:name "Problematic cell line"^^xsd:string ;
+    rdfs:comment "Remarks about a problematic aspect of the cell line."^^xsd:string ;
+    .
+    
 cello:Caution a owl:NamedIndividual, cello:GeneralTopic ;
     rdfs:label "Caution"^^xsd:string ;
     cello:name "Caution"^^xsd:string ;
@@ -829,7 +836,7 @@ cello:CellLineAnnotationTopic a owl:Class ;
             [
                 rdf:type owl:Class ;
                 owl:oneOf (cello:Biotechnology cello:Senescence cello:DoublingTime cello:Virology cello:Omics cello:Characteristics 
-                cello:Miscellaneous cello:Caution cello:Anecdotal cello:DonorInfo cello:Misspelling cello:Discontinuation cello:Registration) ;
+                cello:Miscellaneous cello:ProblematicCellLine cello:Caution cello:Anecdotal cello:DonorInfo cello:Misspelling cello:Discontinuation cello:Registration) ;
             ]
         )
     ] 
@@ -929,6 +936,18 @@ cello:MiscellaneousInfoComment a owl:Class ;
             [ rdf:type owl:Restriction ;
               owl:onProperty EDAM:has_topic ;
               owl:hasValue cello:Miscellaneous ;
+            ]
+        )
+    ] .
+
+cello:ProblematicCellLineComment a owl:Class ;
+    rdfs:subClassOf IAO:0000027 ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+            IAO:0000027
+            [ rdf:type owl:Restriction ;
+              owl:onProperty EDAM:has_topic ;
+              owl:hasValue cello:ProblematicCellLine ;
             ]
         )
     ] .

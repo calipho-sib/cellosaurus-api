@@ -806,3 +806,129 @@ select ?db_class ?db (sample(?ac) as ?sample_ac) (sample(str(?disc)) as ?sample_
 group by ?db_class ?db 
 order by ?db_class ?db 
 limit 300
+
+
+## ------------------------------------------------------
+ID: 144
+LB: Cell lines with a south asian genome ancestry greater than 50%
+KW: anc, genome-ancestry
+## ------------------------------------------------------
+select ?cl ?population_name ?percentage ?pmid where {
+	?cl cello:hasGenomeAncestry ?annot .
+  	?annot cello:hasComponent ?pp .
+    ?pp cello:hasPopulation / cello:name ?population_name .
+  	?pp cello:percentage ?percentage .
+    ?annot cello:hasSource / cello:originatesFrom / cello:pmid ?pmid .
+  	filter (?population_name = "South Asian"^^xsd:string && ?percentage > "50"^^xsd:float)
+}
+order by ?percent
+
+## ------------------------------------------------------
+ID: 145
+LB: Registered name(s) of some cell lines
+KW: reg, registration, registeredName
+## ------------------------------------------------------
+select ?cl (count(?registered_name) as ?registered_name_count) (group_concat(str(?registered_name); separator=' , ') as ?registered_names)  where {
+	?cl cello:registeredName ?registered_name .
+}
+group by ?cl
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 146
+LB: Detailed registered name record of some cell lines
+KW: reg, registration, registeredName
+## ------------------------------------------------------
+select ?cl ?registered_name ?organization_name  where {
+	?cl cello:hasRegistationRecord ?record .
+	?record cello:registeredName ?registered_name .
+  ?record cello:inRegister / cello:name ?organization_name .
+}
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 147
+LB: Some cell lines derived from an individual with a diabetes mellitus or more specific disease
+KW: di, disease, individual
+## ------------------------------------------------------
+select ?cl ?disease_name ?disease_concept_scheme ?disease_concept_notation  where {
+  values ?generic_concept_notation { "C2985"^^xsd:string } # notation of Diabetes mellitus in NCIt
+	?cl cello:derivedFromIndividualWithDisease ?disease .
+  ?disease cello:name ?disease_name .
+	?disease cello:isIdentifiedByXref ?xref .
+	?xref skos:notation ?disease_concept_notation .
+	?xref skos:inScheme ?disease_concept_scheme .
+  ?xref cello:more_specific_than* ?generic_concept .
+  ?generic_concept skos:notation ?generic_concept_notation .  
+  ?generic_concept skos:inScheme ?concept_scheme .
+}
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 148
+LB: Some cell lines with the age of the individual at which the sample was collected to create the cell line 
+KW: age, individual
+## ------------------------------------------------------
+select ?cl ?individual_age  where {
+	?cl cello:derivedFromIndividualAtAge ?individual_age .
+}
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 149
+LB: Version, date of addition, and date of last update in Cellosaurus for some cell lines
+KW: dt, dtc, dtu, dtv, version
+## ------------------------------------------------------
+select ?cl ?version ?date_added_to_cellosaurus ?date_of_last_change  where {
+	?cl cello:version ?version .
+	?cl cello:created ?date_added_to_cellosaurus .
+	?cl cello:modified ?date_of_last_change .
+}
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 150
+LB: Some topic comments (optionally with their source) about cell lines
+KW: misc, omics, anec, biot, caution, char, donor, time, prob
+## ------------------------------------------------------
+select ?cl ?annot_class ?src ?short_comment where {
+  values ?annot_class { 
+    cello:AnecdotalComment 
+    cello:BiotechnologyComment
+    cello:CautionComment
+    cello:CharacteristicsComment 
+    cello:DonorInfoComment 
+    cello:DoublingTime
+    cello:OmicsInfo
+    cello:ProblematicCellLineComment
+    cello:MiscellaneousInfoComment
+  }
+  ?prop rdfs:subPropertyOf cello:hasAnnotation .
+  ?cl ?prop ?annot .
+  ?annot a ?annot_class .
+  ?annot rdfs:comment ?comment .
+  optional {
+    ?annot cello:hasSource ?s . {
+      { ?s cello:originatesFrom / cello:database / cello:shortname ?xr }  union
+      { ?s cello:originatesFrom / cello:internalId ?rf }  union
+      { ?s cello:originatesFrom / cello:name ?org }  union
+      { ?s rdfs:label ?lb }
+  	}
+  }
+  bind (str(coalesce(?xr, ?rf, ?org, ?lb, '-')) as ?src)
+  bind (str(substr(?comment, 0, 80)) as ?short_comment)
+}
+order by ?cl
+limit 100
+
+

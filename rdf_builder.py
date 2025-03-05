@@ -975,6 +975,10 @@ class RdfBuilder:
         for annot in cl_data.get("genetic-integration-list") or []:
             triples.extend(self.get_triples_for_cc_genetic_integration(cl_IRI, annot))
 
+        # fields: CC omics
+        for annot in cl_data.get("omics-list") or []:
+            triples.extend(self.get_triples_for_cc_omics_info(cl_IRI, annot))
+
         # fields: CC from, ...
         for cc in cl_data.get("comment-list") or []:
             categ = cc["category"]
@@ -1001,12 +1005,12 @@ class RdfBuilder:
                 triples.extend(self.get_triples_for_cc_karyotypic_info(cl_IRI, cc))
             elif categ == "Miscellaneous":
                 triples.extend(self.get_triples_for_cc_miscellaneous_info(cl_IRI, cc))
+            elif categ == "Problematic cell line":
+                triples.extend(self.get_triples_for_cc_problematic_info(cl_IRI, cc))
             elif categ == "Senescence":
                 triples.extend(self.get_triples_for_cc_senescence_info(cl_IRI, cc))
             elif categ == "Virology":
                 triples.extend(self.get_triples_for_cc_virology_info(cl_IRI, cc))
-            elif categ == "Omics":
-                triples.extend(self.get_triples_for_cc_omics_info(cl_IRI, cc))
             elif categ == "Population":
                 triples.extend(self.get_triples_for_cc_population_info(cl_IRI, cc))
 
@@ -1277,6 +1281,19 @@ class RdfBuilder:
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.cello.hasMiscellaneousInfoComment, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.MiscellaneousInfoComment)
+        triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
+        triples.extend(self.get_triples_for_sources(inst_BN, cc.get("source-list") or []))
+        return triples
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_triples_for_cc_problematic_info(self, cl_IRI, cc):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
+        triples = TripleList()
+        comment = cc["value"]
+        inst_BN = self.get_blank_node()
+        triples.append(cl_IRI, ns.cello.hasProblematicCellLineComment, inst_BN)
+        triples.append(inst_BN, ns.rdf.type, ns.cello.ProblematicCellLineComment)
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_triples_for_sources(inst_BN, cc.get("source-list") or []))
         return triples
