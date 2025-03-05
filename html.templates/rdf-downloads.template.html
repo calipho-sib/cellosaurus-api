@@ -16,11 +16,54 @@
 
   <body>
       <h1>RDF files download</h1>
-    <div style="padding-left: 80px;">
-      The RDF data is available as a compressed tar file. It contains several files in Turtle format (ttl) including both ontology and data. The content reflects what is made available at our sparql endpoint.
+    <div style="padding-left: 80px; padding-right:60px; ">
+      The RDF data is available as a compressed tar file. It contains several files in Turtle format (ttl) including both ontology, metadata, query examples and data. <br>
+      The content reflects what is made available at our sparql endpoint.
       <ul>
-        <li><a download href="/static/downloads/cellosaurus.ttl.gz">cellosaurus.ttl.gz</a></li>
+        <li><a download href="/static/downloads/cellosaurus_ttl.tar.gz">cellosaurus_ttl.tar.gz</a></li>
       </ul> 
+      In addition we provide with additional Turtle files which can be loaded on top of those in
+      <i>cellosaurus_ttl.tar.gz</i> in order to speed up the execution of some SPARQL queries especially 
+      for triple stores with low memory resources (RAM).<br>      
+      The additional files contain the materialization of some inferable triples. 
+      In RDF/SPARQL materialization refers to the process of explicitly generating and storing all possible 
+      inferred triples based on the existing data and defined rules or ontologies. This process involves:
+      <ul>
+        <li>Applying inference rules to the existing RDF data</li>
+        <li>Creating new triples that logically follow from the original data</li>
+        <li>Storing these newly inferred triples alongside the original data</li>
+      </ul>
+      Materialization can help in several ways:
+      <ul>
+        <li><b>Query Performance</b> : It improves query execution speed by pre-computing inferred relationships, 
+          eliminating the need for real-time inference during query processing</li>
+        <li><b>Simplified Querying</b> : Users can write simpler queries without needing to account for complex 
+          inference rules, as all possible relationships are already explicit in the data</li>
+        <li><b>Consistency</b> : It ensures that all applications accessing the data see the same inferred 
+          information, maintaining consistency across different use cases</li>
+        <li><b>Scalability</b> : For large datasets, materialization can be more efficient than computing 
+          inferences on-the-fly, especially when the same inferences are needed repeatedly</li>
+      </ul>
+      
+      In our case, the usage of inferred triples makes the usage of "*", "?", "+" and "{n,m} symbols in SPARQL 
+      query property path expressions unnecessary and may notably improve performance on queries involving a 
+      concept and all the concepts that are more specific than it according to some concept scheme. For example:
+      <pre>
+select * where {
+  ?something ?related_somehow_to ?any_concept .
+  ... 
+  ?any_concept cello:more_specific_than* ?concept .
+  ?concept skos:inScheme db:NCBI_TaxID ; skos:notation "50557"^^xsd:string .  # Insecta
+}</pre>
+      would not require "*" (a path of zero or more occurrences of cello:more_specific_than) and would run faster after
+      loading the files proposed below. The files can be found here:
+      <ul>
+        <li><a download href="/static/downloads/materialized_transitive_more_specific_than.ttl">materialized_transitive_more_specific_than.ttl</a></li>
+        <li><a download href="/static/downloads/materialized_transitive_subproperties.ttl">materialized_transitive_subproperties.ttl</a></li>
+        <li><a download href="/static/downloads/materialized_transitive_subclasses.ttl">materialized_transitive_subclasses.ttl</a></li>
+      </ul>
+
+
     </div>
   </body>
 </html>
