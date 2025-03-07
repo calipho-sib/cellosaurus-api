@@ -1,4 +1,4 @@
-PREFIX cello: <https://www.mix-id1.cellosaurus.org/rdf/ontology/>
+PREFIX cello: <https://purl.expasy.org/cellosaurus/rdf/ontology/>
 
 construct { 
   ?child rdfs:more_specific_than ?anyParent 

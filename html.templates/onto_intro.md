@@ -1,7 +1,7 @@
 
 **Links with other ontologies**
 
-Most of the classes and properties defined within the Cellosaurus ontology (prefix cello:) are derived from existing terms defined in general purpose or domain specific OWL ontologies. 
+Most of the classes and properties defined within the Cellosaurus ontology (prefix cello:) are derived from existing terms defined in general purpose or domain specific OWL ontologies. In this version (revision 1.0):
 
 * Out of 131 classes, 126 are rdfs:subClassOf+ or / and owl:equivalentClass of an external term.
 
@@ -10,11 +10,11 @@ Most of the classes and properties defined within the Cellosaurus ontology (pref
 
 More details about the subsuming / equivalency term relationships are available in the SPARQL query examples at [sparql-editor](/sparql-editor).
 
-Since the Cellosaurus is an extensive description of cell lines, multiple ontologies were required to cover its conceptual field, among which :
+Since Cellosaurus is an extensive description of cell lines, multiple ontologies were required to cover its conceptual field, among which :
 
-* [IAO is_about](http://purl.org/ontology/IAO_0000136) to define [cello:hasAnnotation](#hasAnnotation) as its inverse property (owl:inverseOf)
+* [IAO is_about](http://purl.obolibrary.org/ontology/IAO_0000136) to define [cello:hasAnnotation](#hasAnnotation) as its inverse property (owl:inverseOf)
 
-* [IAO DataItem](http://purl.org/ontology/IAO_0000027) as a superclass of several topic comments in conjunction with EDAM concepts topic and has_topic. See for example [cello:DonorInfoComment](#DonorInfoComment)
+* [IAO DataItem](http://purl.obolibrary.org/ontology/IAO_0000027) as a superclass of several topic comments in conjunction with EDAM concepts topic and has_topic. See for example [cello:DonorInfoComment](#DonorInfoComment)
 
 * [BFO has_part](http://purl.obolibrary.org/obo/BFO_0000051) as a super property for [cello:hasAntibodyLightChain](#hasAntibodyLightChain) and others
 
@@ -28,15 +28,17 @@ Since the Cellosaurus is an extensive description of cell lines, multiple ontolo
 
 * Root biological concepts like disease, gene, marker, sequence variations from [NCIt](https://ncithesaurus.nci.nih.gov) are used as subsuming or equivalent to our terms. See for example [cello:Sequencevariation](#SequenceVariation)
 
+* [UBERON](https://obophenotype.github.io/uberon/) and [CL](https://obophenotype.github.io/cell-ontology/) which describe anatomical terms and cell types respectively.
+
 * [ChEBI](https://www.ebi.ac.uk/chebi/) serves as a root to define chemical compounds and [cello:Protein](#Protein)
 
-* [cello:CellLine](#CellLine) sub-classes have an owl:equivalentClass in [Wikidata](https://www.wikidata.org/wiki/Wikidata:Main_Page) and 5 cell line properties have owl:equivalentProperty as well. Note that every cell line of the Cellosaurus is also described in Wikidata. The content of Wikidata regarding cellosaurus cell lines is synchronized with a bot running on each new Cellosaurus release. 
+* [cello:CellLine](#CellLine) sub-classes have an owl:equivalentClass in [Wikidata](https://www.wikidata.org/wiki/Wikidata:Main_Page) and 5 cell line properties have owl:equivalentProperty as well. Note that every cell line of Cellosaurus is also described in Wikidata. The content of Wikidata regarding cellosaurus cell lines is synchronized with a bot running on each new Cellosaurus release. 
 
 * [skos](https://www.w3.org/2004/02/skos/) terms are used to define local [concept schemes](#CelloConceptScheme) and to link related concepts within concept schemes. It is also used to add informal semantic links between terms across ontologies, for example between [cello:PrivaDocentThesis](#PrivaDocentThesis) and [up:ThesisCitation](https://purl.uniprot.org/html/index-en.html#Thesis_Citation). Note that skos properties linking our terms to other ontology terms are displayed in the _has relation_ section of the term.
 
 **Cross-references**
 
-[Xref](#Xref) instances are widely used in the Cellosaurus. They have their own namespace and IRIs. A cross-reference instance provides information about its database, its identifier within the database (accession) and an URL pointing to a Web page. It may also come with an optional _rdfs:label_ property or _discontinued_ property depending on the context.
+[Xref](#Xref) instances are widely used in Cellosaurus. They have their own namespace and IRIs. A cross-reference instance provides information about its database, its identifier within the database (accession) and an URL pointing to a Web page. It may also come with an optional _rdfs:label_ property or _discontinued_ property depending on the context.
 
 The most common use cases are:
 
@@ -55,13 +57,13 @@ This occurs when the cross-references of a database can also be seen as concepts
 
 Such cross-references are also declared as instances of [skos:Concept](#httpwwww3org200402skoscoreConcept) and linked to each other within their CelloConceptScheme with [cello:more_specific_than](#more_specific_than) properties. 
 
-For any cross-reference used in the Cellosaurus to somehow describe a cell line and which belongs to either db:CL, db:ChEBI, db:NCBI_TaxID, db:NCIt, db:ORDO, db:RS, db:UBERON, or db:VBO, we provide with:
+For any cross-reference used in Cellosaurus to somehow describe a cell line and which belongs to either db:CL, db:ChEBI, db:NCBI_TaxID, db:NCIt, db:ORDO, db:RS, db:UBERON, or db:VBO, we provide with:
 
 * all the parent concepts up to the root concept in the original ontology
 
 * the hierarchical structure with property _cello:more_specific_than_ properties linking concepts
 
-Making the hierarchy of concepts available within the Cellosaurus makes it possible to build SPARQL queries using a criterion like 
+Making the hierarchy of concepts available within Cellosaurus makes it possible to build SPARQL queries using a criterion like 
 
 > ?any_concept cello:more_specific_than* ?some_concept . 
 

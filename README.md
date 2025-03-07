@@ -3,7 +3,7 @@ Cellosaurus API
 
 From the CALIPHO group of the SIB - Swiss Institute of Bioinformatics
 
-Provides a programmatic access to the Cellosaurus, a knowledge resource on cell lines
+Provides a programmatic access to Cellosaurus, a knowledge resource on cell lines
 
 Cellosaurus API : https://api.cellosaurus.org/
 
