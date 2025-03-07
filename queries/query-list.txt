@@ -33,7 +33,7 @@ KW: ca, category, stats
 ## ------------------------------------------------------
 
 select ?class_name (count(?cl) as ?cnt) where { 
-  ?class rdfs:subClassOf cello:CellLine . # cell line generic class
+  ?class rdfs:subClassOf* cello:CellLine . # cell line generic class
   ?class rdfs:label ?class_name .
   optional {?cl rdf:type ?class. }
 }
@@ -192,7 +192,7 @@ KW: id, sy, ac, accession, name, primaryAccession, secondaryAccession, preferred
 select ?cl (str(?ac) as ?id) (str(?pref_name) as ?rec_name)
 (group_concat(str(?old_ac); separator= ' ') as ?old_acs) (group_concat(str(?alt_name); separator= ' ') as ?alt_names)
 where {
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:primaryAccession ?ac .                       # cell line identifier
   ?cl cello:recommendedName ?pref_name .                 # cell line preferred name
   optional { ?cl cello:secondaryAccession ?old_ac . }    # cell line obsoleted identifier(s)
@@ -214,7 +214,7 @@ select
 (count(?cl) as ?cl_count)		# count of cell linesknown as etablished by organization
 where {
   #values ?cl { cvcl:CVCL_C2T2 }   
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:establishedBy ?org. 
   ?org a schema:Organization.
   ?org cello:name ?oname .
@@ -239,7 +239,7 @@ select ?publi ?publi_identifiers (count(distinct(?cl_ac)) as ?cl_count) where {
   	(group_concat(distinct str(?pac); separator = ', ') as ?publi_identifiers)
     ?cl_ac
   	where {
-      ?cl a / rdfs:subClassOf cello:CellLine .
+      ?cl a / rdfs:subClassOf* cello:CellLine .
   	  ?cl cello:primaryAccession ?cl_ac .
       ?cl cello:references ?publi.
       ?publi a ?publiClass .
@@ -261,7 +261,7 @@ select
 (str(?person_name) as ?author_name) 
 (count(distinct ?publi) as ?publi_count)
 where {
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:references ?publi .
   ?publi ?p ?contr .
   ?contr a schema:Person .
@@ -278,7 +278,7 @@ LB: Top 100 most represented species and breed in cell line records
 KW: ox, species, breed, stats
 ## ------------------------------------------------------
 select ?species_ac ?species_name ?breed_ac ?breed_name (count(distinct(?cl)) as ?cnt) where {
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:derivedFromIndividualBelongingToSpecies ?species .
   ?species cello:isIdentifiedByXref / cello:accession ?species_ac .
   ?species cello:name ?species_name .
@@ -299,7 +299,7 @@ LB: Top 100 most represented cell types in cell line records
 KW: cell-type, cell, stats
 ## ------------------------------------------------------
 select ?ct_class ?ct_ac ?ct_name (count(distinct ?cl) as ?cell_line_count) where {
-    ?cl a / rdfs:subClassOf cello:CellLine .
+    ?cl a / rdfs:subClassOf* cello:CellLine .
     ?cl cello:derivedFromCellType ?ct.
     ?ct a ?ct_class.
     ?ct cello:name ?ct_name .
@@ -317,7 +317,7 @@ LB: Top 100 cell lines from which the most other cell lines have been derived (c
 KW: ch, child, stats
 ## ------------------------------------------------------
 select ?cl ?cl_name (count(?child) as ?child_count) where {
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:recommendedName ?cl_name .
   ?cl cello:hasChildCellLine ?child .
 } 
@@ -333,7 +333,7 @@ KW: site, tissue
 ## ------------------------------------------------------
 select ?cl ?site_class ?site_name ?site_type ?site_ac ?note
 where {
-    ?cl a / rdfs:subClassOf cello:CellLine .
+    ?cl a / rdfs:subClassOf* cello:CellLine .
     ?cl cello:derivedFromSite ?site .
     ?site cello:name ?site_name .
     ?site cello:siteType ?site_type .
@@ -377,7 +377,7 @@ LB: Cell lines a karyotypic comment
 KW: kar, karyotype
 ## ------------------------------------------------------
 select ?cl ?comment_class ?comment where { 
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:hasKaryotypicInfoComment ?annot.
   ?annot a ?comment_class .
   ?annot rdfs:comment ?comment .
@@ -391,7 +391,7 @@ LB: Cell lines with gene knockout
 KW: ko, knockout, gene
 ## ------------------------------------------------------
 select ?cl ?annot_class ?method ?gene_name ?gene_ac ?cm where { 
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:hasGeneKnockout ?annot.
   ?annot a ?annot_class .
   ?annot cello:hasGenomeModificationMethod ?method .
@@ -410,7 +410,7 @@ LB: Cell lines with an antibody target
 KW: MoAb, mabt, protein, chemical
 ## ------------------------------------------------------
 select ?cl ?ct_class (substr(str(?target_name),0,30) as ?name) ?target_ac (str(?comment) as ?note) where {
-   ?cl a / rdfs:subClassOf cello:CellLine .
+   ?cl a / rdfs:subClassOf* cello:CellLine .
    ?cl cello:hasMoAbTarget ?annot.
    ?annot a ?ct_class .
    ?annot rdfs:label ?target_name .
@@ -431,7 +431,7 @@ LB: Cell lines with a miscellaneous comment
 KW: misc, miscellaneous
 ## ------------------------------------------------------
 select ?cl ?ct_class ?comment where { 
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:hasMiscellaneousInfoComment ?annot.
   ?annot a ?ct_class .
   ?annot rdfs:comment ?comment .
@@ -446,7 +446,7 @@ KW: miss, misspelling, source
 ## ------------------------------------------------------
 select ?cl ?misspelling_name ?src ?note
 where {
-  ?cl a / rdfs:subClassOf cello:CellLine.
+  ?cl a / rdfs:subClassOf* cello:CellLine.
   ?cl cello:hasMisspellingRecord ?rec.
   ?rec cello:misspellingName ?misspelling_name .
   optional { ?rec cello:appearsIn ?src. }
@@ -462,7 +462,7 @@ LB: Get micro satellite instability data of some cell lines
 KW: msi, source
 ## ------------------------------------------------------
 select ?cl ?ct_class ?value ?src_ori ?src_name ?comment where {
-   ?cl a / rdfs:subClassOf cello:CellLine .
+   ?cl a / rdfs:subClassOf* cello:CellLine .
    ?cl cello:hasMicrosatelliteInstability ?annot.
    ?annot a ?ct_class .
    ?annot cello:microsatelliteInstabilityStatus ?value .
@@ -543,7 +543,7 @@ KW: res, resistance, chemical, drug, toxin
 ## ------------------------------------------------------
 select ?cl ?compound_class (substr(str(?compound_str),0,36) as ?compound_name) ?compound_iri ?compound_url where 
   {
-   ?cl a / rdfs:subClassOf cello:CellLine .
+   ?cl a / rdfs:subClassOf* cello:CellLine .
    ?cl cello:hasResistance ?compound.
    ?compound a ?compound_class .
    ?compound cello:name ?compound_str .
@@ -591,7 +591,7 @@ LB: Title, year and type of publication refernced by some cell lines
 KW: rx, rt, references, title, year, publication, patent, thesis
 ## ------------------------------------------------------
 select ?cl ?ref_class ?year_str ?id_str ?title_str where {
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:references ?ref .
   #values ?ref_class { fabio:ConferencePaper }  # uncomment to set constraint on reference class
   #values ?ref_class { fabio:JournalArticle }   # uncomment to set constraint on reference class
@@ -618,7 +618,7 @@ KW: sen, senescence, source
 ## ------------------------------------------------------
 select ?cl ?annot_class ?s ?ori ?src ?comment
 where { 
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:hasSenescenceComment ?annot.
   ?annot a ?annot_class .
   ?annot rdfs:comment ?comment .
@@ -641,7 +641,7 @@ LB: Count of cell lines by sex of the individual from which the cell line origin
 KW: sx, sex
 ## ------------------------------------------------------
 select (count(*) as ?cl_count) ?sex where {
-  ?cl a / rdfs:subClassOf cello:CellLine.
+  ?cl a / rdfs:subClassOf* cello:CellLine.
   optional { ?cl cello:derivedFromIndividualWithSex ?sex. }
 } 
 group by ?sex
@@ -722,7 +722,7 @@ KW: tfor, transformant
 ## ------------------------------------------------------
 select   ?cl (str(?lbl) as ?transformant_name) ?db ?ac (str(?cm) as ?comment) 
   where {
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:transformedBy ?annot.
   ?annot rdfs:label ?lbl .
   ?annot a ?annot_class .
@@ -759,7 +759,7 @@ KW: vir, virology
 select ?cl ?annot_class ?has_src
   (if( strlen(?cm) > 60, concat(substr(str(?cm),0,90), '...'), str(?cm)) as ?comment)
 where { 
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:hasVirologyComment ?annot.
   ?annot a ?annot_class .
   ?annot rdfs:comment ?cm .
@@ -777,7 +777,7 @@ KW: dr, xref
 ## ------------------------------------------------------
 select ?cl ?xref ?db ?ac where {
 values ?cl { cvcl:CVCL_1100 }
-  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl a / rdfs:subClassOf* cello:CellLine .
   ?cl cello:seeAlsoXref ?xref .
   ?xref cello:database ?db.
   ?xref cello:accession ?ac.
