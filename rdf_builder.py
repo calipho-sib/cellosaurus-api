@@ -1392,6 +1392,7 @@ class RdfBuilder:
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.cello.hasOmicsInfo, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.OmicsInfo)
+        triples.append(inst_BN, ns.schema.category, ns.xsd.string(branch))
         triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         return triples
 

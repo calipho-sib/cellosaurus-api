@@ -140,7 +140,7 @@ if rdf_is_visible:
 # general documentation in the header of the page
 app = FastAPI(
     title="Cellosaurus API methods",
-    description="This API is dedicated to users who want to query and access programmatically the Cellosaurus.",
+    description="This API is dedicated to users who want to query and access programmatically Cellosaurus data.",
     version=ApiCommon.CELLAPI_VERSION,
     terms_of_service="https://www.expasy.org/terms-of-use",
 #    contact={
@@ -586,7 +586,7 @@ async def search_cell_line(
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/entity/ontology/.{format}" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=rdf_is_visible)
+@app.get("/describe/entity/ontology/.{format}" , name="RDF description of the Cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=rdf_is_visible)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_onto(
         request: Request,
@@ -598,7 +598,7 @@ async def describe_onto(
     return describe_any(SubNs["ontology"], "", format, request)
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/describe/entity/ontology/" , name="RDF description of the cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=rdf_is_visible)
+@app.get("/describe/entity/ontology/" , name="RDF description of the Cellosaurus ontology", tags=["RDF"], response_class=responses.Response, responses={"200":rdf_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=rdf_is_visible)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def describe_onto(
         request: Request,

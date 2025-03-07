@@ -932,3 +932,14 @@ order by ?cl
 limit 100
 
 
+## ------------------------------------------------------
+ID: 151
+LB: Some omics comments about cell lines
+KW: omics
+## ------------------------------------------------------
+select ?cl ?cat ?comment where {
+  ?cl cello:hasOmicsInfo ?annot .
+  ?annot schema:category ?cat .
+  ?annot rdfs:comment ?comment .
+}
+limit 100
