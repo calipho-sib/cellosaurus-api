@@ -4,6 +4,7 @@ scripts_dir="$(dirname $0)"
 base_dir=$scripts_dir/..
 
 release_number=$1
+no_xml=$2
 
 echo "release_number: $release__number"
 
@@ -24,14 +25,19 @@ trg_dir=$base_dir/data_in
 mkdir -p $trg_dir
 
 # either in draft or release directory
-files="cellosaurus.txt cellosaurus_refs.txt cellosaurus_xrefs.txt cellosaurus.xml cellosaurus.xsd"
+if [ "$no_xml" == "no-xml" ]; then
+  files="cellosaurus.txt cellosaurus_refs.txt cellosaurus_xrefs.txt cellosaurus.xsd"
+else
+  files="cellosaurus.txt cellosaurus_refs.txt cellosaurus_xrefs.txt cellosaurus.xml cellosaurus.xsd"
+fi
+
 for f in $files; do
   echo "retrieving $src_dir/$f"
   scp $src_dir/$f $trg_dir/$f
 done
 
 # only in draft directory
-files="cellosaurus_species.cv celloparser.cv site_mapping_to_cl_uberon institution_list cellosaurus_journals.cv"
+files="cellosaurus_species.cv celloparser.cv site_mapping_to_cl_uberon institution_list cellosaurus_journals.cv cellosaurus_omics.cv"
 for f in $files; do
   echo "retrieving $draft_dir/$f"
   scp $draft_dir/$f $trg_dir/$f
