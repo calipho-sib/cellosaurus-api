@@ -59,6 +59,10 @@ class Format(str, Enum):
     tsv = "tsv"
 
 
+
+json_type_responses = { "description": "Successful response", "content" : { "application/json": {} } }
+
+
 # simple multi media types response
 four_media_types_responses = { "description": "Successful response", "content" : {
   "application/json": {},
@@ -695,6 +699,35 @@ def describe_any(dir, ac, format, request):
     response = requests.post(sparql_service, data=urlencode(payload), headers=headers)
     log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
     return responses.Response(content=response.text, media_type=mimetype )
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+@app.get("/describe/model" , name="Typical triples found in Cellosaurus RDF", tags=["RDF"], response_class=responses.Response, responses={"200":json_type_responses, "400": {"model": ErrorMessage}}, include_in_schema=rdf_is_visible)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def get_model_description(request:Request):
+    t0 = datetime.datetime.now()
+    log_it("INFO", f"called describe/model")
+    sparql_service = platform.get_private_sparql_service_IRI()
+    query = """
+        select ?subject_class ?property ?object_type (count(*) as ?triple_count) where {
+        GRAPH <https://www.cellosaurus.org/rdf/graphs/main> {
+            ?s ?property ?o .
+            ?s a ?subject_class .
+            optional {?o a ?o_class }
+            bind(coalesce(?o_class, datatype(?o), 'IRI') as ?object_type)
+        }}
+        group by ?subject_class ?property ?object_type
+        order by ?subject_class ?property ?object_type
+    """
+    print("query:", query)
+    payload = {"query": query}
+    mimetype = "application/sparql-results+json"
+    headers = { "Content-Type": "application/x-www-form-urlencoded" , "Accept" : mimetype }    
+    response = requests.post(sparql_service, data=urlencode(payload), headers=headers)
+    log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
+    return responses.Response(content=response.text, media_type=mimetype )
+
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

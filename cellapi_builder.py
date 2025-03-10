@@ -22,6 +22,7 @@ from fields_utils import FldDef
 from namespace_registry import NamespaceRegistry
 
 from rdf_builder import RdfBuilder
+from datamodel_builder import DataModelBuilder
 from organizations import KnownOrganizations, Organization
 
 from terminologies import Terminologies, Terminology
@@ -911,10 +912,10 @@ if __name__ == "__main__":
     if platform_key not in ["local", "test", "prod"]: 
         sys.exit("Invalid --platform option, expected local, test, or prod")
 
-    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, INFERRED, SPARQL_PAGES, QUERIES or TEST")
+    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, INFERRED, MODEL, SPARQL_PAGES, QUERIES or TEST")
 
-    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "INFERRED", "SPARQL_PAGES", "QUERIES", "TEST" ]: 
-        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, INFERRED, SPARQL_PAGES, QUERIES or TEST")
+    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "INFERRED", "MODEL", "SPARQL_PAGES", "QUERIES", "TEST" ]: 
+        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, INFERRED, MODEL, SPARQL_PAGES, QUERIES or TEST")
 
     input_dir = "data_in/"
     if input_dir[-1] != "/" : input_dir + "/"
@@ -1191,6 +1192,21 @@ if __name__ == "__main__":
             file_out.write(bytes(line + "\n", "utf-8"))
         log_it("INFO", f"writing line {count} / {len(lines)}")
         log_it("INFO:", f"serialized OWL cellosaurus ontology")
+
+
+    # -------------------------------------------------------
+    if args[0]=="MODEL":
+    # -------------------------------------------------------
+        #
+        # create json file containing cellosaurus RDF data model
+        #
+        fileout = "static/datamodel.json"
+        log_it("INFO:", f"serializing cellosaurus RDF data model to: {fileout}")        
+        builder = DataModelBuilder(platform)
+        builder.retrieve_and_save_model(fileout)
+        log_it("INFO:", f"serialized cellosaurus RDF data model to: {fileout}")
+
+
 
     # -------------------------------------------------------
     if args[0]=="INFERRED":
