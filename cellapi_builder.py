@@ -936,7 +936,7 @@ if __name__ == "__main__":
         ob = OntologyBuilder(platform, describe_ranges_and_domains=False)
 
         known_orgs = KnownOrganizations()
-        known_orgs.loadInstitutions(input_dir + "institution_list")
+        known_orgs.loadInstitutions(input_dir + "cellosaurus_institutions.cv")
         known_orgs.loadOnlineResources(input_dir + "cellosaurus_xrefs.txt")
 
         terminologies = Terminologies()

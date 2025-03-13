@@ -554,7 +554,7 @@ class RdfBuilder:
     def get_org_merged_with_known_org(self, org: Organization):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # if we just have a name, try to merge with a known org 
-        # defined in institution_list and cellosaurus_xrefs.txt
+        # defined in cellosaurus_institutions.cv and cellosaurus_xrefs.txt
         korg = self.known_orgs.get(org.name) 
         if korg is not None: 
             # if one of the following fields is not None or a non empty string, emit WARNING

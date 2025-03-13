@@ -734,7 +734,7 @@ cello:Biotechnology a owl:NamedIndividual, NCIt:C16351 ;
     rdfs:comment "The field devoted to applying the techniques of biochemistry, cellular biology, biophysics, and molecular biology to addressing issues related to human beings and the environment."^^xsd:string ;
     .
 
-cello:DoublingTime a owl:NamedIndividual, NCIt:C94346 ;
+cello:DoublingTimeNI a owl:NamedIndividual, NCIt:C94346 ;
     rdfs:label "Doubling time"^^xsd:string ;
     cello:name "Doubling time"^^xsd:string ;
     rdfs:comment "In biology, the amount of time it takes for one cell to divide or for a group of cells (such as a tumor) to double in size. The doubling time is different for different kinds of cancer cells or tumors."^^xsd:string ;
@@ -835,7 +835,7 @@ cello:CellLineAnnotationTopic a owl:Class ;
             EDAM:topic_0003
             [
                 rdf:type owl:Class ;
-                owl:oneOf (cello:Biotechnology cello:Senescence cello:DoublingTime cello:Virology cello:Omics cello:Characteristics 
+                owl:oneOf (cello:Biotechnology cello:Senescence cello:DoublingTimeNI cello:Virology cello:Omics cello:Characteristics 
                 cello:Miscellaneous cello:ProblematicCellLine cello:Caution cello:Anecdotal cello:DonorInfo cello:Misspelling cello:Discontinuation cello:Registration) ;
             ]
         )
@@ -887,7 +887,7 @@ cello:DoublingTime a owl:Class ;
             IAO:0000027
             [ rdf:type owl:Restriction ;
               owl:onProperty EDAM:has_topic ;
-              owl:hasValue cello:DoublingTime ;
+              owl:hasValue cello:DoublingTimeNI ;
             ]
         )
     ] .

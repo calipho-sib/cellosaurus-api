@@ -23,7 +23,7 @@ archive_name=${src_dir}.tar.gz
 files="$src_dir/*"
 
 if [ "$src_dir" == "data_in" ]; then
-  files="$src_dir/cellosaurus_species.cv $src_dir/celloparser.cv $src_dir/site_mapping_to_cl_uberon $src_dir/institution_list"
+  files="$src_dir/cellosaurus_species.cv $src_dir/celloparser.cv $src_dir/cellosaurus_anatomy.cv $src_dir/cellosaurus_institutions.cv"
   files="$files $src_dir/cellosaurus.txt $src_dir/cellosaurus_refs.txt $src_dir/cellosaurus_xrefs.txt"
   files="$files $src_dir/cellosaurus.xml $src_dir/cellosaurus.xsd $src_dir/cellosaurus_journals.cv"
 fi

@@ -33,7 +33,7 @@ class KnownOrganizations:
 # - - - - - - - - - - - - - - - - - - - - - - 
     def loadInstitutions(self, file):
 # - - - - - - - - - - - - - - - - - - - - - - 
-        f_in = open(file) # we expect institution_list file here
+        f_in = open(file) # we expect cellosaurus_institutions.cv file here
         lineNo = 0
         while True:
             line = f_in.readline()
@@ -68,7 +68,7 @@ class KnownOrganizations:
 # - - - - - - - - - - - - - - - - - - - - - - 
     def loadInstitutions_old(self, file):
 # - - - - - - - - - - - - - - - - - - - - - - 
-        f_in = open(file) # we expect institution_list file here
+        f_in = open(file) # we expect cellosaurus_institutions.cv file here
         while True:
             line = f_in.readline()
             if line == "": break
@@ -147,6 +147,6 @@ if __name__ == "__main__":
 # ===========================================================================================
 
     known_orgs = KnownOrganizations()
-    known_orgs.loadInstitutions("data_in/institution_list")
+    known_orgs.loadInstitutions("data_in/cellosaurus_institutions.cv")
     known_orgs.loadOnlineResources("data_in/cellosaurus_xrefs.txt")
     known_orgs.print()
