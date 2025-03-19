@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon32.png">
+    <title>RDF data model broswer</title>
+    <style>
+
+
+        /* base style */
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: Arial, Helvetica, sans-serif; }
+        .menu { position: fixed; top: 0px;left: 0; width: 100%; background-color: #333;padding: 10px; color: white; }
+        .header {border-bottom: 2px solid #ccc; position: fixed; top: 40px;left: 0; width: 100%; background-color: #f5f5f5;padding: 10px; color: black; display:inline-flex; }
+        /* .content { display: grid; grid-template-columns: 1fr 360px 1fr; grid-template-rows: 240px 1fr; height: calc(100vh - 84px); margin-top: 84px; } */
+        .content { display: grid; grid-template-columns: 1fr 25% 1fr; grid-template-rows: 37% 1fr; height: calc(100vh - 84px); margin-top: 84px; }
+        .cell { border: 1px solid #ccc; padding: 10px; overflow-y: auto; display: grid; background-color: #f5f5f5; }
+
+        .data-table { width: 100%; /* table-layout: auto; #table-layout: fixed; */ } 
+        .data-table td { white-space: nowrap; padding: 12px 5px 12px 5px; }
+        .right-align { text-align: right; }
+        .min-width   {  width: 1%; }
+        .left-align  { text-align: left; }       
+        .center-align { text-align: center; }
+        .long-text { text-align: left; white-space: normal; font-size: small; }
+        .breakable { word-break: break-all; white-space: normal;} 
+        .word-breakable { overflow-wrap: break-word; white-space: normal; }
+        .emphasized { font-size:large ; font-weight: bold; height: 25px;  line-height: 25px;}
+
+        /* dialog legend */
+
+        .dialog {
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        dialog table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        dialog table th {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        dialog table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        dialog table th {
+            background-color: #f2f2f2;
+        }
+        .button-container {
+            text-align: center;
+        }
+
+        /* nodes and props styles */
+
+
+        .iri-box {
+            border: 1px solid black;
+            border-radius: 50px;
+            padding: 5px 12px 5px 12px; 
+        }
+        .iri-box a { text-decoration: none; }
+
+        .lit-box {
+            border: 1px solid black;
+            border-radius: 0px;
+            padding: 5px 12px 5px 12px; 
+        }
+        .lit-box a { text-decoration: none; }
+
+        .cls-bg { background-color: #b7dbf2; }
+        .prp-bg { background-color: #cdf4b6; }
+        .ukn-bg { background-color: #ffb899; }
+        .lit-bg { background-color: #ffe19a; } 
+
+        /* .lit-bg { background-color: #fbc6fb; }         */
+        
+        a::after {
+            content: "";
+            margin-left: 0px;
+        }
+        a:hover::after {
+            content: "›";
+            margin-left: 4px;
+        }
+        a[target="_blank"]:hover::after {
+            content: "»";
+            margin-left: 4px;
+        }
+        a[target="_blank"]::after {
+            content: "";
+            margin-left: 0px;
+        }
+
+        /* 
+        WARNING:
+        classes below used to sync column widths of tables
+        together with javascript function syncColumnWidths()
+        */
+        .slave-table-fc { table-layout: fixed; }
+        .slave-table-fc td:first-child { width: auto; white-space: nowrap; }
+        .slave-table-lc { table-layout: fixed; }
+        .slave-table-lc td:last-child { width: auto; white-space: nowrap; }
+
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+        }
+        .autocomplete-items {
+            width:fit-content;
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+        }
+        .autocomplete-items div {
+            white-space: nowrap;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+
+    </style>
+
+<script>
+
+    let jsonData = {}; // Variable to store the loaded JSON data
+
+    /*
+    ===============================================================================================
+    Event handlers
+    ===============================================================================================
+    */
+
+    async function initPage() {
+
+        try {
+            const response = await fetch("datamodel.json");
+            jsonData = await response.json();
+            const currentHash = location.hash.substring(1);
+            let term = currentHash.replace("_", ":")
+            if (! termIsEntity(term)) term = "cello:CellLine";
+            moveToTerm(term);
+            setupAutocomplete(document.getElementById("searchInput"));
+        } catch (error) {
+            console.error("Error loading JSON:", error);
+        }
+    }
+
+    function syncColumnWidths() {
+        var tableA = document.getElementById('table21');      // master
+        var tableB = document.getElementById('table11');      // slave
+        if (tableB.rows.length > 0) { // if content in slave table
+            var computedWidth = "0.0px";
+            if (tableA.rows.length > 0) { // if content in master, comput width
+                var firstColA = tableA.rows[0].cells[0];
+                computedWidth = getComputedStyle(firstColA).width;
+            }
+            var firstColB = tableB.rows[0].cells[0];
+            firstColB.style.width = computedWidth;
+        }
+        var tableA = document.getElementById('table23');      // master
+        var tableB = document.getElementById('table13');      // slave
+        if (tableB.rows.length > 0) {
+            var computedWidth = "0.0px";
+            if (tableA.rows.length > 0) {
+                var firstColA = tableA.rows[0].cells[1];  // last column index = 1
+                computedWidth = getComputedStyle(firstColA).width;
+            }
+            var firstColB = tableB.rows[0].cells[1];  // last column index = 1
+            firstColB.style.width = computedWidth;
+        }
+    }
+
+    function onHashChange(event) {
+        const currentHash = location.hash.substring(1);
+        let term = currentHash.replace("_", ":")
+        if (termIsEntity(term)) {
+            console.log("Moving to term:", term);
+            moveToTerm(term);
+        } else {
+            console.error("Cannot move to unknown term:", term);
+        }
+    }
+
+
+    /*
+    ===============================================================================================
+    Autocomplete stuff
+    ===============================================================================================
+    */
+    function getSuggestions(searchTerm) {
+        const allOptions = [];
+        for (let term in jsonData.entities)  {
+            const labels = get_prop_values(term, "definition", "rdfs:label");
+            const option = term + " - " + labels[0];
+            allOptions.push(option);
+        }
+        return allOptions.filter(option => 
+            option.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }
+
+    function setupAutocomplete(inputElement) {
+        inputElement.addEventListener("input", function(e) {
+            const val = this.value;
+            const suggestions = getSuggestions(val);
+            const listContainer = document.getElementById("autocompleteList");
+            
+            listContainer.innerHTML = "";
+            if (!val) return;
+
+            suggestions.forEach(suggestion => {
+                const item = document.createElement("div");
+                item.innerHTML = suggestion;
+                item.addEventListener("click", () => {
+                    inputElement.value = suggestion;
+                    listContainer.innerHTML = "";
+                    const term = suggestion.split(" - ")[0];
+                    if (termIsEntity(term)) {
+                        window.location.hash = term.replace(":","_");
+                    } else {
+                        console.error("Cannot move to term:" + term)
+                    }
+                });
+                listContainer.appendChild(item);
+            });
+        });
+    }
+
+
+    /*
+    ===============================================================================================
+    Content manipulation functions
+    ===============================================================================================
+    */
+
+    function getId(term) { return term.replace(":","_") }
+
+    function termIsClass(term) {
+        var entity = jsonData.entities[term];
+        if (entity) return (entity.tag == "class");
+        return false;
+    }
+
+    function termIsProp(term) {
+        var entity = jsonData.entities[term];
+        if (entity) return (entity.tag == "prop");
+        return false;
+    }
+
+    function termIsLiteral(term) {
+        let [pfx, id] = term.split(":");
+        return (pfx == "xsd");
+    }
+
+    function getTermType(term) {
+        if (termIsClass(term)) return "class";
+        if (termIsProp(term)) return "prop";
+        if (termIsLiteral(term)) return "literal";
+        return "unknown"
+    }
+
+    function termHasKnownPrefix(term) {
+        let [pfx, id] = term.split(":");
+        console.log("pfx : id", pfx, id)
+        return "pfx2url" in jsonData && pfx in jsonData.pfx2url;
+    }
+
+    function getTermUrl(term) {
+        let [pfx, id] = term.split(":");
+        if ("pfx2url" in jsonData && pfx in jsonData.pfx2url) {
+            return jsonData.pfx2url[pfx] + id;
+        } else {
+            return null;
+        }
+    }
+
+    function termIsEntity(term) { 
+        return jsonData["entities"][term] != undefined 
+    }
+
+    function get_elem_for_so(term, asInstance, tag="span", classNames=null) {
+        // var opacity_class = asInstance ? "opaque-33" : "opaque-66";
+        var opacity_class = "opaque-level";
+        var bg_style = "ukn-bg";
+        var  box_style = "iri-box";
+        if (getTermType(term) == "class") bg_style = "cls-bg";
+        if (getTermType(term) == "prop") bg_style = "prp-bg";
+        if (getTermType(term) == "literal") bg_style = "lit-bg";
+        if (getTermType(term) == "literal") box_style = "lit-box"
+        const node = document.createElement(tag);
+        node.classList.add(opacity_class, bg_style, box_style)
+        if (classNames) classNames.forEach( el => node.classList.add(el));
+        var text = asInstance ? "[ a " + term + " ]" : term;
+        if (termIsEntity(term)) {
+            console.log("entity", term)
+            const id = getId(term);
+            const lnk = document.createElement("a");
+            lnk.setAttribute("href", "#" + id);
+            lnk.textContent = text;
+            node.appendChild(lnk);
+        } else if (termHasKnownPrefix(term)) {
+            console.log("term has known prefix", term);
+            const lnk = document.createElement("a");
+            lnk.setAttribute("href", getTermUrl(term));
+            lnk.textContent = text;
+            lnk.setAttribute("target", "_blank");
+            node.appendChild(lnk);
+        } else {
+            node.innerHTML = text;
+        }
+        return node;
+
+    }
+
+
+    function get_elem_for_p(prop, tag="span", classNames=null) {
+        const term = prop.startsWith("^ ") ? prop.substr(2) : prop;
+        const node = document.createElement(tag);
+        if (classNames) classNames.forEach( el => node.classList.add(el));
+        if (termIsEntity(term)) {
+            console.log("entity", term)
+            if (termIsProp(term)) node.classList.add("rndbox");
+            if (termIsClass(term)) node.classList.add("sqrbox");            
+            const id = getId(term);
+            const lnk = document.createElement("a");
+            lnk.setAttribute("href", "#" + id);
+            lnk.textContent = prop;
+            node.appendChild(lnk);
+        } else if (termHasKnownPrefix(term)) {
+            console.log("term has known prefix", term);
+            const lnk = document.createElement("a");
+            node.classList.add("lnk");
+            lnk.setAttribute("href", getTermUrl(term));
+            lnk.textContent = prop;
+            lnk.setAttribute("target", "_blank");
+            node.appendChild(lnk);
+        } else {
+            node.innerHTML = prop;
+        }
+        return node;
+    }
+
+    function get_elem_for_text(term, tag="span", classNames=null) {
+        const node = document.createElement(tag);
+        if (classNames) classNames.forEach( el => node.classList.add(el));
+         node.innerHTML = term;
+        return node;
+    }
+
+
+    function get_row_for_left_table(classTerm, propTerm, count = null) {
+        /*
+        <td class="right-align min-width"></td>
+        <td class="left-align">cello:SomeClass - fabio:MasterThesis</td>
+        */
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        td1.classList.add("right-align", "min-width");
+        if (count != null) td1.appendChild(get_elem_for_text("" + count))
+        tr.appendChild(td1)
+        const td2 = document.createElement("td");
+        td2.classList.add("left-align");
+        const is_instance = count!=null;
+        const cls_span = get_elem_for_so(classTerm, is_instance);
+        const prp_span = get_elem_for_p(propTerm);
+        td2.appendChild(cls_span);
+        td2.appendChild(get_elem_for_text(" → "));
+        td2.appendChild(prp_span);
+        td2.appendChild(get_elem_for_text(" → "));
+        tr.appendChild(td2)
+        return tr
+    }
+
+    function get_row_for_right_table(classTerm, propTerm, count = null) {
+        /* 
+        <td class="right-align">[ a cello:SomeClass ] - fabio:MasterThesis</td>
+        <td class="right-align min-width"></td>
+        */
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        td1.classList.add("right-align");
+        const is_instance = count != null;
+        const cls_span = get_elem_for_so(classTerm, is_instance);
+        const sep_span = get_elem_for_text(" - ");
+        const prp_span = get_elem_for_p(propTerm);
+
+        td1.appendChild(get_elem_for_text(" → "));
+        td1.appendChild(prp_span);
+        td1.appendChild(get_elem_for_text(" → "));
+        td1.appendChild(cls_span);
+        
+        tr.appendChild(td1)
+        const td2 = document.createElement("td"); 
+        td2.classList.add("right-align", "min-width"); 
+        if (count != null) td2.appendChild(get_elem_for_text("" + count))
+        tr.appendChild(td2)
+        return tr
+    }
+
+    function get_row_for_middle_table(node) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.classList.add("center-align");
+        td.appendChild(node);
+        tr.appendChild(td);
+        return tr;
+    }
+
+    function fill_table12(term) {
+
+        const tbl = document.getElementById("table12");
+        const term_span = get_elem_for_so(term, false, "span", ["emphasized", "breakable"]);
+
+        var label_span = null;
+        let labels = get_prop_values(term, "definition", "rdfs:label");
+        if (labels.length > 0) {
+            label_span = get_elem_for_text("'" + labels[0] + "'", "span", ["word-breakable"]);
+        }
+
+        var type_spans = [];
+        let types = get_prop_values(term, "definition", "rdf:type");
+        if (types.length > 0) {
+            for (let i = 0; i < types.length; i++) {
+                type_spans.push(get_elem_for_so(types[i], false, "span", ["breakable"]));
+            }
+        }          
+        const div = document.createElement("div");
+        div.appendChild(term_span);
+        div.appendChild(document.createElement("br"));
+        div.appendChild(document.createElement("br"));
+        if (label_span != null) {
+            div.appendChild(label_span);
+            div.appendChild(document.createElement("br"));
+            //div.appendChild(document.createElement("br"));
+        }
+        if (type_spans.length>0) {
+            div.append(get_elem_for_text("a"));
+            div.appendChild(document.createElement("br"));
+            div.appendChild(document.createElement("br"));
+            for (let i = 0; i < type_spans.length; i++) {
+                div.append(type_spans[i]);
+                div.appendChild(document.createElement("br"));
+                div.appendChild(document.createElement("br"));
+            }
+        }
+        tbl.appendChild(get_row_for_middle_table(div));
+
+        let comments = get_prop_values(term, "definition", "rdfs:comment");
+        if (comments.length > 0) {
+            tbl.appendChild(get_row_for_middle_table(get_elem_for_text(comments[0], "div", ["long-text"])));            
+        }            
+    }
+
+    function fill_table22(term) {
+        const tbl = document.getElementById("table22");
+        const count = jsonData.entities[term].count;
+
+        var is_instance = false;
+        if (getTermType(term) == "class") is_instance = true;          
+        const span1 = get_elem_for_so(term, is_instance, "span", ["breakable"]);
+
+        var html = "<br> <br>in " + count + " triples(s)"
+        if (getTermType(term)=="class") html = "<br> <br>" + count + " instance(s)" 
+        const span2 = get_elem_for_text(html);
+
+        const div = document.createElement("div");
+        div.appendChild(span1);
+        div.appendChild(span2);
+        tbl.appendChild(get_row_for_middle_table(div));
+
+    }
+
+
+    function fill_usage_tables(term) {
+
+        fill_table22(term);
+
+        const usage = jsonData.entities[term].usage;
+        const table21 = document.getElementById("table21");
+        const table23 = document.getElementById("table23");
+        const ignoredProps = ["rdf:type", "count"];
+        for (let i = 0; i < usage.length; i++) {
+            let [sbj, prp, obj, cnt] = usage[i].split(" | ");
+            if (ignoredProps.includes(prp)) continue;
+            if (sbj == term) {
+                if (prp == "domain") {
+                    table21.appendChild(get_row_for_left_table(obj, "<i>in domain of</i>", cnt))
+                } else {
+                    if (prp == "range") prp = "<i>range includes</i>"
+                    table23.appendChild(get_row_for_right_table(obj, prp, cnt))
+                }
+            } else {
+                table21.appendChild(get_row_for_left_table(sbj, prp, cnt))    
+            }
+        }
+
+    }
+
+
+    function fill_definition_tables(term) {
+
+        fill_table12(term);
+        
+        const definition = jsonData.entities[term].definition;
+        const table11 = document.getElementById("table11");
+        const table13 = document.getElementById("table13");
+        const propsInTable12 = ["rdf:type", "rdfs:label", "rdfs:comment"];
+        for (let i = 0; i < definition.length; i++) {
+            const [sbj, prp, obj] = definition[i].split(" | ");
+            if (sbj.startsWith("nodeID"))       continue;
+            if (propsInTable12.includes(prp))   continue;
+            if (obj.startsWith("nodeID"))       continue;
+            if (sbj == term) {
+                if (prp == "rdfs:domain") {
+                    table11.appendChild(get_row_for_left_table(obj, "^ " + prp))
+                } else {
+                    table13.appendChild(get_row_for_right_table(obj, prp))
+                }
+            } else {
+                if (prp == "rdfs:domain") {
+                    table13.appendChild(get_row_for_right_table(sbj, "^ " + prp))    
+                } else {
+                    table11.appendChild(get_row_for_left_table(sbj, prp))    
+                }
+            }
+        }
+    }
+
+    function get_prop_values(term, section, prop) {
+        const def_or_use = jsonData.entities[term][section]
+        let values = [];
+        for (let i = 0; i < def_or_use.length; i++) {            
+            const [sbj, prp, obj] = def_or_use[i].split(" | ");
+            if (prp == prop) values.push(obj);
+        }
+        return values;
+    }
+
+    function get_comment_node(term) {
+        const node = document.createElement("div");
+        const definition = jsonData.entities[term].definition
+        var comment = "?";
+        for (let i = 0; i < definition.length; i++) {            
+            const [sbj, prp, obj] = definition[i].split(" | ");
+            if (prp == "rdfs:comment") {
+                comment = obj;
+                break;
+            }
+        }
+        node.innerHTML = comment;
+        node.className = "comment";
+        return node;
+    }
+
+
+    function moveToTerm(term) {
+        document.getElementById("table11").innerHTML = "";
+        document.getElementById("table12").innerHTML = "";
+        document.getElementById("table13").innerHTML = "";
+        document.getElementById("table21").innerHTML = "";
+        document.getElementById("table22").innerHTML = "";
+        document.getElementById("table23").innerHTML = "";
+
+        fill_definition_tables(term);
+        fill_usage_tables(term);
+        syncColumnWidths()
+            
+    }
+
+    function clearSearch() { document.getElementById("searchInput").value = ""; }
+    function openLegend() { 
+
+        document.getElementById("legendDialog").showModal(); 
+    }
+    function closeLegend() { document.getElementById("legendDialog").close(); }
+
+
+    /*
+    ===============================================================================================
+    Event listeners
+    ===============================================================================================
+    */
+
+    window.addEventListener('load', initPage); // includes moveToTerm which includes syncColumnWidth
+    window.addEventListener('hashchange', onHashChange);
+    window.addEventListener('resize', syncColumnWidths);
+
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".autocomplete")) {
+            document.getElementById("autocompleteList").innerHTML = "";
+        }
+    });
+
+
+  </script>
+
+</head>
+<body>
+    <div class="menu">Fixed Menu</div>
+
+    <div class="header">
+        <span class="emphasized">RDF data model browser</span>&nbsp;
+        <div class="autocomplete" style="width:300px; left:50px;">
+            <input id="searchInput" type="text" placeholder="Search...">
+            <div id="autocompleteList" class="autocomplete-items"></div>
+        </div>
+        <button onclick="clearSearch()" style="left: -68px; position: relative; " >X</button>
+        <button onclick="openLegend()" style="right: 40px; position: absolute; " >Legend</button>
+    </div>
+
+    <div class="content">
+
+        <!--------------------------------- row 1 --------------------------->
+
+        <div class="cell">
+            <table class="data-table slave-table-fc" id="table11">
+                <tr>
+                    <td class="right-align min-width"></td>
+                    <td class="left-align">cello:SomeClass - fabio:MasterThesis</td>
+                </tr>
+                <tr>
+                    <td class="right-align min-width"></td>
+                    <td class="left-align">cello:SomeClass - cello:hasSomeRelationWith</td>
+                </tr>
+                <tr>
+                    <td class="right-align min-width"></td>
+                    <td class="left-align">schema:Organization - schema:hasMember</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="cell center-align">
+            <table class="data-table" id="table12">
+                <tr><td>cello:MyClass</td></tr>
+                <tr><td>"My Class"</td></tr>                
+            </table>
+        </div>
+
+        <div class="cell">
+            <table class="data-table slave-table-lc" id="table13">
+                <tr>
+                    <td class="right-align">cello:SomeClass- fabio:MasterThesis</td>
+                    <td class="right-align min-width"></td>
+                </tr>
+                <tr>
+                    <td class="right-align">cello:SomeClass - cello:hasSomeRelationWith</td>
+                    <td class="right-align min-width"></td>
+                </tr>
+                <tr>
+                    <td class="right-align">schema:Organization - schema:hasMember</td>
+                    <td class="right-align min-width"></td>
+                </tr>
+            </table>
+        </div>
+
+        <!--------------------------------- row 2 --------------------------->
+
+        <div class="cell">
+            <table class="data-table" id="table21">
+                <tr>
+                    <td class="right-align min-width">117</td>
+                    <td class="left-align">[ a cello:SomeClass ] - fabio:MasterThesis</td>
+                </tr>
+                <tr>
+                    <td class="right-align min-width">5</td>
+                    <td class="left-align">[ a cello:SomeClass ] - cello:hasSomeRelationWith</td>
+                </tr>
+                <tr>
+                    <td class="right-align min-width">32</td>
+                    <td class="left-align">[ a schema:Organization ] - schema:hasMember</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="cell center-align">
+            <table class="data-table" id="table22">
+                <tr><td>212 instances of</td></tr>
+                <tr><td>[ a cello:MyClass ]</td></tr>                
+            </table>
+        </div>
+
+        <div class="cell">
+            <table class="data-table" id="table23">
+                <tr>
+                    <td class="right-align">[ a cello:SomeClass ] - fabio:MasterThesis</td>
+                    <td class="right-align min-width">117</td>
+                </tr>
+                <tr>
+                    <td class="right-align">[ a cello:SomeClass ] - cello:hasSomeRelationWith</td>
+                    <td class="right-align min-width">5</td>
+                </tr>
+                <tr>
+                    <td class="right-align">[ a schema:Organization ] - schema:hasMember</td>
+                    <td class="right-align min-width">32</td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+
+    <dialog id="legendDialog" class="dialog">
+        <div class="emphasized" style="padding-bottom: 20px;">Legend</div>
+        <table>
+            <tr>
+                <th style="width:200px; ">Symbol</th>
+                <th>Meaning</th>
+            </tr>
+            <tr>
+                <td><span class="iri-box cls-bg"><a href="#">pfx:SomeClass</a></span></td>
+                <td>a term defined locally as a owl:Class</td>
+            </tr>
+            <tr>
+                <td><span class="iri-box prp-bg"><a href="#">pfx:SomeProperty</a></span></td>
+                <td>a term defined locally as a rdf:Property</td>
+            </tr>
+            <tr>
+                <td><span class="lit-box lit-bg"><a href="#">xsd:SomeLiteral</a></span></td>
+                <td>a term defined as Literal</td>
+            </tr>
+            <tr>
+                <td><span class="iri-box ukn-bg"><a href="#">pfx:SomeProperty</a></span></td>
+                <td>a term not defined locally</td>
+            </tr>
+            <tr>
+                <td><span class="iri-box cls-bg"><a href="#">[ a pfx:SomeClass ]</a></span></td>
+                <td>an instance of a class</td>
+            </tr>
+            <tr>
+                <td> → <a href="#">pfx:someProperty</a> → </td>
+                <td>a property used locally to describe the data and/or the model</td>
+            </tr>
+            <tr>
+                <td><span class="iri-box"><a target="_blank" href="#">pfx:SomeIRI</a></span></td>
+                <td>a term with an external link towards its definition</td>
+            </tr>
+            <tr>
+                <td><span class="iri-box"><a href="#">pfx:SomeIRI</a></span></td>
+                <td>a term with an internal link towards its definition</td>
+            </tr>
+
+        </table>
+        <div class="button-container">
+            <button id="closeDialog" onclick="closeLegend()">Close</button>
+        </div>
+    </dialog>
+
+</body>
+</html>

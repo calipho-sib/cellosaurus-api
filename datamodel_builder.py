@@ -1,9 +1,54 @@
+import os
 import sys
-from api_platform import ApiPlatform
-from namespace_registry import NamespaceRegistry
-from sparql_client import EndpointClient
-from ApiCommon import log_it
+import datetime
+from optparse import OptionParser
 import json
+from SPARQLWrapper import SPARQLWrapper, JSON
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def log_it(*things, duration_since=None):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    t1 = datetime.datetime.now()
+    now = t1.isoformat().replace('T',' ')[:23]
+    pid = "[" + str(os.getpid()) + "]"
+    if duration_since is not None:
+        duration = round((t1 - duration_since).total_seconds(),3)
+        print(now, pid, *things, "duration", duration, flush=True)
+    else:
+        print(now, pid, *things, flush=True)
+
+
+
+#-------------------------------------------------
+class EndpointClient:
+#-------------------------------------------------
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def __init__(self, server_url):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        self.server_url = server_url
+        self.endpoint = SPARQLWrapper(server_url)
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def run_query(self, query):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        t0 = datetime.datetime.now()
+        try:
+            self.endpoint.setQuery(query)
+            self.endpoint.setMethod("POST")
+            self.endpoint.setReturnFormat(JSON)
+            response = self.endpoint.query().convert()
+            duration = round((datetime.datetime.now()-t0).total_seconds(),3)
+            response["duration"] = duration
+            response["rows"] = len(response.get("results").get("bindings"))
+            response["success"] = True
+            return response
+        except Exception as e:
+            typ, msg, _ = sys.exc_info()
+            duration = round((datetime.datetime.now()-t0).total_seconds(),3)
+            return {"success" : False, "duration" : duration, "rows": 0, "error_type": typ.__name__, "error_msg": str(msg).replace('\\n','\n')}
+
 
 
 #-------------------------------------------------
@@ -11,15 +56,11 @@ class DataModelBuilder:
 #-------------------------------------------------
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def __init__(self, platform: ApiPlatform):
+    def __init__(self, sparql_service):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        self.platform = platform
-        self.ns = NamespaceRegistry(platform)
         self.url2pfx = dict()
-        for space in self.ns.namespaces:
-            self.url2pfx[space.url] = space.pfx
-        self.client = EndpointClient(platform.get_builder_sparql_service_IRI(), self.ns)
-
+        self.pfx2url = dict()
+        self.client = EndpointClient(sparql_service)
 
         self.class_def_query = """
             # CAUTION: we remove subjects that are blank nodes !
@@ -92,6 +133,15 @@ class DataModelBuilder:
             order by ?property ?tag ?node_type
         """
 
+        self.prefix_query ="""
+            PREFIX sh: <http://www.w3.org/ns/shacl#>
+            select ?pfx ?url where {
+            ?onto a owl:Ontology .
+            ?onto sh:declare ?declaration .
+            ?declaration sh:prefix ?pfx; sh:namespace ?url.
+            }
+        """
+
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_short_IRI(self, long_iri):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -107,10 +157,23 @@ class DataModelBuilder:
     def get_long_IRI(self, prefixed_iri):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         pfx, id = prefixed_iri.split(":")
-        url = self.ns.pfx2ns[pfx].url
+        url = self.pfx2url[pfx]
         return "".join([url, id])
 
-
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def load_prefixes(self):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        response = self.client.run_query(self.prefix_query)
+        if not response.get("success"):
+            log_it(f"ERROR while running query for getting prefixes {tag}", response.get("error_type"))
+            log_it(response.get("error_msg"))
+            sys.exit(2)
+        rows = response.get("results").get("bindings")
+        for row in rows:            
+            pfx = self.get_short_IRI(row["pfx"]["value"])
+            url = self.get_short_IRI(row["url"]["value"])
+            self.pfx2url[pfx] = url
+            self.url2pfx[url] = pfx
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def load_use_for_prop_entities(self, entities):
@@ -196,7 +259,8 @@ class DataModelBuilder:
     def retrieve_and_save_model(self, jsonfile):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         entities = dict()
-        
+
+        self.load_prefixes()
         self.load_def_for_entities(self.class_def_query, "class", entities)
         self.load_def_for_entities(self.prop_def_query, "prop", entities)
         self.load_use_for_class_entities(entities)
@@ -204,6 +268,7 @@ class DataModelBuilder:
 
         data = dict()
         data["entities"] = entities
+        data["pfx2url"] = self.pfx2url
         f_out = open(jsonfile, "w", encoding="utf-8")
         json.dump(data, f_out, indent=2, ensure_ascii=False)
         f_out.close()
@@ -213,5 +278,16 @@ class DataModelBuilder:
 #-------------------------------------------------
 if __name__ == '__main__':
 #-------------------------------------------------
-    builder = DataModelBuilder(ApiPlatform("prod"))
-    builder.retrieve_and_save_model("test.json")
+    optparser = OptionParser(usage="python datamodel_builder.py [--crlf] sparql_service_url output_file")
+    optparser.add_option("-c", "--crlf",
+        action="store_true", dest="with_crlf", default=False,
+        help="When set, output file line sep is CR/LF instead of LF")
+    (options, args) = optparser.parse_args()
+    with_crlf = options.with_crlf
+    if len(args) != 2:
+        print("ERROR, usage is: python datamodel_builder.py [--crlf] sparql_service_url output_file")    
+        sys.exit(1)
+
+    builder = DataModelBuilder(sparql_service=args[0])
+    builder.retrieve_and_save_model(jsonfile=args[1])
+
