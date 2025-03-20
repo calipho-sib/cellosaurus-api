@@ -165,7 +165,7 @@ class DataModelBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         response = self.client.run_query(self.prefix_query)
         if not response.get("success"):
-            log_it(f"ERROR while running query for getting prefixes {tag}", response.get("error_type"))
+            log_it(f"ERROR while running query for getting prefixes", response.get("error_type"))
             log_it(response.get("error_msg"))
             sys.exit(2)
         rows = response.get("results").get("bindings")
@@ -181,6 +181,7 @@ class DataModelBuilder:
         for entity_key in entities:
             entity = entities[entity_key]
             if entity["tag"] != "prop" : continue
+            print("entity_key:",entity_key)
             long_IRI = self.get_long_IRI(entity_key)
             query = self.prop_use_query.replace("$prop_long_IRI", long_IRI)
             log_it("INFO", f"querying for usage of {entity_key}")

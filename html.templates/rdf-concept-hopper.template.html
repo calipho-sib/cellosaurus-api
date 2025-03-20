@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="favicon32.png">
-    <title>RDF data model broswer</title>
+    <link rel="icon" type="image/png" href="/static/favicon32.png">
+    <title>Concept Hopper</title>
     <style>
-
 
         /* base style */
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: Arial, Helvetica, sans-serif; }
-        .menu { position: fixed; top: 0px;left: 0; width: 100%; background-color: #333;padding: 10px; color: white; }
-        .header {border-bottom: 2px solid #ccc; position: fixed; top: 40px;left: 0; width: 100%; background-color: #f5f5f5;padding: 10px; color: black; display:inline-flex; }
-        /* .content { display: grid; grid-template-columns: 1fr 360px 1fr; grid-template-rows: 240px 1fr; height: calc(100vh - 84px); margin-top: 84px; } */
-        .content { display: grid; grid-template-columns: 1fr 25% 1fr; grid-template-rows: 37% 1fr; height: calc(100vh - 84px); margin-top: 84px; }
+        /* .menu { position: fixed; top: 0px;left: 0; width: 100%; background-color: #333;padding: 10px; color: white; } */
+        .header {border-bottom: 2px solid #ccc; position: fixed; top: 47px;left: 0; width: 100%; background-color: #f5f5f5;padding: 10px; color: black; display:inline-flex; }
+        .content { display: grid; grid-template-columns: 1fr 25% 1fr; grid-template-rows: 37% 1fr; height: calc(100vh - 84px); margin-top: 46px; }
         .cell { border: 1px solid #ccc; padding: 10px; overflow-y: auto; display: grid; background-color: #f5f5f5; }
 
         .data-table { width: 100%; /* table-layout: auto; #table-layout: fixed; */ } 
@@ -147,7 +145,7 @@
     async function initPage() {
 
         try {
-            const response = await fetch("datamodel.json");
+            const response = await fetch("/static/datamodel.json");
             jsonData = await response.json();
             const currentHash = location.hash.substring(1);
             let term = currentHash.replace("_", ":")
@@ -610,23 +608,25 @@
 
 </head>
 <body>
-    <div class="menu">Fixed Menu</div>
+    <!-- <div id="NavMenu" class="menu">Fixed Menu</div> -->
 
     <div class="header">
-        <span class="emphasized">RDF data model browser</span>&nbsp;
-        <div class="autocomplete" style="width:300px; left:50px;">
+        <span class="emphasized" style="position:absolute; left:40px;">RDF data model browser</span>&nbsp;
+        <div class="autocomplete" style="width:300px; left:calc(50% - 110px);">
             <input id="searchInput" type="text" placeholder="Search...">
+            <button onclick="clearSearch()">X</button>
             <div id="autocompleteList" class="autocomplete-items"></div>
         </div>
-        <button onclick="clearSearch()" style="left: -68px; position: relative; " >X</button>
-        <button onclick="openLegend()" style="right: 40px; position: absolute; " >Legend</button>
+        <button onclick="openLegend()" style="right: 40px; position: absolute;">Legend</button>
     </div>
+    <!-- <button onclick="clearSearch()" stylex="left: -68px; position: absolute; " >X</button>
+    <button onclick="openLegend()" style="right: 90px; position: absolute; " >Legend</button>     -->
 
     <div class="content">
 
         <!--------------------------------- row 1 --------------------------->
 
-        <div class="cell">
+        <div class="cell" title="Concept definition">
             <table class="data-table slave-table-fc" id="table11">
                 <tr>
                     <td class="right-align min-width"></td>
@@ -643,14 +643,14 @@
             </table>
         </div>
 
-        <div class="cell center-align">
+        <div class="cell center-align" title="Concept definition">
             <table class="data-table" id="table12">
                 <tr><td>cello:MyClass</td></tr>
                 <tr><td>"My Class"</td></tr>                
             </table>
         </div>
 
-        <div class="cell">
+        <div class="cell" title="Concept definition">
             <table class="data-table slave-table-lc" id="table13">
                 <tr>
                     <td class="right-align">cello:SomeClass- fabio:MasterThesis</td>
@@ -669,7 +669,7 @@
 
         <!--------------------------------- row 2 --------------------------->
 
-        <div class="cell">
+        <div class="cell" title="Usage of concept instances in data">
             <table class="data-table" id="table21">
                 <tr>
                     <td class="right-align min-width">117</td>
@@ -686,14 +686,14 @@
             </table>
         </div>
 
-        <div class="cell center-align">
+        <div class="cell center-align" title="Usage of concept instances in data">
             <table class="data-table" id="table22">
                 <tr><td>212 instances of</td></tr>
                 <tr><td>[ a cello:MyClass ]</td></tr>                
             </table>
         </div>
 
-        <div class="cell">
+        <div class="cell" title="Usage of concept instances in data">
             <table class="data-table" id="table23">
                 <tr>
                     <td class="right-align">[ a cello:SomeClass ] - fabio:MasterThesis</td>
