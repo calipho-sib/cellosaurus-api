@@ -798,7 +798,7 @@
         "cello:AnecdotalComment | rdfs:isDefinedBy | cello:",
         "cello:AnecdotalComment | rdfs:label | Anecdotal comment",
         "cello:AnecdotalComment | rdfs:subClassOf | IAO:0000027",
-        "cello:AnecdotalComment | owl:equivalentClass | nodeID://b2379249",
+        "cello:AnecdotalComment | owl:equivalentClass | nodeID://b2379250",
         "cello:hasAnecdotalComment | rdfs:range | cello:AnecdotalComment"
       ],
       "usage": [
@@ -851,7 +851,7 @@
         "cello:BiotechnologyComment | rdfs:isDefinedBy | cello:",
         "cello:BiotechnologyComment | rdfs:label | Biotechnology comment",
         "cello:BiotechnologyComment | rdfs:subClassOf | IAO:0000027",
-        "cello:BiotechnologyComment | owl:equivalentClass | nodeID://b2379213",
+        "cello:BiotechnologyComment | owl:equivalentClass | nodeID://b2379214",
         "cello:hasBiotechnologyComment | rdfs:range | cello:BiotechnologyComment"
       ],
       "usage": [
@@ -1023,7 +1023,7 @@
         "cello:CautionComment | rdfs:isDefinedBy | cello:",
         "cello:CautionComment | rdfs:label | Caution comment",
         "cello:CautionComment | rdfs:subClassOf | IAO:0000027",
-        "cello:CautionComment | owl:equivalentClass | nodeID://b2379245",
+        "cello:CautionComment | owl:equivalentClass | nodeID://b2379246",
         "cello:hasCautionComment | rdfs:range | cello:CautionComment"
       ],
       "usage": [
@@ -1129,7 +1129,7 @@
         "cello:CellLineAnnotationTopic | rdf:type | owl:Class",
         "cello:CellLineAnnotationTopic | rdfs:label | Cell line annotation topic",
         "cello:CellLineAnnotationTopic | rdfs:subClassOf | EDAM:topic_0003",
-        "cello:CellLineAnnotationTopic | owl:equivalentClass | nodeID://b2379191"
+        "cello:CellLineAnnotationTopic | owl:equivalentClass | nodeID://b2379192"
       ],
       "usage": []
     },
@@ -1246,7 +1246,7 @@
         "cello:CharacteristicsComment | rdfs:isDefinedBy | cello:",
         "cello:CharacteristicsComment | rdfs:label | Characteristics comment",
         "cello:CharacteristicsComment | rdfs:subClassOf | IAO:0000027",
-        "cello:CharacteristicsComment | owl:equivalentClass | nodeID://b2379229",
+        "cello:CharacteristicsComment | owl:equivalentClass | nodeID://b2379230",
         "cello:hasCharacteristicsComment | rdfs:range | cello:CharacteristicsComment"
       ],
       "usage": [
@@ -1480,7 +1480,7 @@
         "cello:DiscontinuationRecord | rdfs:isDefinedBy | cello:",
         "cello:DiscontinuationRecord | rdfs:label | Discontinuation record",
         "cello:DiscontinuationRecord | rdfs:subClassOf | IAO:0000027",
-        "cello:DiscontinuationRecord | owl:equivalentClass | nodeID://b2379233",
+        "cello:DiscontinuationRecord | owl:equivalentClass | nodeID://b2379234",
         "cello:hasDiscontinuationRecord | rdfs:range | cello:DiscontinuationRecord",
         "cello:hasProvider | rdfs:domain | cello:DiscontinuationRecord",
         "cello:productId | rdfs:domain | cello:DiscontinuationRecord"
@@ -1546,7 +1546,7 @@
         "cello:DonorInfoComment | rdfs:isDefinedBy | cello:",
         "cello:DonorInfoComment | rdfs:label | Donor info comment",
         "cello:DonorInfoComment | rdfs:subClassOf | IAO:0000027",
-        "cello:DonorInfoComment | owl:equivalentClass | nodeID://b2379257",
+        "cello:DonorInfoComment | owl:equivalentClass | nodeID://b2379258",
         "cello:hasDonorInfoComment | rdfs:range | cello:DonorInfoComment"
       ],
       "usage": [
@@ -1573,7 +1573,7 @@
         "cello:DoublingTime | rdfs:isDefinedBy | cello:",
         "cello:DoublingTime | rdfs:label | Doubling time",
         "cello:DoublingTime | rdfs:subClassOf | IAO:0000027",
-        "cello:DoublingTime | owl:equivalentClass | nodeID://b2379221",
+        "cello:DoublingTime | owl:equivalentClass | nodeID://b2379222",
         "cello:duration | rdfs:domain | cello:DoublingTime",
         "cello:hasDoublingTime | rdfs:range | cello:DoublingTime"
       ],
@@ -2264,7 +2264,7 @@
         "cello:GenomeModificationMethod | rdf:type | owl:Class",
         "cello:GenomeModificationMethod | rdfs:label | Genome modification method",
         "cello:GenomeModificationMethod | rdfs:subClassOf | OBI:0600043",
-        "cello:GenomeModificationMethod | owl:oneOf | nodeID://b42136"
+        "cello:GenomeModificationMethod | owl:oneOf | nodeID://b42629"
       ],
       "usage": []
     },
@@ -2417,7 +2417,7 @@
       "count": 12030,
       "definition": [
         "cello:Hybridoma | rdf:type | owl:Class",
-        "cello:Hybridoma | rdfs:comment | <dt>has relation</td><dd>skos:closeMatch <b>with</b> <a href=\"http://purl.obolibrary.org/obo/BTO_0001926\">http://purl.obolibrary.org/obo/BTO_0001926</a><br />skos:closeMatch <b>with</b> <a href=\"http://purl.obolibrary.org/obo/CLO_0036932\">http://purl.obolibrary.org/obo/CLO_0036932</a></dd>",
+        "cello:Hybridoma | rdfs:comment | <dt>has relation</td><dd>skos:closeMatch <b>with</b> <a href=\"http://purl.obolibrary.org/obo/CLO_0036932\">http://purl.obolibrary.org/obo/CLO_0036932</a><br />skos:closeMatch <b>with</b> <a href=\"http://purl.obolibrary.org/obo/BTO_0001926\">http://purl.obolibrary.org/obo/BTO_0001926</a></dd>",
         "cello:Hybridoma | rdfs:isDefinedBy | cello:",
         "cello:Hybridoma | rdfs:label | Hybridoma",
         "cello:Hybridoma | rdfs:subClassOf | cello:CellLine",
@@ -2777,17 +2777,36 @@
         "cello:MicrosatelliteInstability | rdfs:label | Microsatellite instability",
         "cello:MicrosatelliteInstability | rdfs:subClassOf | OBI:0001404",
         "cello:hasMicrosatelliteInstability | rdfs:range | cello:MicrosatelliteInstability",
-        "cello:microsatelliteInstabilityStatus | rdfs:domain | cello:MicrosatelliteInstability"
+        "cello:hasMicrosatelliteInstabilityStatus | rdfs:domain | cello:MicrosatelliteInstability"
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 1464",
         "cello:MicrosatelliteInstability | rdf:type | owl:Class | 1482",
         "cello:MicrosatelliteInstability | rdfs:comment | xsd:string | 1",
+        "cello:MicrosatelliteInstability | cello:hasMicrosatelliteInstabilityStatus | owl:NamedIndividual | 1482",
+        "cello:MicrosatelliteInstability | cello:hasMicrosatelliteInstabilityStatus | cello:MicrosatelliteInstabilityStatus | 1482",
         "cello:MicrosatelliteInstability | cello:hasSource | cello:Source | 1928",
-        "cello:MicrosatelliteInstability | cello:microsatelliteInstabilityStatus | xsd:string | 1482",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 1",
         "cello:TransformedCellLine | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 15",
         "cello:UndefinedCellLineType | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 2"
+      ]
+    },
+    "cello:MicrosatelliteInstabilityStatus": {
+      "tag": "class",
+      "count": 4,
+      "definition": [
+        "cello:MicrosatelliteInstabilityStatus | rdf:type | owl:Class",
+        "cello:MicrosatelliteInstabilityStatus | rdfs:isDefinedBy | cello:",
+        "cello:MicrosatelliteInstabilityStatus | rdfs:label | Microsatellite instability status",
+        "cello:hasMicrosatelliteInstabilityStatus | rdfs:range | cello:MicrosatelliteInstabilityStatus"
+      ],
+      "usage": [
+        "cello:MicrosatelliteInstability | cello:hasMicrosatelliteInstabilityStatus | cello:MicrosatelliteInstabilityStatus | 1482",
+        "cello:MicrosatelliteInstabilityStatus | rdf:type | xsd:anyURI | 4",
+        "cello:MicrosatelliteInstabilityStatus | rdf:type | owl:Class | 4",
+        "cello:MicrosatelliteInstabilityStatus | rdfs:isDefinedBy | owl:Ontology | 4",
+        "cello:MicrosatelliteInstabilityStatus | rdfs:label | xsd:string | 4",
+        "cello:MicrosatelliteInstabilityStatus | cello:name | xsd:string | 4"
       ]
     },
     "cello:MiscellaneousDocument": {
@@ -2830,7 +2849,7 @@
         "cello:MiscellaneousInfoComment | rdfs:isDefinedBy | cello:",
         "cello:MiscellaneousInfoComment | rdfs:label | Miscellaneous info comment",
         "cello:MiscellaneousInfoComment | rdfs:subClassOf | IAO:0000027",
-        "cello:MiscellaneousInfoComment | owl:equivalentClass | nodeID://b2379237",
+        "cello:MiscellaneousInfoComment | owl:equivalentClass | nodeID://b2379238",
         "cello:hasMiscellaneousInfoComment | rdfs:range | cello:MiscellaneousInfoComment"
       ],
       "usage": [
@@ -2860,7 +2879,7 @@
         "cello:MisspellingRecord | rdfs:isDefinedBy | cello:",
         "cello:MisspellingRecord | rdfs:label | Misspelling record",
         "cello:MisspellingRecord | rdfs:subClassOf | IAO:0000027",
-        "cello:MisspellingRecord | owl:equivalentClass | nodeID://b2379253",
+        "cello:MisspellingRecord | owl:equivalentClass | nodeID://b2379254",
         "cello:appearsIn | rdfs:domain | cello:MisspellingRecord",
         "cello:hasMisspellingRecord | rdfs:range | cello:MisspellingRecord"
       ],
@@ -2922,7 +2941,7 @@
         "cello:OmicsInfo | rdfs:isDefinedBy | cello:",
         "cello:OmicsInfo | rdfs:label | Omics info",
         "cello:OmicsInfo | rdfs:subClassOf | IAO:0000027",
-        "cello:OmicsInfo | owl:equivalentClass | nodeID://b2379225",
+        "cello:OmicsInfo | owl:equivalentClass | nodeID://b2379226",
         "cello:hasOmicsInfo | rdfs:range | cello:OmicsInfo"
       ],
       "usage": [
@@ -3072,7 +3091,7 @@
         "cello:ProblematicCellLineComment | rdfs:isDefinedBy | cello:",
         "cello:ProblematicCellLineComment | rdfs:label | Problematic cell line comment",
         "cello:ProblematicCellLineComment | rdfs:subClassOf | IAO:0000027",
-        "cello:ProblematicCellLineComment | owl:equivalentClass | nodeID://b2379241",
+        "cello:ProblematicCellLineComment | owl:equivalentClass | nodeID://b2379242",
         "cello:hasProblematicCellLineComment | rdfs:range | cello:ProblematicCellLineComment"
       ],
       "usage": [
@@ -3198,7 +3217,7 @@
         "cello:RegistrationRecord | rdfs:isDefinedBy | cello:",
         "cello:RegistrationRecord | rdfs:label | Registration record",
         "cello:RegistrationRecord | rdfs:subClassOf | IAO:0000027",
-        "cello:RegistrationRecord | owl:equivalentClass | nodeID://b2379261",
+        "cello:RegistrationRecord | owl:equivalentClass | nodeID://b2379262",
         "cello:hasRegistationRecord | rdfs:range | cello:RegistrationRecord",
         "cello:inRegister | rdfs:domain | cello:RegistrationRecord"
       ],
@@ -3269,7 +3288,7 @@
         "cello:SenescenceComment | rdfs:isDefinedBy | cello:",
         "cello:SenescenceComment | rdfs:label | Senescence comment",
         "cello:SenescenceComment | rdfs:subClassOf | IAO:0000027",
-        "cello:SenescenceComment | owl:equivalentClass | nodeID://b2379217",
+        "cello:SenescenceComment | owl:equivalentClass | nodeID://b2379218",
         "cello:hasSenescenceComment | rdfs:range | cello:SenescenceComment"
       ],
       "usage": [
@@ -4157,7 +4176,7 @@
         "cello:VirologyComment | rdfs:isDefinedBy | cello:",
         "cello:VirologyComment | rdfs:label | Virology comment",
         "cello:VirologyComment | rdfs:subClassOf | IAO:0000027",
-        "cello:VirologyComment | owl:equivalentClass | nodeID://b2379209",
+        "cello:VirologyComment | owl:equivalentClass | nodeID://b2379210",
         "cello:hasVirologyComment | rdfs:range | cello:VirologyComment"
       ],
       "usage": [
@@ -4783,7 +4802,7 @@
         "cello:accession | rdf:type | rdf:Property",
         "cello:accession | rdf:type | owl:DatatypeProperty",
         "cello:accession | rdfs:comment | Unique identifier for an entity in a database.",
-        "cello:accession | rdfs:domain | nodeID://b2379185",
+        "cello:accession | rdfs:domain | nodeID://b2379186",
         "cello:accession | rdfs:isDefinedBy | cello:",
         "cello:accession | rdfs:label | accession",
         "cello:accession | rdfs:range | xsd:string",
@@ -4836,8 +4855,8 @@
       "definition": [
         "cello:alternativeName | rdf:type | rdf:Property",
         "cello:alternativeName | rdf:type | owl:AnnotationProperty",
-        "cello:alternativeName | rdfs:comment | Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a></dd>",
-        "cello:alternativeName | rdfs:domain | nodeID://b2379101",
+        "cello:alternativeName | rdfs:comment | Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a> <b>or</b> <a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a></dd>",
+        "cello:alternativeName | rdfs:domain | nodeID://b2379102",
         "cello:alternativeName | rdfs:isDefinedBy | cello:",
         "cello:alternativeName | rdfs:label | alternative name",
         "cello:alternativeName | rdfs:range | xsd:string",
@@ -4892,7 +4911,7 @@
         "cello:appearsIn | rdfs:domain | cello:MisspellingRecord",
         "cello:appearsIn | rdfs:isDefinedBy | cello:",
         "cello:appearsIn | rdfs:label | appears in",
-        "cello:appearsIn | rdfs:range | nodeID://b2379159",
+        "cello:appearsIn | rdfs:range | nodeID://b2379160",
         "cello:appearsIn | rdfs:subPropertyOf | dcterms:source"
       ],
       "usage": [
@@ -5035,7 +5054,7 @@
         "cello:creator | rdfs:domain | cello:Publication",
         "cello:creator | rdfs:isDefinedBy | cello:",
         "cello:creator | rdfs:label | creator",
-        "cello:creator | rdfs:range | nodeID://b2379143",
+        "cello:creator | rdfs:range | nodeID://b2379144",
         "cello:creator | rdfs:subPropertyOf | dcterms:creator"
       ],
       "usage": [
@@ -5067,7 +5086,7 @@
         "cello:database | rdfs:domain | cello:Xref",
         "cello:database | rdfs:isDefinedBy | cello:",
         "cello:database | rdfs:label | database",
-        "cello:database | rdfs:range | nodeID://b2379179"
+        "cello:database | rdfs:range | nodeID://b2379180"
       ],
       "usage": [
         "cello:database | count | xsd:integer | 544687",
@@ -5383,7 +5402,7 @@
         "cello:detectedAllele | rdfs:domain | schema:Observation",
         "cello:detectedAllele | rdfs:isDefinedBy | cello:",
         "cello:detectedAllele | rdfs:label | detected allele",
-        "cello:detectedAllele | rdfs:range | nodeID://b2379140"
+        "cello:detectedAllele | rdfs:range | nodeID://b2379141"
       ],
       "usage": [
         "cello:detectedAllele | count | xsd:integer | 236064",
@@ -6015,7 +6034,7 @@
       "definition": [
         "cello:hasGenomeModificationMethod | rdf:type | rdf:Property",
         "cello:hasGenomeModificationMethod | rdf:type | owl:ObjectProperty",
-        "cello:hasGenomeModificationMethod | rdfs:domain | nodeID://b2379168",
+        "cello:hasGenomeModificationMethod | rdfs:domain | nodeID://b2379169",
         "cello:hasGenomeModificationMethod | rdfs:isDefinedBy | cello:",
         "cello:hasGenomeModificationMethod | rdfs:label | has genome modification method"
       ],
@@ -6096,6 +6115,24 @@
         "cello:hasMicrosatelliteInstability | domain | cello:TransformedCellLine | 15",
         "cello:hasMicrosatelliteInstability | domain | cello:UndefinedCellLineType | 2",
         "cello:hasMicrosatelliteInstability | range | cello:MicrosatelliteInstability | 1482"
+      ]
+    },
+    "cello:hasMicrosatelliteInstabilityStatus": {
+      "tag": "prop",
+      "count": 1482,
+      "definition": [
+        "cello:hasMicrosatelliteInstabilityStatus | rdf:type | rdf:Property",
+        "cello:hasMicrosatelliteInstabilityStatus | rdf:type | owl:ObjectProperty",
+        "cello:hasMicrosatelliteInstabilityStatus | rdfs:domain | cello:MicrosatelliteInstability",
+        "cello:hasMicrosatelliteInstabilityStatus | rdfs:isDefinedBy | cello:",
+        "cello:hasMicrosatelliteInstabilityStatus | rdfs:label | has microsatellite instability status",
+        "cello:hasMicrosatelliteInstabilityStatus | rdfs:range | cello:MicrosatelliteInstabilityStatus"
+      ],
+      "usage": [
+        "cello:hasMicrosatelliteInstabilityStatus | count | xsd:integer | 1482",
+        "cello:hasMicrosatelliteInstabilityStatus | domain | cello:MicrosatelliteInstability | 1482",
+        "cello:hasMicrosatelliteInstabilityStatus | range | owl:NamedIndividual | 1482",
+        "cello:hasMicrosatelliteInstabilityStatus | range | cello:MicrosatelliteInstabilityStatus | 1482"
       ]
     },
     "cello:hasMiscellaneousInfoComment": {
@@ -6188,7 +6225,7 @@
         "cello:hasMoAbTarget | rdfs:domain | cello:CellLine",
         "cello:hasMoAbTarget | rdfs:isDefinedBy | cello:",
         "cello:hasMoAbTarget | rdfs:label | has monoclonal antibody target",
-        "cello:hasMoAbTarget | rdfs:range | nodeID://b2379171",
+        "cello:hasMoAbTarget | rdfs:range | nodeID://b2379172",
         "cello:hasMoAbTarget | rdfs:subPropertyOf | cello:hasAnnotation"
       ],
       "usage": [
@@ -6488,7 +6525,7 @@
         "cello:hasSource | rdf:type | rdf:Property",
         "cello:hasSource | rdf:type | owl:ObjectProperty",
         "cello:hasSource | rdfs:comment | A related resource from which the described resource is derived or originates.",
-        "cello:hasSource | rdfs:domain | nodeID://b2379146",
+        "cello:hasSource | rdfs:domain | nodeID://b2379147",
         "cello:hasSource | rdfs:isDefinedBy | cello:",
         "cello:hasSource | rdfs:label | has source",
         "cello:hasSource | rdfs:range | cello:Source",
@@ -6522,10 +6559,10 @@
       "definition": [
         "cello:hasTarget | rdf:type | rdf:Property",
         "cello:hasTarget | rdf:type | owl:ObjectProperty",
-        "cello:hasTarget | rdfs:domain | nodeID://b2379133",
+        "cello:hasTarget | rdfs:domain | nodeID://b2379134",
         "cello:hasTarget | rdfs:isDefinedBy | cello:",
         "cello:hasTarget | rdfs:label | has target",
-        "cello:hasTarget | rdfs:range | nodeID://b2379136",
+        "cello:hasTarget | rdfs:range | nodeID://b2379137",
         "cello:hasTarget | rdfs:subPropertyOf | schema:observationAbout"
       ],
       "usage": [
@@ -6676,7 +6713,7 @@
       "definition": [
         "cello:includesObservation | rdf:type | rdf:Property",
         "cello:includesObservation | rdf:type | owl:ObjectProperty",
-        "cello:includesObservation | rdfs:domain | nodeID://b2379162",
+        "cello:includesObservation | rdfs:domain | nodeID://b2379163",
         "cello:includesObservation | rdfs:isDefinedBy | cello:",
         "cello:includesObservation | rdfs:label | includes observation",
         "cello:includesObservation | rdfs:range | schema:Observation",
@@ -6726,8 +6763,8 @@
       "definition": [
         "cello:isIdentifiedByIRI | rdf:type | rdf:Property",
         "cello:isIdentifiedByIRI | rdf:type | owl:AnnotationProperty",
-        "cello:isIdentifiedByIRI | rdfs:comment | An IRI that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource.<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a></dd>",
-        "cello:isIdentifiedByIRI | rdfs:domain | nodeID://b2379125",
+        "cello:isIdentifiedByIRI | rdfs:comment | An IRI that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource.<br><dt>has domain</dt><dd><a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a></dd>",
+        "cello:isIdentifiedByIRI | rdfs:domain | nodeID://b2379126",
         "cello:isIdentifiedByIRI | rdfs:isDefinedBy | cello:",
         "cello:isIdentifiedByIRI | rdfs:label | is identified by IRI",
         "cello:isIdentifiedByIRI | rdfs:range | rdfs:Resource",
@@ -6765,8 +6802,8 @@
       "definition": [
         "cello:isIdentifiedByXref | rdf:type | rdf:Property",
         "cello:isIdentifiedByXref | rdf:type | owl:AnnotationProperty",
-        "cello:isIdentifiedByXref | rdfs:comment | A database cross-reference that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource.<br><dt>has domain</dt><dd><a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a> <b>or</b> <a href=\"#Gene\" title=\"https://purl.expasy.org/cellosaurus/rdf/Gene\">Gene</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a> <b>or</b> <a href=\"#GeneMutation\" title=\"https://purl.expasy.org/cellosaurus/rdf/GeneMutation\">Gene mutation</a></dd>",
-        "cello:isIdentifiedByXref | rdfs:domain | nodeID://b2379116",
+        "cello:isIdentifiedByXref | rdfs:comment | A database cross-reference that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource.<br><dt>has domain</dt><dd><a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#Gene\" title=\"https://purl.expasy.org/cellosaurus/rdf/Gene\">Gene</a> <b>or</b> <a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#GeneMutation\" title=\"https://purl.expasy.org/cellosaurus/rdf/GeneMutation\">Gene mutation</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a></dd>",
+        "cello:isIdentifiedByXref | rdfs:domain | nodeID://b2379117",
         "cello:isIdentifiedByXref | rdfs:isDefinedBy | cello:",
         "cello:isIdentifiedByXref | rdfs:label | is identified by xref",
         "cello:isIdentifiedByXref | rdfs:range | cello:Xref",
@@ -6861,23 +6898,6 @@
         "cello:markerId | range | xsd:string | 198181"
       ]
     },
-    "cello:microsatelliteInstabilityStatus": {
-      "tag": "prop",
-      "count": 1482,
-      "definition": [
-        "cello:microsatelliteInstabilityStatus | rdf:type | rdf:Property",
-        "cello:microsatelliteInstabilityStatus | rdf:type | owl:DatatypeProperty",
-        "cello:microsatelliteInstabilityStatus | rdfs:domain | cello:MicrosatelliteInstability",
-        "cello:microsatelliteInstabilityStatus | rdfs:isDefinedBy | cello:",
-        "cello:microsatelliteInstabilityStatus | rdfs:label | microsatellite instability status",
-        "cello:microsatelliteInstabilityStatus | rdfs:range | xsd:string"
-      ],
-      "usage": [
-        "cello:microsatelliteInstabilityStatus | count | xsd:integer | 1482",
-        "cello:microsatelliteInstabilityStatus | domain | cello:MicrosatelliteInstability | 1482",
-        "cello:microsatelliteInstabilityStatus | range | xsd:string | 1482"
-      ]
-    },
     "cello:misspellingName": {
       "tag": "prop",
       "count": 1634,
@@ -6885,7 +6905,7 @@
         "cello:misspellingName | rdf:type | rdf:Property",
         "cello:misspellingName | rdf:type | owl:AnnotationProperty",
         "cello:misspellingName | rdfs:comment | A misspelling as it appears in some publication or external resource<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#MisspellingRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/MisspellingRecord\">Misspelling record</a></dd>",
-        "cello:misspellingName | rdfs:domain | nodeID://b2379109",
+        "cello:misspellingName | rdfs:domain | nodeID://b2379110",
         "cello:misspellingName | rdfs:isDefinedBy | cello:",
         "cello:misspellingName | rdfs:label | misspelling name",
         "cello:misspellingName | rdfs:range | xsd:string",
@@ -6963,11 +6983,11 @@
     },
     "cello:name": {
       "tag": "prop",
-      "count": 1811669,
+      "count": 1811673,
       "definition": [
         "cello:name | rdf:type | rdf:Property",
         "cello:name | rdf:type | owl:AnnotationProperty",
-        "cello:name | rdfs:comment | A human-readable version of a resource's name.<br><dt>has domain</dt><dd><a href=\"#https://schema.org/Observation\" title=\"https://schema.org/Observation\">Observation</a> <b>or</b> <a href=\"#RegistrationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/RegistrationRecord\">Registration record</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a> <b>or</b> <a href=\"#Sex\" title=\"https://purl.expasy.org/cellosaurus/rdf/Sex\">Sex</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#http://www.w3.org/2004/02/skos/core#Concept\" title=\"http://www.w3.org/2004/02/skos/core#Concept\">Concept</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#https://schema.org/Person\" title=\"https://schema.org/Person\">Person</a> <b>or</b> <a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a> <b>or</b> <a href=\"#Gene\" title=\"https://purl.expasy.org/cellosaurus/rdf/Gene\">Gene</a> <b>or</b> <a href=\"#SequenceVariation\" title=\"https://purl.expasy.org/cellosaurus/rdf/SequenceVariation\">Sequence variation</a> <b>or</b> <a href=\"#Source\" title=\"https://purl.expasy.org/cellosaurus/rdf/Source\">Source</a> <b>or</b> <a href=\"#Population\" title=\"https://purl.expasy.org/cellosaurus/rdf/Population\">Population</a> <b>or</b> <a href=\"#Xref\" title=\"https://purl.expasy.org/cellosaurus/rdf/Xref\">Cross-Reference</a> <b>or</b> <a href=\"#MisspellingRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/MisspellingRecord\">Misspelling record</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a></dd>",
+        "cello:name | rdfs:comment | A human-readable version of a resource's name.<br><dt>has domain</dt><dd><a href=\"#SequenceVariation\" title=\"https://purl.expasy.org/cellosaurus/rdf/SequenceVariation\">Sequence variation</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#https://schema.org/Observation\" title=\"https://schema.org/Observation\">Observation</a> <b>or</b> <a href=\"#https://schema.org/Person\" title=\"https://schema.org/Person\">Person</a> <b>or</b> <a href=\"#MicrosatelliteInstabilityStatus\" title=\"https://purl.expasy.org/cellosaurus/rdf/MicrosatelliteInstabilityStatus\">Microsatellite instability status</a> <b>or</b> <a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a> <b>or</b> <a href=\"#Source\" title=\"https://purl.expasy.org/cellosaurus/rdf/Source\">Source</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#Sex\" title=\"https://purl.expasy.org/cellosaurus/rdf/Sex\">Sex</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#Population\" title=\"https://purl.expasy.org/cellosaurus/rdf/Population\">Population</a> <b>or</b> <a href=\"#http://www.w3.org/2004/02/skos/core#Concept\" title=\"http://www.w3.org/2004/02/skos/core#Concept\">Concept</a> <b>or</b> <a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#RegistrationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/RegistrationRecord\">Registration record</a> <b>or</b> <a href=\"#MisspellingRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/MisspellingRecord\">Misspelling record</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a> <b>or</b> <a href=\"#Gene\" title=\"https://purl.expasy.org/cellosaurus/rdf/Gene\">Gene</a> <b>or</b> <a href=\"#Xref\" title=\"https://purl.expasy.org/cellosaurus/rdf/Xref\">Cross-Reference</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a></dd>",
         "cello:name | rdfs:domain | nodeID://b2379073",
         "cello:name | rdfs:isDefinedBy | cello:",
         "cello:name | rdfs:label | name",
@@ -6976,13 +6996,13 @@
         "cello:registeredName | rdfs:subPropertyOf | cello:name"
       ],
       "usage": [
-        "cello:name | count | xsd:integer | 1811669",
+        "cello:name | count | xsd:integer | 1811673",
         "cello:name | domain | NCIt:C16351 | 1",
         "cello:name | domain | NCIt:C17256 | 1",
         "cello:name | domain | NCIt:C17467 | 1",
         "cello:name | domain | NCIt:C205365 | 1",
         "cello:name | domain | NCIt:C94346 | 1",
-        "cello:name | domain | owl:NamedIndividual | 337",
+        "cello:name | domain | owl:NamedIndividual | 341",
         "cello:name | domain | skos:Concept | 22962",
         "cello:name | domain | cello:AnatomicalEntity | 138554",
         "cello:name | domain | cello:AnatomyCellTypeResources | 10",
@@ -7021,6 +7041,7 @@
         "cello:name | domain | cello:InducedPluripotentStemCell | 35668",
         "cello:name | domain | cello:MedicalResources | 6",
         "cello:name | domain | cello:MetabolomicDatabases | 2",
+        "cello:name | domain | cello:MicrosatelliteInstabilityStatus | 4",
         "cello:name | domain | cello:MisspellingRecord | 817",
         "cello:name | domain | cello:OrganismSpecificDatabases | 16",
         "cello:name | domain | cello:PolymorphismAndMutationDatabases | 11",
@@ -7045,7 +7066,7 @@
         "cello:name | domain | schema:Observation | 215983",
         "cello:name | domain | schema:Organization | 1528",
         "cello:name | domain | schema:Person | 192453",
-        "cello:name | range | xsd:string | 1811669"
+        "cello:name | range | xsd:string | 1811673"
       ]
     },
     "cello:noneReported": {
@@ -7078,7 +7099,7 @@
       "definition": [
         "cello:ofGene | rdf:type | rdf:Property",
         "cello:ofGene | rdf:type | owl:ObjectProperty",
-        "cello:ofGene | rdfs:domain | nodeID://b2379165",
+        "cello:ofGene | rdfs:domain | nodeID://b2379166",
         "cello:ofGene | rdfs:isDefinedBy | cello:",
         "cello:ofGene | rdfs:label | of gene",
         "cello:ofGene | rdfs:range | cello:Gene"
@@ -7107,7 +7128,7 @@
         "cello:originatesFrom | rdfs:domain | cello:Source",
         "cello:originatesFrom | rdfs:isDefinedBy | cello:",
         "cello:originatesFrom | rdfs:label | originates from",
-        "cello:originatesFrom | rdfs:range | nodeID://b2379174"
+        "cello:originatesFrom | rdfs:range | nodeID://b2379175"
       ],
       "usage": [
         "cello:originatesFrom | count | xsd:integer | 138741",
@@ -7168,7 +7189,7 @@
       "definition": [
         "cello:pmid | rdf:type | rdf:Property",
         "cello:pmid | rdf:type | owl:DatatypeProperty",
-        "cello:pmid | rdfs:domain | nodeID://b2379182",
+        "cello:pmid | rdfs:domain | nodeID://b2379183",
         "cello:pmid | rdfs:isDefinedBy | cello:",
         "cello:pmid | rdfs:label | PMID",
         "cello:pmid | rdfs:range | xsd:string",
@@ -7316,8 +7337,8 @@
       "definition": [
         "cello:recommendedName | rdf:type | rdf:Property",
         "cello:recommendedName | rdf:type | owl:AnnotationProperty",
-        "cello:recommendedName | rdfs:comment | Most frequently the name of the cell line as provided in the original publication<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a></dd>",
-        "cello:recommendedName | rdfs:domain | nodeID://b2379096",
+        "cello:recommendedName | rdfs:comment | Most frequently the name of the cell line as provided in the original publication<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a> <b>or</b> <a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a></dd>",
+        "cello:recommendedName | rdfs:domain | nodeID://b2379097",
         "cello:recommendedName | rdfs:isDefinedBy | cello:",
         "cello:recommendedName | rdfs:label | recommended name",
         "cello:recommendedName | rdfs:range | xsd:string",
@@ -7413,8 +7434,8 @@
       "definition": [
         "cello:registeredName | rdf:type | rdf:Property",
         "cello:registeredName | rdf:type | owl:AnnotationProperty",
-        "cello:registeredName | rdfs:comment | A name as it appears in some register or official list.<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#RegistrationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/RegistrationRecord\">Registration record</a></dd>",
-        "cello:registeredName | rdfs:domain | nodeID://b2379106",
+        "cello:registeredName | rdfs:comment | A name as it appears in some register or official list.<br><dt>has domain</dt><dd><a href=\"#RegistrationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/RegistrationRecord\">Registration record</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a></dd>",
+        "cello:registeredName | rdfs:domain | nodeID://b2379107",
         "cello:registeredName | rdfs:isDefinedBy | cello:",
         "cello:registeredName | rdfs:label | registered name",
         "cello:registeredName | rdfs:range | xsd:string",
@@ -7495,7 +7516,7 @@
         "cello:seeAlsoXref | rdf:type | rdf:Property",
         "cello:seeAlsoXref | rdf:type | owl:AnnotationProperty",
         "cello:seeAlsoXref | rdfs:comment | A database cross-reference that is referenced, cited, or otherwise pointed to with the purpose to provide further information about the described resource<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#DiscontinuationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/DiscontinuationRecord\">Discontinuation record</a> <b>or</b> <a href=\"#Publication\" title=\"https://purl.expasy.org/cellosaurus/rdf/Publication\">Publication</a></dd>",
-        "cello:seeAlsoXref | rdfs:domain | nodeID://b2379112",
+        "cello:seeAlsoXref | rdfs:domain | nodeID://b2379113",
         "cello:seeAlsoXref | rdfs:isDefinedBy | cello:",
         "cello:seeAlsoXref | rdfs:label | see also xref",
         "cello:seeAlsoXref | rdfs:range | cello:Xref",
@@ -7661,7 +7682,7 @@
       "definition": [
         "cello:version | rdf:type | rdf:Property",
         "cello:version | rdf:type | owl:DatatypeProperty",
-        "cello:version | rdfs:domain | nodeID://b2379188",
+        "cello:version | rdfs:domain | nodeID://b2379189",
         "cello:version | rdfs:isDefinedBy | cello:",
         "cello:version | rdfs:label | version",
         "cello:version | rdfs:range | xsd:string",

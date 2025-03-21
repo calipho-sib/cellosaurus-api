@@ -6,6 +6,7 @@ from organizations import Organization
 from terminologies import Term, Terminologies, Terminology
 from databases import Database, Databases, get_db_category_IRI
 from sexes import Sex, get_sex_IRI
+from msi_status import MsiStatus, get_Msi_Status_IRI
 from namespace_term import Term as NsTerm
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -411,6 +412,22 @@ class RdfBuilder:
         url = ns.cello.url
         if url.endswith("#"): url = url[:-1]
         triples.append(sex_IRI, ns.rdfs.isDefinedBy, "<" + url + ">")
+        return "".join(triples.lines)
+    
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_ttl_for_msi_status(self, status: MsiStatus):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
+        triples = TripleList()
+        status_IRI = get_Msi_Status_IRI(status.label, ns)
+        # as a named individual of type MicrosatelliteInstabilityStatus
+        triples.append(status_IRI, ns.rdf.type, ns.cello.MicrosatelliteInstabilityStatus)
+        triples.append(status_IRI, ns.rdf.type, ns.owl.NamedIndividual)
+        triples.extend(self.get_materialized_triples_for_prop(status_IRI, ns.cello.name, ns.xsd.string(status.label))) # onto NI
+        url = ns.cello.url
+        if url.endswith("#"): url = url[:-1]
+        triples.append(status_IRI, ns.rdfs.isDefinedBy, "<" + url + ">")
         return "".join(triples.lines)
     
 
@@ -1559,11 +1576,12 @@ class RdfBuilder:
         triples = TripleList()
         annot_BN = self.get_blank_node()
         value = annot["msi-value"]
+        value_IRI = get_Msi_Status_IRI(value, ns)
         comment = annot.get("microsatellite-instability-note")
         sources = annot.get("source-list") or [] 
         triples.append(cl_IRI, ns.cello.hasMicrosatelliteInstability, annot_BN)
         triples.append(annot_BN, ns.rdf.type, ns.cello.MicrosatelliteInstability)
-        triples.append(annot_BN, ns.cello.microsatelliteInstabilityStatus, ns.xsd.string(value))
+        triples.append(annot_BN, ns.cello.hasMicrosatelliteInstabilityStatus, value_IRI)
         if comment is not None: triples.append(annot_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_triples_for_sources(annot_BN, sources))
         return triples

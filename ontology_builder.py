@@ -82,6 +82,7 @@ class OntologyBuilder:
         self.rdfs_range_to_remove[ns.cello.database] = { ns.owl.NamedIndividual, ns.cello.CelloConceptScheme } 
         self.rdfs_range_to_remove[ns.cello.hasGenomeModificationMethod] = { ns.owl.NamedIndividual } 
         self.rdfs_range_to_remove[ns.cello.derivedFromIndividualWithSex] = { ns.owl.NamedIndividual }
+        self.rdfs_range_to_remove[ns.cello.hasMicrosatelliteInstabilityStatus] = { ns.owl.NamedIndividual }
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

@@ -29,6 +29,7 @@ from terminologies import Terminologies, Terminology
 from ontology_builder import OntologyBuilder
 from databases import Database, Databases
 from sexes import Sexes
+from msi_status import MsiStatusList
 from queries_utils import QueryFileReader, Query
 
 # no not remove imports below, parsers are called dynamically
@@ -1100,12 +1101,23 @@ if __name__ == "__main__":
         # create OWL definitions for other named subclasses and individuals
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         file_out = open(out_dir + "data_other_entities.ttl", "wb")
+
+
         log_it("INFO:", f"1) serializing OWL for sexes")
         file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         sexes = Sexes(ns_reg)
         for k in sexes.keys():
             s = sexes.get(k)
             file_out.write(bytes(rb.get_ttl_for_sex(s) + "\n", "utf-8"))
+
+        log_it("INFO:", f"1) serializing OWL for MsiStatus")
+        file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
+        statusList = MsiStatusList(ns_reg)
+        for k in statusList.keys():
+            s = statusList.get(k)
+            file_out.write(bytes(rb.get_ttl_for_msi_status(s) + "\n", "utf-8"))
+
+
         log_it("INFO:", f"2) serializing OWL for genome modification methods")        
         for line in rb.get_ttl_for_local_gem_class():
             file_out.write(bytes(line + "\n", "utf-8"))  

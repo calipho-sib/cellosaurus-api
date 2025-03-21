@@ -172,6 +172,7 @@ class CelloOntologyNamespace(BaseNamespace):
 
         self.KaryotypicInfoComment = self.registerClass("KaryotypicInfoComment")    # described as subclass of OBI:Genetic info & equiv as OBI:Karyotype info
         self.MicrosatelliteInstability = self.registerClass("MicrosatelliteInstability")    # described as subclass of OBI:Genetic info
+        self.MicrosatelliteInstabilityStatus = self.registerClass("MicrosatelliteInstabilityStatus")    # described as class including 4 Named individuals
 
         self.GeneralTopic = self.registerClass("GeneralTopic")
         self.BiotechnologyComment = self.registerClass("BiotechnologyComment")          # described as a Data iterm cello:GeneralTopic
@@ -364,7 +365,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.hasProvider = self.registerObjectProperty("hasProvider")                                               # described as sub of schema:provider
         self.productId = self.registerDatatypeProperty("productId", label="product Identifier")                     # described as sub of dcterms:identifier
 
-        self.microsatelliteInstabilityStatus = self.registerDatatypeProperty("microsatelliteInstabilityStatus")     # TODO: later
+        self.hasMicrosatelliteInstabilityStatus = self.registerObjectProperty("hasMicrosatelliteInstabilityStatus")     # TODO: later
 
         self.hasMicrosatelliteInstability = self.registerObjectProperty("hasMicrosatelliteInstability")             # described as cello:hasAnnotation        
         self.hasMoAbIsotype = self.registerObjectProperty("hasMoAbIsotype", label="has monoclonal antibody isotype")  # described as cello:hasAnnotation
