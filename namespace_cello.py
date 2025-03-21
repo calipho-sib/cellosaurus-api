@@ -48,6 +48,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.StromalCellLine = self.registerClass("StromalCellLine")
         self.TelomeraseImmortalizedCellLine = self.registerClass("TelomeraseImmortalizedCellLine")
         self.TransformedCellLine = self.registerClass("TransformedCellLine")
+        self.UndefinedCellLineType = self.registerClass("UndefinedCellLineType")
 
 
         # described as sub of OBI class with owl:oneOf local NIs defined below (see onto builder)

@@ -15,6 +15,7 @@ python cellapi_builder.py --platform=$platform ONTO
 python cellapi_builder.py --platform=$platform LOAD_RDF onto
 python cellapi_builder.py --platform=$platform QUERIES
 python cellapi_builder.py --platform=$platform LOAD_RDF queries
+python cellapi_builder.py --platform=$platform MODEL 
 python cellapi_builder.py --platform=$platform INFERRED 
 
 if [ "$2" != "novoid" ]; then

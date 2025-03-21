@@ -181,7 +181,7 @@ class DataModelBuilder:
         for entity_key in entities:
             entity = entities[entity_key]
             if entity["tag"] != "prop" : continue
-            print("entity_key:",entity_key)
+            #print("entity_key:",entity_key)
             long_IRI = self.get_long_IRI(entity_key)
             query = self.prop_use_query.replace("$prop_long_IRI", long_IRI)
             log_it("INFO", f"querying for usage of {entity_key}")

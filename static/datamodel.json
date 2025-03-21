@@ -437,14 +437,14 @@
         "fabio:ConferencePaper | cello:startingPage | xsd:string | 20",
         "fabio:ConferencePaper | cello:title | xsd:string | 20",
         "cello:CancerCellLine | cello:references | fabio:ConferencePaper | 18",
-        "cello:CellLine | cello:references | fabio:ConferencePaper | 2",
         "cello:ConditionallyImmortalizedCellLine | cello:references | fabio:ConferencePaper | 2",
         "cello:EmbryonicStemCell | cello:references | fabio:ConferencePaper | 3",
         "cello:Hybridoma | cello:references | fabio:ConferencePaper | 4",
         "cello:MisspellingRecord | cello:appearsIn | fabio:ConferencePaper | 1",
         "cello:Source | cello:originatesFrom | fabio:ConferencePaper | 10",
         "cello:SpontaneouslyImmortalizedCellLine | cello:references | fabio:ConferencePaper | 6",
-        "cello:TransformedCellLine | cello:references | fabio:ConferencePaper | 2"
+        "cello:TransformedCellLine | cello:references | fabio:ConferencePaper | 2",
+        "cello:UndefinedCellLineType | cello:references | fabio:ConferencePaper | 2"
       ]
     },
     "fabio:DoctoralThesis": {
@@ -469,7 +469,6 @@
         "fabio:DoctoralThesis | cello:seeAlsoXref | cello:Xref | 119",
         "fabio:DoctoralThesis | cello:title | xsd:string | 119",
         "cello:CancerCellLine | cello:references | fabio:DoctoralThesis | 452",
-        "cello:CellLine | cello:references | fabio:DoctoralThesis | 1",
         "cello:ConditionallyImmortalizedCellLine | cello:references | fabio:DoctoralThesis | 7",
         "cello:EmbryonicStemCell | cello:references | fabio:DoctoralThesis | 9",
         "cello:FactorDependentCellLine | cello:references | fabio:DoctoralThesis | 1",
@@ -482,7 +481,8 @@
         "cello:Source | cello:originatesFrom | fabio:DoctoralThesis | 221",
         "cello:SpontaneouslyImmortalizedCellLine | cello:references | fabio:DoctoralThesis | 84",
         "cello:TelomeraseImmortalizedCellLine | cello:references | fabio:DoctoralThesis | 9",
-        "cello:TransformedCellLine | cello:references | fabio:DoctoralThesis | 216"
+        "cello:TransformedCellLine | cello:references | fabio:DoctoralThesis | 216",
+        "cello:UndefinedCellLineType | cello:references | fabio:DoctoralThesis | 1"
       ]
     },
     "fabio:Expression": {
@@ -527,7 +527,6 @@
         "fabio:JournalArticle | cello:title | xsd:string | 27018",
         "fabio:JournalArticle | cello:volume | xsd:string | 27018",
         "cello:CancerCellLine | cello:references | fabio:JournalArticle | 68922",
-        "cello:CellLine | cello:references | fabio:JournalArticle | 403",
         "cello:ConditionallyImmortalizedCellLine | cello:references | fabio:JournalArticle | 661",
         "cello:EmbryonicStemCell | cello:references | fabio:JournalArticle | 16297",
         "cello:FactorDependentCellLine | cello:references | fabio:JournalArticle | 434",
@@ -541,7 +540,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:references | fabio:JournalArticle | 8739",
         "cello:StromalCellLine | cello:references | fabio:JournalArticle | 94",
         "cello:TelomeraseImmortalizedCellLine | cello:references | fabio:JournalArticle | 965",
-        "cello:TransformedCellLine | cello:references | fabio:JournalArticle | 22620"
+        "cello:TransformedCellLine | cello:references | fabio:JournalArticle | 22620",
+        "cello:UndefinedCellLineType | cello:references | fabio:JournalArticle | 403"
       ]
     },
     "fabio:MastersThesis": {
@@ -566,11 +566,11 @@
         "fabio:MastersThesis | cello:seeAlsoXref | cello:Xref | 34",
         "fabio:MastersThesis | cello:title | xsd:string | 34",
         "cello:CancerCellLine | cello:references | fabio:MastersThesis | 131",
-        "cello:CellLine | cello:references | fabio:MastersThesis | 2",
         "cello:FiniteCellLine | cello:references | fabio:MastersThesis | 109",
         "cello:Source | cello:originatesFrom | fabio:MastersThesis | 288",
         "cello:SpontaneouslyImmortalizedCellLine | cello:references | fabio:MastersThesis | 20",
-        "cello:TransformedCellLine | cello:references | fabio:MastersThesis | 5"
+        "cello:TransformedCellLine | cello:references | fabio:MastersThesis | 5",
+        "cello:UndefinedCellLineType | cello:references | fabio:MastersThesis | 2"
       ]
     },
     "fabio:PatentDocument": {
@@ -595,7 +595,6 @@
         "fabio:PatentDocument | cello:seeAlsoXref | cello:Xref | 1812",
         "fabio:PatentDocument | cello:title | xsd:string | 1812",
         "cello:CancerCellLine | cello:references | fabio:PatentDocument | 429",
-        "cello:CellLine | cello:references | fabio:PatentDocument | 3",
         "cello:ConditionallyImmortalizedCellLine | cello:references | fabio:PatentDocument | 24",
         "cello:EmbryonicStemCell | cello:references | fabio:PatentDocument | 37",
         "cello:FactorDependentCellLine | cello:references | fabio:PatentDocument | 32",
@@ -609,7 +608,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:references | fabio:PatentDocument | 285",
         "cello:StromalCellLine | cello:references | fabio:PatentDocument | 2",
         "cello:TelomeraseImmortalizedCellLine | cello:references | fabio:PatentDocument | 22",
-        "cello:TransformedCellLine | cello:references | fabio:PatentDocument | 389"
+        "cello:TransformedCellLine | cello:references | fabio:PatentDocument | 389",
+        "cello:UndefinedCellLineType | cello:references | fabio:PatentDocument | 3"
       ]
     },
     "fabio:ReportDocument": {
@@ -751,7 +751,6 @@
         "cello:AnatomicalEntity | cello:name | xsd:string | 138554",
         "cello:AnatomicalEntity | cello:siteType | xsd:string | 138554",
         "cello:CancerCellLine | cello:derivedFromSite | cello:AnatomicalEntity | 34710",
-        "cello:CellLine | cello:derivedFromSite | cello:AnatomicalEntity | 112",
         "cello:ConditionallyImmortalizedCellLine | cello:derivedFromSite | cello:AnatomicalEntity | 392",
         "cello:EmbryonicStemCell | cello:derivedFromSite | cello:AnatomicalEntity | 16682",
         "cello:FactorDependentCellLine | cello:derivedFromSite | cello:AnatomicalEntity | 413",
@@ -762,7 +761,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:derivedFromSite | cello:AnatomicalEntity | 6545",
         "cello:StromalCellLine | cello:derivedFromSite | cello:AnatomicalEntity | 61",
         "cello:TelomeraseImmortalizedCellLine | cello:derivedFromSite | cello:AnatomicalEntity | 874",
-        "cello:TransformedCellLine | cello:derivedFromSite | cello:AnatomicalEntity | 52040"
+        "cello:TransformedCellLine | cello:derivedFromSite | cello:AnatomicalEntity | 52040",
+        "cello:UndefinedCellLineType | cello:derivedFromSite | cello:AnatomicalEntity | 112"
       ]
     },
     "cello:AnatomyCellTypeResources": {
@@ -806,7 +806,6 @@
         "cello:AnecdotalComment | rdfs:comment | xsd:string | 143",
         "cello:AnecdotalComment | cello:hasSource | cello:Source | 81",
         "cello:CancerCellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 51",
-        "cello:CellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 4",
         "cello:ConditionallyImmortalizedCellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 1",
         "cello:EmbryonicStemCell | cello:hasAnecdotalComment | cello:AnecdotalComment | 10",
         "cello:FactorDependentCellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 1",
@@ -816,7 +815,8 @@
         "cello:InducedPluripotentStemCell | cello:hasAnecdotalComment | cello:AnecdotalComment | 4",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 22",
         "cello:TelomeraseImmortalizedCellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 2",
-        "cello:TransformedCellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 19"
+        "cello:TransformedCellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 19",
+        "cello:UndefinedCellLineType | cello:hasAnecdotalComment | cello:AnecdotalComment | 4"
       ]
     },
     "cello:BiologicalSampleResources": {
@@ -885,7 +885,6 @@
         "cello:Breed | cello:isIdentifiedByXref | cello:Xref | 3484",
         "cello:Breed | cello:name | xsd:string | 21200",
         "cello:CancerCellLine | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 3846",
-        "cello:CellLine | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 11",
         "cello:ConditionallyImmortalizedCellLine | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 305",
         "cello:EmbryonicStemCell | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 11672",
         "cello:FactorDependentCellLine | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 410",
@@ -896,7 +895,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 1900",
         "cello:StromalCellLine | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 63",
         "cello:TelomeraseImmortalizedCellLine | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 53",
-        "cello:TransformedCellLine | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 1955"
+        "cello:TransformedCellLine | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 1955",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 11"
       ]
     },
     "cello:CancerCellLine": {
@@ -932,11 +932,11 @@
         "cello:CancerCellLine | cello:derivedFromIndividualWithSex | cello:Sex | 38442",
         "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:CancerCellLine | 4206",
         "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:CancerCellLine | 4206",
-        "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:CellLine | 18",
         "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:FiniteCellLine | 271",
         "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:SpontaneouslyImmortalizedCellLine | 19",
         "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:TelomeraseImmortalizedCellLine | 2",
         "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:TransformedCellLine | 420",
+        "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:UndefinedCellLineType | 18",
         "cello:CancerCellLine | cello:derivedFromSite | cello:AnatomicalEntity | 34710",
         "cello:CancerCellLine | cello:establishedBy | schema:Organization | 1773",
         "cello:CancerCellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 51",
@@ -1001,7 +1001,6 @@
         "cello:CancerCellLine | cello:seeAlsoXref | cello:Xref | 160531",
         "cello:CancerCellLine | cello:transformedBy | cello:ChemicalEntity | 11666",
         "cello:CancerCellLine | cello:version | xsd:string | 41233",
-        "cello:CellLine | cello:derivedFromSameIndividualAs | cello:CancerCellLine | 18",
         "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:CancerCellLine | 271",
         "cello:FiniteCellLine | cello:hasChildCellLine | cello:CancerCellLine | 2",
         "cello:HybridCellLine | cello:hasParentCellLine | cello:CancerCellLine | 231",
@@ -1012,7 +1011,8 @@
         "cello:TelomeraseImmortalizedCellLine | cello:derivedFromSameIndividualAs | cello:CancerCellLine | 2",
         "cello:TelomeraseImmortalizedCellLine | cello:hasParentCellLine | cello:CancerCellLine | 2",
         "cello:TransformedCellLine | cello:derivedFromSameIndividualAs | cello:CancerCellLine | 420",
-        "cello:TransformedCellLine | cello:hasChildCellLine | cello:CancerCellLine | 5"
+        "cello:TransformedCellLine | cello:hasChildCellLine | cello:CancerCellLine | 5",
+        "cello:UndefinedCellLineType | cello:derivedFromSameIndividualAs | cello:CancerCellLine | 18"
       ]
     },
     "cello:CautionComment": {
@@ -1031,7 +1031,6 @@
         "cello:CautionComment | rdf:type | owl:Class | 1309",
         "cello:CautionComment | rdfs:comment | xsd:string | 1309",
         "cello:CautionComment | cello:hasSource | cello:Source | 70",
-        "cello:CellLine | cello:hasCautionComment | cello:CautionComment | 4",
         "cello:ConditionallyImmortalizedCellLine | cello:hasCautionComment | cello:CautionComment | 2",
         "cello:EmbryonicStemCell | cello:hasCautionComment | cello:CautionComment | 15",
         "cello:FactorDependentCellLine | cello:hasCautionComment | cello:CautionComment | 249",
@@ -1042,12 +1041,13 @@
         "cello:SomaticStemCell | cello:hasCautionComment | cello:CautionComment | 6",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasCautionComment | cello:CautionComment | 47",
         "cello:TelomeraseImmortalizedCellLine | cello:hasCautionComment | cello:CautionComment | 8",
-        "cello:TransformedCellLine | cello:hasCautionComment | cello:CautionComment | 123"
+        "cello:TransformedCellLine | cello:hasCautionComment | cello:CautionComment | 123",
+        "cello:UndefinedCellLineType | cello:hasCautionComment | cello:CautionComment | 4"
       ]
     },
     "cello:CellLine": {
       "tag": "class",
-      "count": 250,
+      "count": 0,
       "definition": [
         "cello:CancerCellLine | rdfs:subClassOf | cello:CellLine",
         "cello:CellLine | rdf:type | owl:Class",
@@ -1070,6 +1070,7 @@
         "cello:StromalCellLine | rdfs:subClassOf | cello:CellLine",
         "cello:TelomeraseImmortalizedCellLine | rdfs:subClassOf | cello:CellLine",
         "cello:TransformedCellLine | rdfs:subClassOf | cello:CellLine",
+        "cello:UndefinedCellLineType | rdfs:subClassOf | cello:CellLine",
         "cello:created | rdfs:domain | cello:CellLine",
         "cello:derivedFromCellType | rdfs:domain | cello:CellLine",
         "cello:derivedFromIndividualAtAge | rdfs:domain | cello:CellLine",
@@ -1119,81 +1120,7 @@
         "cello:secondaryAccession | rdfs:domain | cello:CellLine",
         "cello:transformedBy | rdfs:domain | cello:CellLine"
       ],
-      "usage": [
-        "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:CellLine | 18",
-        "cello:CellLine | rdf:type | owl:Class | 250",
-        "cello:CellLine | rdfs:label | xsd:string | 543",
-        "cello:CellLine | rdfs:seeAlso | xsd:anyURI | 293",
-        "cello:CellLine | owl:sameAs | xsd:anyURI | 234",
-        "cello:CellLine | skos:altLabel | xsd:string | 253",
-        "cello:CellLine | skos:hiddenLabel | xsd:string | 3",
-        "cello:CellLine | skos:prefLabel | xsd:string | 250",
-        "cello:CellLine | cello:accession | xsd:string | 251",
-        "cello:CellLine | cello:alternativeName | xsd:string | 253",
-        "cello:CellLine | cello:created | xsd:date | 250",
-        "cello:CellLine | cello:derivedFromCellType | cello:CellType | 45",
-        "cello:CellLine | cello:derivedFromIndividualAtAge | xsd:string | 190",
-        "cello:CellLine | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 11",
-        "cello:CellLine | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 38",
-        "cello:CellLine | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 250",
-        "cello:CellLine | cello:derivedFromIndividualWithDisease | cello:Disease | 19",
-        "cello:CellLine | cello:derivedFromIndividualWithSex | owl:NamedIndividual | 216",
-        "cello:CellLine | cello:derivedFromIndividualWithSex | cello:Sex | 216",
-        "cello:CellLine | cello:derivedFromSameIndividualAs | cello:CancerCellLine | 18",
-        "cello:CellLine | cello:derivedFromSameIndividualAs | cello:CellLine | 10",
-        "cello:CellLine | cello:derivedFromSameIndividualAs | cello:CellLine | 10",
-        "cello:CellLine | cello:derivedFromSameIndividualAs | cello:FiniteCellLine | 25",
-        "cello:CellLine | cello:derivedFromSite | cello:AnatomicalEntity | 112",
-        "cello:CellLine | cello:establishedBy | schema:Organization | 4",
-        "cello:CellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 4",
-        "cello:CellLine | cello:hasCautionComment | cello:CautionComment | 4",
-        "cello:CellLine | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 1",
-        "cello:CellLine | cello:hasChildCellLine | cello:CellLine | 23",
-        "cello:CellLine | cello:hasChildCellLine | cello:CellLine | 23",
-        "cello:CellLine | cello:hasChildCellLine | cello:TransformedCellLine | 8",
-        "cello:CellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 107",
-        "cello:CellLine | cello:hasDoublingTime | cello:DoublingTime | 14",
-        "cello:CellLine | cello:hasGeneKnockout | cello:GeneKnockout | 2",
-        "cello:CellLine | cello:hasGeneticIntegration | cello:GeneticIntegration | 9",
-        "cello:CellLine | cello:hasGenomeAncestry | cello:GenomeAncestry | 35",
-        "cello:CellLine | cello:hasHLAtyping | cello:HLAtyping | 10",
-        "cello:CellLine | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 2",
-        "cello:CellLine | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 3",
-        "cello:CellLine | cello:hasMisspellingRecord | cello:MisspellingRecord | 3",
-        "cello:CellLine | cello:hasOmicsInfo | cello:OmicsInfo | 151",
-        "cello:CellLine | cello:hasParentCellLine | cello:CellLine | 23",
-        "cello:CellLine | cello:hasParentCellLine | cello:CellLine | 23",
-        "cello:CellLine | cello:hasParentCellLine | cello:FiniteCellLine | 2",
-        "cello:CellLine | cello:hasParentCellLine | cello:SpontaneouslyImmortalizedCellLine | 3",
-        "cello:CellLine | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 82",
-        "cello:CellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 37",
-        "cello:CellLine | cello:hasResistance | cello:ChemicalEntity | 1",
-        "cello:CellLine | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 11",
-        "cello:CellLine | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 45",
-        "cello:CellLine | cello:hasVirologyComment | cello:VirologyComment | 1",
-        "cello:CellLine | cello:inCollection | xsd:string | 147",
-        "cello:CellLine | cello:inGroup | xsd:string | 27",
-        "cello:CellLine | cello:isIdentifiedByIRI | xsd:anyURI | 82",
-        "cello:CellLine | cello:misspellingName | xsd:string | 3",
-        "cello:CellLine | cello:modified | xsd:date | 250",
-        "cello:CellLine | cello:name | xsd:string | 543",
-        "cello:CellLine | cello:primaryAccession | xsd:string | 250",
-        "cello:CellLine | cello:recommendedName | xsd:string | 250",
-        "cello:CellLine | cello:references | fabio:ConferencePaper | 2",
-        "cello:CellLine | cello:references | fabio:DoctoralThesis | 1",
-        "cello:CellLine | cello:references | fabio:JournalArticle | 403",
-        "cello:CellLine | cello:references | fabio:MastersThesis | 2",
-        "cello:CellLine | cello:references | fabio:PatentDocument | 3",
-        "cello:CellLine | cello:registeredName | xsd:string | 37",
-        "cello:CellLine | cello:secondaryAccession | xsd:string | 1",
-        "cello:CellLine | cello:seeAlsoXref | cello:Xref | 1031",
-        "cello:CellLine | cello:transformedBy | cello:ChemicalEntity | 2",
-        "cello:CellLine | cello:version | xsd:string | 250",
-        "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:CellLine | 25",
-        "cello:FiniteCellLine | cello:hasChildCellLine | cello:CellLine | 2",
-        "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:CellLine | 3",
-        "cello:TransformedCellLine | cello:hasParentCellLine | cello:CellLine | 8"
-      ]
+      "usage": []
     },
     "cello:CellLineAnnotationTopic": {
       "tag": "class",
@@ -1265,7 +1192,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:derivedFromCellType | cello:CellType | 3248",
-        "cello:CellLine | cello:derivedFromCellType | cello:CellType | 45",
         "cello:CellType | rdf:type | owl:Class | 50743",
         "cello:CellType | rdfs:label | xsd:string | 50743",
         "cello:CellType | cello:isIdentifiedByIRI | xsd:anyURI | 50741",
@@ -1282,7 +1208,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:derivedFromCellType | cello:CellType | 3731",
         "cello:StromalCellLine | cello:derivedFromCellType | cello:CellType | 45",
         "cello:TelomeraseImmortalizedCellLine | cello:derivedFromCellType | cello:CellType | 782",
-        "cello:TransformedCellLine | cello:derivedFromCellType | cello:CellType | 5575"
+        "cello:TransformedCellLine | cello:derivedFromCellType | cello:CellType | 5575",
+        "cello:UndefinedCellLineType | cello:derivedFromCellType | cello:CellType | 45"
       ]
     },
     "cello:CelloConceptScheme": {
@@ -1308,7 +1235,7 @@
         "cello:CelloConceptScheme | cello:recommendedName | xsd:string | 8",
         "cello:CelloConceptScheme | cello:version | xsd:string | 8",
         "cello:Xref | skos:inScheme | cello:CelloConceptScheme | 6784",
-        "cello:Xref | cello:database | cello:CelloConceptScheme | 6852"
+        "cello:Xref | cello:database | cello:CelloConceptScheme | 6853"
       ]
     },
     "cello:CharacteristicsComment": {
@@ -1324,7 +1251,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 4635",
-        "cello:CellLine | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 1",
         "cello:CharacteristicsComment | rdf:type | owl:Class | 15973",
         "cello:CharacteristicsComment | rdfs:comment | xsd:string | 15973",
         "cello:CharacteristicsComment | cello:hasSource | cello:Source | 4025",
@@ -1339,7 +1265,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 1394",
         "cello:StromalCellLine | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 14",
         "cello:TelomeraseImmortalizedCellLine | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 107",
-        "cello:TransformedCellLine | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 1739"
+        "cello:TransformedCellLine | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 1739",
+        "cello:UndefinedCellLineType | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 1"
       ]
     },
     "cello:ChemicalEntity": {
@@ -1359,8 +1286,6 @@
         "cello:CancerCellLine | cello:hasMoAbTarget | cello:ChemicalEntity | 2",
         "cello:CancerCellLine | cello:hasResistance | cello:ChemicalEntity | 2357",
         "cello:CancerCellLine | cello:transformedBy | cello:ChemicalEntity | 11666",
-        "cello:CellLine | cello:hasResistance | cello:ChemicalEntity | 1",
-        "cello:CellLine | cello:transformedBy | cello:ChemicalEntity | 2",
         "cello:ChemicalEntity | rdf:type | owl:Class | 136752",
         "cello:ChemicalEntity | rdfs:comment | xsd:string | 2866",
         "cello:ChemicalEntity | rdfs:label | xsd:string | 77017",
@@ -1388,7 +1313,9 @@
         "cello:TelomeraseImmortalizedCellLine | cello:transformedBy | cello:ChemicalEntity | 30",
         "cello:TransformedCellLine | cello:hasMoAbTarget | cello:ChemicalEntity | 45",
         "cello:TransformedCellLine | cello:hasResistance | cello:ChemicalEntity | 339",
-        "cello:TransformedCellLine | cello:transformedBy | cello:ChemicalEntity | 106497"
+        "cello:TransformedCellLine | cello:transformedBy | cello:ChemicalEntity | 106497",
+        "cello:UndefinedCellLineType | cello:hasResistance | cello:ChemicalEntity | 1",
+        "cello:UndefinedCellLineType | cello:transformedBy | cello:ChemicalEntity | 2"
       ]
     },
     "cello:ChemistryResources": {
@@ -1560,7 +1487,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 3018",
-        "cello:CellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 107",
         "cello:ConditionallyImmortalizedCellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 7",
         "cello:DiscontinuationRecord | rdf:type | owl:Class | 11425",
         "cello:DiscontinuationRecord | cello:hasProvider | schema:Organization | 11425",
@@ -1576,7 +1502,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 275",
         "cello:StromalCellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 4",
         "cello:TelomeraseImmortalizedCellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 60",
-        "cello:TransformedCellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 1931"
+        "cello:TransformedCellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 1931",
+        "cello:UndefinedCellLineType | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 107"
       ]
     },
     "cello:Disease": {
@@ -1592,7 +1519,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:derivedFromIndividualWithDisease | cello:Disease | 62191",
-        "cello:CellLine | cello:derivedFromIndividualWithDisease | cello:Disease | 19",
         "cello:ConditionallyImmortalizedCellLine | cello:derivedFromIndividualWithDisease | cello:Disease | 19",
         "cello:Disease | rdf:type | owl:Class | 120670",
         "cello:Disease | rdfs:label | xsd:string | 120670",
@@ -1608,7 +1534,8 @@
         "cello:SomaticStemCell | cello:derivedFromIndividualWithDisease | cello:Disease | 28",
         "cello:SpontaneouslyImmortalizedCellLine | cello:derivedFromIndividualWithDisease | cello:Disease | 41",
         "cello:TelomeraseImmortalizedCellLine | cello:derivedFromIndividualWithDisease | cello:Disease | 358",
-        "cello:TransformedCellLine | cello:derivedFromIndividualWithDisease | cello:Disease | 27922"
+        "cello:TransformedCellLine | cello:derivedFromIndividualWithDisease | cello:Disease | 27922",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualWithDisease | cello:Disease | 19"
       ]
     },
     "cello:DonorInfoComment": {
@@ -1652,7 +1579,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasDoublingTime | cello:DoublingTime | 7616",
-        "cello:CellLine | cello:hasDoublingTime | cello:DoublingTime | 14",
         "cello:ConditionallyImmortalizedCellLine | cello:hasDoublingTime | cello:DoublingTime | 46",
         "cello:DoublingTime | rdf:type | owl:Class | 10699",
         "cello:DoublingTime | rdfs:comment | xsd:string | 1712",
@@ -1668,7 +1594,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasDoublingTime | cello:DoublingTime | 1329",
         "cello:StromalCellLine | cello:hasDoublingTime | cello:DoublingTime | 16",
         "cello:TelomeraseImmortalizedCellLine | cello:hasDoublingTime | cello:DoublingTime | 141",
-        "cello:TransformedCellLine | cello:hasDoublingTime | cello:DoublingTime | 873"
+        "cello:TransformedCellLine | cello:hasDoublingTime | cello:DoublingTime | 873",
+        "cello:UndefinedCellLineType | cello:hasDoublingTime | cello:DoublingTime | 14"
       ]
     },
     "cello:EmbryonicStemCell": {
@@ -1676,7 +1603,7 @@
       "count": 16685,
       "definition": [
         "cello:EmbryonicStemCell | rdf:type | owl:Class",
-        "cello:EmbryonicStemCell | rdfs:comment | <dt>has relation</td><dd>skos:closeMatch <b>with</b> <a href=\"http://purl.obolibrary.org/obo/BTO_0001581\">http://purl.obolibrary.org/obo/BTO_0001581</a><br />skos:closeMatch <b>with</b> <a href=\"http://purl.obolibrary.org/obo/CLO_0037279\">http://purl.obolibrary.org/obo/CLO_0037279</a></dd>",
+        "cello:EmbryonicStemCell | rdfs:comment | <dt>has relation</td><dd>skos:closeMatch <b>with</b> <a href=\"http://purl.obolibrary.org/obo/CLO_0037279\">http://purl.obolibrary.org/obo/CLO_0037279</a><br />skos:closeMatch <b>with</b> <a href=\"http://purl.obolibrary.org/obo/BTO_0001581\">http://purl.obolibrary.org/obo/BTO_0001581</a></dd>",
         "cello:EmbryonicStemCell | rdfs:isDefinedBy | cello:",
         "cello:EmbryonicStemCell | rdfs:label | Embryonic stem cell",
         "cello:EmbryonicStemCell | rdfs:subClassOf | cello:CellLine",
@@ -1896,8 +1823,6 @@
       "usage": [
         "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:FiniteCellLine | 271",
         "cello:CancerCellLine | cello:hasParentCellLine | cello:FiniteCellLine | 2",
-        "cello:CellLine | cello:derivedFromSameIndividualAs | cello:FiniteCellLine | 25",
-        "cello:CellLine | cello:hasParentCellLine | cello:FiniteCellLine | 2",
         "cello:ConditionallyImmortalizedCellLine | cello:hasParentCellLine | cello:FiniteCellLine | 4",
         "cello:EmbryonicStemCell | cello:hasChildCellLine | cello:FiniteCellLine | 7",
         "cello:FiniteCellLine | rdf:type | owl:Class | 12399",
@@ -1919,13 +1844,13 @@
         "cello:FiniteCellLine | cello:derivedFromIndividualWithSex | owl:NamedIndividual | 11870",
         "cello:FiniteCellLine | cello:derivedFromIndividualWithSex | cello:Sex | 11870",
         "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:CancerCellLine | 271",
-        "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:CellLine | 25",
         "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:FiniteCellLine | 3372",
         "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:FiniteCellLine | 3372",
         "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:SomaticStemCell | 12",
         "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:SpontaneouslyImmortalizedCellLine | 5",
         "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:TelomeraseImmortalizedCellLine | 2",
         "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:TransformedCellLine | 1676",
+        "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:UndefinedCellLineType | 25",
         "cello:FiniteCellLine | cello:derivedFromSite | cello:AnatomicalEntity | 10265",
         "cello:FiniteCellLine | cello:establishedBy | schema:Organization | 885",
         "cello:FiniteCellLine | cello:hasAnecdotalComment | cello:AnecdotalComment | 16",
@@ -1933,7 +1858,6 @@
         "cello:FiniteCellLine | cello:hasCautionComment | cello:CautionComment | 48",
         "cello:FiniteCellLine | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 185",
         "cello:FiniteCellLine | cello:hasChildCellLine | cello:CancerCellLine | 2",
-        "cello:FiniteCellLine | cello:hasChildCellLine | cello:CellLine | 2",
         "cello:FiniteCellLine | cello:hasChildCellLine | cello:ConditionallyImmortalizedCellLine | 4",
         "cello:FiniteCellLine | cello:hasChildCellLine | cello:FiniteCellLine | 136",
         "cello:FiniteCellLine | cello:hasChildCellLine | cello:FiniteCellLine | 136",
@@ -1943,6 +1867,7 @@
         "cello:FiniteCellLine | cello:hasChildCellLine | cello:SpontaneouslyImmortalizedCellLine | 17",
         "cello:FiniteCellLine | cello:hasChildCellLine | cello:TelomeraseImmortalizedCellLine | 182",
         "cello:FiniteCellLine | cello:hasChildCellLine | cello:TransformedCellLine | 300",
+        "cello:FiniteCellLine | cello:hasChildCellLine | cello:UndefinedCellLineType | 2",
         "cello:FiniteCellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 2403",
         "cello:FiniteCellLine | cello:hasDonorInfoComment | cello:DonorInfoComment | 458",
         "cello:FiniteCellLine | cello:hasDoublingTime | cello:DoublingTime | 343",
@@ -2000,7 +1925,9 @@
         "cello:TelomeraseImmortalizedCellLine | cello:derivedFromSameIndividualAs | cello:FiniteCellLine | 2",
         "cello:TelomeraseImmortalizedCellLine | cello:hasParentCellLine | cello:FiniteCellLine | 182",
         "cello:TransformedCellLine | cello:derivedFromSameIndividualAs | cello:FiniteCellLine | 1676",
-        "cello:TransformedCellLine | cello:hasParentCellLine | cello:FiniteCellLine | 300"
+        "cello:TransformedCellLine | cello:hasParentCellLine | cello:FiniteCellLine | 300",
+        "cello:UndefinedCellLineType | cello:derivedFromSameIndividualAs | cello:FiniteCellLine | 25",
+        "cello:UndefinedCellLineType | cello:hasParentCellLine | cello:FiniteCellLine | 2"
       ]
     },
     "cello:Gene": {
@@ -2167,7 +2094,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasGeneKnockout | cello:GeneKnockout | 16438",
-        "cello:CellLine | cello:hasGeneKnockout | cello:GeneKnockout | 2",
         "cello:ConditionallyImmortalizedCellLine | cello:hasGeneKnockout | cello:GeneKnockout | 12",
         "cello:EmbryonicStemCell | cello:hasGeneKnockout | cello:GeneKnockout | 11352",
         "cello:FactorDependentCellLine | cello:hasGeneKnockout | cello:GeneKnockout | 3",
@@ -2181,7 +2107,8 @@
         "cello:SomaticStemCell | cello:hasGeneKnockout | cello:GeneKnockout | 2",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasGeneKnockout | cello:GeneKnockout | 584",
         "cello:TelomeraseImmortalizedCellLine | cello:hasGeneKnockout | cello:GeneKnockout | 110",
-        "cello:TransformedCellLine | cello:hasGeneKnockout | cello:GeneKnockout | 2454"
+        "cello:TransformedCellLine | cello:hasGeneKnockout | cello:GeneKnockout | 2454",
+        "cello:UndefinedCellLineType | cello:hasGeneKnockout | cello:GeneKnockout | 2"
       ]
     },
     "cello:GeneMutation": {
@@ -2280,7 +2207,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasGeneticIntegration | cello:GeneticIntegration | 7920",
-        "cello:CellLine | cello:hasGeneticIntegration | cello:GeneticIntegration | 9",
         "cello:ConditionallyImmortalizedCellLine | cello:hasGeneticIntegration | cello:GeneticIntegration | 584",
         "cello:EmbryonicStemCell | cello:hasGeneticIntegration | cello:GeneticIntegration | 15625",
         "cello:FactorDependentCellLine | cello:hasGeneticIntegration | cello:GeneticIntegration | 589",
@@ -2296,7 +2222,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasGeneticIntegration | cello:GeneticIntegration | 4870",
         "cello:StromalCellLine | cello:hasGeneticIntegration | cello:GeneticIntegration | 22",
         "cello:TelomeraseImmortalizedCellLine | cello:hasGeneticIntegration | cello:GeneticIntegration | 2412",
-        "cello:TransformedCellLine | cello:hasGeneticIntegration | cello:GeneticIntegration | 12932"
+        "cello:TransformedCellLine | cello:hasGeneticIntegration | cello:GeneticIntegration | 12932",
+        "cello:UndefinedCellLineType | cello:hasGeneticIntegration | cello:GeneticIntegration | 9"
       ]
     },
     "cello:GenomeAncestry": {
@@ -2312,12 +2239,12 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasGenomeAncestry | cello:GenomeAncestry | 1331",
-        "cello:CellLine | cello:hasGenomeAncestry | cello:GenomeAncestry | 35",
         "cello:GenomeAncestry | rdf:type | owl:Class | 1388",
         "cello:GenomeAncestry | cello:hasComponent | cello:PopulationPercentage | 9716",
         "cello:GenomeAncestry | cello:hasSource | cello:Source | 1388",
         "cello:TelomeraseImmortalizedCellLine | cello:hasGenomeAncestry | cello:GenomeAncestry | 2",
-        "cello:TransformedCellLine | cello:hasGenomeAncestry | cello:GenomeAncestry | 20"
+        "cello:TransformedCellLine | cello:hasGenomeAncestry | cello:GenomeAncestry | 20",
+        "cello:UndefinedCellLineType | cello:hasGenomeAncestry | cello:GenomeAncestry | 35"
       ]
     },
     "cello:GenomeModificationMethod": {
@@ -2337,7 +2264,7 @@
         "cello:GenomeModificationMethod | rdf:type | owl:Class",
         "cello:GenomeModificationMethod | rdfs:label | Genome modification method",
         "cello:GenomeModificationMethod | rdfs:subClassOf | OBI:0600043",
-        "cello:GenomeModificationMethod | owl:oneOf | nodeID://b43128"
+        "cello:GenomeModificationMethod | owl:oneOf | nodeID://b42136"
       ],
       "usage": []
     },
@@ -2386,7 +2313,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasHLAtyping | cello:HLAtyping | 1953",
-        "cello:CellLine | cello:hasHLAtyping | cello:HLAtyping | 10",
         "cello:EmbryonicStemCell | cello:hasHLAtyping | cello:HLAtyping | 269",
         "cello:FiniteCellLine | cello:hasHLAtyping | cello:HLAtyping | 71",
         "cello:HLAtyping | rdf:type | owl:Class | 4411",
@@ -2395,7 +2321,8 @@
         "cello:InducedPluripotentStemCell | cello:hasHLAtyping | cello:HLAtyping | 156",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasHLAtyping | cello:HLAtyping | 5",
         "cello:TelomeraseImmortalizedCellLine | cello:hasHLAtyping | cello:HLAtyping | 2",
-        "cello:TransformedCellLine | cello:hasHLAtyping | cello:HLAtyping | 1945"
+        "cello:TransformedCellLine | cello:hasHLAtyping | cello:HLAtyping | 1945",
+        "cello:UndefinedCellLineType | cello:hasHLAtyping | cello:HLAtyping | 10"
       ]
     },
     "cello:HybridCellLine": {
@@ -2854,13 +2781,13 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 1464",
-        "cello:CellLine | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 2",
         "cello:MicrosatelliteInstability | rdf:type | owl:Class | 1482",
         "cello:MicrosatelliteInstability | rdfs:comment | xsd:string | 1",
         "cello:MicrosatelliteInstability | cello:hasSource | cello:Source | 1928",
         "cello:MicrosatelliteInstability | cello:microsatelliteInstabilityStatus | xsd:string | 1482",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 1",
-        "cello:TransformedCellLine | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 15"
+        "cello:TransformedCellLine | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 15",
+        "cello:UndefinedCellLineType | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 2"
       ]
     },
     "cello:MiscellaneousDocument": {
@@ -2908,7 +2835,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 901",
-        "cello:CellLine | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 3",
         "cello:ConditionallyImmortalizedCellLine | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 9",
         "cello:EmbryonicStemCell | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 104",
         "cello:FactorDependentCellLine | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 2",
@@ -2922,7 +2848,8 @@
         "cello:SomaticStemCell | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 11",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 98",
         "cello:TelomeraseImmortalizedCellLine | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 42",
-        "cello:TransformedCellLine | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 223"
+        "cello:TransformedCellLine | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 223",
+        "cello:UndefinedCellLineType | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 3"
       ]
     },
     "cello:MisspellingRecord": {
@@ -2939,7 +2866,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasMisspellingRecord | cello:MisspellingRecord | 512",
-        "cello:CellLine | cello:hasMisspellingRecord | cello:MisspellingRecord | 3",
         "cello:ConditionallyImmortalizedCellLine | cello:hasMisspellingRecord | cello:MisspellingRecord | 4",
         "cello:EmbryonicStemCell | cello:hasMisspellingRecord | cello:MisspellingRecord | 22",
         "cello:FactorDependentCellLine | cello:hasMisspellingRecord | cello:MisspellingRecord | 3",
@@ -2961,7 +2887,8 @@
         "cello:MisspellingRecord | cello:name | xsd:string | 817",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasMisspellingRecord | cello:MisspellingRecord | 71",
         "cello:TelomeraseImmortalizedCellLine | cello:hasMisspellingRecord | cello:MisspellingRecord | 1",
-        "cello:TransformedCellLine | cello:hasMisspellingRecord | cello:MisspellingRecord | 83"
+        "cello:TransformedCellLine | cello:hasMisspellingRecord | cello:MisspellingRecord | 83",
+        "cello:UndefinedCellLineType | cello:hasMisspellingRecord | cello:MisspellingRecord | 3"
       ]
     },
     "cello:MoAbIsotype": {
@@ -3000,7 +2927,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasOmicsInfo | cello:OmicsInfo | 18621",
-        "cello:CellLine | cello:hasOmicsInfo | cello:OmicsInfo | 151",
         "cello:ConditionallyImmortalizedCellLine | cello:hasOmicsInfo | cello:OmicsInfo | 46",
         "cello:EmbryonicStemCell | cello:hasOmicsInfo | cello:OmicsInfo | 826",
         "cello:FactorDependentCellLine | cello:hasOmicsInfo | cello:OmicsInfo | 6",
@@ -3015,7 +2941,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasOmicsInfo | cello:OmicsInfo | 391",
         "cello:StromalCellLine | cello:hasOmicsInfo | cello:OmicsInfo | 1",
         "cello:TelomeraseImmortalizedCellLine | cello:hasOmicsInfo | cello:OmicsInfo | 252",
-        "cello:TransformedCellLine | cello:hasOmicsInfo | cello:OmicsInfo | 11650"
+        "cello:TransformedCellLine | cello:hasOmicsInfo | cello:OmicsInfo | 11650",
+        "cello:UndefinedCellLineType | cello:hasOmicsInfo | cello:OmicsInfo | 151"
       ]
     },
     "cello:OrganismSpecificDatabases": {
@@ -3081,7 +3008,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 19959",
-        "cello:CellLine | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 38",
         "cello:ConditionallyImmortalizedCellLine | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 14",
         "cello:EmbryonicStemCell | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 40",
         "cello:FiniteCellLine | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 5888",
@@ -3093,7 +3019,8 @@
         "cello:SomaticStemCell | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 1",
         "cello:SpontaneouslyImmortalizedCellLine | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 54",
         "cello:TelomeraseImmortalizedCellLine | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 162",
-        "cello:TransformedCellLine | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 20824"
+        "cello:TransformedCellLine | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 20824",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 38"
       ]
     },
     "cello:PopulationPercentage": {
@@ -3150,7 +3077,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 1097",
-        "cello:CellLine | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 82",
         "cello:EmbryonicStemCell | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 15",
         "cello:FactorDependentCellLine | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 1",
         "cello:FiniteCellLine | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 15",
@@ -3159,7 +3085,8 @@
         "cello:ProblematicCellLineComment | rdf:type | owl:Class | 1369",
         "cello:ProblematicCellLineComment | rdfs:comment | xsd:string | 1369",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 65",
-        "cello:TransformedCellLine | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 59"
+        "cello:TransformedCellLine | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 59",
+        "cello:UndefinedCellLineType | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 82"
       ]
     },
     "cello:Protein": {
@@ -3277,7 +3204,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 890",
-        "cello:CellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 37",
         "cello:ConditionallyImmortalizedCellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 9",
         "cello:EmbryonicStemCell | cello:hasRegistationRecord | cello:RegistrationRecord | 1105",
         "cello:FactorDependentCellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 15",
@@ -3294,7 +3220,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 334",
         "cello:StromalCellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 1",
         "cello:TelomeraseImmortalizedCellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 20",
-        "cello:TransformedCellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 1114"
+        "cello:TransformedCellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 1114",
+        "cello:UndefinedCellLineType | cello:hasRegistationRecord | cello:RegistrationRecord | 37"
       ]
     },
     "cello:RepeatExpansion": {
@@ -3411,7 +3338,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 72395",
-        "cello:CellLine | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 11",
         "cello:ConditionallyImmortalizedCellLine | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 16",
         "cello:EmbryonicStemCell | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 318",
         "cello:FiniteCellLine | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 3501",
@@ -3431,7 +3357,8 @@
         "cello:SomaticStemCell | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 6",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 568",
         "cello:TelomeraseImmortalizedCellLine | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 140",
-        "cello:TransformedCellLine | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 3821"
+        "cello:TransformedCellLine | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 3821",
+        "cello:UndefinedCellLineType | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 11"
       ]
     },
     "cello:Sex": {
@@ -3445,7 +3372,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:derivedFromIndividualWithSex | cello:Sex | 38442",
-        "cello:CellLine | cello:derivedFromIndividualWithSex | cello:Sex | 216",
         "cello:ConditionallyImmortalizedCellLine | cello:derivedFromIndividualWithSex | cello:Sex | 377",
         "cello:EmbryonicStemCell | cello:derivedFromIndividualWithSex | cello:Sex | 16671",
         "cello:FactorDependentCellLine | cello:derivedFromIndividualWithSex | cello:Sex | 101",
@@ -3461,7 +3387,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:derivedFromIndividualWithSex | cello:Sex | 6907",
         "cello:StromalCellLine | cello:derivedFromIndividualWithSex | cello:Sex | 55",
         "cello:TelomeraseImmortalizedCellLine | cello:derivedFromIndividualWithSex | cello:Sex | 860",
-        "cello:TransformedCellLine | cello:derivedFromIndividualWithSex | cello:Sex | 51695"
+        "cello:TransformedCellLine | cello:derivedFromIndividualWithSex | cello:Sex | 51695",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualWithSex | cello:Sex | 216"
       ]
     },
     "cello:ShortTandemRepeatProfile": {
@@ -3476,7 +3403,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 5887",
-        "cello:CellLine | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 45",
         "cello:ConditionallyImmortalizedCellLine | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 7",
         "cello:EmbryonicStemCell | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 445",
         "cello:FactorDependentCellLine | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 4",
@@ -3491,7 +3417,8 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 50",
         "cello:StromalCellLine | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 1",
         "cello:TelomeraseImmortalizedCellLine | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 192",
-        "cello:TransformedCellLine | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 723"
+        "cello:TransformedCellLine | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 723",
+        "cello:UndefinedCellLineType | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 45"
       ]
     },
     "cello:SomaticStemCell": {
@@ -3637,7 +3564,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 41233",
-        "cello:CellLine | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 250",
         "cello:ConditionallyImmortalizedCellLine | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 392",
         "cello:EmbryonicStemCell | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 16687",
         "cello:FactorDependentCellLine | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 426",
@@ -3649,13 +3575,14 @@
         "cello:Species | rdf:type | owl:Class | 164338",
         "cello:Species | rdfs:label | xsd:string | 164338",
         "cello:Species | cello:isIdentifiedByIRI | xsd:anyURI | 164338",
-        "cello:Species | cello:isIdentifiedByXref | skos:Concept | 164338",
+        "cello:Species | cello:isIdentifiedByXref | skos:Concept | 164337",
         "cello:Species | cello:isIdentifiedByXref | cello:Xref | 164338",
         "cello:Species | cello:name | xsd:string | 164338",
         "cello:SpontaneouslyImmortalizedCellLine | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 7139",
         "cello:StromalCellLine | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 66",
         "cello:TelomeraseImmortalizedCellLine | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 895",
-        "cello:TransformedCellLine | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 52360"
+        "cello:TransformedCellLine | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 52360",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 250"
       ]
     },
     "cello:SpontaneouslyImmortalizedCellLine": {
@@ -3671,7 +3598,6 @@
       "usage": [
         "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:SpontaneouslyImmortalizedCellLine | 19",
         "cello:CancerCellLine | cello:hasParentCellLine | cello:SpontaneouslyImmortalizedCellLine | 1",
-        "cello:CellLine | cello:hasParentCellLine | cello:SpontaneouslyImmortalizedCellLine | 3",
         "cello:EmbryonicStemCell | cello:hasChildCellLine | cello:SpontaneouslyImmortalizedCellLine | 1",
         "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:SpontaneouslyImmortalizedCellLine | 5",
         "cello:FiniteCellLine | cello:hasChildCellLine | cello:SpontaneouslyImmortalizedCellLine | 17",
@@ -3710,13 +3636,13 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasCautionComment | cello:CautionComment | 47",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 1394",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:CancerCellLine | 1",
-        "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:CellLine | 3",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:FiniteCellLine | 2",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:HybridCellLine | 366",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:InducedPluripotentStemCell | 6",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:SpontaneouslyImmortalizedCellLine | 4084",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:SpontaneouslyImmortalizedCellLine | 4084",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:TransformedCellLine | 520",
+        "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:UndefinedCellLineType | 3",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 275",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasDonorInfoComment | cello:DonorInfoComment | 28",
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasDoublingTime | cello:DoublingTime | 1329",
@@ -3769,7 +3695,8 @@
         "cello:TelomeraseImmortalizedCellLine | cello:derivedFromSameIndividualAs | cello:SpontaneouslyImmortalizedCellLine | 2",
         "cello:TransformedCellLine | cello:derivedFromSameIndividualAs | cello:SpontaneouslyImmortalizedCellLine | 18",
         "cello:TransformedCellLine | cello:hasChildCellLine | cello:SpontaneouslyImmortalizedCellLine | 4",
-        "cello:TransformedCellLine | cello:hasParentCellLine | cello:SpontaneouslyImmortalizedCellLine | 520"
+        "cello:TransformedCellLine | cello:hasParentCellLine | cello:SpontaneouslyImmortalizedCellLine | 520",
+        "cello:UndefinedCellLineType | cello:hasParentCellLine | cello:SpontaneouslyImmortalizedCellLine | 3"
       ]
     },
     "cello:StromalCellLine": {
@@ -3848,7 +3775,7 @@
         "cello:Taxonomy | cello:recommendedName | xsd:string | 2",
         "cello:Taxonomy | cello:version | xsd:string | 2",
         "cello:Xref | skos:inScheme | cello:Taxonomy | 1194",
-        "cello:Xref | cello:database | cello:Taxonomy | 1196"
+        "cello:Xref | cello:database | cello:Taxonomy | 1197"
       ]
     },
     "cello:TechnicalDocument": {
@@ -3995,7 +3922,6 @@
       "usage": [
         "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:TransformedCellLine | 420",
         "cello:CancerCellLine | cello:hasParentCellLine | cello:TransformedCellLine | 5",
-        "cello:CellLine | cello:hasChildCellLine | cello:TransformedCellLine | 8",
         "cello:ConditionallyImmortalizedCellLine | cello:derivedFromSameIndividualAs | cello:TransformedCellLine | 2",
         "cello:ConditionallyImmortalizedCellLine | cello:hasChildCellLine | cello:TransformedCellLine | 2",
         "cello:EmbryonicStemCell | cello:hasChildCellLine | cello:TransformedCellLine | 6",
@@ -4069,7 +3995,6 @@
         "cello:TransformedCellLine | cello:hasMoAbTarget | cello:ChemicalEntity | 45",
         "cello:TransformedCellLine | cello:hasMoAbTarget | cello:Protein | 36",
         "cello:TransformedCellLine | cello:hasOmicsInfo | cello:OmicsInfo | 11650",
-        "cello:TransformedCellLine | cello:hasParentCellLine | cello:CellLine | 8",
         "cello:TransformedCellLine | cello:hasParentCellLine | cello:ConditionallyImmortalizedCellLine | 2",
         "cello:TransformedCellLine | cello:hasParentCellLine | cello:EmbryonicStemCell | 6",
         "cello:TransformedCellLine | cello:hasParentCellLine | cello:FactorDependentCellLine | 3",
@@ -4080,6 +4005,7 @@
         "cello:TransformedCellLine | cello:hasParentCellLine | cello:TelomeraseImmortalizedCellLine | 5",
         "cello:TransformedCellLine | cello:hasParentCellLine | cello:TransformedCellLine | 4821",
         "cello:TransformedCellLine | cello:hasParentCellLine | cello:TransformedCellLine | 4821",
+        "cello:TransformedCellLine | cello:hasParentCellLine | cello:UndefinedCellLineType | 8",
         "cello:TransformedCellLine | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 59",
         "cello:TransformedCellLine | cello:hasRegistationRecord | cello:RegistrationRecord | 1114",
         "cello:TransformedCellLine | cello:hasResistance | cello:ChemicalEntity | 339",
@@ -4111,7 +4037,93 @@
         "cello:TransformedCellLine | cello:secondaryAccession | xsd:string | 234",
         "cello:TransformedCellLine | cello:seeAlsoXref | cello:Xref | 148840",
         "cello:TransformedCellLine | cello:transformedBy | cello:ChemicalEntity | 106497",
-        "cello:TransformedCellLine | cello:version | xsd:string | 52360"
+        "cello:TransformedCellLine | cello:version | xsd:string | 52360",
+        "cello:UndefinedCellLineType | cello:hasChildCellLine | cello:TransformedCellLine | 8"
+      ]
+    },
+    "cello:UndefinedCellLineType": {
+      "tag": "class",
+      "count": 250,
+      "definition": [
+        "cello:UndefinedCellLineType | rdf:type | owl:Class",
+        "cello:UndefinedCellLineType | rdfs:isDefinedBy | cello:",
+        "cello:UndefinedCellLineType | rdfs:label | Undefined cell line type",
+        "cello:UndefinedCellLineType | rdfs:subClassOf | cello:CellLine"
+      ],
+      "usage": [
+        "cello:CancerCellLine | cello:derivedFromSameIndividualAs | cello:UndefinedCellLineType | 18",
+        "cello:FiniteCellLine | cello:derivedFromSameIndividualAs | cello:UndefinedCellLineType | 25",
+        "cello:FiniteCellLine | cello:hasChildCellLine | cello:UndefinedCellLineType | 2",
+        "cello:SpontaneouslyImmortalizedCellLine | cello:hasChildCellLine | cello:UndefinedCellLineType | 3",
+        "cello:TransformedCellLine | cello:hasParentCellLine | cello:UndefinedCellLineType | 8",
+        "cello:UndefinedCellLineType | rdf:type | owl:Class | 250",
+        "cello:UndefinedCellLineType | rdfs:label | xsd:string | 543",
+        "cello:UndefinedCellLineType | rdfs:seeAlso | xsd:anyURI | 293",
+        "cello:UndefinedCellLineType | owl:sameAs | xsd:anyURI | 234",
+        "cello:UndefinedCellLineType | skos:altLabel | xsd:string | 253",
+        "cello:UndefinedCellLineType | skos:hiddenLabel | xsd:string | 3",
+        "cello:UndefinedCellLineType | skos:prefLabel | xsd:string | 250",
+        "cello:UndefinedCellLineType | cello:accession | xsd:string | 251",
+        "cello:UndefinedCellLineType | cello:alternativeName | xsd:string | 253",
+        "cello:UndefinedCellLineType | cello:created | xsd:date | 250",
+        "cello:UndefinedCellLineType | cello:derivedFromCellType | cello:CellType | 45",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualAtAge | xsd:string | 190",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualBelongingToBreed | cello:Breed | 11",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualBelongingToPopulation | cello:Population | 38",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualBelongingToSpecies | cello:Species | 250",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualWithDisease | cello:Disease | 19",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualWithSex | owl:NamedIndividual | 216",
+        "cello:UndefinedCellLineType | cello:derivedFromIndividualWithSex | cello:Sex | 216",
+        "cello:UndefinedCellLineType | cello:derivedFromSameIndividualAs | cello:CancerCellLine | 18",
+        "cello:UndefinedCellLineType | cello:derivedFromSameIndividualAs | cello:FiniteCellLine | 25",
+        "cello:UndefinedCellLineType | cello:derivedFromSameIndividualAs | cello:UndefinedCellLineType | 10",
+        "cello:UndefinedCellLineType | cello:derivedFromSameIndividualAs | cello:UndefinedCellLineType | 10",
+        "cello:UndefinedCellLineType | cello:derivedFromSite | cello:AnatomicalEntity | 112",
+        "cello:UndefinedCellLineType | cello:establishedBy | schema:Organization | 4",
+        "cello:UndefinedCellLineType | cello:hasAnecdotalComment | cello:AnecdotalComment | 4",
+        "cello:UndefinedCellLineType | cello:hasCautionComment | cello:CautionComment | 4",
+        "cello:UndefinedCellLineType | cello:hasCharacteristicsComment | cello:CharacteristicsComment | 1",
+        "cello:UndefinedCellLineType | cello:hasChildCellLine | cello:TransformedCellLine | 8",
+        "cello:UndefinedCellLineType | cello:hasChildCellLine | cello:UndefinedCellLineType | 23",
+        "cello:UndefinedCellLineType | cello:hasChildCellLine | cello:UndefinedCellLineType | 23",
+        "cello:UndefinedCellLineType | cello:hasDiscontinuationRecord | cello:DiscontinuationRecord | 107",
+        "cello:UndefinedCellLineType | cello:hasDoublingTime | cello:DoublingTime | 14",
+        "cello:UndefinedCellLineType | cello:hasGeneKnockout | cello:GeneKnockout | 2",
+        "cello:UndefinedCellLineType | cello:hasGeneticIntegration | cello:GeneticIntegration | 9",
+        "cello:UndefinedCellLineType | cello:hasGenomeAncestry | cello:GenomeAncestry | 35",
+        "cello:UndefinedCellLineType | cello:hasHLAtyping | cello:HLAtyping | 10",
+        "cello:UndefinedCellLineType | cello:hasMicrosatelliteInstability | cello:MicrosatelliteInstability | 2",
+        "cello:UndefinedCellLineType | cello:hasMiscellaneousInfoComment | cello:MiscellaneousInfoComment | 3",
+        "cello:UndefinedCellLineType | cello:hasMisspellingRecord | cello:MisspellingRecord | 3",
+        "cello:UndefinedCellLineType | cello:hasOmicsInfo | cello:OmicsInfo | 151",
+        "cello:UndefinedCellLineType | cello:hasParentCellLine | cello:FiniteCellLine | 2",
+        "cello:UndefinedCellLineType | cello:hasParentCellLine | cello:SpontaneouslyImmortalizedCellLine | 3",
+        "cello:UndefinedCellLineType | cello:hasParentCellLine | cello:UndefinedCellLineType | 23",
+        "cello:UndefinedCellLineType | cello:hasParentCellLine | cello:UndefinedCellLineType | 23",
+        "cello:UndefinedCellLineType | cello:hasProblematicCellLineComment | cello:ProblematicCellLineComment | 82",
+        "cello:UndefinedCellLineType | cello:hasRegistationRecord | cello:RegistrationRecord | 37",
+        "cello:UndefinedCellLineType | cello:hasResistance | cello:ChemicalEntity | 1",
+        "cello:UndefinedCellLineType | cello:hasSequenceVariationInfo | cello:SequenceVariationInfo | 11",
+        "cello:UndefinedCellLineType | cello:hasShortTandemRepeatProfile | cello:ShortTandemRepeatProfile | 45",
+        "cello:UndefinedCellLineType | cello:hasVirologyComment | cello:VirologyComment | 1",
+        "cello:UndefinedCellLineType | cello:inCollection | xsd:string | 147",
+        "cello:UndefinedCellLineType | cello:inGroup | xsd:string | 27",
+        "cello:UndefinedCellLineType | cello:isIdentifiedByIRI | xsd:anyURI | 82",
+        "cello:UndefinedCellLineType | cello:misspellingName | xsd:string | 3",
+        "cello:UndefinedCellLineType | cello:modified | xsd:date | 250",
+        "cello:UndefinedCellLineType | cello:name | xsd:string | 543",
+        "cello:UndefinedCellLineType | cello:primaryAccession | xsd:string | 250",
+        "cello:UndefinedCellLineType | cello:recommendedName | xsd:string | 250",
+        "cello:UndefinedCellLineType | cello:references | fabio:ConferencePaper | 2",
+        "cello:UndefinedCellLineType | cello:references | fabio:DoctoralThesis | 1",
+        "cello:UndefinedCellLineType | cello:references | fabio:JournalArticle | 403",
+        "cello:UndefinedCellLineType | cello:references | fabio:MastersThesis | 2",
+        "cello:UndefinedCellLineType | cello:references | fabio:PatentDocument | 3",
+        "cello:UndefinedCellLineType | cello:registeredName | xsd:string | 37",
+        "cello:UndefinedCellLineType | cello:secondaryAccession | xsd:string | 1",
+        "cello:UndefinedCellLineType | cello:seeAlsoXref | cello:Xref | 1031",
+        "cello:UndefinedCellLineType | cello:transformedBy | cello:ChemicalEntity | 2",
+        "cello:UndefinedCellLineType | cello:version | xsd:string | 250"
       ]
     },
     "cello:VeterinaryMedicalDegreeThesis": {
@@ -4150,7 +4162,6 @@
       ],
       "usage": [
         "cello:CancerCellLine | cello:hasVirologyComment | cello:VirologyComment | 516",
-        "cello:CellLine | cello:hasVirologyComment | cello:VirologyComment | 1",
         "cello:ConditionallyImmortalizedCellLine | cello:hasVirologyComment | cello:VirologyComment | 4",
         "cello:EmbryonicStemCell | cello:hasVirologyComment | cello:VirologyComment | 1",
         "cello:FactorDependentCellLine | cello:hasVirologyComment | cello:VirologyComment | 3",
@@ -4159,6 +4170,7 @@
         "cello:SpontaneouslyImmortalizedCellLine | cello:hasVirologyComment | cello:VirologyComment | 405",
         "cello:TelomeraseImmortalizedCellLine | cello:hasVirologyComment | cello:VirologyComment | 7",
         "cello:TransformedCellLine | cello:hasVirologyComment | cello:VirologyComment | 146",
+        "cello:UndefinedCellLineType | cello:hasVirologyComment | cello:VirologyComment | 1",
         "cello:VirologyComment | rdf:type | owl:Class | 1136",
         "cello:VirologyComment | rdfs:comment | xsd:string | 1136",
         "cello:VirologyComment | cello:hasSource | cello:Source | 700"
@@ -4166,7 +4178,7 @@
     },
     "cello:Xref": {
       "tag": "class",
-      "count": 544686,
+      "count": 544687,
       "definition": [
         "cello:Xref | rdf:type | owl:Class",
         "cello:Xref | rdfs:isDefinedBy | cello:",
@@ -4189,7 +4201,6 @@
         "cello:AnatomicalEntity | cello:isIdentifiedByXref | cello:Xref | 138790",
         "cello:Breed | cello:isIdentifiedByXref | cello:Xref | 3484",
         "cello:CancerCellLine | cello:seeAlsoXref | cello:Xref | 160531",
-        "cello:CellLine | cello:seeAlsoXref | cello:Xref | 1031",
         "cello:CellType | cello:isIdentifiedByXref | cello:Xref | 50741",
         "cello:ChemicalEntity | cello:isIdentifiedByXref | cello:Xref | 74936",
         "cello:ConditionallyImmortalizedCellLine | cello:seeAlsoXref | cello:Xref | 603",
@@ -4219,11 +4230,12 @@
         "cello:TechnicalDocument | cello:seeAlsoXref | cello:Xref | 18",
         "cello:TelomeraseImmortalizedCellLine | cello:seeAlsoXref | cello:Xref | 1558",
         "cello:TransformedCellLine | cello:seeAlsoXref | cello:Xref | 148840",
+        "cello:UndefinedCellLineType | cello:seeAlsoXref | cello:Xref | 1031",
         "cello:VeterinaryMedicalDegreeThesis | cello:seeAlsoXref | cello:Xref | 1",
         "cello:Xref | rdf:type | xsd:anyURI | 6784",
-        "cello:Xref | rdf:type | owl:Class | 544686",
-        "cello:Xref | rdfs:label | xsd:string | 32115",
-        "cello:Xref | rdfs:seeAlso | xsd:anyURI | 523578",
+        "cello:Xref | rdf:type | owl:Class | 544687",
+        "cello:Xref | rdfs:label | xsd:string | 32116",
+        "cello:Xref | rdfs:seeAlso | xsd:anyURI | 523579",
         "cello:Xref | skos:altLabel | xsd:string | 3837",
         "cello:Xref | skos:inScheme | owl:NamedIndividual | 6784",
         "cello:Xref | skos:inScheme | cello:AnatomyCellTypeResources | 1108",
@@ -4234,14 +4246,14 @@
         "cello:Xref | skos:inScheme | cello:Taxonomy | 1194",
         "cello:Xref | skos:notation | xsd:string | 6784",
         "cello:Xref | skos:prefLabel | xsd:string | 6784",
-        "cello:Xref | cello:accession | xsd:string | 544686",
+        "cello:Xref | cello:accession | xsd:string | 544687",
         "cello:Xref | cello:database | xsd:anyURI | 276",
-        "cello:Xref | cello:database | owl:NamedIndividual | 544410",
+        "cello:Xref | cello:database | owl:NamedIndividual | 544411",
         "cello:Xref | cello:database | cello:AnatomyCellTypeResources | 3568",
         "cello:Xref | cello:database | cello:BiologicalSampleResources | 29538",
         "cello:Xref | cello:database | cello:CellLineCollectionsProviders | 114607",
         "cello:Xref | cello:database | cello:CellLineDatabasesResources | 89029",
-        "cello:Xref | cello:database | cello:CelloConceptScheme | 6852",
+        "cello:Xref | cello:database | cello:CelloConceptScheme | 6853",
         "cello:Xref | cello:database | cello:ChemistryResources | 7957",
         "cello:Xref | cello:database | cello:CrispScreensRepositories | 737",
         "cello:Xref | cello:database | cello:EncyclopedicResources | 153636",
@@ -4254,12 +4266,12 @@
         "cello:Xref | cello:database | cello:ProteomicDatabases | 621",
         "cello:Xref | cello:database | cello:ReferenceResources | 59735",
         "cello:Xref | cello:database | cello:SequenceDatabases | 3040",
-        "cello:Xref | cello:database | cello:Taxonomy | 1196",
+        "cello:Xref | cello:database | cello:Taxonomy | 1197",
         "cello:Xref | cello:discontinued | xsd:string | 11141",
         "cello:Xref | cello:more_specific_than | skos:Concept | 11811",
         "cello:Xref | cello:more_specific_than | cello:Xref | 1701",
         "cello:Xref | cello:more_specific_than | cello:Xref | 1701",
-        "cello:Xref | cello:name | xsd:string | 32115"
+        "cello:Xref | cello:name | xsd:string | 32116"
       ]
     },
     "schema:Observation": {
@@ -4314,7 +4326,6 @@
         "fabio:JournalArticle | cello:creator | schema:Organization | 98",
         "fabio:MastersThesis | cello:publisher | schema:Organization | 34",
         "cello:CancerCellLine | cello:establishedBy | schema:Organization | 1773",
-        "cello:CellLine | cello:establishedBy | schema:Organization | 4",
         "cello:ConditionallyImmortalizedCellLine | cello:establishedBy | schema:Organization | 3",
         "cello:DiscontinuationRecord | cello:hasProvider | schema:Organization | 11425",
         "cello:EmbryonicStemCell | cello:establishedBy | schema:Organization | 2627",
@@ -4335,6 +4346,7 @@
         "cello:TechnicalDocument | cello:publisher | schema:Organization | 18",
         "cello:TelomeraseImmortalizedCellLine | cello:establishedBy | schema:Organization | 6",
         "cello:TransformedCellLine | cello:establishedBy | schema:Organization | 441",
+        "cello:UndefinedCellLineType | cello:establishedBy | schema:Organization | 4",
         "cello:VeterinaryMedicalDegreeThesis | cello:publisher | schema:Organization | 1",
         "schema:Organization | rdf:type | owl:Class | 1431",
         "schema:Organization | rdfs:label | xsd:string | 1528",
@@ -4545,7 +4557,6 @@
         "skos:altLabel | domain | cello:AnatomyCellTypeResources | 5",
         "skos:altLabel | domain | cello:BiologicalSampleResources | 6",
         "skos:altLabel | domain | cello:CancerCellLine | 52129",
-        "skos:altLabel | domain | cello:CellLine | 253",
         "skos:altLabel | domain | cello:CellLineCollectionsProviders | 56",
         "skos:altLabel | domain | cello:CellLineDatabasesResources | 31",
         "skos:altLabel | domain | cello:CelloConceptScheme | 8",
@@ -4574,6 +4585,7 @@
         "skos:altLabel | domain | cello:Taxonomy | 2",
         "skos:altLabel | domain | cello:TelomeraseImmortalizedCellLine | 762",
         "skos:altLabel | domain | cello:TransformedCellLine | 14442",
+        "skos:altLabel | domain | cello:UndefinedCellLineType | 253",
         "skos:altLabel | domain | cello:Xref | 3837",
         "skos:altLabel | domain | schema:Organization | 1431",
         "skos:altLabel | range | xsd:string | 130600"
@@ -4606,7 +4618,6 @@
       "usage": [
         "skos:hiddenLabel | count | xsd:integer | 1634",
         "skos:hiddenLabel | domain | cello:CancerCellLine | 512",
-        "skos:hiddenLabel | domain | cello:CellLine | 3",
         "skos:hiddenLabel | domain | cello:ConditionallyImmortalizedCellLine | 4",
         "skos:hiddenLabel | domain | cello:EmbryonicStemCell | 22",
         "skos:hiddenLabel | domain | cello:FactorDependentCellLine | 3",
@@ -4618,6 +4629,7 @@
         "skos:hiddenLabel | domain | cello:SpontaneouslyImmortalizedCellLine | 71",
         "skos:hiddenLabel | domain | cello:TelomeraseImmortalizedCellLine | 1",
         "skos:hiddenLabel | domain | cello:TransformedCellLine | 83",
+        "skos:hiddenLabel | domain | cello:UndefinedCellLineType | 3",
         "skos:hiddenLabel | range | xsd:string | 1634"
       ]
     },
@@ -4658,7 +4670,6 @@
         "skos:prefLabel | domain | cello:AnatomyCellTypeResources | 5",
         "skos:prefLabel | domain | cello:BiologicalSampleResources | 6",
         "skos:prefLabel | domain | cello:CancerCellLine | 41233",
-        "skos:prefLabel | domain | cello:CellLine | 250",
         "skos:prefLabel | domain | cello:CellLineCollectionsProviders | 56",
         "skos:prefLabel | domain | cello:CellLineDatabasesResources | 31",
         "skos:prefLabel | domain | cello:CelloConceptScheme | 8",
@@ -4687,6 +4698,7 @@
         "skos:prefLabel | domain | cello:Taxonomy | 2",
         "skos:prefLabel | domain | cello:TelomeraseImmortalizedCellLine | 895",
         "skos:prefLabel | domain | cello:TransformedCellLine | 52360",
+        "skos:prefLabel | domain | cello:UndefinedCellLineType | 250",
         "skos:prefLabel | domain | cello:Xref | 6784",
         "skos:prefLabel | domain | schema:Organization | 97",
         "skos:prefLabel | range | xsd:string | 176982"
@@ -4766,7 +4778,7 @@
     },
     "cello:accession": {
       "tag": "prop",
-      "count": 708289,
+      "count": 708290,
       "definition": [
         "cello:accession | rdf:type | rdf:Property",
         "cello:accession | rdf:type | owl:DatatypeProperty",
@@ -4780,10 +4792,9 @@
         "cello:secondaryAccession | rdfs:subPropertyOf | cello:accession"
       ],
       "usage": [
-        "cello:accession | count | xsd:integer | 708289",
+        "cello:accession | count | xsd:integer | 708290",
         "cello:accession | domain | skos:Concept | 6784",
         "cello:accession | domain | cello:CancerCellLine | 41442",
-        "cello:accession | domain | cello:CellLine | 251",
         "cello:accession | domain | cello:ConditionallyImmortalizedCellLine | 394",
         "cello:accession | domain | cello:EmbryonicStemCell | 16686",
         "cello:accession | domain | cello:FactorDependentCellLine | 428",
@@ -4796,8 +4807,9 @@
         "cello:accession | domain | cello:StromalCellLine | 66",
         "cello:accession | domain | cello:TelomeraseImmortalizedCellLine | 898",
         "cello:accession | domain | cello:TransformedCellLine | 52594",
-        "cello:accession | domain | cello:Xref | 544686",
-        "cello:accession | range | xsd:string | 708289"
+        "cello:accession | domain | cello:UndefinedCellLineType | 251",
+        "cello:accession | domain | cello:Xref | 544687",
+        "cello:accession | range | xsd:string | 708290"
       ]
     },
     "cello:alleleIdentifier": {
@@ -4824,7 +4836,7 @@
       "definition": [
         "cello:alternativeName | rdf:type | rdf:Property",
         "cello:alternativeName | rdf:type | owl:AnnotationProperty",
-        "cello:alternativeName | rdfs:comment | Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms<br><dt>has domain</dt><dd><a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a></dd>",
+        "cello:alternativeName | rdfs:comment | Different synonyms for the cell line, including alternative use of lower and upper cases characters. Misspellings are not included in synonyms<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a></dd>",
         "cello:alternativeName | rdfs:domain | nodeID://b2379101",
         "cello:alternativeName | rdfs:isDefinedBy | cello:",
         "cello:alternativeName | rdfs:label | alternative name",
@@ -4837,7 +4849,6 @@
         "cello:alternativeName | domain | cello:AnatomyCellTypeResources | 5",
         "cello:alternativeName | domain | cello:BiologicalSampleResources | 6",
         "cello:alternativeName | domain | cello:CancerCellLine | 52129",
-        "cello:alternativeName | domain | cello:CellLine | 253",
         "cello:alternativeName | domain | cello:CellLineCollectionsProviders | 56",
         "cello:alternativeName | domain | cello:CellLineDatabasesResources | 31",
         "cello:alternativeName | domain | cello:CelloConceptScheme | 8",
@@ -4866,6 +4877,7 @@
         "cello:alternativeName | domain | cello:Taxonomy | 2",
         "cello:alternativeName | domain | cello:TelomeraseImmortalizedCellLine | 762",
         "cello:alternativeName | domain | cello:TransformedCellLine | 14442",
+        "cello:alternativeName | domain | cello:UndefinedCellLineType | 253",
         "cello:alternativeName | domain | schema:Organization | 1431",
         "cello:alternativeName | range | xsd:string | 125448"
       ]
@@ -4998,7 +5010,6 @@
       "usage": [
         "cello:created | count | xsd:integer | 163042",
         "cello:created | domain | cello:CancerCellLine | 41233",
-        "cello:created | domain | cello:CellLine | 250",
         "cello:created | domain | cello:ConditionallyImmortalizedCellLine | 392",
         "cello:created | domain | cello:EmbryonicStemCell | 16685",
         "cello:created | domain | cello:FactorDependentCellLine | 426",
@@ -5011,6 +5022,7 @@
         "cello:created | domain | cello:StromalCellLine | 66",
         "cello:created | domain | cello:TelomeraseImmortalizedCellLine | 895",
         "cello:created | domain | cello:TransformedCellLine | 52360",
+        "cello:created | domain | cello:UndefinedCellLineType | 250",
         "cello:created | range | xsd:date | 163042"
       ]
     },
@@ -5048,7 +5060,7 @@
     },
     "cello:database": {
       "tag": "prop",
-      "count": 544686,
+      "count": 544687,
       "definition": [
         "cello:database | rdf:type | rdf:Property",
         "cello:database | rdf:type | owl:ObjectProperty",
@@ -5058,16 +5070,16 @@
         "cello:database | rdfs:range | nodeID://b2379179"
       ],
       "usage": [
-        "cello:database | count | xsd:integer | 544686",
+        "cello:database | count | xsd:integer | 544687",
         "cello:database | domain | skos:Concept | 6784",
-        "cello:database | domain | cello:Xref | 544686",
+        "cello:database | domain | cello:Xref | 544687",
         "cello:database | range | xsd:anyURI | 276",
-        "cello:database | range | owl:NamedIndividual | 544410",
+        "cello:database | range | owl:NamedIndividual | 544411",
         "cello:database | range | cello:AnatomyCellTypeResources | 3568",
         "cello:database | range | cello:BiologicalSampleResources | 29538",
         "cello:database | range | cello:CellLineCollectionsProviders | 114607",
         "cello:database | range | cello:CellLineDatabasesResources | 89029",
-        "cello:database | range | cello:CelloConceptScheme | 6852",
+        "cello:database | range | cello:CelloConceptScheme | 6853",
         "cello:database | range | cello:ChemistryResources | 7957",
         "cello:database | range | cello:CrispScreensRepositories | 737",
         "cello:database | range | cello:EncyclopedicResources | 153636",
@@ -5080,7 +5092,7 @@
         "cello:database | range | cello:ProteomicDatabases | 621",
         "cello:database | range | cello:ReferenceResources | 59735",
         "cello:database | range | cello:SequenceDatabases | 3040",
-        "cello:database | range | cello:Taxonomy | 1196"
+        "cello:database | range | cello:Taxonomy | 1197"
       ]
     },
     "cello:derivedFromCellType": {
@@ -5098,7 +5110,6 @@
       "usage": [
         "cello:derivedFromCellType | count | xsd:integer | 50743",
         "cello:derivedFromCellType | domain | cello:CancerCellLine | 3248",
-        "cello:derivedFromCellType | domain | cello:CellLine | 45",
         "cello:derivedFromCellType | domain | cello:ConditionallyImmortalizedCellLine | 307",
         "cello:derivedFromCellType | domain | cello:EmbryonicStemCell | 16683",
         "cello:derivedFromCellType | domain | cello:FactorDependentCellLine | 349",
@@ -5110,6 +5121,7 @@
         "cello:derivedFromCellType | domain | cello:StromalCellLine | 45",
         "cello:derivedFromCellType | domain | cello:TelomeraseImmortalizedCellLine | 782",
         "cello:derivedFromCellType | domain | cello:TransformedCellLine | 5575",
+        "cello:derivedFromCellType | domain | cello:UndefinedCellLineType | 45",
         "cello:derivedFromCellType | range | cello:CellType | 50743"
       ]
     },
@@ -5127,7 +5139,6 @@
       "usage": [
         "cello:derivedFromIndividualAtAge | count | xsd:integer | 139284",
         "cello:derivedFromIndividualAtAge | domain | cello:CancerCellLine | 36379",
-        "cello:derivedFromIndividualAtAge | domain | cello:CellLine | 190",
         "cello:derivedFromIndividualAtAge | domain | cello:ConditionallyImmortalizedCellLine | 370",
         "cello:derivedFromIndividualAtAge | domain | cello:EmbryonicStemCell | 16685",
         "cello:derivedFromIndividualAtAge | domain | cello:FactorDependentCellLine | 80",
@@ -5138,6 +5149,7 @@
         "cello:derivedFromIndividualAtAge | domain | cello:StromalCellLine | 56",
         "cello:derivedFromIndividualAtAge | domain | cello:TelomeraseImmortalizedCellLine | 850",
         "cello:derivedFromIndividualAtAge | domain | cello:TransformedCellLine | 49184",
+        "cello:derivedFromIndividualAtAge | domain | cello:UndefinedCellLineType | 190",
         "cello:derivedFromIndividualAtAge | range | xsd:string | 139284"
       ]
     },
@@ -5156,7 +5168,6 @@
       "usage": [
         "cello:derivedFromIndividualBelongingToBreed | count | xsd:integer | 21200",
         "cello:derivedFromIndividualBelongingToBreed | domain | cello:CancerCellLine | 3846",
-        "cello:derivedFromIndividualBelongingToBreed | domain | cello:CellLine | 11",
         "cello:derivedFromIndividualBelongingToBreed | domain | cello:ConditionallyImmortalizedCellLine | 305",
         "cello:derivedFromIndividualBelongingToBreed | domain | cello:EmbryonicStemCell | 11672",
         "cello:derivedFromIndividualBelongingToBreed | domain | cello:FactorDependentCellLine | 410",
@@ -5168,6 +5179,7 @@
         "cello:derivedFromIndividualBelongingToBreed | domain | cello:StromalCellLine | 63",
         "cello:derivedFromIndividualBelongingToBreed | domain | cello:TelomeraseImmortalizedCellLine | 53",
         "cello:derivedFromIndividualBelongingToBreed | domain | cello:TransformedCellLine | 1955",
+        "cello:derivedFromIndividualBelongingToBreed | domain | cello:UndefinedCellLineType | 11",
         "cello:derivedFromIndividualBelongingToBreed | range | cello:Breed | 21200"
       ]
     },
@@ -5186,7 +5198,6 @@
       "usage": [
         "cello:derivedFromIndividualBelongingToPopulation | count | xsd:integer | 57238",
         "cello:derivedFromIndividualBelongingToPopulation | domain | cello:CancerCellLine | 19959",
-        "cello:derivedFromIndividualBelongingToPopulation | domain | cello:CellLine | 38",
         "cello:derivedFromIndividualBelongingToPopulation | domain | cello:ConditionallyImmortalizedCellLine | 14",
         "cello:derivedFromIndividualBelongingToPopulation | domain | cello:EmbryonicStemCell | 40",
         "cello:derivedFromIndividualBelongingToPopulation | domain | cello:FiniteCellLine | 5888",
@@ -5195,6 +5206,7 @@
         "cello:derivedFromIndividualBelongingToPopulation | domain | cello:SpontaneouslyImmortalizedCellLine | 54",
         "cello:derivedFromIndividualBelongingToPopulation | domain | cello:TelomeraseImmortalizedCellLine | 162",
         "cello:derivedFromIndividualBelongingToPopulation | domain | cello:TransformedCellLine | 20824",
+        "cello:derivedFromIndividualBelongingToPopulation | domain | cello:UndefinedCellLineType | 38",
         "cello:derivedFromIndividualBelongingToPopulation | range | cello:Population | 57238"
       ]
     },
@@ -5214,7 +5226,6 @@
       "usage": [
         "cello:derivedFromIndividualBelongingToSpecies | count | xsd:integer | 164338",
         "cello:derivedFromIndividualBelongingToSpecies | domain | cello:CancerCellLine | 41233",
-        "cello:derivedFromIndividualBelongingToSpecies | domain | cello:CellLine | 250",
         "cello:derivedFromIndividualBelongingToSpecies | domain | cello:ConditionallyImmortalizedCellLine | 392",
         "cello:derivedFromIndividualBelongingToSpecies | domain | cello:EmbryonicStemCell | 16687",
         "cello:derivedFromIndividualBelongingToSpecies | domain | cello:FactorDependentCellLine | 426",
@@ -5227,6 +5238,7 @@
         "cello:derivedFromIndividualBelongingToSpecies | domain | cello:StromalCellLine | 66",
         "cello:derivedFromIndividualBelongingToSpecies | domain | cello:TelomeraseImmortalizedCellLine | 895",
         "cello:derivedFromIndividualBelongingToSpecies | domain | cello:TransformedCellLine | 52360",
+        "cello:derivedFromIndividualBelongingToSpecies | domain | cello:UndefinedCellLineType | 250",
         "cello:derivedFromIndividualBelongingToSpecies | range | cello:Species | 164338"
       ]
     },
@@ -5246,7 +5258,6 @@
       "usage": [
         "cello:derivedFromIndividualWithDisease | count | xsd:integer | 120670",
         "cello:derivedFromIndividualWithDisease | domain | cello:CancerCellLine | 62191",
-        "cello:derivedFromIndividualWithDisease | domain | cello:CellLine | 19",
         "cello:derivedFromIndividualWithDisease | domain | cello:ConditionallyImmortalizedCellLine | 19",
         "cello:derivedFromIndividualWithDisease | domain | cello:EmbryonicStemCell | 1093",
         "cello:derivedFromIndividualWithDisease | domain | cello:FactorDependentCellLine | 2",
@@ -5257,6 +5268,7 @@
         "cello:derivedFromIndividualWithDisease | domain | cello:SpontaneouslyImmortalizedCellLine | 41",
         "cello:derivedFromIndividualWithDisease | domain | cello:TelomeraseImmortalizedCellLine | 358",
         "cello:derivedFromIndividualWithDisease | domain | cello:TransformedCellLine | 27922",
+        "cello:derivedFromIndividualWithDisease | domain | cello:UndefinedCellLineType | 19",
         "cello:derivedFromIndividualWithDisease | range | cello:Disease | 120670"
       ]
     },
@@ -5277,7 +5289,6 @@
       "usage": [
         "cello:derivedFromIndividualWithSex | count | xsd:integer | 144857",
         "cello:derivedFromIndividualWithSex | domain | cello:CancerCellLine | 38442",
-        "cello:derivedFromIndividualWithSex | domain | cello:CellLine | 216",
         "cello:derivedFromIndividualWithSex | domain | cello:ConditionallyImmortalizedCellLine | 377",
         "cello:derivedFromIndividualWithSex | domain | cello:EmbryonicStemCell | 16671",
         "cello:derivedFromIndividualWithSex | domain | cello:FactorDependentCellLine | 101",
@@ -5289,6 +5300,7 @@
         "cello:derivedFromIndividualWithSex | domain | cello:StromalCellLine | 55",
         "cello:derivedFromIndividualWithSex | domain | cello:TelomeraseImmortalizedCellLine | 860",
         "cello:derivedFromIndividualWithSex | domain | cello:TransformedCellLine | 51695",
+        "cello:derivedFromIndividualWithSex | domain | cello:UndefinedCellLineType | 216",
         "cello:derivedFromIndividualWithSex | range | owl:NamedIndividual | 144857",
         "cello:derivedFromIndividualWithSex | range | cello:Sex | 144857"
       ]
@@ -5309,7 +5321,6 @@
       "usage": [
         "cello:derivedFromSameIndividualAs | count | xsd:integer | 38122",
         "cello:derivedFromSameIndividualAs | domain | cello:CancerCellLine | 4936",
-        "cello:derivedFromSameIndividualAs | domain | cello:CellLine | 53",
         "cello:derivedFromSameIndividualAs | domain | cello:ConditionallyImmortalizedCellLine | 682",
         "cello:derivedFromSameIndividualAs | domain | cello:EmbryonicStemCell | 40",
         "cello:derivedFromSameIndividualAs | domain | cello:FactorDependentCellLine | 10",
@@ -5319,8 +5330,8 @@
         "cello:derivedFromSameIndividualAs | domain | cello:SpontaneouslyImmortalizedCellLine | 806",
         "cello:derivedFromSameIndividualAs | domain | cello:TelomeraseImmortalizedCellLine | 327",
         "cello:derivedFromSameIndividualAs | domain | cello:TransformedCellLine | 4629",
+        "cello:derivedFromSameIndividualAs | domain | cello:UndefinedCellLineType | 53",
         "cello:derivedFromSameIndividualAs | range | cello:CancerCellLine | 4936",
-        "cello:derivedFromSameIndividualAs | range | cello:CellLine | 53",
         "cello:derivedFromSameIndividualAs | range | cello:ConditionallyImmortalizedCellLine | 682",
         "cello:derivedFromSameIndividualAs | range | cello:EmbryonicStemCell | 40",
         "cello:derivedFromSameIndividualAs | range | cello:FactorDependentCellLine | 10",
@@ -5329,7 +5340,8 @@
         "cello:derivedFromSameIndividualAs | range | cello:SomaticStemCell | 36",
         "cello:derivedFromSameIndividualAs | range | cello:SpontaneouslyImmortalizedCellLine | 806",
         "cello:derivedFromSameIndividualAs | range | cello:TelomeraseImmortalizedCellLine | 327",
-        "cello:derivedFromSameIndividualAs | range | cello:TransformedCellLine | 4629"
+        "cello:derivedFromSameIndividualAs | range | cello:TransformedCellLine | 4629",
+        "cello:derivedFromSameIndividualAs | range | cello:UndefinedCellLineType | 53"
       ]
     },
     "cello:derivedFromSite": {
@@ -5347,7 +5359,6 @@
       "usage": [
         "cello:derivedFromSite | count | xsd:integer | 138554",
         "cello:derivedFromSite | domain | cello:CancerCellLine | 34710",
-        "cello:derivedFromSite | domain | cello:CellLine | 112",
         "cello:derivedFromSite | domain | cello:ConditionallyImmortalizedCellLine | 392",
         "cello:derivedFromSite | domain | cello:EmbryonicStemCell | 16682",
         "cello:derivedFromSite | domain | cello:FactorDependentCellLine | 413",
@@ -5359,6 +5370,7 @@
         "cello:derivedFromSite | domain | cello:StromalCellLine | 61",
         "cello:derivedFromSite | domain | cello:TelomeraseImmortalizedCellLine | 874",
         "cello:derivedFromSite | domain | cello:TransformedCellLine | 52040",
+        "cello:derivedFromSite | domain | cello:UndefinedCellLineType | 112",
         "cello:derivedFromSite | range | cello:AnatomicalEntity | 138554"
       ]
     },
@@ -5551,7 +5563,6 @@
       "usage": [
         "cello:establishedBy | count | xsd:integer | 19873",
         "cello:establishedBy | domain | cello:CancerCellLine | 1773",
-        "cello:establishedBy | domain | cello:CellLine | 4",
         "cello:establishedBy | domain | cello:ConditionallyImmortalizedCellLine | 3",
         "cello:establishedBy | domain | cello:EmbryonicStemCell | 2627",
         "cello:establishedBy | domain | cello:FiniteCellLine | 885",
@@ -5562,6 +5573,7 @@
         "cello:establishedBy | domain | cello:SpontaneouslyImmortalizedCellLine | 161",
         "cello:establishedBy | domain | cello:TelomeraseImmortalizedCellLine | 6",
         "cello:establishedBy | domain | cello:TransformedCellLine | 441",
+        "cello:establishedBy | domain | cello:UndefinedCellLineType | 4",
         "cello:establishedBy | range | schema:Organization | 19873"
       ]
     },
@@ -5580,7 +5592,6 @@
       "usage": [
         "cello:hasAnecdotalComment | count | xsd:integer | 143",
         "cello:hasAnecdotalComment | domain | cello:CancerCellLine | 51",
-        "cello:hasAnecdotalComment | domain | cello:CellLine | 4",
         "cello:hasAnecdotalComment | domain | cello:ConditionallyImmortalizedCellLine | 1",
         "cello:hasAnecdotalComment | domain | cello:EmbryonicStemCell | 10",
         "cello:hasAnecdotalComment | domain | cello:FactorDependentCellLine | 1",
@@ -5591,6 +5602,7 @@
         "cello:hasAnecdotalComment | domain | cello:SpontaneouslyImmortalizedCellLine | 22",
         "cello:hasAnecdotalComment | domain | cello:TelomeraseImmortalizedCellLine | 2",
         "cello:hasAnecdotalComment | domain | cello:TransformedCellLine | 19",
+        "cello:hasAnecdotalComment | domain | cello:UndefinedCellLineType | 4",
         "cello:hasAnecdotalComment | range | cello:AnecdotalComment | 143"
       ]
     },
@@ -5716,7 +5728,6 @@
       "usage": [
         "cello:hasCautionComment | count | xsd:integer | 1309",
         "cello:hasCautionComment | domain | cello:CancerCellLine | 335",
-        "cello:hasCautionComment | domain | cello:CellLine | 4",
         "cello:hasCautionComment | domain | cello:ConditionallyImmortalizedCellLine | 2",
         "cello:hasCautionComment | domain | cello:EmbryonicStemCell | 15",
         "cello:hasCautionComment | domain | cello:FactorDependentCellLine | 249",
@@ -5728,6 +5739,7 @@
         "cello:hasCautionComment | domain | cello:SpontaneouslyImmortalizedCellLine | 47",
         "cello:hasCautionComment | domain | cello:TelomeraseImmortalizedCellLine | 8",
         "cello:hasCautionComment | domain | cello:TransformedCellLine | 123",
+        "cello:hasCautionComment | domain | cello:UndefinedCellLineType | 4",
         "cello:hasCautionComment | range | cello:CautionComment | 1309"
       ]
     },
@@ -5746,7 +5758,6 @@
       "usage": [
         "cello:hasCharacteristicsComment | count | xsd:integer | 15973",
         "cello:hasCharacteristicsComment | domain | cello:CancerCellLine | 4635",
-        "cello:hasCharacteristicsComment | domain | cello:CellLine | 1",
         "cello:hasCharacteristicsComment | domain | cello:ConditionallyImmortalizedCellLine | 92",
         "cello:hasCharacteristicsComment | domain | cello:EmbryonicStemCell | 6804",
         "cello:hasCharacteristicsComment | domain | cello:FactorDependentCellLine | 203",
@@ -5759,6 +5770,7 @@
         "cello:hasCharacteristicsComment | domain | cello:StromalCellLine | 14",
         "cello:hasCharacteristicsComment | domain | cello:TelomeraseImmortalizedCellLine | 107",
         "cello:hasCharacteristicsComment | domain | cello:TransformedCellLine | 1739",
+        "cello:hasCharacteristicsComment | domain | cello:UndefinedCellLineType | 1",
         "cello:hasCharacteristicsComment | range | cello:CharacteristicsComment | 15973"
       ]
     },
@@ -5779,7 +5791,6 @@
       "usage": [
         "cello:hasChildCellLine | count | xsd:integer | 64626",
         "cello:hasChildCellLine | domain | cello:CancerCellLine | 35777",
-        "cello:hasChildCellLine | domain | cello:CellLine | 31",
         "cello:hasChildCellLine | domain | cello:ConditionallyImmortalizedCellLine | 30",
         "cello:hasChildCellLine | domain | cello:EmbryonicStemCell | 14039",
         "cello:hasChildCellLine | domain | cello:FactorDependentCellLine | 339",
@@ -5792,8 +5803,8 @@
         "cello:hasChildCellLine | domain | cello:StromalCellLine | 19",
         "cello:hasChildCellLine | domain | cello:TelomeraseImmortalizedCellLine | 266",
         "cello:hasChildCellLine | domain | cello:TransformedCellLine | 5122",
+        "cello:hasChildCellLine | domain | cello:UndefinedCellLineType | 31",
         "cello:hasChildCellLine | range | cello:CancerCellLine | 24618",
-        "cello:hasChildCellLine | range | cello:CellLine | 28",
         "cello:hasChildCellLine | range | cello:ConditionallyImmortalizedCellLine | 32",
         "cello:hasChildCellLine | range | cello:EmbryonicStemCell | 13978",
         "cello:hasChildCellLine | range | cello:FactorDependentCellLine | 337",
@@ -5805,7 +5816,8 @@
         "cello:hasChildCellLine | range | cello:SpontaneouslyImmortalizedCellLine | 4107",
         "cello:hasChildCellLine | range | cello:StromalCellLine | 19",
         "cello:hasChildCellLine | range | cello:TelomeraseImmortalizedCellLine | 448",
-        "cello:hasChildCellLine | range | cello:TransformedCellLine | 5668"
+        "cello:hasChildCellLine | range | cello:TransformedCellLine | 5668",
+        "cello:hasChildCellLine | range | cello:UndefinedCellLineType | 28"
       ]
     },
     "cello:hasComponent": {
@@ -5842,7 +5854,6 @@
       "usage": [
         "cello:hasDiscontinuationRecord | count | xsd:integer | 11425",
         "cello:hasDiscontinuationRecord | domain | cello:CancerCellLine | 3018",
-        "cello:hasDiscontinuationRecord | domain | cello:CellLine | 107",
         "cello:hasDiscontinuationRecord | domain | cello:ConditionallyImmortalizedCellLine | 7",
         "cello:hasDiscontinuationRecord | domain | cello:EmbryonicStemCell | 93",
         "cello:hasDiscontinuationRecord | domain | cello:FactorDependentCellLine | 5",
@@ -5855,6 +5866,7 @@
         "cello:hasDiscontinuationRecord | domain | cello:StromalCellLine | 4",
         "cello:hasDiscontinuationRecord | domain | cello:TelomeraseImmortalizedCellLine | 60",
         "cello:hasDiscontinuationRecord | domain | cello:TransformedCellLine | 1931",
+        "cello:hasDiscontinuationRecord | domain | cello:UndefinedCellLineType | 107",
         "cello:hasDiscontinuationRecord | range | cello:DiscontinuationRecord | 11425"
       ]
     },
@@ -5900,7 +5912,6 @@
       "usage": [
         "cello:hasDoublingTime | count | xsd:integer | 10699",
         "cello:hasDoublingTime | domain | cello:CancerCellLine | 7616",
-        "cello:hasDoublingTime | domain | cello:CellLine | 14",
         "cello:hasDoublingTime | domain | cello:ConditionallyImmortalizedCellLine | 46",
         "cello:hasDoublingTime | domain | cello:EmbryonicStemCell | 44",
         "cello:hasDoublingTime | domain | cello:FactorDependentCellLine | 106",
@@ -5913,6 +5924,7 @@
         "cello:hasDoublingTime | domain | cello:StromalCellLine | 16",
         "cello:hasDoublingTime | domain | cello:TelomeraseImmortalizedCellLine | 141",
         "cello:hasDoublingTime | domain | cello:TransformedCellLine | 873",
+        "cello:hasDoublingTime | domain | cello:UndefinedCellLineType | 14",
         "cello:hasDoublingTime | range | cello:DoublingTime | 10699"
       ]
     },
@@ -5931,7 +5943,6 @@
       "usage": [
         "cello:hasGeneKnockout | count | xsd:integer | 31385",
         "cello:hasGeneKnockout | domain | cello:CancerCellLine | 16438",
-        "cello:hasGeneKnockout | domain | cello:CellLine | 2",
         "cello:hasGeneKnockout | domain | cello:ConditionallyImmortalizedCellLine | 12",
         "cello:hasGeneKnockout | domain | cello:EmbryonicStemCell | 11352",
         "cello:hasGeneKnockout | domain | cello:FactorDependentCellLine | 3",
@@ -5942,6 +5953,7 @@
         "cello:hasGeneKnockout | domain | cello:SpontaneouslyImmortalizedCellLine | 584",
         "cello:hasGeneKnockout | domain | cello:TelomeraseImmortalizedCellLine | 110",
         "cello:hasGeneKnockout | domain | cello:TransformedCellLine | 2454",
+        "cello:hasGeneKnockout | domain | cello:UndefinedCellLineType | 2",
         "cello:hasGeneKnockout | range | cello:GeneKnockout | 31385"
       ]
     },
@@ -5960,7 +5972,6 @@
       "usage": [
         "cello:hasGeneticIntegration | count | xsd:integer | 45878",
         "cello:hasGeneticIntegration | domain | cello:CancerCellLine | 7920",
-        "cello:hasGeneticIntegration | domain | cello:CellLine | 9",
         "cello:hasGeneticIntegration | domain | cello:ConditionallyImmortalizedCellLine | 584",
         "cello:hasGeneticIntegration | domain | cello:EmbryonicStemCell | 15625",
         "cello:hasGeneticIntegration | domain | cello:FactorDependentCellLine | 589",
@@ -5973,6 +5984,7 @@
         "cello:hasGeneticIntegration | domain | cello:StromalCellLine | 22",
         "cello:hasGeneticIntegration | domain | cello:TelomeraseImmortalizedCellLine | 2412",
         "cello:hasGeneticIntegration | domain | cello:TransformedCellLine | 12932",
+        "cello:hasGeneticIntegration | domain | cello:UndefinedCellLineType | 9",
         "cello:hasGeneticIntegration | range | cello:GeneticIntegration | 45878"
       ]
     },
@@ -5991,9 +6003,9 @@
       "usage": [
         "cello:hasGenomeAncestry | count | xsd:integer | 1388",
         "cello:hasGenomeAncestry | domain | cello:CancerCellLine | 1331",
-        "cello:hasGenomeAncestry | domain | cello:CellLine | 35",
         "cello:hasGenomeAncestry | domain | cello:TelomeraseImmortalizedCellLine | 2",
         "cello:hasGenomeAncestry | domain | cello:TransformedCellLine | 20",
+        "cello:hasGenomeAncestry | domain | cello:UndefinedCellLineType | 35",
         "cello:hasGenomeAncestry | range | cello:GenomeAncestry | 1388"
       ]
     },
@@ -6029,13 +6041,13 @@
       "usage": [
         "cello:hasHLAtyping | count | xsd:integer | 4411",
         "cello:hasHLAtyping | domain | cello:CancerCellLine | 1953",
-        "cello:hasHLAtyping | domain | cello:CellLine | 10",
         "cello:hasHLAtyping | domain | cello:EmbryonicStemCell | 269",
         "cello:hasHLAtyping | domain | cello:FiniteCellLine | 71",
         "cello:hasHLAtyping | domain | cello:InducedPluripotentStemCell | 156",
         "cello:hasHLAtyping | domain | cello:SpontaneouslyImmortalizedCellLine | 5",
         "cello:hasHLAtyping | domain | cello:TelomeraseImmortalizedCellLine | 2",
         "cello:hasHLAtyping | domain | cello:TransformedCellLine | 1945",
+        "cello:hasHLAtyping | domain | cello:UndefinedCellLineType | 10",
         "cello:hasHLAtyping | range | cello:HLAtyping | 4411"
       ]
     },
@@ -6080,9 +6092,9 @@
       "usage": [
         "cello:hasMicrosatelliteInstability | count | xsd:integer | 1482",
         "cello:hasMicrosatelliteInstability | domain | cello:CancerCellLine | 1464",
-        "cello:hasMicrosatelliteInstability | domain | cello:CellLine | 2",
         "cello:hasMicrosatelliteInstability | domain | cello:SpontaneouslyImmortalizedCellLine | 1",
         "cello:hasMicrosatelliteInstability | domain | cello:TransformedCellLine | 15",
+        "cello:hasMicrosatelliteInstability | domain | cello:UndefinedCellLineType | 2",
         "cello:hasMicrosatelliteInstability | range | cello:MicrosatelliteInstability | 1482"
       ]
     },
@@ -6101,7 +6113,6 @@
       "usage": [
         "cello:hasMiscellaneousInfoComment | count | xsd:integer | 2624",
         "cello:hasMiscellaneousInfoComment | domain | cello:CancerCellLine | 901",
-        "cello:hasMiscellaneousInfoComment | domain | cello:CellLine | 3",
         "cello:hasMiscellaneousInfoComment | domain | cello:ConditionallyImmortalizedCellLine | 9",
         "cello:hasMiscellaneousInfoComment | domain | cello:EmbryonicStemCell | 104",
         "cello:hasMiscellaneousInfoComment | domain | cello:FactorDependentCellLine | 2",
@@ -6113,6 +6124,7 @@
         "cello:hasMiscellaneousInfoComment | domain | cello:SpontaneouslyImmortalizedCellLine | 98",
         "cello:hasMiscellaneousInfoComment | domain | cello:TelomeraseImmortalizedCellLine | 42",
         "cello:hasMiscellaneousInfoComment | domain | cello:TransformedCellLine | 223",
+        "cello:hasMiscellaneousInfoComment | domain | cello:UndefinedCellLineType | 3",
         "cello:hasMiscellaneousInfoComment | range | cello:MiscellaneousInfoComment | 2624"
       ]
     },
@@ -6131,7 +6143,6 @@
       "usage": [
         "cello:hasMisspellingRecord | count | xsd:integer | 817",
         "cello:hasMisspellingRecord | domain | cello:CancerCellLine | 512",
-        "cello:hasMisspellingRecord | domain | cello:CellLine | 3",
         "cello:hasMisspellingRecord | domain | cello:ConditionallyImmortalizedCellLine | 4",
         "cello:hasMisspellingRecord | domain | cello:EmbryonicStemCell | 22",
         "cello:hasMisspellingRecord | domain | cello:FactorDependentCellLine | 3",
@@ -6142,6 +6153,7 @@
         "cello:hasMisspellingRecord | domain | cello:SpontaneouslyImmortalizedCellLine | 71",
         "cello:hasMisspellingRecord | domain | cello:TelomeraseImmortalizedCellLine | 1",
         "cello:hasMisspellingRecord | domain | cello:TransformedCellLine | 83",
+        "cello:hasMisspellingRecord | domain | cello:UndefinedCellLineType | 3",
         "cello:hasMisspellingRecord | range | cello:MisspellingRecord | 817"
       ]
     },
@@ -6204,7 +6216,6 @@
       "usage": [
         "cello:hasOmicsInfo | count | xsd:integer | 39170",
         "cello:hasOmicsInfo | domain | cello:CancerCellLine | 18621",
-        "cello:hasOmicsInfo | domain | cello:CellLine | 151",
         "cello:hasOmicsInfo | domain | cello:ConditionallyImmortalizedCellLine | 46",
         "cello:hasOmicsInfo | domain | cello:EmbryonicStemCell | 826",
         "cello:hasOmicsInfo | domain | cello:FactorDependentCellLine | 6",
@@ -6217,6 +6228,7 @@
         "cello:hasOmicsInfo | domain | cello:StromalCellLine | 1",
         "cello:hasOmicsInfo | domain | cello:TelomeraseImmortalizedCellLine | 252",
         "cello:hasOmicsInfo | domain | cello:TransformedCellLine | 11650",
+        "cello:hasOmicsInfo | domain | cello:UndefinedCellLineType | 151",
         "cello:hasOmicsInfo | range | cello:OmicsInfo | 39170"
       ]
     },
@@ -6238,7 +6250,6 @@
       "usage": [
         "cello:hasParentCellLine | count | xsd:integer | 64626",
         "cello:hasParentCellLine | domain | cello:CancerCellLine | 24618",
-        "cello:hasParentCellLine | domain | cello:CellLine | 28",
         "cello:hasParentCellLine | domain | cello:ConditionallyImmortalizedCellLine | 32",
         "cello:hasParentCellLine | domain | cello:EmbryonicStemCell | 13978",
         "cello:hasParentCellLine | domain | cello:FactorDependentCellLine | 337",
@@ -6251,8 +6262,8 @@
         "cello:hasParentCellLine | domain | cello:StromalCellLine | 19",
         "cello:hasParentCellLine | domain | cello:TelomeraseImmortalizedCellLine | 448",
         "cello:hasParentCellLine | domain | cello:TransformedCellLine | 5668",
+        "cello:hasParentCellLine | domain | cello:UndefinedCellLineType | 28",
         "cello:hasParentCellLine | range | cello:CancerCellLine | 35777",
-        "cello:hasParentCellLine | range | cello:CellLine | 31",
         "cello:hasParentCellLine | range | cello:ConditionallyImmortalizedCellLine | 30",
         "cello:hasParentCellLine | range | cello:EmbryonicStemCell | 14039",
         "cello:hasParentCellLine | range | cello:FactorDependentCellLine | 339",
@@ -6264,7 +6275,8 @@
         "cello:hasParentCellLine | range | cello:SpontaneouslyImmortalizedCellLine | 4982",
         "cello:hasParentCellLine | range | cello:StromalCellLine | 19",
         "cello:hasParentCellLine | range | cello:TelomeraseImmortalizedCellLine | 266",
-        "cello:hasParentCellLine | range | cello:TransformedCellLine | 5122"
+        "cello:hasParentCellLine | range | cello:TransformedCellLine | 5122",
+        "cello:hasParentCellLine | range | cello:UndefinedCellLineType | 31"
       ]
     },
     "cello:hasPopulation": {
@@ -6299,7 +6311,6 @@
       "usage": [
         "cello:hasProblematicCellLineComment | count | xsd:integer | 1369",
         "cello:hasProblematicCellLineComment | domain | cello:CancerCellLine | 1097",
-        "cello:hasProblematicCellLineComment | domain | cello:CellLine | 82",
         "cello:hasProblematicCellLineComment | domain | cello:EmbryonicStemCell | 15",
         "cello:hasProblematicCellLineComment | domain | cello:FactorDependentCellLine | 1",
         "cello:hasProblematicCellLineComment | domain | cello:FiniteCellLine | 15",
@@ -6307,6 +6318,7 @@
         "cello:hasProblematicCellLineComment | domain | cello:InducedPluripotentStemCell | 7",
         "cello:hasProblematicCellLineComment | domain | cello:SpontaneouslyImmortalizedCellLine | 65",
         "cello:hasProblematicCellLineComment | domain | cello:TransformedCellLine | 59",
+        "cello:hasProblematicCellLineComment | domain | cello:UndefinedCellLineType | 82",
         "cello:hasProblematicCellLineComment | range | cello:ProblematicCellLineComment | 1369"
       ]
     },
@@ -6343,7 +6355,6 @@
       "usage": [
         "cello:hasRegistationRecord | count | xsd:integer | 6056",
         "cello:hasRegistationRecord | domain | cello:CancerCellLine | 890",
-        "cello:hasRegistationRecord | domain | cello:CellLine | 37",
         "cello:hasRegistationRecord | domain | cello:ConditionallyImmortalizedCellLine | 9",
         "cello:hasRegistationRecord | domain | cello:EmbryonicStemCell | 1105",
         "cello:hasRegistationRecord | domain | cello:FactorDependentCellLine | 15",
@@ -6356,6 +6367,7 @@
         "cello:hasRegistationRecord | domain | cello:StromalCellLine | 1",
         "cello:hasRegistationRecord | domain | cello:TelomeraseImmortalizedCellLine | 20",
         "cello:hasRegistationRecord | domain | cello:TransformedCellLine | 1114",
+        "cello:hasRegistationRecord | domain | cello:UndefinedCellLineType | 37",
         "cello:hasRegistationRecord | range | cello:RegistrationRecord | 6056"
       ]
     },
@@ -6374,7 +6386,6 @@
       "usage": [
         "cello:hasResistance | count | xsd:integer | 13929",
         "cello:hasResistance | domain | cello:CancerCellLine | 2357",
-        "cello:hasResistance | domain | cello:CellLine | 1",
         "cello:hasResistance | domain | cello:EmbryonicStemCell | 10738",
         "cello:hasResistance | domain | cello:FactorDependentCellLine | 11",
         "cello:hasResistance | domain | cello:FiniteCellLine | 8",
@@ -6384,6 +6395,7 @@
         "cello:hasResistance | domain | cello:SpontaneouslyImmortalizedCellLine | 348",
         "cello:hasResistance | domain | cello:TelomeraseImmortalizedCellLine | 1",
         "cello:hasResistance | domain | cello:TransformedCellLine | 339",
+        "cello:hasResistance | domain | cello:UndefinedCellLineType | 1",
         "cello:hasResistance | range | cello:ChemicalEntity | 13929"
       ]
     },
@@ -6425,7 +6437,6 @@
       "usage": [
         "cello:hasSequenceVariationInfo | count | xsd:integer | 87373",
         "cello:hasSequenceVariationInfo | domain | cello:CancerCellLine | 72395",
-        "cello:hasSequenceVariationInfo | domain | cello:CellLine | 11",
         "cello:hasSequenceVariationInfo | domain | cello:ConditionallyImmortalizedCellLine | 16",
         "cello:hasSequenceVariationInfo | domain | cello:EmbryonicStemCell | 318",
         "cello:hasSequenceVariationInfo | domain | cello:FiniteCellLine | 3501",
@@ -6435,6 +6446,7 @@
         "cello:hasSequenceVariationInfo | domain | cello:SpontaneouslyImmortalizedCellLine | 568",
         "cello:hasSequenceVariationInfo | domain | cello:TelomeraseImmortalizedCellLine | 140",
         "cello:hasSequenceVariationInfo | domain | cello:TransformedCellLine | 3821",
+        "cello:hasSequenceVariationInfo | domain | cello:UndefinedCellLineType | 11",
         "cello:hasSequenceVariationInfo | range | cello:SequenceVariationInfo | 87373"
       ]
     },
@@ -6453,7 +6465,6 @@
       "usage": [
         "cello:hasShortTandemRepeatProfile | count | xsd:integer | 9097",
         "cello:hasShortTandemRepeatProfile | domain | cello:CancerCellLine | 5887",
-        "cello:hasShortTandemRepeatProfile | domain | cello:CellLine | 45",
         "cello:hasShortTandemRepeatProfile | domain | cello:ConditionallyImmortalizedCellLine | 7",
         "cello:hasShortTandemRepeatProfile | domain | cello:EmbryonicStemCell | 445",
         "cello:hasShortTandemRepeatProfile | domain | cello:FactorDependentCellLine | 4",
@@ -6466,6 +6477,7 @@
         "cello:hasShortTandemRepeatProfile | domain | cello:StromalCellLine | 1",
         "cello:hasShortTandemRepeatProfile | domain | cello:TelomeraseImmortalizedCellLine | 192",
         "cello:hasShortTandemRepeatProfile | domain | cello:TransformedCellLine | 723",
+        "cello:hasShortTandemRepeatProfile | domain | cello:UndefinedCellLineType | 45",
         "cello:hasShortTandemRepeatProfile | range | cello:ShortTandemRepeatProfile | 9097"
       ]
     },
@@ -6548,7 +6560,6 @@
       "usage": [
         "cello:hasVirologyComment | count | xsd:integer | 1136",
         "cello:hasVirologyComment | domain | cello:CancerCellLine | 516",
-        "cello:hasVirologyComment | domain | cello:CellLine | 1",
         "cello:hasVirologyComment | domain | cello:ConditionallyImmortalizedCellLine | 4",
         "cello:hasVirologyComment | domain | cello:EmbryonicStemCell | 1",
         "cello:hasVirologyComment | domain | cello:FactorDependentCellLine | 3",
@@ -6557,6 +6568,7 @@
         "cello:hasVirologyComment | domain | cello:SpontaneouslyImmortalizedCellLine | 405",
         "cello:hasVirologyComment | domain | cello:TelomeraseImmortalizedCellLine | 7",
         "cello:hasVirologyComment | domain | cello:TransformedCellLine | 146",
+        "cello:hasVirologyComment | domain | cello:UndefinedCellLineType | 1",
         "cello:hasVirologyComment | range | cello:VirologyComment | 1136"
       ]
     },
@@ -6595,7 +6607,6 @@
       "usage": [
         "cello:inCollection | count | xsd:integer | 36564",
         "cello:inCollection | domain | cello:CancerCellLine | 7017",
-        "cello:inCollection | domain | cello:CellLine | 147",
         "cello:inCollection | domain | cello:EmbryonicStemCell | 160",
         "cello:inCollection | domain | cello:FactorDependentCellLine | 2",
         "cello:inCollection | domain | cello:FiniteCellLine | 3362",
@@ -6606,6 +6617,7 @@
         "cello:inCollection | domain | cello:SpontaneouslyImmortalizedCellLine | 312",
         "cello:inCollection | domain | cello:TelomeraseImmortalizedCellLine | 84",
         "cello:inCollection | domain | cello:TransformedCellLine | 20734",
+        "cello:inCollection | domain | cello:UndefinedCellLineType | 147",
         "cello:inCollection | range | xsd:string | 36564"
       ]
     },
@@ -6624,7 +6636,6 @@
       "usage": [
         "cello:inGroup | count | xsd:integer | 17822",
         "cello:inGroup | domain | cello:CancerCellLine | 8515",
-        "cello:inGroup | domain | cello:CellLine | 27",
         "cello:inGroup | domain | cello:ConditionallyImmortalizedCellLine | 11",
         "cello:inGroup | domain | cello:EmbryonicStemCell | 252",
         "cello:inGroup | domain | cello:FactorDependentCellLine | 15",
@@ -6637,6 +6648,7 @@
         "cello:inGroup | domain | cello:StromalCellLine | 2",
         "cello:inGroup | domain | cello:TelomeraseImmortalizedCellLine | 57",
         "cello:inGroup | domain | cello:TransformedCellLine | 1199",
+        "cello:inGroup | domain | cello:UndefinedCellLineType | 27",
         "cello:inGroup | range | xsd:string | 17822"
       ]
     },
@@ -6714,7 +6726,7 @@
       "definition": [
         "cello:isIdentifiedByIRI | rdf:type | rdf:Property",
         "cello:isIdentifiedByIRI | rdf:type | owl:AnnotationProperty",
-        "cello:isIdentifiedByIRI | rdfs:comment | An IRI that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource.<br><dt>has domain</dt><dd><a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a></dd>",
+        "cello:isIdentifiedByIRI | rdfs:comment | An IRI that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource.<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a></dd>",
         "cello:isIdentifiedByIRI | rdfs:domain | nodeID://b2379125",
         "cello:isIdentifiedByIRI | rdfs:isDefinedBy | cello:",
         "cello:isIdentifiedByIRI | rdfs:label | is identified by IRI",
@@ -6726,7 +6738,6 @@
         "cello:isIdentifiedByIRI | domain | cello:AnatomicalEntity | 138790",
         "cello:isIdentifiedByIRI | domain | cello:Breed | 3363",
         "cello:isIdentifiedByIRI | domain | cello:CancerCellLine | 4663",
-        "cello:isIdentifiedByIRI | domain | cello:CellLine | 82",
         "cello:isIdentifiedByIRI | domain | cello:CellType | 50741",
         "cello:isIdentifiedByIRI | domain | cello:ChemicalEntity | 74809",
         "cello:isIdentifiedByIRI | domain | cello:ConditionallyImmortalizedCellLine | 28",
@@ -6743,6 +6754,7 @@
         "cello:isIdentifiedByIRI | domain | cello:StromalCellLine | 17",
         "cello:isIdentifiedByIRI | domain | cello:TelomeraseImmortalizedCellLine | 20",
         "cello:isIdentifiedByIRI | domain | cello:TransformedCellLine | 23240",
+        "cello:isIdentifiedByIRI | domain | cello:UndefinedCellLineType | 82",
         "cello:isIdentifiedByIRI | range | xsd:anyURI | 589022",
         "cello:isIdentifiedByIRI | range | owl:Class | 265"
       ]
@@ -6753,7 +6765,7 @@
       "definition": [
         "cello:isIdentifiedByXref | rdf:type | rdf:Property",
         "cello:isIdentifiedByXref | rdf:type | owl:AnnotationProperty",
-        "cello:isIdentifiedByXref | rdfs:comment | A database cross-reference that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource.<br><dt>has domain</dt><dd><a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#Gene\" title=\"https://purl.expasy.org/cellosaurus/rdf/Gene\">Gene</a> <b>or</b> <a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a> <b>or</b> <a href=\"#GeneMutation\" title=\"https://purl.expasy.org/cellosaurus/rdf/GeneMutation\">Gene mutation</a></dd>",
+        "cello:isIdentifiedByXref | rdfs:comment | A database cross-reference that is referenced, cited, or otherwise pointed to with the purpose to unequivocally identify the described resource.<br><dt>has domain</dt><dd><a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a> <b>or</b> <a href=\"#Gene\" title=\"https://purl.expasy.org/cellosaurus/rdf/Gene\">Gene</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a> <b>or</b> <a href=\"#GeneMutation\" title=\"https://purl.expasy.org/cellosaurus/rdf/GeneMutation\">Gene mutation</a></dd>",
         "cello:isIdentifiedByXref | rdfs:domain | nodeID://b2379116",
         "cello:isIdentifiedByXref | rdfs:isDefinedBy | cello:",
         "cello:isIdentifiedByXref | rdfs:label | is identified by xref",
@@ -6773,7 +6785,7 @@
         "cello:isIdentifiedByXref | domain | cello:Protein | 8861",
         "cello:isIdentifiedByXref | domain | cello:RepeatExpansion | 797",
         "cello:isIdentifiedByXref | domain | cello:Species | 164338",
-        "cello:isIdentifiedByXref | range | skos:Concept | 552468",
+        "cello:isIdentifiedByXref | range | skos:Concept | 552467",
         "cello:isIdentifiedByXref | range | cello:Xref | 845445"
       ]
     },
@@ -6872,7 +6884,7 @@
       "definition": [
         "cello:misspellingName | rdf:type | rdf:Property",
         "cello:misspellingName | rdf:type | owl:AnnotationProperty",
-        "cello:misspellingName | rdfs:comment | A misspelling as it appears in some publication or external resource<br><dt>has domain</dt><dd><a href=\"#MisspellingRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/MisspellingRecord\">Misspelling record</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a></dd>",
+        "cello:misspellingName | rdfs:comment | A misspelling as it appears in some publication or external resource<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#MisspellingRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/MisspellingRecord\">Misspelling record</a></dd>",
         "cello:misspellingName | rdfs:domain | nodeID://b2379109",
         "cello:misspellingName | rdfs:isDefinedBy | cello:",
         "cello:misspellingName | rdfs:label | misspelling name",
@@ -6882,7 +6894,6 @@
       "usage": [
         "cello:misspellingName | count | xsd:integer | 1634",
         "cello:misspellingName | domain | cello:CancerCellLine | 512",
-        "cello:misspellingName | domain | cello:CellLine | 3",
         "cello:misspellingName | domain | cello:ConditionallyImmortalizedCellLine | 4",
         "cello:misspellingName | domain | cello:EmbryonicStemCell | 22",
         "cello:misspellingName | domain | cello:FactorDependentCellLine | 3",
@@ -6894,6 +6905,7 @@
         "cello:misspellingName | domain | cello:SpontaneouslyImmortalizedCellLine | 71",
         "cello:misspellingName | domain | cello:TelomeraseImmortalizedCellLine | 1",
         "cello:misspellingName | domain | cello:TransformedCellLine | 83",
+        "cello:misspellingName | domain | cello:UndefinedCellLineType | 3",
         "cello:misspellingName | range | xsd:string | 1634"
       ]
     },
@@ -6912,7 +6924,6 @@
       "usage": [
         "cello:modified | count | xsd:integer | 163042",
         "cello:modified | domain | cello:CancerCellLine | 41233",
-        "cello:modified | domain | cello:CellLine | 250",
         "cello:modified | domain | cello:ConditionallyImmortalizedCellLine | 392",
         "cello:modified | domain | cello:EmbryonicStemCell | 16685",
         "cello:modified | domain | cello:FactorDependentCellLine | 426",
@@ -6925,6 +6936,7 @@
         "cello:modified | domain | cello:StromalCellLine | 66",
         "cello:modified | domain | cello:TelomeraseImmortalizedCellLine | 895",
         "cello:modified | domain | cello:TransformedCellLine | 52360",
+        "cello:modified | domain | cello:UndefinedCellLineType | 250",
         "cello:modified | range | xsd:date | 163042"
       ]
     },
@@ -6951,11 +6963,11 @@
     },
     "cello:name": {
       "tag": "prop",
-      "count": 1811668,
+      "count": 1811669,
       "definition": [
         "cello:name | rdf:type | rdf:Property",
         "cello:name | rdf:type | owl:AnnotationProperty",
-        "cello:name | rdfs:comment | A human-readable version of a resource's name.<br><dt>has domain</dt><dd><a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#https://schema.org/Person\" title=\"https://schema.org/Person\">Person</a> <b>or</b> <a href=\"#Population\" title=\"https://purl.expasy.org/cellosaurus/rdf/Population\">Population</a> <b>or</b> <a href=\"#http://www.w3.org/2004/02/skos/core#Concept\" title=\"http://www.w3.org/2004/02/skos/core#Concept\">Concept</a> <b>or</b> <a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a> <b>or</b> <a href=\"#Xref\" title=\"https://purl.expasy.org/cellosaurus/rdf/Xref\">Cross-Reference</a> <b>or</b> <a href=\"#https://schema.org/Observation\" title=\"https://schema.org/Observation\">Observation</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#SequenceVariation\" title=\"https://purl.expasy.org/cellosaurus/rdf/SequenceVariation\">Sequence variation</a> <b>or</b> <a href=\"#RegistrationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/RegistrationRecord\">Registration record</a> <b>or</b> <a href=\"#Gene\" title=\"https://purl.expasy.org/cellosaurus/rdf/Gene\">Gene</a> <b>or</b> <a href=\"#Sex\" title=\"https://purl.expasy.org/cellosaurus/rdf/Sex\">Sex</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a> <b>or</b> <a href=\"#MisspellingRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/MisspellingRecord\">Misspelling record</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#Source\" title=\"https://purl.expasy.org/cellosaurus/rdf/Source\">Source</a></dd>",
+        "cello:name | rdfs:comment | A human-readable version of a resource's name.<br><dt>has domain</dt><dd><a href=\"#https://schema.org/Observation\" title=\"https://schema.org/Observation\">Observation</a> <b>or</b> <a href=\"#RegistrationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/RegistrationRecord\">Registration record</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a> <b>or</b> <a href=\"#Sex\" title=\"https://purl.expasy.org/cellosaurus/rdf/Sex\">Sex</a> <b>or</b> <a href=\"#Breed\" title=\"https://purl.expasy.org/cellosaurus/rdf/Breed\">Breed</a> <b>or</b> <a href=\"#http://www.w3.org/2004/02/skos/core#Concept\" title=\"http://www.w3.org/2004/02/skos/core#Concept\">Concept</a> <b>or</b> <a href=\"#CellType\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellType\">Cell type</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#Species\" title=\"https://purl.expasy.org/cellosaurus/rdf/Species\">Species</a> <b>or</b> <a href=\"#https://schema.org/Person\" title=\"https://schema.org/Person\">Person</a> <b>or</b> <a href=\"#AnatomicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/AnatomicalEntity\">Anatomical entity</a> <b>or</b> <a href=\"#Disease\" title=\"https://purl.expasy.org/cellosaurus/rdf/Disease\">Disease</a> <b>or</b> <a href=\"#Gene\" title=\"https://purl.expasy.org/cellosaurus/rdf/Gene\">Gene</a> <b>or</b> <a href=\"#SequenceVariation\" title=\"https://purl.expasy.org/cellosaurus/rdf/SequenceVariation\">Sequence variation</a> <b>or</b> <a href=\"#Source\" title=\"https://purl.expasy.org/cellosaurus/rdf/Source\">Source</a> <b>or</b> <a href=\"#Population\" title=\"https://purl.expasy.org/cellosaurus/rdf/Population\">Population</a> <b>or</b> <a href=\"#Xref\" title=\"https://purl.expasy.org/cellosaurus/rdf/Xref\">Cross-Reference</a> <b>or</b> <a href=\"#MisspellingRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/MisspellingRecord\">Misspelling record</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#ChemicalEntity\" title=\"https://purl.expasy.org/cellosaurus/rdf/ChemicalEntity\">Chemical entity</a> <b>or</b> <a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a></dd>",
         "cello:name | rdfs:domain | nodeID://b2379073",
         "cello:name | rdfs:isDefinedBy | cello:",
         "cello:name | rdfs:label | name",
@@ -6964,7 +6976,7 @@
         "cello:registeredName | rdfs:subPropertyOf | cello:name"
       ],
       "usage": [
-        "cello:name | count | xsd:integer | 1811668",
+        "cello:name | count | xsd:integer | 1811669",
         "cello:name | domain | NCIt:C16351 | 1",
         "cello:name | domain | NCIt:C17256 | 1",
         "cello:name | domain | NCIt:C17467 | 1",
@@ -6977,7 +6989,6 @@
         "cello:name | domain | cello:BiologicalSampleResources | 12",
         "cello:name | domain | cello:Breed | 21200",
         "cello:name | domain | cello:CancerCellLine | 94759",
-        "cello:name | domain | cello:CellLine | 543",
         "cello:name | domain | cello:CellLineCollectionsProviders | 112",
         "cello:name | domain | cello:CellLineDatabasesResources | 62",
         "cello:name | domain | cello:CellType | 50743",
@@ -7029,11 +7040,12 @@
         "cello:name | domain | cello:Taxonomy | 4",
         "cello:name | domain | cello:TelomeraseImmortalizedCellLine | 1678",
         "cello:name | domain | cello:TransformedCellLine | 67998",
-        "cello:name | domain | cello:Xref | 32115",
+        "cello:name | domain | cello:UndefinedCellLineType | 543",
+        "cello:name | domain | cello:Xref | 32116",
         "cello:name | domain | schema:Observation | 215983",
         "cello:name | domain | schema:Organization | 1528",
         "cello:name | domain | schema:Person | 192453",
-        "cello:name | range | xsd:string | 1811668"
+        "cello:name | range | xsd:string | 1811669"
       ]
     },
     "cello:noneReported": {
@@ -7186,7 +7198,6 @@
       "usage": [
         "cello:primaryAccession | count | xsd:integer | 163042",
         "cello:primaryAccession | domain | cello:CancerCellLine | 41233",
-        "cello:primaryAccession | domain | cello:CellLine | 250",
         "cello:primaryAccession | domain | cello:ConditionallyImmortalizedCellLine | 392",
         "cello:primaryAccession | domain | cello:EmbryonicStemCell | 16685",
         "cello:primaryAccession | domain | cello:FactorDependentCellLine | 426",
@@ -7199,6 +7210,7 @@
         "cello:primaryAccession | domain | cello:StromalCellLine | 66",
         "cello:primaryAccession | domain | cello:TelomeraseImmortalizedCellLine | 895",
         "cello:primaryAccession | domain | cello:TransformedCellLine | 52360",
+        "cello:primaryAccession | domain | cello:UndefinedCellLineType | 250",
         "cello:primaryAccession | range | xsd:string | 163042"
       ]
     },
@@ -7304,7 +7316,7 @@
       "definition": [
         "cello:recommendedName | rdf:type | rdf:Property",
         "cello:recommendedName | rdf:type | owl:AnnotationProperty",
-        "cello:recommendedName | rdfs:comment | Most frequently the name of the cell line as provided in the original publication<br><dt>has domain</dt><dd><a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a></dd>",
+        "cello:recommendedName | rdfs:comment | Most frequently the name of the cell line as provided in the original publication<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#https://schema.org/Organization\" title=\"https://schema.org/Organization\">Organization</a> <b>or</b> <a href=\"#CelloConceptScheme\" title=\"https://purl.expasy.org/cellosaurus/rdf/CelloConceptScheme\">Cellosaurus Concept Scheme</a> <b>or</b> <a href=\"#Database\" title=\"https://purl.expasy.org/cellosaurus/rdf/Database\">Database</a></dd>",
         "cello:recommendedName | rdfs:domain | nodeID://b2379096",
         "cello:recommendedName | rdfs:isDefinedBy | cello:",
         "cello:recommendedName | rdfs:label | recommended name",
@@ -7317,7 +7329,6 @@
         "cello:recommendedName | domain | cello:AnatomyCellTypeResources | 5",
         "cello:recommendedName | domain | cello:BiologicalSampleResources | 6",
         "cello:recommendedName | domain | cello:CancerCellLine | 41233",
-        "cello:recommendedName | domain | cello:CellLine | 250",
         "cello:recommendedName | domain | cello:CellLineCollectionsProviders | 56",
         "cello:recommendedName | domain | cello:CellLineDatabasesResources | 31",
         "cello:recommendedName | domain | cello:CelloConceptScheme | 8",
@@ -7346,6 +7357,7 @@
         "cello:recommendedName | domain | cello:Taxonomy | 2",
         "cello:recommendedName | domain | cello:TelomeraseImmortalizedCellLine | 895",
         "cello:recommendedName | domain | cello:TransformedCellLine | 52360",
+        "cello:recommendedName | domain | cello:UndefinedCellLineType | 250",
         "cello:recommendedName | domain | schema:Organization | 97",
         "cello:recommendedName | range | xsd:string | 163280"
       ]
@@ -7366,7 +7378,6 @@
       "usage": [
         "cello:references | count | xsd:integer | 165425",
         "cello:references | domain | cello:CancerCellLine | 71803",
-        "cello:references | domain | cello:CellLine | 411",
         "cello:references | domain | cello:ConditionallyImmortalizedCellLine | 694",
         "cello:references | domain | cello:EmbryonicStemCell | 16366",
         "cello:references | domain | cello:FactorDependentCellLine | 469",
@@ -7379,6 +7390,7 @@
         "cello:references | domain | cello:StromalCellLine | 96",
         "cello:references | domain | cello:TelomeraseImmortalizedCellLine | 1010",
         "cello:references | domain | cello:TransformedCellLine | 27122",
+        "cello:references | domain | cello:UndefinedCellLineType | 411",
         "cello:references | range | fabio:BachelorsThesis | 3",
         "cello:references | range | fabio:Book | 613",
         "cello:references | range | fabio:BookChapter | 2484",
@@ -7401,7 +7413,7 @@
       "definition": [
         "cello:registeredName | rdf:type | rdf:Property",
         "cello:registeredName | rdf:type | owl:AnnotationProperty",
-        "cello:registeredName | rdfs:comment | A name as it appears in some register or official list.<br><dt>has domain</dt><dd><a href=\"#RegistrationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/RegistrationRecord\">Registration record</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a></dd>",
+        "cello:registeredName | rdfs:comment | A name as it appears in some register or official list.<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#RegistrationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/RegistrationRecord\">Registration record</a></dd>",
         "cello:registeredName | rdfs:domain | nodeID://b2379106",
         "cello:registeredName | rdfs:isDefinedBy | cello:",
         "cello:registeredName | rdfs:label | registered name",
@@ -7411,7 +7423,6 @@
       "usage": [
         "cello:registeredName | count | xsd:integer | 12112",
         "cello:registeredName | domain | cello:CancerCellLine | 890",
-        "cello:registeredName | domain | cello:CellLine | 37",
         "cello:registeredName | domain | cello:ConditionallyImmortalizedCellLine | 9",
         "cello:registeredName | domain | cello:EmbryonicStemCell | 1105",
         "cello:registeredName | domain | cello:FactorDependentCellLine | 15",
@@ -7425,6 +7436,7 @@
         "cello:registeredName | domain | cello:StromalCellLine | 1",
         "cello:registeredName | domain | cello:TelomeraseImmortalizedCellLine | 20",
         "cello:registeredName | domain | cello:TransformedCellLine | 1114",
+        "cello:registeredName | domain | cello:UndefinedCellLineType | 37",
         "cello:registeredName | range | xsd:string | 12112"
       ]
     },
@@ -7461,7 +7473,6 @@
       "usage": [
         "cello:secondaryAccession | count | xsd:integer | 561",
         "cello:secondaryAccession | domain | cello:CancerCellLine | 209",
-        "cello:secondaryAccession | domain | cello:CellLine | 1",
         "cello:secondaryAccession | domain | cello:ConditionallyImmortalizedCellLine | 2",
         "cello:secondaryAccession | domain | cello:EmbryonicStemCell | 1",
         "cello:secondaryAccession | domain | cello:FactorDependentCellLine | 2",
@@ -7473,6 +7484,7 @@
         "cello:secondaryAccession | domain | cello:SpontaneouslyImmortalizedCellLine | 17",
         "cello:secondaryAccession | domain | cello:TelomeraseImmortalizedCellLine | 3",
         "cello:secondaryAccession | domain | cello:TransformedCellLine | 234",
+        "cello:secondaryAccession | domain | cello:UndefinedCellLineType | 1",
         "cello:secondaryAccession | range | xsd:string | 561"
       ]
     },
@@ -7482,7 +7494,7 @@
       "definition": [
         "cello:seeAlsoXref | rdf:type | rdf:Property",
         "cello:seeAlsoXref | rdf:type | owl:AnnotationProperty",
-        "cello:seeAlsoXref | rdfs:comment | A database cross-reference that is referenced, cited, or otherwise pointed to with the purpose to provide further information about the described resource<br><dt>has domain</dt><dd><a href=\"#Publication\" title=\"https://purl.expasy.org/cellosaurus/rdf/Publication\">Publication</a> <b>or</b> <a href=\"#DiscontinuationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/DiscontinuationRecord\">Discontinuation record</a> <b>or</b> <a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a></dd>",
+        "cello:seeAlsoXref | rdfs:comment | A database cross-reference that is referenced, cited, or otherwise pointed to with the purpose to provide further information about the described resource<br><dt>has domain</dt><dd><a href=\"#CellLine\" title=\"https://purl.expasy.org/cellosaurus/rdf/CellLine\">Cell line</a> <b>or</b> <a href=\"#DiscontinuationRecord\" title=\"https://purl.expasy.org/cellosaurus/rdf/DiscontinuationRecord\">Discontinuation record</a> <b>or</b> <a href=\"#Publication\" title=\"https://purl.expasy.org/cellosaurus/rdf/Publication\">Publication</a></dd>",
         "cello:seeAlsoXref | rdfs:domain | nodeID://b2379112",
         "cello:seeAlsoXref | rdfs:isDefinedBy | cello:",
         "cello:seeAlsoXref | rdfs:label | see also xref",
@@ -7500,7 +7512,6 @@
         "cello:seeAlsoXref | domain | fabio:MastersThesis | 34",
         "cello:seeAlsoXref | domain | fabio:PatentDocument | 1812",
         "cello:seeAlsoXref | domain | cello:CancerCellLine | 160531",
-        "cello:seeAlsoXref | domain | cello:CellLine | 1031",
         "cello:seeAlsoXref | domain | cello:ConditionallyImmortalizedCellLine | 603",
         "cello:seeAlsoXref | domain | cello:DiscontinuationRecord | 11141",
         "cello:seeAlsoXref | domain | cello:EmbryonicStemCell | 33052",
@@ -7519,6 +7530,7 @@
         "cello:seeAlsoXref | domain | cello:TechnicalDocument | 18",
         "cello:seeAlsoXref | domain | cello:TelomeraseImmortalizedCellLine | 1558",
         "cello:seeAlsoXref | domain | cello:TransformedCellLine | 148840",
+        "cello:seeAlsoXref | domain | cello:UndefinedCellLineType | 1031",
         "cello:seeAlsoXref | domain | cello:VeterinaryMedicalDegreeThesis | 1",
         "cello:seeAlsoXref | range | cello:Xref | 538358"
       ]
@@ -7613,7 +7625,6 @@
       "usage": [
         "cello:transformedBy | count | xsd:integer | 119899",
         "cello:transformedBy | domain | cello:CancerCellLine | 11666",
-        "cello:transformedBy | domain | cello:CellLine | 2",
         "cello:transformedBy | domain | cello:ConditionallyImmortalizedCellLine | 763",
         "cello:transformedBy | domain | cello:FiniteCellLine | 126",
         "cello:transformedBy | domain | cello:HybridCellLine | 90",
@@ -7623,6 +7634,7 @@
         "cello:transformedBy | domain | cello:StromalCellLine | 10",
         "cello:transformedBy | domain | cello:TelomeraseImmortalizedCellLine | 30",
         "cello:transformedBy | domain | cello:TransformedCellLine | 106497",
+        "cello:transformedBy | domain | cello:UndefinedCellLineType | 2",
         "cello:transformedBy | range | cello:ChemicalEntity | 119899"
       ]
     },
@@ -7660,7 +7672,6 @@
         "cello:version | domain | owl:NamedIndividual | 8",
         "cello:version | domain | cello:AnatomyCellTypeResources | 2",
         "cello:version | domain | cello:CancerCellLine | 41233",
-        "cello:version | domain | cello:CellLine | 250",
         "cello:version | domain | cello:CelloConceptScheme | 8",
         "cello:version | domain | cello:ChemistryResources | 1",
         "cello:version | domain | cello:ConditionallyImmortalizedCellLine | 392",
@@ -7678,6 +7689,7 @@
         "cello:version | domain | cello:Taxonomy | 2",
         "cello:version | domain | cello:TelomeraseImmortalizedCellLine | 895",
         "cello:version | domain | cello:TransformedCellLine | 52360",
+        "cello:version | domain | cello:UndefinedCellLineType | 250",
         "cello:version | range | xsd:string | 163050"
       ]
     },

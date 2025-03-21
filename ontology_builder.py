@@ -589,8 +589,15 @@ class OntologyBuilder:
         ns.describe(ns.cello.StromalCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
         ns.describe(ns.cello.TelomeraseImmortalizedCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
         ns.describe(ns.cello.TransformedCellLine, ns.rdfs.subClassOf, ns.cello.CellLine)
+        ns.describe(ns.cello.UndefinedCellLineType, ns.rdfs.subClassOf, ns.cello.CellLine)
+        
 
         # describe equivalent classes in wikidata
+        # Use query below to get subclasses of cell line at SPARQL endpoint https://query.wikidata.org/
+        # SELECT ?subclass ?subclassLabel WHERE {
+        # ?subclass wdt:P279* wd:Q21014462.
+        # SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+        # }        
         ns.describe(ns.cello.CancerCellLine, ns.owl.equivalentClass, ns.wd.Q23058136)
         ns.describe(ns.cello.ConditionallyImmortalizedCellLine, ns.owl.equivalentClass, ns.wd.Q27653145)
         ns.describe(ns.cello.EmbryonicStemCell, ns.owl.equivalentClass, ns.wd.Q107102664)
@@ -604,6 +611,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.StromalCellLine, ns.owl.equivalentClass, ns.wd.Q27671698)
         ns.describe(ns.cello.TelomeraseImmortalizedCellLine, ns.owl.equivalentClass, ns.wd.Q27653701)
         ns.describe(ns.cello.TransformedCellLine, ns.owl.equivalentClass, ns.wd.Q27555384)
+        #ns.describe(ns.cello.UndefinedCellLineType, ns.owl.equivalentClass, ns.wd.???) # found NO equivalent in wd
         ns.describe(ns.cello.CellLine, ns.owl.equivalentClass, ns.wd.Q21014462)
 
         # describe how CellLine classes relate in the universe 

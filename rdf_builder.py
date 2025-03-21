@@ -136,7 +136,7 @@ class RdfBuilder:
             "Telomerase immortalized cell line": ns.cello.TelomeraseImmortalizedCellLine,
             "Transformed cell line": ns.cello.TransformedCellLine,
             "Cell line": ns.cello.CellLine,
-            "Undefined cell line type": ns.cello.CellLine # generic cell line (in data)
+            "Undefined cell line type": ns.cello.UndefinedCellLineType 
         }
 
 
