@@ -87,7 +87,12 @@ class Ncit_Parser:
     def to_cellostyle(self, id):
     # - - - - - - - - - - - - - - - - - - 
         # remove "NCIT:" prefix
-        return id[5:]
+        # or since 2025:
+        # remove "Thesaurus:" prefix
+        if id.startswith("Thesaurus:"): return id[10:]
+        if id.startswith("NCIT:"): return id[5:]
+        return id
+
 
     # - - - - - - - - - - - - - - - - - - 
     def filter_out_braces(self, str):
@@ -149,6 +154,10 @@ class Ncit_Parser:
     # - - - - - - - - - - - - - - - - - - 
     def find_data_version(self, f_in):
     # - - - - - - - - - - - - - - - - - - 
+        # example of line containing verion:
+        # data-version: releases/2024-05-07
+        # since 2025: 
+        # property_value: owl:versionInfo "25.02d" xsd:string        
         self.termi_version = "version not found"
         while True:
             line = f_in.readline()
@@ -157,7 +166,9 @@ class Ncit_Parser:
             line = line.strip()
             if line == "":
                 break
-            elif line.startswith("data-version: "): 
+            elif line.startswith("property_value: owl:versionInfo"): # new format
+                self.termi_version = line.split("\"")[1]
+            elif line.startswith("data-version: "):                  # old format
                 self.termi_version = line
             elif line.startswith("[Term]"):
                 log_it("ERROR:", "parser could not find ChEBI version")
@@ -183,7 +194,6 @@ class Ncit_Parser:
             for alt_id in term.altIdList:
                 self.term_dict[alt_id] = term
         f_in.close()
-
         # now add isPartOf relationships based on hasPart relationships
         # INFO: part_of is not found in data, so not useful so far
         for id in self.term_dict:
@@ -193,6 +203,7 @@ class Ncit_Parser:
             for child_id in self.term_dict[id].hasPartList:
                 self.term_dict[child_id].isPartOfSet.add(id)
 
+        log_it(f"INFO: found {term_cnt} terms")
         log_it("INFO:", "Loaded", filename, duration_since=t0)
 
 
@@ -210,8 +221,12 @@ if __name__ == '__main__':
     (options, args) = OptionParser().parse_args()
 
     parser = Ncit_Parser("NCIt")
-    print(parser.get_termi_version())
-
+    print("data version:", parser.get_termi_version())
+    obsolete_or_secondary_count = 0
+    for k in parser.term_dict:
+        if parser.get_term(k) == None:
+            obsolete_or_secondary_count += 1
+    print("obsolete or secondary count:", obsolete_or_secondary_count)
     ac = args[0]
     ac = parser.to_cellostyle(ac)
     print(parser.get_term(ac))

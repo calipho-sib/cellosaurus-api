@@ -579,11 +579,11 @@
             
     }
 
-    function clearSearch() { document.getElementById("searchInput").value = ""; }
-    function openLegend() { 
-
-        document.getElementById("legendDialog").showModal(); 
+    function clearSearch() { 
+        document.getElementById("searchInput").value = ""; 
+        document.getElementById("searchInput").focus();
     }
+    function openLegend() { document.getElementById("legendDialog").showModal(); }
     function closeLegend() { document.getElementById("legendDialog").close(); }
 
 
