@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 
 SERIAL_DIR = "./serial/"
 
@@ -52,11 +53,24 @@ def log_it(*things, duration_since=None):
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def check_structure_IRI(iri):
+def is_valid_url(url):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # loose validation, enough for virtuoso to accept it as a 
+    # valid IRI or URL when it is wrapped in < >
     for ch in ["<", ">", "\""]:
-        if ch in iri: return False
+        if ch in url: return False
     return True
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def is_valid_url_strict(url):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # UNUSED
+    # many URLs are invalid according to this function based on W3 specs
+    # in practice, most of invalid URLs detected here are accepted by virtuoso and work when used in a browser
+    url_regex = re.compile(r'^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$')
+    return bool(url_regex.match(url))
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def get_properties(env):

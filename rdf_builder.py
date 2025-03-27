@@ -1,7 +1,7 @@
 import uuid
 import unicodedata
 from namespace_registry import NamespaceRegistry
-from ApiCommon import log_it, split_string, check_structure_IRI
+from ApiCommon import log_it, split_string, is_valid_url
 from organizations import Organization
 from terminologies import Term, Terminologies, Terminology
 from databases import Database, Databases, get_db_category_IRI
@@ -839,7 +839,7 @@ class RdfBuilder:
                 ww_iri = str       # data_release < or = 51
             else:
                 ww_iri = ww["url"] # data release > 51
-            if check_structure_IRI(ww_iri):
+            if is_valid_url(ww_iri):
                 triples.append(cl_IRI, ns.rdfs.seeAlso, "".join(["<", ww_iri, ">"]))
             else:
                 log_it("ERROR", f"Web page (WW) with Invalid IRI: {ww_iri}")

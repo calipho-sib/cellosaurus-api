@@ -943,3 +943,81 @@ select ?cl ?cat ?comment where {
   ?annot rdfs:comment ?comment .
 }
 limit 100
+
+
+## ------------------------------------------------------
+ID: 152
+LB: Cell lines resistant to vincaleukoblastine
+KW: resistance
+## ------------------------------------------------------
+select ?cl ?substance_label ?substance_notation where {
+  ?cl cello:hasResistance ?substance .
+  ?substance cello:isIdentifiedByXref ?substance_xref .
+  ?substance_xref skos:prefLabel ?substance_label ; skos:notation ?substance_notation .
+  ?substance_xref cello:more_specific_than* ?generic_concept . # Note: it can be specific as well
+  # CHEBI_27375 = vincaleukoblastine
+  ?generic_concept skos:notation "CHEBI_27375"^^xsd:string . 
+  ?generic_concept skos:inScheme db:ChEBI .
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 153
+LB: Cell lines used to produce N-glycosylated proteins
+KW: comment, charceteristics
+## ------------------------------------------------------
+select ?cl ?comment_class ?comment where {
+  ?annot_type rdfs:subPropertyOf cello:hasAnnotation .
+  ?cl ?annot_type ?annot .
+  ?annot a ?comment_class .
+  ?annot rdfs:comment ?comment .
+  filter(contains(?comment, "product") && contains(?comment, "glycosylat"))
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 154
+LB: Cell lines originated from organs, tissues, or cell types from liver
+KW: site, anatomy, organ, tissue, body part
+## ------------------------------------------------------
+select ?cl ?xref_label ?xref_notation
+where {
+  ?cl cello:derivedFromSite ?site .
+  ?site cello:isIdentifiedByXref ?xref .
+  ?xref skos:prefLabel ?xref_label ; skos:notation ?xref_notation .
+  ?xref cello:more_specific_than* ?generic_concept .
+  # examples:
+  # UBERON_0002107 liver
+  # UBERON_0002371 bone marrow
+  # UBERON_0000029 lymph node
+  ?generic_concept skos:notation "UBERON_0002107"^^xsd:string . 
+  ?generic_concept skos:inScheme db:UBERON .
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 155
+LB: Count of cell lines originated from lymph nodes in different body parts
+KW: site, anatomy, organ, tissue, body part
+## ------------------------------------------------------
+select ?xref_label ?xref_notation (count(distinct ?cl) as ?cl_count)
+where {
+  ?cl cello:derivedFromSite ?site .
+  ?site cello:isIdentifiedByXref ?xref .
+  ?xref skos:prefLabel ?xref_label ; skos:notation ?xref_notation .
+  ?xref cello:more_specific_than* ?generic_concept .
+  # examples:
+  # UBERON_0002107 liver
+  # UBERON_0002371 bone marrow
+  # UBERON_0000029 lymph node
+  ?generic_concept skos:notation "UBERON_0000029"^^xsd:string . 
+  ?generic_concept skos:inScheme db:UBERON .
+}
+group by ?xref_label ?xref_notation
+order by desc(count(distinct ?cl))
+
+
+
