@@ -3,7 +3,7 @@ Name  : Chemical Entities of Biological Interest
 Server: https://www.ebi.ac.uk/chebi/
 Db_URL: https://www.ebi.ac.uk/chebi/searchId.do?chebiId=%s
 Term. : Yes
-Use   : https://ftp.ebi.ac.uk/pub/databases/chebi/ontology/chebi_lite.obo.gz
+Use   : curl --output chebi_lite.obo.gz https://ftp.ebi.ac.uk/pub/databases/chebi/ontology/chebi_lite.obo.gz
 --
 Abbrev: CL
 Name  : Cell Ontology
