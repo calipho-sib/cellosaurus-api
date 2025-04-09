@@ -14,14 +14,15 @@ class OntologyBuilder:
 #-------------------------------------------------
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def __init__(self, platform: ApiPlatform, describe_ranges_and_domains=True):
+    def __init__(self, platform: ApiPlatform, ns: NamespaceRegistry, describe_ranges_and_domains=True):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        
+
         # - - - - - - - - - - - - - - - - - - - - - - - - - - -         
         # load info from data_in used later by describe...() functions
         # - - - - - - - - - - - - - - - - - - - - - - - - - - -         
         self.platform = platform
-        self.ns = NamespaceRegistry(platform)
+        #self.ns = NamespaceRegistry(platform)
+        self.ns = ns
         self.prefixes = list()
         for space in self.ns.namespaces: self.prefixes.append(space.getTtlPrefixDeclaration())
         lines = list()
@@ -60,6 +61,7 @@ class OntologyBuilder:
         self.describe_misc_terms()
         if describe_ranges_and_domains: self.describe_ranges_and_domains()
         self.describe_annotation_properties()
+
         
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1115,7 +1117,8 @@ cello:RegistrationRecord a owl:Class ;
 # =============================================
 if __name__ == '__main__':
 # =============================================
-
-    ob = OntologyBuilder(plaform=ApiPlatform("local"))
+    platform = ApiPlatform("local")
+    ns = NamespaceRegistry(platform)
+    ob = OntologyBuilder(platform, ns)
     lines = ob.get_onto_pretty_ttl_lines("dev version")
     for l in lines: print(l)

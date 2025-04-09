@@ -51,7 +51,7 @@ class Query:
         #
         lines = list()
         lines.append(f"cello:Query_{self.id} a sh:SPARQLExecutable ;")
-        lines.append(f"    rdfs:comment \"{self.label}\"^^xsd:string ; ")
+        lines.append(f"    rdfs:comment \"\"\"{self.label}\"\"\"^^xsd:string ; ")
         lines.append(f"    sh:select \"\"\"")
         self.set_necessary_sparql_prefixes(ns_reg)
         for line in self.prefixes: lines.append(f"{line}")

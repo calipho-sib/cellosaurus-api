@@ -130,6 +130,27 @@ class Ncit_Parser:
                 parentId = self.filter_out_braces(parentId)
                 parentId = self.to_cellostyle(parentId)
                 term.isaList.append(parentId)
+            elif line.startswith("intersection_of: "):
+                # examples:
+                # intersection_of: Thesaurus:C3150 ! Kidney Neoplasm                                    <-- yes (1 class only)
+                # intersection_of: Thesaurus:C36035 ! Encapsulated Neoplasm	                            <-- yes (1 class only)
+                # intersection_of: Thesaurus:R108 Thesaurus:C35925 ! Tubular Pattern                    <--  no (1 property + 1 class)
+                # intersection_of: Thesaurus:R108 Thesaurus:C53683 ! Smooth Muscle Component Present    <--  no (1 property + 1 class)
+                elems = line[17:].split(" ! ")[0].split(" ")
+                if len(elems) == 1:
+                    parentId = elems[0]
+                    parentId = self.filter_out_braces(parentId)
+                    parentId = self.to_cellostyle(parentId)
+                    #log_it("DEBUG", "adding parent by intersection:", parentId, "from line:", line)
+                    term.isaList.append(parentId)
+                elif len(elems)==2:
+                    #log_it("DEBUG", "ignore intersection with 1 property and 1 class:", line)
+                    pass
+                elif len(elems)==3 and elems[2] == "{all_some=\"true\"}":
+                    pass
+                else:
+                    log_it("ERROR", "unexpected kind of intersection:", line)
+
             elif line.startswith("alt_id: "):               # not found in data
                 altId = line[8:].strip()
                 altId = self.to_cellostyle(altId)

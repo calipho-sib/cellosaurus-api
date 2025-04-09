@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autocomplete Textarea</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-size: 16px;
+      padding: 10px;
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      border: 1px solid #ccc;
+      background-color: white;
+      max-height: 150px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none; /* Initially hidden */
+    }
+
+    .autocomplete-item {
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .autocomplete-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .autocomplete-item em { font-weight: bold; }
+
+  </style>
+</head>
+<body>
+  <textarea id="myTextarea" placeholder="Type here..."></textarea>
+  <div id="autocompleteDropdown" class="autocomplete-dropdown"></div>
+
+  <script>
+    // JavaScript for autocomplete functionality
+    (function () {
+      const textarea = document.getElementById("myTextarea");
+      const dropdown = document.getElementById("autocompleteDropdown");
+      const options = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+      // Position the dropdown near the cursor
+      function positionDropdown() {
+        const rect = textarea.getBoundingClientRect();
+        dropdown.style.left = `${rect.left + window.scrollX}px`;
+        dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+        dropdown.style.width = `${textarea.offsetWidth}px`;
+      }
+
+      // Filter options based on query
+    //   function filterOptions(query) {
+    //     const lq = query.toLowerCase();
+    //     const filtered_options = options.filter(option => option.toLowerCase().indexOf(lq) > -1 );
+    //     return filtered_options;
+    //   }
+
+      async function filterOptions(query) {
+        try {
+
+            const base_url = "http://localhost/tfac";
+            var params = {
+                "defType": "edismax",
+                "q.op": "OR", 
+                "rows": 8,
+                "indent": "true",
+                "hl":"true",
+                "qf": "cl inst prop label",
+                "q": query
+            }
+            const query_string = Object.keys(params)
+                .map(key => `${key}=${encodeURIComponent(params[key])}`)
+                .join("&");
+            const url = base_url + "?" + query_string;
+            console.log("calling", url);
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Failed to fetch options");
+            const data = await response.json();
+            //console.log("data", data);
+            const result_list = [];
+            if (data.response.docs) {
+                for (const record of data.response.docs) {
+                    var elems = [];
+                    const id = record.doc_id;
+                    for (const field of ["cl", "inst", "prop", "label"]) {
+                        if (data.highlighting && 
+                            data.highlighting[id] && 
+                            data.highlighting[id][field]) {
+                            elems.push(data.highlighting[id][field][0]);
+                        } else {
+                            elems.push(record[field][0])
+                        }
+                    }
+                    const line = elems.join(" - ");
+                    result_list.push(line);
+                }
+                
+            }
+            return result_list; 
+        } catch (error) {
+            console.error(error);
+            return []; // Return an empty array on error
+        }
+      }
+
+      // Show the dropdown with filtered options
+      function showDropdown(filteredOptions) {
+        dropdown.innerHTML = ""; // Clear previous items
+        if (filteredOptions.length === 0) {
+          dropdown.style.display = "none";
+          return;
+        }
+
+        filteredOptions.forEach(option => {
+          const item = document.createElement("div");
+          item.classList.add("autocomplete-item");
+          item.innerHTML = option;
+
+          // Handle click on an autocomplete item
+          item.addEventListener("click", () => {
+            insertTextAtCursor(option);
+            dropdown.style.display = "none";
+          });
+
+          dropdown.appendChild(item);
+        });
+
+        dropdown.style.display = "block";
+        positionDropdown();
+      }
+
+      // Insert selected text into the textarea at the cursor position
+      function insertTextAtCursor(text) {
+        const startPos = textarea.selectionStart;
+        const endPos = textarea.selectionEnd;
+        const beforeText = textarea.value.substring(0, startPos);
+        const afterText = textarea.value.substring(endPos);
+
+        textarea.value = `${beforeText}${text} ${afterText}`;
+        textarea.focus();
+        textarea.setSelectionRange(startPos + text.length + 1, startPos + text.length + 1); // Move cursor after inserted text
+      }
+
+      // Event listener for keydown to detect CTRL+Space
+      textarea.addEventListener("keydown", async function (e) {
+        if (e.ctrlKey && e.key === " ") {
+          e.preventDefault(); // Prevent default behavior
+
+        //   const cursorPosition = textarea.selectionStart;
+        //   const textBeforeCursor = textarea.value.substring(0, cursorPosition);
+        //   const lastWordMatch = textBeforeCursor.match(/\b(\w+)$/); // Match last word before cursor
+        //   console.log("lastWordMatch", lastWordMatch);
+        //   const query = lastWordMatch ? lastWordMatch[1] : "";
+
+          const start = textarea.selectionStart; // Start index of selection
+          const end = textarea.selectionEnd;     // End index of selection
+          const selectedText = textarea.value.substring(start, end);      
+          const query = selectedText;
+
+          //console.log("query", query);
+          if (query.length > 0) {
+            const filteredOptions = await filterOptions(query);
+            //console.log("filteredOptions", filteredOptions);
+            showDropdown(filteredOptions);
+          } else {
+            dropdown.style.display = "none";
+          }
+        }
+      });
+
+      // Hide dropdown when clicking outside
+      document.addEventListener("click", function (e) {
+        if (!dropdown.contains(e.target) && e.target !== textarea) {
+          dropdown.style.display = "none";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

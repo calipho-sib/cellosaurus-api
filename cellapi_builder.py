@@ -934,7 +934,7 @@ if __name__ == "__main__":
         # we need the OntologyBuilder class to be initialized so that the description
         # of GenomeModificationMethod named individuals are completed        
 
-        ob = OntologyBuilder(platform, describe_ranges_and_domains=False)
+        ob = OntologyBuilder(platform, ns_reg, describe_ranges_and_domains=False)
 
         known_orgs = KnownOrganizations()
         known_orgs.loadInstitutions(input_dir + "cellosaurus_institutions.cv")
@@ -1097,28 +1097,27 @@ if __name__ == "__main__":
         file_out.close()
         log_it("INFO:", f"serialized OWL for database individuals")
 
+
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         # create OWL definitions for other named subclasses and individuals
         # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         file_out = open(out_dir + "data_other_entities.ttl", "wb")
 
+        file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
 
         log_it("INFO:", f"1) serializing OWL for sexes")
-        file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
         sexes = Sexes(ns_reg)
         for k in sexes.keys():
             s = sexes.get(k)
             file_out.write(bytes(rb.get_ttl_for_sex(s) + "\n", "utf-8"))
 
-        log_it("INFO:", f"1) serializing OWL for MsiStatus")
-        file_out.write(bytes(rb.get_ttl_prefixes() + "\n", "utf-8"))
+        log_it("INFO:", f"2) serializing OWL for MsiStatus")
         statusList = MsiStatusList(ns_reg)
         for k in statusList.keys():
             s = statusList.get(k)
             file_out.write(bytes(rb.get_ttl_for_msi_status(s) + "\n", "utf-8"))
 
-
-        log_it("INFO:", f"2) serializing OWL for genome modification methods")        
+        log_it("INFO:", f"3) serializing OWL for genome modification methods")        
         for line in rb.get_ttl_for_local_gem_class():
             file_out.write(bytes(line + "\n", "utf-8"))  
         for k in rb.gem_ni:
@@ -1195,7 +1194,7 @@ if __name__ == "__main__":
         out_dir = "rdf_data/"
         file_out = open(out_dir + "ontology.ttl", "wb")
         log_it("INFO:", f"serializing OWL cellosaurus ontology")        
-        ob = OntologyBuilder(platform)
+        ob = OntologyBuilder(platform, ns_reg)
         lines = ob.get_onto_pretty_ttl_lines(version)
         count = 0
         for line in lines:

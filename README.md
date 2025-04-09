@@ -44,7 +44,7 @@ ln -s /your/solr8.11.1-or-later/home/directory/ solr
 
 ```shell
 cd solr/server/solr/poumcore1/conf
-mv managed-schema managed-schema.ori 
+mv managed-schema managed-schema.ori
 mv solrconfig.xml solrconfig.xml.ori
 ln -s ../../../../../solr_config/schema.xml
 ln -s ../../../../../solr_config/solrconfig.xml

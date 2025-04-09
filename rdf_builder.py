@@ -36,6 +36,30 @@ class RdfBuilder:
         self.ns = ns
         self.known_orgs = known_orgs
 
+        self.protein_words = { 
+            "albumin", "allergen", "chain", "collagen", "crystallin", "hemagglutinin", 
+            "histone", "mucin", "peptidoglycan", "tubulin", "vitellogenin", "actin",
+            "idiotypic",  "discoidin", "fibrin", "gliadin", "neuraminidase", "tuberculin",  # anti-idiotypic
+            "interferon", "laminin", "phosphatase", "polymerase", "receptor",
+            "CD0", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "CD7", "CD8", "CD9", "keratin", 
+            "cytokeratin", "proteoglycan"
+        }
+        # add potential plural forms of protein words
+        plurals = set()
+        for w in self.protein_words: plurals.add(w + "s") 
+        self.protein_words.update(plurals)       
+
+        self.chem_words = { 
+            "acetylglucosamine", "arabinogalactan", "ganglioside", "glycan", "glycolipid", 
+            "pectin", "polysaccharide", "rhamnogalacturonan", "xylan", "xyloglucan","carbohydrate", 
+            "disialoganglioside", "glycosphingolipid", "oligosaccharide",                    # originals: lipo-oligosaccharide
+            "lipopolysaccharide", "galactan", "oligosaccharide", "nlc4cer"                   # originals: nLc4Cer                    
+                      }
+        # add potential plural forms of chem words
+        plurals = set()
+        for w in self.chem_words: plurals.add(w + "s") 
+        self.chem_words.update(plurals)       
+
         self.mmm2mm = { 
             "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", 
             "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
@@ -139,6 +163,31 @@ class RdfBuilder:
             "Cell line": ns.cello.CellLine,
             "Undefined cell line type": ns.cello.UndefinedCellLineType 
         }
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def looks_like_a_protein(self, raw_str):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        str = raw_str.replace("(","").replace(")","").replace(".","").replace("-"," ").replace("/"," ").replace(","," ")
+        words = str.split(" ")
+        for word in words: 
+            if word.lower() in self.protein_words: return True
+            if "protein" in word: return True   # protein, glycoprotein, lipoprotein
+            if "Ig" in word: return True        # IgA, IgG, etc
+            if "MHC" in word: return True
+        return False
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def looks_like_a_chemical(self, raw_str):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        str = raw_str.replace("(","").replace(")","").replace(".","").replace("-"," ").replace("/"," ").replace(","," ")
+        words = str.split(" ")
+        for word in words:
+            if word.lower() in self.chem_words: return True
+            if "LPS" in word: return True
+            if "DNA" in word: return True
+        if "nucleic acid" in str: return True
+        return False
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -542,6 +591,7 @@ class RdfBuilder:
         triples = TripleList()
         xr_IRI = ns.xref.IRI(db, ac, None, store=False)
         triples.append(xr_IRI, ns.rdf.type, ns.cello.Xref)
+        triples.append(xr_IRI, ns.cello.internalId, ns.xsd.string(xref_key))
         triples.append(xr_IRI, ns.cello.accession, ns.xsd.string(ac))
         triples.append(xr_IRI, ns.cello.database,  self.get_terminology_or_database_IRI(ns.xref.cleanDb(db))) 
 
@@ -604,11 +654,15 @@ class RdfBuilder:
 
         orga_IRI = ns.orga.IRI(org.name, org.shortname, org.city, org.country, org.contact, store = False)
         triples.append(orga_IRI, ns.rdf.type, ns.schema.Organization)
-        triples.extend(self.get_materialized_triples_for_prop(orga_IRI, ns.cello.alternativeName, ns.xsd.string(org.name))) # long name is the alternative name
 
+        # if we have a shortname, it becomes the recommended name and name becomes the alternative name
         if org.shortname is not None and len(org.shortname)>0:
-            triples.extend(self.get_materialized_triples_for_prop(orga_IRI, ns.cello.recommendedName, ns.xsd.string(org.shortname))) # shortname is the rec name
-
+            triples.extend(self.get_materialized_triples_for_prop(orga_IRI, ns.cello.recommendedName, ns.xsd.string(org.shortname)))    # shortname => rec name
+            triples.extend(self.get_materialized_triples_for_prop(orga_IRI, ns.cello.alternativeName, ns.xsd.string(org.name)))         # long name => alt name
+        # if we have no shortname, name becomes the recommended name
+        else:
+            triples.extend(self.get_materialized_triples_for_prop(orga_IRI, ns.cello.recommendedName, ns.xsd.string(org.name)))         # long name => rec name
+        
         if org.city is not None and len(org.city)>0:
             triples.append(orga_IRI, ns.cello.city, ns.xsd.string(org.city))
 
@@ -1622,11 +1676,19 @@ class RdfBuilder:
         ns = self.ns
         triples = TripleList()
         annot_BN = self.get_blank_node()
-        clazz = ns.cello.ChemicalEntity # default when we have no xref
+        clazz = ns.cello.ChemicalEntity # init to some default
 
         # we might get a simple string in annot (the name of the antigen)
         if type(annot) == str:
             triples.append(cl_IRI, ns.cello.hasMoAbTarget, annot_BN)
+            if self.looks_like_a_protein(annot): 
+                clazz = ns.cello.Protein
+            elif self.looks_like_a_chemical(annot):
+                # keep default: ChemicalEntity
+                pass
+            else:
+                # keep default: ChemicalEntity
+                log_it("DEBUG", f"Unspecified MoAbTarget in {cl_IRI}: {annot}" )    
             triples.append(annot_BN, ns.rdf.type, clazz)
             triples.extend(self.get_materialized_triples_for_prop(annot_BN, ns.cello.name, ns.xsd.string(annot)))
             return triples
@@ -1686,6 +1748,7 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         ns = self.ns
         triples = TripleList()
+
         inst_BN = self.get_blank_node()
         triples.append(cl_IRI, ns.cello.transformedBy, inst_BN)
         triples.append(inst_BN, ns.rdf.type, ns.cello.ChemicalEntity)
@@ -1695,17 +1758,14 @@ class RdfBuilder:
             triples.extend(self.get_materialized_triples_for_prop(inst_BN, ns.cello.name, ns.xsd.string(cc)))
         # or more often we get a dict object
         else:
-            comment = cc.get("transformant-note") # optional
-            term = cc.get("xref") # optional too
-            inst_BN = self.get_blank_node()
-            triples.append(cl_IRI, ns.cello.transformedBy, inst_BN)
-            triples.append(inst_BN, ns.rdf.type, ns.cello.ChemicalEntity)
+            term = cc.get("xref")                   # optional too
             if term is not None:
                 triples.append(inst_BN, ns.cello.isIdentifiedByXref, self.get_xref_IRI(term))
                 triples.extend(self.get_possibly_triples_for_xref_term_IRI(inst_BN, term))
                 triples.extend(self.get_materialized_triples_for_prop(inst_BN, ns.cello.name, ns.xsd.string(self.get_xref_label(term))))
             else:
                 triples.extend(self.get_materialized_triples_for_prop(inst_BN, ns.cello.name, ns.xsd.string(cc["value"])))
+            comment = cc.get("transformant-note")   # optional
             if comment is not None: 
                 triples.append(inst_BN, ns.rdfs.comment, ns.xsd.string(comment))
         return triples
