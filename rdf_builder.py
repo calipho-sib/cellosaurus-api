@@ -83,21 +83,21 @@ class RdfBuilder:
         }
 
         self.hla_hgnc_ac = {
-            "HLA-DRA": "4947",
-            "HLA-DRB2": "4950",
-            "HLA-DRB1": "4948",
-            "HLA-A": "4931",
-            "HLA-DPB1": "4940",
-            "HLA-C": "4933",
-            "HLA-B": "4932",
-            "HLA-DQB1": "4944",
-            "HLA-DRB3": "4951",
-            "HLA-DRB4": "4952",
-            "HLA-DRB5": "4953",
-            "HLA-DQA1": "4942",
-            "HLA-DPA1": "4938",
-            "HLA-DRB6": "4954",
-            "HLA-DRB9": "4957",
+            "HLA-DRA": "HGNC:4947",
+            "HLA-DRB2": "HGNC:4950",
+            "HLA-DRB1": "HGNC:4948",
+            "HLA-A": "HGNC:4931",
+            "HLA-DPB1": "HGNC:4940",
+            "HLA-C": "HGNC:4933",
+            "HLA-B": "HGNC:4932",
+            "HLA-DQB1": "HGNC:4944",
+            "HLA-DRB3": "HGNC:4951",
+            "HLA-DRB4": "HGNC:4952",
+            "HLA-DRB5": "HGNC:4953",
+            "HLA-DQA1": "HGNC:4942",
+            "HLA-DPA1": "HGNC:4938",
+            "HLA-DRB6": "HGNC:4954",
+            "HLA-DRB9": "HGNC:4957",
         }
         
         # genome editing method labels => class
@@ -273,11 +273,12 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_amelogenin_gene_xref_IRI(self, chr):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        ac = "461" if chr == "X" else "462"
+        ac = "HGNC:461" if chr == "X" else "HGNC:462"
         db = "HGNC"
         cat = "Organism-specific databases"
         lbl = "AMEL" + chr
-        url = f"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:{ac}"
+        #url = f"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:{ac}"
+        url = f"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/{ac}"  # now "HGNC:" is part of the accession (ac)
         dis = ""
         props = f"cat={cat}|lbl={lbl}|dis={dis}|url={url}"
         return self.ns.xref.IRI(db,ac, props)
@@ -291,7 +292,8 @@ class RdfBuilder:
             ac = self.ns.cello.HLAGene # default, most generic
         db = "HGNC"
         cat = "Organism-specific databases"
-        url = f"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:{ac}"
+        #url = f"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:{ac}"
+        url = f"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/{ac}"  # now "HGNC:" is part of the accession (ac)
         dis = ""
         lbl = our_label 
         props = f"cat={cat}|lbl={lbl}|dis={dis}|url={url}"
