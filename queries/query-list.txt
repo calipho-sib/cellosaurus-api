@@ -1,191 +1,15 @@
-
-
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## Description of the format
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## blank lines or lines starting with ## are ignored
 ## ID: unique id of query (numeric)
-## LB: query label 
+## LB: query label
 ## KW: keyword(s) separated by a comma
 ## other lines are considered as the SPARQL query itself
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
+## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## ------------------------------------------------------
 ID: 101
-LB: Count of publications referenced by publication type
-KW: publication, stats
-## ------------------------------------------------------
-select ?pub_type (count(?cl) as ?cnt) where { 
-  ?pub_type rdfs:subClassOf* cello:Publication .
-  optional {?cl rdf:type ?pub_type. }
-}
-group by ?pub_type
-order by desc(count(*))
-
-
-## ------------------------------------------------------
-ID: 102
-LB: Count of cell lines by cell line category
-KW: ca, category, stats
-## ------------------------------------------------------
-select ?class ?class_name (count(?cl) as ?instance_count) where { 
-  ?class rdfs:subClassOf* cello:CellLine . # cell line generic class
-  ?class rdfs:label ?class_name .
-  optional {?cl rdf:type ?class. }
-}
-group by ?class ?class_name
-order by ?class desc(count(*))
-
-
-## ------------------------------------------------------
-ID: 103
-LB: Count of cross-references by database
-KW: database, stats
-## ------------------------------------------------------
-select ?db_class ?db (count(*) as ?xref_count) where { 
-  ?xref a cello:Xref .
-  ?xref cello:database ?db .
-  ?db a ?db_class .
-  ?db_class rdfs:subClassOf cello:Database .
-} 
-group by ?db_class ?db
-order by desc(count(*))
-
-
-## ------------------------------------------------------
-ID: 104
-LB: Count of sequence variation annotations by sequence variation type and status
-KW: sequence variation, stats
-## ------------------------------------------------------
-select ?seqvar_class ?status ?with_source (count(distinct ?annot) as ?seqvar_count) where {
- ?annot a cello:SequenceVariationInfo .
- optional { ?annot cello:hasTarget ?sv . ?sv a ?seqvar_class  }
- optional { ?annot  cello:variationStatus ?status }
- optional { ?annot  cello:hasSource ?src }  
- bind( if (bound(?src), "yes", "no") as ?with_source)
-}
-group by ?seqvar_class ?status ?with_source 
-order by ?seqvar_class ?status ?with_source
-
-
-
-## ------------------------------------------------------
-ID: 105
-LB: Count of sequence variation annotations by sequence variation type and other characteristics
-KW: sequence variation, stats
-## ------------------------------------------------------
-select ?sv_name ?with_none_reported ?with_hgvs ?with_comment ?gene_cnt (count(*) as ?cases_cnt) {
-select ?sv ?sv_name ?nr ?with_none_reported ?hgvs ?with_hgvs ?comment ?with_comment (count(?gene) as ?gene_cnt) where { 
-	?sv_type rdfs:subClassOf* cello:SequenceVariation .
-    ?sv_type rdfs:label ?sv_name .
-    ?sv a ?sv_type .
-    ?sv cello:ofGene ?gene .
-    optional { ?sv cello:hgvs ?hgvs . }
-    optional { ?sv cello:noneReported ?nr . }
-    optional { ?sv rdfs:comment ?comment . }
-  	bind (if(bound(?hgvs), "Yes", "No") as ?with_hgvs)
-  	bind (if(?nr = 1, "Yes", "No") as ?with_none_reported)
-  	bind (if(bound(?comment), "Yes", "No") as ?with_comment)
-} 
-group by ?sv ?sv_name ?nr ?with_none_reported ?hgvs ?with_hgvs ?comment ?with_comment
-}
-group by ?sv_name ?with_none_reported ?with_hgvs ?with_comment ?gene_cnt
-order by ?sv_name ?with_none_reported
-
-
-## ------------------------------------------------------
-ID: 106
-LB: Short tandem repeat profile of a chosen cell line
-KW: STR, short tandem repeat profile, source
-## ------------------------------------------------------
-SELECT ?cl (str(?cl_name) as ?cl_name) (str(?marker) as ?marker) ?detected ?repeat_num ?conflicting (group_concat(distinct ?source; separator=' ') as ?sources)
-where {
-  values ?cl { cvcl:CVCL_0025 }
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:hasShortTandemRepeatProfile / cello:includesObservation ?obs .
-  ?obs rdfs:label ?obs_name .
-  ?obs cello:conflicting ?conflict .
-  ?obs cello:hasTarget ?trg .
-  optional { ?trg rdfs:label ?trg_label . }
-  optional { ?trg cello:markerId ?trg_id . }
-  bind(coalesce(?trg_label, ?trg_id) as ?marker)
-  optional { ?obs cello:detectedTarget ?dt . }
-  optional { ?obs cello:detectedAllele / cello:repeatNumber ?allele . }
-  optional { 
-    ?obs cello:hasSource ?s .
-  	optional { ?s cello:originatesFrom / a ?st }. 
-   	optional { ?s cello:originatesFrom / cello:internalId ?id }   	# src origin is a xref or a publi
-    optional { ?s cello:originatesFrom / skos:prefLabel ?org }      # src origin is an organization
-    optional { ?s rdfs:label ?lb }                                  # src origin not specified 
-  }
-  bind (coalesce(?id, ?org, ?lb, '-') as ?source)
-  bind (coalesce(?st, '-') as ?source_type)
-  
-  bind (if(bound(?dt), if(?dt=1, 'yes', 'no'), 'n/a') as ?detected) 
-  bind (if(bound(?allele), concat('n=',?allele), 'n/a') as ?repeat_num) 
-  bind (if(?conflict, 'yes', 'no') as ?conflicting)
-}
-group by ?cl ?cl_name ?obs_name ?marker ?detected ?repeat_num ?conflicting
-order by ?cl ?cl_name ?obs_name ?marker ?detected ?repeat_num ?conflicting
-limit 500
-
-
-## ------------------------------------------------------
-ID: 107
-LB: HLA typing of a chosen cell line
-KW: HLA
-## ------------------------------------------------------
-select ?cl (str(?cl_name) as ?cl_name) (str(?gene_name) as ?gene) (str(?allele_id) as ?allele_name)  where { 
-  	values ?cl { cvcl:CVCL_E549 }
-	?cl cello:hasHLAtyping ?hasHLAtyping .
-  	?cl cello:recommendedName ?cl_name .
-    ?hasHLAtyping cello:includesObservation ?obs .
-	?obs cello:hasTarget ?gene .
-    ?gene rdfs:label ?gene_name .
-    ?gene rdf:type ?gene_class .
-    ?obs cello:detectedAllele ?allele .
-    ?allele cello:alleleIdentifier ?allele_id .
-}
-order by ?gene_name
-
-
-## ------------------------------------------------------
-ID: 108
-LB: Monoclonal antibody isotype of two chosen cell lines
-KW: MoAb, isotype
-## ------------------------------------------------------
-select ?cl ?cl_name ?hc_label ?lc_label
-where { 
-  values ?cl { cvcl:CVCL_B375 cvcl:CVCL_B0T9 }
-  ?cl cello:hasMoAbIsotype ?annot .
-  ?cl cello:recommendedName ?cl_name . 
-  ?annot a cello:MoAbIsotype .
-  ?annot cello:hasAntibodyHeavyChain / rdfs:label ?hc_label .
-  ?annot cello:hasAntibodyLightChain / rdfs:label ?lc_label .
-}
-order by ?cl
-
-
-## ------------------------------------------------------
-ID: 109
-LB: Statistics of methods used for gene knockout ang gene integration
-KW: ko, int, integrated, knockout, gene knockout, gene integration, broken
-## ------------------------------------------------------
-select  ?modification_class ?method_class  ?method_name (count(*) as ?cnt) where { 
-  ?proc_inst cello:hasGenomeModificationMethod ?gem_inst .
-  ?proc_inst a ?modification_class .
-  ?proc_class rdfs:subClassOf OBI:0001364 . # parent cello:GeneIntegration and cello:GeneKnockdown
-  ?gem_inst a ?method_class .
-  #?gem_class rdfs:subClassOf OBI:0600043 . # genome modification method
-  ?method_class rdfs:label ?method_name .
-}
-group by  ?modification_class ?method_class ?method_name
-order by  ?modification_class desc(count(*)) ?method_class ?method_name
-
-
-## ------------------------------------------------------
-ID: 110
 LB: Identifiers and names of cell lines
 KW: id, sy, ac, accession, name, primaryAccession, secondaryAccession, preferredName, alternativeName
 ## ------------------------------------------------------
@@ -204,684 +28,26 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 111
-LB: Count of cell lines established by organization
-KW: from, provided, established by, organization, stats, private
+ID: 102
+LB: Cell lines from patients with a kidney cancer
+KW: disease, cancer, kidney
 ## ------------------------------------------------------
-select 
-	(str(?oname) as ?org_name) 		# organization name
-	(str(?pname) as ?person_name)   # name of contact person (optional)
-	(count(?cl) as ?cl_count)		# count of cell linesknown as etablished by organization
-where {
-  #values ?cl { cvcl:CVCL_C2T2 }   
-  ?cl a / rdfs:subClassOf cello:CellLine .
-  ?cl cello:establishedBy ?org. 
-  ?org a schema:Organization.
-  ?org cello:recommendedName ?oname . # there is 1 and only 1 rec name by org
-  optional {  
-    ?person cello:isMemberOf ?org.
-    ?person a schema:Person .
-    ?person cello:name ?pname .
-  }
-}
-group by ?oname ?pname
-order by desc(count(?cl))
-
-
-## ------------------------------------------------------
-ID: 112
-LB: Top 100 most referenced publications in cell line entries
-KW: rx, ref, reference, publication, stats
-## ------------------------------------------------------
-select ?publi ?publi_identifiers (count(distinct(?cl_ac)) as ?cl_count) where {
-  select  
-  	?publi 
-  	(group_concat(distinct str(?pac); separator = ', ') as ?publi_identifiers)
-    ?cl_ac
-  	where {
-      ?cl a / rdfs:subClassOf cello:CellLine .
-  	  ?cl cello:primaryAccession ?cl_ac .
-      ?cl cello:references ?publi.
-      ?publi a ?publiClass .
-      ?publi cello:seeAlsoXref / cello:accession ?pac.      
-    }
-    group by ?publi ?cl_ac
-}
-group by ?publi ?publi_identifiers
-order by desc(count(distinct(?cl_ac)))
-limit 100
-
-
-## ------------------------------------------------------
-ID: 113
-LB: Top 100 contributors (authors) of publications referenced in cell line entries
-KW: author, contributor, publication, stats
-## ------------------------------------------------------
-select 
-(str(?person_name) as ?author_name) 
-(count(distinct ?publi) as ?publi_count)
-where {
-  ?cl a / rdfs:subClassOf cello:CellLine .
-  ?cl cello:references ?publi .
-  ?publi ?p ?contr .
-  ?contr a schema:Person .
-  ?contr cello:name ?person_name .
-}
-group by ?person_name
-order by desc(count(distinct(?publi)))
-limit 100
-
-
-## ------------------------------------------------------
-ID: 114
-LB: Top 100 most represented species in cell line entries
-KW: ox, species, breed, stats
-## ------------------------------------------------------
-select ?species_ac ?species_name (count(distinct(?cl)) as ?cl_count) where {
-  ?cl cello:derivedFromIndividualBelongingToSpecies ?species .
-  ?species cello:isIdentifiedByXref / cello:accession ?species_ac .
-  ?species cello:name ?species_name .
-}
-group by ?species_ac ?species_name
-order by desc(count(distinct(?cl)))
-limit 100
-
-
-## ------------------------------------------------------
-ID: 115 
-LB: Top 100 most represented cell types in cell line entries
-KW: cell-type, cell, stats
-## ------------------------------------------------------
-select ?cell_type_ac ?cell_type_name (count(distinct ?cl) as ?cell_line_count) where {
-    ?cl cello:derivedFromCellType ?ct.
-    ?ct cello:name ?cell_type_name .
-    optional {
-    	?ct cello:isIdentifiedByXref / cello:accession ?cell_type_ac .
-    }
-  }
-group by ?cell_type_ac ?cell_type_name
-order by desc(count(distinct(?cl)))
-limit 100
-
-
-## ------------------------------------------------------
-ID: 116
-LB: Top 100 cell lines from which the most other cell lines have been derived (child cell lines)
-KW: ch, child, stats
-## ------------------------------------------------------
-select ?cl ?cl_name (count(?child) as ?child_count) where {
+# All cell lines with a child of: C3150 "Kidney neoplasm"
+select ?cl ?cl_name  ?disease_id ?disease_label where {
+  ?cl cello:derivedFromIndividualWithDisease ?disease .
   ?cl cello:recommendedName ?cl_name .
-  ?cl cello:hasChildCellLine ?child .
-} 
-group by ?cl ?cl_name
-order by desc(count(?child))
-limit 100
-
-
-## ------------------------------------------------------
-ID: 117
-LB: Top 100 anatomical part from which cell lines are derived from
-KW: site, tissue
-## ------------------------------------------------------
-select ?site_name ?site_type ?site_ac (count(?cl) as ?cl_count)
-where {
-    ?cl cello:derivedFromSite ?site .
-    ?site cello:name ?site_name .
-    ?site cello:siteType ?site_type .
-    optional { ?site rdfs:comment ?note } # unused here but shows that a comment may exist 
-    optional {?site cello:isIdentifiedByXref / cello:accession ?site_ac } # a few anatomical parts are not identified by a xref
-  }
-group by ?site_name ?site_type ?site_ac
-order by desc(count(?cl))
-limit 100
-
-
-## ------------------------------------------------------
-ID: 118
-LB: Direct and indirect parent cell lines from which some cell line originates
-KW: hi, parent
-## ------------------------------------------------------
-select ?cl ?cl_name ?parent_cl ?parent_cl_name where {
-  values ?cl {	cvcl:CVCL_D5AX }
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:hasParentCellLine+ ?parent_cl .
-  ?parent_cl cello:recommendedName ?parent_cl_name .
+  ?disease cello:isIdentifiedByXref ?disease_xref .
+  ?disease rdfs:label ?disease_label .
+  ?disease_xref  cello:more_specific_than* ?generic_disease .
+  ?disease_xref skos:notation ?disease_id .
+  ?generic_disease skos:notation "C3150"^^xsd:string . # Kidney neoplasm
 }
-order by ?cl
-limit 100
+limit 2000
 
 
 ## ------------------------------------------------------
-ID: 119
-LB: Count of cell lines of each insect taxon
-KW: ox, taxon, species
-## ------------------------------------------------------
-select ?taxon_scheme ?taxon_ac ?taxon_name (count(?cl) as ?cell_line_count) where {
-?cl cello:derivedFromIndividualBelongingToSpecies  / cello:isIdentifiedByXref ?taxon.
-?taxon skos:prefLabel ?taxon_name.
-?taxon skos:inScheme ?taxon_scheme .
-?taxon skos:notation ?taxon_ac .
-?taxon cello:more_specific_than* / skos:prefLabel "Insecta"^^xsd:string
-}
-group by ?taxon_scheme ?taxon_ac ?taxon_name
-order by desc(count(?cl))
-limit 300
-
-
-## ------------------------------------------------------
-ID: 120
-LB: Cell lines with a karyotypic comment
-KW: kar, karyotype
-## ------------------------------------------------------
-select ?cl (str(?cl_name) as ?cl_name) ?shortened_karyotypic_comment where { 
-  ?cl a / rdfs:subClassOf cello:CellLine .
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:hasKaryotypicInfoComment ?annot.
-  ?annot rdfs:comment ?comment .
-  bind( 
-    if(
-      strlen(str(?comment)) > 140, 
-      concat( substr(str(?comment), 0, 140), "..."), 
-      str(?comment)) 
-      as ?shortened_karyotypic_comment)
-}
-limit 3000
-
-
-## ------------------------------------------------------
-ID: 121
-LB: Cell lines with a gene knockout
-KW: ko, knockout, gene
-## ------------------------------------------------------
-select ?cl ?method (str(?gene_name) as ?gene_name)  (str(?gene_ac) as ?gene_ac) (str(?comment) as ?comment) where { 
-  ?cl cello:hasGeneKnockout ?annot.
-  ?annot cello:hasGenomeModificationMethod ?method .
-  ?annot cello:ofGene ?gene .
-  ?gene cello:isIdentifiedByXref / cello:accession ?gene_ac  .
-  ?gene cello:name ?gene_name .
-  optional {?annot rdfs:comment ?comment . }
-  #filter (bound(?comment)) # uncomment to get only ko annotations with a comment
-}
-limit 100
-
-
-## ------------------------------------------------------
-ID: 122
-LB: Some cell lines with an antibody target
-KW: MoAb, mabt, protein, chemical
-## ------------------------------------------------------
-select ?cl (str(?cl_name) as ?cl_name) ?target_class (substr(str(?target_name),0,30) as ?target_name) (str(?target_ac) as ?target_ac)  (str(?comment) as ?note) where {
-   ?cl cello:hasMoAbTarget ?annot.
-   ?cl cello:recommendedName ?cl_name . 
-   ?annot a ?target_class .
-   ?annot rdfs:label ?target_name .
-   optional {?annot rdfs:comment ?comment }
-   optional {
-    ?annot cello:isIdentifiedByXref ?xref .
-    ?xref cello:accession ?target_ac .
-  	} 
-    filter (bound(?comment)) # comment this filter to also retrieve those without comment
-    filter (bound(?xref))    # comment this filter to also retrieve targets not identified by a cross-reference
-}
-limit 100
-
-
-## ------------------------------------------------------
-ID: 123
-LB: Some cell lines with a miscellaneous comment
-KW: misc, miscellaneous
-## ------------------------------------------------------
-select ?cl (str(?cl_name) as ?cl_name) (str(?comment) as ?miscellaneous_comment) where { 
-  ?cl cello:hasMiscellaneousInfoComment ?annot.
-  ?cl cello:recommendedName ?cl_name .
-  ?annot rdfs:comment ?comment .
-}
-limit 100
-
-
-## ------------------------------------------------------
-ID: 124
-LB: Cell lines with a misspelling record
-KW: miss, misspelling, source
-## ------------------------------------------------------
-select ?cl (str(?cl_name) as ?cl_name) (str(?misspelling_name) as ?misspelling_name) ?appears_in (str(?note) as ?note)
-where {
-  ?cl cello:hasMisspellingRecord ?rec.
-  ?cl cello:recommendedName ?cl_name . 
-  ?rec cello:misspellingName ?misspelling_name .
-  optional {?rec rdfs:comment ?note. }
-  optional { 
-    ?rec cello:appearsIn ?s .
-  	optional { ?s  a ?st }. 
-   	optional { ?s cello:internalId ?id }   	# src origin is a xref or a publi
-    optional { ?s skos:prefLabel ?org }     # src origin is an organization
-    optional { ?s rdfs:label ?lb }          # src origin not specified 
-  }  
-  bind (str(coalesce(?id, ?org, ?lb, '-')) as ?appears_in)
-  bind (coalesce(?st, '-') as ?source_type)
-  # filter (bound(?s)) # uncomment to get misspelling not linked to a particular source
-  # filter (bound(?note)) # uncomment to get misspelling with an additional note
-}
-
-
-## ------------------------------------------------------
-ID: 125
-LB: Get microsatellite instability annotation of some cell lines
-KW: msi, source
-## ------------------------------------------------------
-select ?cl ?cl_name ?value ?source_type ?source  ?comment where {
-    ?cl cello:hasMicrosatelliteInstability ?annot .
-  	?cl cello:recommendedName ?cl_name .
-    ?annot cello:hasMicrosatelliteInstabilityStatus ?value .
-    ?annot cello:hasSource ?s .
-	  optional { ?s cello:originatesFrom / a ?st }. 
-   	optional { ?s cello:originatesFrom / cello:internalId ?id }   	# src origin is a xref or a publi
-    optional { ?s cello:originatesFrom / skos:prefLabel ?org }      # src origin is an organization
-    optional { ?s rdfs:label ?lb }                                  # src origin not specified 
-	  bind (coalesce(?id, ?org, ?lb, '-') as ?source)
-  	bind (coalesce(?st, '-') as ?source_type)
-    optional {?annot rdfs:comment ?comment }
-}
-order by ?cl ?value ?comment
-limit 1000
-
-
-
-## ------------------------------------------------------
-ID: 126
-LB: Usage of name properties for instances of each class defined in cello: ontology
-KW: id, sy, miss, misspelling, reg, registration, label, name, recommendedName, misspellingName, private, semantics
-## ------------------------------------------------------
-select distinct ?entity_type ?sub_prop
-where {
-  # values ?entity_type { cello:CellLine } # uncomment to see name properties used for cello:CellLine instances
-  ?sub_prop rdfs:subPropertyOf* rdfs:label .
-  ?entity ?sub_prop ?_ .
-  ?entity a ?entity_type .
-  filter strstarts(str(?entity_type), (str(cello:)))
-}
-order by ?entity_type
-limit 1000
-
-
-## ------------------------------------------------------
-ID: 127
-LB: Cell lines originating from same individual as a given cell line (sister cell lines)
-KW: oi, sister, derivedFromSameIndividualAs
-## ------------------------------------------------------
-select ?cl ?cl_name ?sister_cl ?sister_cl_name where 
-{
-  values ?cl { cvcl:CVCL_X038 } # the IRI of the cell line which we look the sisters for
-  ?cl cello:derivedFromSameIndividualAs ?sister_cl .  
-  ?cl cello:recommendedName ?cl_name .
-  ?sister_cl cello:recommendedName ?sister_cl_name .
-} 
-limit 1000
-
-
-## ------------------------------------------------------
-ID: 128
-LB: Some cell lines and the group the belong to
-KW: group, part
-## ------------------------------------------------------
-select ?cl ?cl_name ?group where {
-	?cl cello:inGroup ?group .
-	?cl cello:recommendedName ?cl_name .
-}
-limit 100
-
-
-## ------------------------------------------------------
-ID: 129
-LB: Top 100 population (ethnic grouping) of the individual from which human cell lines were sampled
-KW: pop, population
-## ------------------------------------------------------
-select ?population_name (count(?cl) as ?cl_count) where {
-	?cl cello:derivedFromIndividualBelongingToPopulation ?pop.
-	?pop cello:name ?population_name .
-  filter not exists { ?cl cello:hasParentCellLine ?any_parent }
-}
-group by ?population_name
-order by desc(count(?cl))
-limit 100
-
-
-## ------------------------------------------------------
-ID: 130
-LB: Some cell lines known to be resistant to some chemical compound or toxin
-KW: res, resistance, chemical, drug, toxin
-## ------------------------------------------------------
-select ?cl ?cl_name ?compound_class (substr(str(?compound_str),0,36) as ?compound_name) ?compound_iri ?compound_url where 
-  {
-   ?cl a / rdfs:subClassOf cello:CellLine .
-   ?cl cello:recommendedName ?cl_name .
-   ?cl cello:hasResistance ?compound.
-   ?compound a ?compound_class .
-   ?compound cello:name ?compound_str .
-   optional { 
-    ?compound cello:isIdentifiedByXref ?xref .
-    ?xref cello:accession ?ac.
-    ?xref rdfs:seeAlso ?compound_url .
-  }
-  optional { 
-    ?compound cello:isIdentifiedByIRI ?compound_iri .
-  }
-  #filter(!bound(?compound_iri))  # uncomment to see only chemical for which we have no IRI (owl concept)
-  #filter(!bound(?compound_url))  # uncomment to see only chemical for which we have no identifying xref
-}
-order by ?cl
-limit 100
-
-
-## ------------------------------------------------------
-ID: 131
-LB: Cell lines resistant to benzamides (a class of chemical compound)
-KW: res, resistant, chemical, drug, toxin
-## ------------------------------------------------------
-select distinct ?cl ?cl_name  
-('resistant to' as ?link) ?compound_ac (substr(?label2,0,30) as ?compound_name) 
-('which is more specific than' as ?relation)  ?generic_component 
-where {
-  #values ?generic_component { "cyclic compound"^^xsd:string } . # large class of chemical compound
-  values ?generic_component { "benzamides"^^xsd:string  } .     # uncomment to use another large class of chemical compound
-  ?concept1 skos:prefLabel ?generic_component .      # get concept from its label (concept1)
-  ?concept1 skos:notation ?code1 .                   # get notation code of the concept
-  ?cl cello:hasResistance ?compound .                # cell line with resistance to some chemical compound
-  ?cl cello:recommendedName ?cl_name . 
-  ?compound cello:isIdentifiedByXref ?concept2.      # get concept identifying the chemical compound (concept2)
-  ?concept2 cello:more_specific_than+ ?concept1 .	 # concept2 must be equal or more specific than concept1
-  ?concept2 skos:notation ?compound_ac .		     # get notation of concept 2
-  ?concept2 skos:prefLabel ?label2.                  # get label of concept 2
-}
-limit 100
-
-
-## ------------------------------------------------------
-ID: 132
-LB: Title, year and type of publication refernced by some cell lines
-KW: rx, rt, references, title, year, publication, patent, thesis, private, QC
-## ------------------------------------------------------
-select ?cl (str(?cl_name) as ?cl_name) ?ref_class ?year_str ?id_str ?title_str where {
-  ?cl a / rdfs:subClassOf cello:CellLine .
-  ?cl cello:recommendedName ?cl_name . 
-  ?cl cello:references ?ref .
-  #values ?ref_class { fabio:ConferencePaper }  # uncomment to set constraint on reference class
-  #values ?ref_class { fabio:JournalArticle }   # uncomment to set constraint on reference class
-  ?ref a ?ref_class .
-  ?ref cello:internalId ?id .
-  ?ref cello:title ?title .
-  ?ref cello:publicationYear ?year .
-  bind(concat('in ', str(?year)) as ?year_str)
-  bind(str(?id) as ?id_str)
-  bind(substr(str(?title),0,60) as ?title_str)
-											   # internal ids start either with 
-  #filter (strstarts(str(?id),"PubMed=") )     # uncomment to set constraint on internal id 
-  #filter (strstarts(str(?id),"DOI=") )        # uncomment to set constraint on internal id 
-  #filter (strstarts(str(?id),"Patent=") )     # uncomment to set constraint on internal id 
-  #filter (strstarts(str(?id),"CelloPub=") )   # uncomment to set constraint on internal id 
-}
-limit 100
-
-
-## ------------------------------------------------------
-ID: 133
-LB: Some senescence comments about cell lines with their source
-KW: sen, senescence, source
-## ------------------------------------------------------
-select ?cl (str(?cl_name) as ?cl_name) ?source_type (str(?source) as ?source) ?shortened_comment
-where { 
-  ?cl cello:hasSenescenceComment ?annot.
-  ?cl cello:recommendedName ?cl_name .
-  ?annot rdfs:comment ?comment .
-  optional { 
-    ?annot cello:hasSource ?s .
-  	optional { ?s cello:originatesFrom / a ?st }. 
-   	optional { ?s cello:originatesFrom / cello:internalId ?id }   	# src origin is a xref or a publi
-    optional { ?s cello:originatesFrom / skos:prefLabel ?org }      # src origin is an organization
-    optional { ?s rdfs:label ?lb }                                  # src origin not specified 
-  }
-  bind (coalesce(?id, ?org, ?lb, '-') as ?source)
-  bind (coalesce(?st, '-') as ?source_type)
-  bind( 
-    if(
-      strlen(str(?comment)) > 140, 
-      concat( substr(str(?comment), 0, 140), "..."), 
-      str(?comment)) 
-      as ?shortened_comment)  
-}
-order by ?cl ?source
-limit 100
-
-
-## ------------------------------------------------------
-ID: 134
-LB: Count of cell lines by sex of the individual from which the cell line originates
-KW: sx, sex
-## ------------------------------------------------------
-select ?sex (count(?cl) as ?cl_count) where {
-  ?cl a / rdfs:subClassOf cello:CellLine.
-  optional { ?cl cello:derivedFromIndividualWithSex ?sex. }
-} 
-group by ?sex
-order by ?sex
-
-
-## ------------------------------------------------------
-ID: 135
-LB: Some hybrid cell lines with the species from which they originate
-KW: ox, species, hybrid
-## ------------------------------------------------------
-select 
-  ?cl_class ?cl ?cl_name
-  (count(?species_name) as ?species_cnt) 
-  (group_concat(?species_name ; separator = ', ') as ?species_list) 
-  where { 
-    select ?cl_class ?cl ?cl_name ?species_name 
-      where {
-      ?cl a ?cl_class .
-      ?cl cello:recommendedName ?cl_name .
-      ?cl cello:derivedFromIndividualBelongingToSpecies / rdfs:label ?species_name .
-    }
-}
-group by ?cl_class ?cl ?cl_name having (count(?species_name) > 1)
-order by desc(count(?species_name)) 
-limit 100
-
-
-## ------------------------------------------------------
-ID: 136
-LB: Super class and equivalent class of each class defined in the cello ontology
-KW: ontology, class, semantics, private
-## ------------------------------------------------------
-select ?cello_class ?hasSuperClass ?rdfs_superClass ?hasEqClass ?owl_equivalentClass  where {
-  ?cello_class a owl:Class .
-  ?cello_class rdfs:isDefinedBy cello: .
-  optional { ?cello_class owl:equivalentClass ?owl_equivalentClass . }
-  optional { ?cello_class rdfs:subClassOf ?rdfs_superClass . }
-  bind(if(bound(?owl_equivalentClass),"yes", "no") as ?hasEqClass)
-  bind(if(bound(?rdfs_superClass),"yes", "no") as ?hasSuperClass)
-}
-order by ?rdfs_superClass ?owl_equivalentClass ?parent ?cello_class
-
-
-## ------------------------------------------------------
-ID: 137
-LB: Super property and equivalent property of each property defined in the cello ontology
-KW: ontology, property, semantics, private
-## ------------------------------------------------------
-select ?cello_prop ?hasSuperProp ?rdfs_superProp ?hasEqProp ?owl_equivalentProp  where {
-  ?cello_prop a rdf:Property .
-  ?cello_prop rdfs:isDefinedBy cello: .
-  optional { ?cello_prop owl:equivalentProperty ?owl_equivalentProp . }
-  optional { ?cello_prop rdfs:subPropertyOf ?rdfs_superProp . }
-  bind(if(bound(?owl_equivalentProp),"yes", "no") as ?hasEqProp)
-  bind(if(bound(?rdfs_superProp),"yes", "no") as ?hasSuperProp)
-}
-order by ?rdfs_superProp ?owl_equivalentProp ?parent ?cello_prop
-
-
-## ------------------------------------------------------
-ID: 138
-LB: Top 100 agents used to transform cell lines 
-KW: tfor, transformant
-## ------------------------------------------------------
-select ?transformant_name (count(distinct ?cl) as ?cl_count) where { 
-  ?cl cello:transformedBy ?annot.
-  ?annot rdfs:label ?transformant_name .
-}
-group by ?transformant_name
-order by desc(count(?annot))
-limit 100
-
-
-## ------------------------------------------------------
-ID: 139
-LB: Some cell lines with the name and cross-reference of their transformant
-KW: tfor, transformant
-## ------------------------------------------------------
-select ?cl ?cl_name (str(?lbl) as ?transformant_name) ?xref_db ?xref_ac (str(?cm) as ?comment) 
-  where {
-  ?cl a / rdfs:subClassOf cello:CellLine .
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:transformedBy ?annot.
-  ?annot rdfs:label ?lbl .
-  ?annot a ?annot_class .
-  optional {?annot rdfs:comment ?cm . }
-  optional {?annot cello:isIdentifiedByXref ?xr . ?xr cello:database ?xref_db ; cello:accession ?xref_ac .}
-  #filter ( ! bound(?xr)) # uncomment to see only transformants not identified by a cross-reference
-  #filter ( bound(?cm) )  # uncomment to see transformants with a non empty optional comment
-}
-limit 100
-
-
-## ------------------------------------------------------
-ID: 140
-LB: Typical triples found in cellosaurus RDF (without filtering some irrelevant tuples)
-KW: ontology, range, domain, class, property, subject, object, datatype, semantics, private
-## ------------------------------------------------------
-select ?subject_class ?property ?object_type (count(*) as ?triple_count) where {
-  GRAPH <https://www.cellosaurus.org/rdf/graphs/main> {
-    ?s ?property ?o.
-    ?s a ?subject_class.
-    optional {?o a ?o_class }
-    bind(coalesce(?o_class, datatype(?o), 'IRI') as ?object_type)
-  }
-}
-group by ?subject_class ?property ?object_type
-order by ?subject_class ?property ?object_type
-
-
-## ------------------------------------------------------
-ID: 141
-LB: Some cell lines with their virology comments
-KW: vir, virology
-## ------------------------------------------------------
-select ?cl ?cl_name ?has_a_source
-  (if( strlen(?cm) > 60, concat(substr(str(?cm),0,90), '...'), str(?cm)) as ?virology_comment)
-where { 
-  ?cl a / rdfs:subClassOf cello:CellLine .
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:hasVirologyComment ?annot .
-  ?annot a ?annot_class .
-  ?annot rdfs:comment ?cm .
-  optional { ?annot  cello:hasSource ?src }  
-  bind( if (bound(?src), 'yes', 'no') as ?has_a_source)
-  #filter (bound(?src))  # uncomment so get only sourced virology comment
-}
-limit 100
-
-
-## ------------------------------------------------------
-ID: 142
-LB: A cell line with all its cross-references
-KW: dr, xref
-## ------------------------------------------------------
-select ?cl ?cl_name ?xref_db ?xref_ac where {
-values ?cl { cvcl:CVCL_1100 }
-  ?cl a / rdfs:subClassOf cello:CellLine .
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:seeAlsoXref ?xref .
-  ?xref cello:database ?xref_db.
-  ?xref cello:accession ?xref_ac.
-}
-order by ?xref_db ?xref_ac
-
-
-## ------------------------------------------------------
-ID: 143
-LB: Example (sample) of a cross-reference with its properties from each database
-KW: dr, xref, disc, discontinued
-## ------------------------------------------------------
-select ?db_class ?db (sample(?ac) as ?sample_ac) (sample(str(?disc)) as ?sample_disc) (sample(?lbl) as ?sample_label) (sample(?url) as ?sample_url) where {
-  ?xref a cello:Xref .
-  ?xref cello:database ?db.
-  ?xref cello:accession ?ac.
-  ?db a ?db_class .
-  ?db_class rdfs:subClassOf cello:Database . # (useful to get rid of irrelevant owl:NamedIndividual)
-  optional { ?xref cello:discontinued ?disc  }.
-  optional { ?xref rdfs:label ?lbl  }.
-  optional { ?xref rdfs:seeAlso ?url } .
-  # filter (bound(?disc))  # uncomment to see xrefs identifying a discontinued product reference in a catalog
-  # filter (bound(?lbl))   # uncomment to see xrefs having a label (genes, chemicals, anatomy, ...)
-  # filter (! bound(?url)) # uncomment to see xrefs having NO url (discontinued products, ...)
-}
-group by ?db_class ?db 
-order by ?db_class ?db 
-limit 300
-
-
-## ------------------------------------------------------
-ID: 144
-LB: Cell lines with a south asian genome ancestry greater than 30%
-KW: anc, genome-ancestry
-## ------------------------------------------------------
-select ?cl ?cl_name ?population_name ?percentage ?pmid where {
-	?cl cello:hasGenomeAncestry ?annot .
-  	?cl cello:recommendedName ?cl_name .
-  	?annot cello:hasComponent ?pp .
-    ?pp cello:hasPopulation / cello:name ?population_name .
-  	?pp cello:percentage ?percentage .
-    ?annot cello:hasSource / cello:originatesFrom / cello:pmid ?pmid .
-  	filter (?population_name = "South Asian"^^xsd:string && ?percentage > "30"^^xsd:float)
-}
-order by ?percent
-
-
-## ------------------------------------------------------
-ID: 145
-LB: Registered name(s) of some cell lines
-KW: reg, registration, registeredName
-## ------------------------------------------------------
-select ?cl ?cl_name 
-	(count(?registered_name) as ?registered_name_count) 
-	(group_concat(str(?registered_name); separator=' , ') as ?registered_names)  
-where {
-	?cl cello:registeredName ?registered_name .
-    ?cl cello:recommendedName ?cl_name .
-}
-group by ?cl ?cl_name
-order by ?cl
-limit 100
-
-
-## ------------------------------------------------------
-ID: 146
-LB: Detailed registered name record of some cell lines
-KW: reg, registration, registeredName
-## ------------------------------------------------------
-select ?cl ?cl_name ?registered_name ?organization_name  where {
-	?cl cello:hasRegistationRecord ?record .
-    ?cl cello:recommendedName ?cl_name .
-	?record cello:registeredName ?registered_name .
-  ?record cello:inRegister / cello:recommendedName ?organization_name .
-}
-order by ?cl
-limit 100
-
-
-## ------------------------------------------------------
-ID: 147
-LB: Some cell lines derived from an individual with a diabetes mellitus or more specific disease
+ID: 103
+LB: Cell lines derived from an individual with a diabetes mellitus or more specific disease
 KW: di, disease, individual
 ## ------------------------------------------------------
 select distinct ?cl ?cl_name ?disease_name ?disease_concept_scheme ?disease_concept_notation  where {
@@ -893,96 +59,72 @@ select distinct ?cl ?cl_name ?disease_name ?disease_concept_scheme ?disease_conc
   ?xref skos:notation ?disease_concept_notation .
   ?xref skos:inScheme ?disease_concept_scheme .
   ?xref cello:more_specific_than* ?generic_concept .
-  ?generic_concept skos:notation ?generic_concept_notation .  
+  ?generic_concept skos:notation ?generic_concept_notation .
   ?generic_concept skos:inScheme ?concept_scheme .
 }
 order by ?cl
-limit 100
+limit 2000
 
 
 ## ------------------------------------------------------
-ID: 148
-LB: Some cell lines with the age of the individual at which the sample was collected to create the cell line 
-KW: age, individual
+ID: 104
+LB: Cell lines from animals belonging the order "carnivora"
+KW: species, carnivora
 ## ------------------------------------------------------
-select ?cl ?cl_name ?individual_age  where {
-  ?cl cello:derivedFromIndividualAtAge ?individual_age .
+# All cell lines with a child of TaxID: 33554
+select ?cl ?cl_name ?xref_db ?xref_ac ?xref_label where {
+  ?cl cello:derivedFromIndividualBelongingToSpecies ?species .
   ?cl cello:recommendedName ?cl_name .
+  ?species  cello:isIdentifiedByXref ?xref .
+  ?xref cello:more_specific_than+ ?generic_concept .
+  ?generic_concept skos:notation "33554"^^xsd:string ; skos:inScheme db:NCBI_TaxID . # Carnivore
+  ?xref cello:accession ?xref_ac ; cello:database ?xref_db; skos:prefLabel ?xref_label .
 }
-order by ?cl
-limit 100
+limit 2000
 
 
 ## ------------------------------------------------------
-ID: 149
-LB: Version, date of addition, and date of last update in Cellosaurus for some cell lines
-KW: dt, dtc, dtu, dtv, version
+ID: 105
+LB: Cell lines obtained from a muscular tissue
+KW: tissue, site, muscle
 ## ------------------------------------------------------
-select ?cl ?cl_name ?version ?date_added_to_cellosaurus ?date_of_last_change  where {
-	?cl cello:version ?version .
-	?cl cello:created ?date_added_to_cellosaurus .
-	?cl cello:modified ?date_of_last_change .
-    ?cl cello:recommendedName ?cl_name .
-}
-order by ?cl
-limit 100
-
-
-## ------------------------------------------------------
-ID: 150
-LB: Some topic comments (optionally with their source) about cell lines
-KW: misc, omics, anec, biot, caution, char, donor, time, prob
-## ------------------------------------------------------
-select ?cl ?cl_name ?annot_class ?source ?shortened_comment where {
-  values ?annot_class { 
-    cello:AnecdotalComment 
-    cello:BiotechnologyComment
-    cello:CautionComment
-    cello:CharacteristicsComment 
-    cello:DonorInfoComment 
-    cello:DoublingTime
-    cello:OmicsInfo
-    cello:ProblematicCellLineComment
-    cello:MiscellaneousInfoComment
-  }
-  ?prop rdfs:subPropertyOf cello:hasAnnotation .
-  ?cl ?prop ?annot .
+# All cell lines with a child of UBERON_0001630 muscle organ
+select distinct ?cl ?cl_name ?xref_db ?xref_ac ?xref_label where {
+  ?cl cello:derivedFromSite ?site .
   ?cl cello:recommendedName ?cl_name .
-  ?annot a ?annot_class .
-  ?annot rdfs:comment ?comment .
-  
-  optional { 
-    ?annot cello:hasSource ?s .
-  	optional { ?s cello:originatesFrom / a ?st }. 
-   	optional { ?s cello:originatesFrom / cello:internalId ?id }   	# src origin is a xref or a publi
-    optional { ?s cello:originatesFrom / skos:prefLabel ?org }      # src origin is an organization
-    optional { ?s rdfs:label ?lb }                                  # src origin not specified 
-  }
-  bind (coalesce(?id, ?org, ?lb, '-') as ?source)
-  bind (coalesce(?st, '-') as ?source_type)
-  bind (str(substr(?comment, 0, 80)) as ?shortened_comment)
-  #filter (?source != '-') # uncomment to get only sourced comments
+  ?site  cello:isIdentifiedByXref ?xref .
+  ?xref cello:more_specific_than* ?generic_concept .
+  ?generic_concept skos:notation "UBERON_0001630"^^xsd:string ; skos:inScheme db:UBERON . # muscle organ
+  ?xref cello:accession ?xref_ac ; cello:database ?xref_db; skos:prefLabel ?xref_label .
 }
-order by ?cl
-limit 100
+limit 1000
 
 
 ## ------------------------------------------------------
-ID: 151
-LB: Some omics comments about cell lines
-KW: omics
+ID: 106
+LB: Cell lines resistant to benzamides (a class of chemical compound)
+KW: res, resistant, chemical, drug, toxin
 ## ------------------------------------------------------
-select ?cl ?cl_name ?omics_category ?sub_category where {
-  ?cl cello:hasOmicsInfo ?annot .
+select distinct ?cl ?cl_name
+('resistant to' as ?link) ?compound_ac (substr(?label2,0,30) as ?compound_name)
+('which is more specific than' as ?relation)  ?generic_component
+where {
+  #values ?generic_component { "cyclic compound"^^xsd:string } . # large class of chemical compound
+  values ?generic_component { "benzamides"^^xsd:string  } .     # uncomment to use another large class of chemical compound
+  ?concept1 skos:prefLabel ?generic_component .      # get concept from its label (concept1)
+  ?concept1 skos:notation ?code1 .                   # get notation code of the concept
+  ?cl cello:hasResistance ?compound .                # cell line with resistance to some chemical compound
   ?cl cello:recommendedName ?cl_name .
-  ?annot schema:category ?omics_category .
-  ?annot rdfs:comment ?sub_category .
+  ?compound cello:isIdentifiedByXref ?concept2.      # get concept identifying the chemical compound (concept2)
+  ?concept2 cello:more_specific_than+ ?concept1 .	 # concept2 must be equal or more specific than concept1
+  ?concept2 skos:notation ?compound_ac .		     # get notation of concept 2
+  ?concept2 skos:prefLabel ?label2.                  # get label of concept 2
 }
 limit 100
 
 
 ## ------------------------------------------------------
-ID: 152
+ID: 107
 LB: Cell lines resistant to vincaleukoblastine
 KW: resistance
 ## ------------------------------------------------------
@@ -999,65 +141,218 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 153
-LB: Cell lines used to produce N-glycosylated proteins
-KW: comment, charceteristics, private
+ID: 108
+LB: Cell lines with a South Asian genome ancestry greater than 30%
+KW: anc, genome-ancestry
 ## ------------------------------------------------------
-select ?cl ?cl_name ?comment_class ?comment where {
-  ?annot_type rdfs:subPropertyOf cello:hasAnnotation .
-  ?cl ?annot_type ?annot .
-  ?cl cello:recommendedName ?cl_name .
-  ?annot a ?comment_class .
-  ?annot rdfs:comment ?comment .
-  filter(contains(?comment, "product") && contains(?comment, "glycosylat"))
+select ?cl ?cl_name ?population_name ?percentage ?pmid where {
+        ?cl cello:hasGenomeAncestry ?annot .
+  	?cl cello:recommendedName ?cl_name .
+  	?annot cello:hasComponent ?pp .
+    ?pp cello:hasPopulation / cello:name ?population_name .
+  	?pp cello:percentage ?percentage .
+    ?annot cello:hasSource / cello:originatesFrom / cello:pmid ?pmid .
+  	filter (?population_name = "South Asian"^^xsd:string && ?percentage > "30"^^xsd:float)
+}
+order by ?percent
+
+
+## ------------------------------------------------------
+ID: 109
+LB: All the different sarcomas represented in Cellosaurus
+KW: disease, sarcoma
+## ------------------------------------------------------
+# All NCiT terms child of C9118 "Sarcoma"
+select distinct ?concept_id ?concept_label where {
+  ?concept  cello:more_specific_than+ ?generic_concept .
+  ?concept skos:notation ?concept_id ; skos:prefLabel ?concept_label .
+  # ?generic_concept rdfs:label "Sarcoma"^^xsd:string . # we use skos:notation instead
+  ?generic_concept skos:notation "C9118"^^xsd:string .
 }
 limit 100
 
 
 ## ------------------------------------------------------
-ID: 154
-LB: Cell lines originated from organs, tissues, or cell types from liver
-KW: site, anatomy, organ, tissue, body part
+ID: 110
+LB: STR (short tandem repeat) profile of a chosen cell line
+KW: STR, short tandem repeat profile, source
 ## ------------------------------------------------------
-select ?cl ?cl_name ?xref_label ?xref_notation
+SELECT ?cl (str(?cl_name) as ?cl_name) (str(?marker) as ?marker) ?detected ?repeat_num ?conflicting (group_concat(distinct ?source; separator=' ') as ?sources)
 where {
-  ?cl cello:derivedFromSite ?site .
+  values ?cl { cvcl:CVCL_0025 }
   ?cl cello:recommendedName ?cl_name .
-  ?site cello:isIdentifiedByXref ?xref .
-  ?xref skos:prefLabel ?xref_label ; skos:notation ?xref_notation .
-  ?xref cello:more_specific_than* ?generic_concept .
-  # examples: liver: UBERON_0002107, bone marrow: UBERON_0002371, lymph node: UBERON_0000029
-  ?generic_concept skos:notation "UBERON_0002107"^^xsd:string . # liver
-  ?generic_concept skos:inScheme db:UBERON .
+  ?cl cello:hasShortTandemRepeatProfile / cello:includesObservation ?obs .
+  ?obs rdfs:label ?obs_name .
+  ?obs cello:conflicting ?conflict .
+  ?obs cello:hasTarget ?trg .
+  optional { ?trg rdfs:label ?trg_label . }
+  optional { ?trg cello:markerId ?trg_id . }
+  bind(coalesce(?trg_label, ?trg_id) as ?marker)
+  optional { ?obs cello:detectedTarget ?dt . }
+  optional { ?obs cello:detectedAllele / cello:repeatNumber ?allele . }
+  optional {
+    ?obs cello:hasSource ?s .
+  	optional { ?s cello:originatesFrom / a ?st }.
+   	optional { ?s cello:originatesFrom / cello:internalId ?id }   	# src origin is a xref or a publi
+    optional { ?s cello:originatesFrom / skos:prefLabel ?org }      # src origin is an organization
+    optional { ?s rdfs:label ?lb }                                  # src origin not specified
+  }
+  bind (coalesce(?id, ?org, ?lb, '-') as ?source)
+  bind (coalesce(?st, '-') as ?source_type)
+
+  bind (if(bound(?dt), if(?dt=1, 'yes', 'no'), 'n/a') as ?detected)
+  bind (if(bound(?allele), concat('n=',?allele), 'n/a') as ?repeat_num)
+  bind (if(?conflict, 'yes', 'no') as ?conflicting)
+}
+group by ?cl ?cl_name ?obs_name ?marker ?detected ?repeat_num ?conflicting
+order by ?cl ?cl_name ?obs_name ?marker ?detected ?repeat_num ?conflicting
+limit 500
+
+
+## ------------------------------------------------------
+ID: 111
+LB: HLA typing of a chosen cell line
+KW: HLA
+## ------------------------------------------------------
+select ?cl (str(?cl_name) as ?cl_name) (str(?gene_name) as ?gene) (str(?allele_id) as ?allele_name)  where {
+  	values ?cl { cvcl:CVCL_E549 }
+        ?cl cello:hasHLAtyping ?hasHLAtyping .
+  	?cl cello:recommendedName ?cl_name .
+    ?hasHLAtyping cello:includesObservation ?obs .
+        ?obs cello:hasTarget ?gene .
+    ?gene rdfs:label ?gene_name .
+    ?gene rdf:type ?gene_class .
+    ?obs cello:detectedAllele ?allele .
+    ?allele cello:alleleIdentifier ?allele_id .
+}
+order by ?gene_name
+
+
+## ------------------------------------------------------
+ID: 112
+LB: Microsatellite instability (MSI) annotations of some cell lines
+KW: MSI, source
+## ------------------------------------------------------
+select ?cl ?cl_name ?value ?source_type ?source  ?comment where {
+    ?cl cello:hasMicrosatelliteInstability ?annot .
+  	?cl cello:recommendedName ?cl_name .
+    ?annot cello:hasMicrosatelliteInstabilityStatus ?value .
+    ?annot cello:hasSource ?s .
+          optional { ?s cello:originatesFrom / a ?st }.
+   	optional { ?s cello:originatesFrom / cello:internalId ?id }   	# src origin is a xref or a publi
+    optional { ?s cello:originatesFrom / skos:prefLabel ?org }      # src origin is an organization
+    optional { ?s rdfs:label ?lb }                                  # src origin not specified
+          bind (coalesce(?id, ?org, ?lb, '-') as ?source)
+  	bind (coalesce(?st, '-') as ?source_type)
+    optional {?annot rdfs:comment ?comment }
+}
+order by ?cl ?value ?comment
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 113
+LB: Virology annotations (comment) of some cell lines
+KW: vir, virology
+## ------------------------------------------------------
+select ?cl ?cl_name ?has_a_source
+  (if( strlen(?cm) > 60, concat(substr(str(?cm),0,90), '...'), str(?cm)) as ?virology_comment)
+where {
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:hasVirologyComment ?annot .
+  ?annot a ?annot_class .
+  ?annot rdfs:comment ?cm .
+  optional { ?annot  cello:hasSource ?src }
+  bind( if (bound(?src), 'yes', 'no') as ?has_a_source)
+  #filter (bound(?src))  # uncomment so get only sourced virology comment
 }
 limit 100
 
 
 ## ------------------------------------------------------
-ID: 155
-LB: Count of cell lines originated from lymph nodes in different body parts
-KW: site, anatomy, organ, tissue, body part
+ID: 114
+LB: Some antibody producing cell lines with their antibody target
+KW: MoAb, mabt, protein, chemical
 ## ------------------------------------------------------
-select ?xref_label ?xref_notation (count(distinct ?cl) as ?cl_count)
-where {
-  ?cl cello:derivedFromSite ?site .
-  ?site cello:isIdentifiedByXref ?xref .
-  ?xref skos:prefLabel ?xref_label ; skos:notation ?xref_notation .
-  ?xref cello:more_specific_than* ?generic_concept .
-  # examples:
-  # UBERON_0002107 liver
-  # UBERON_0002371 bone marrow
-  # UBERON_0000029 lymph node
-  ?generic_concept skos:notation "UBERON_0000029"^^xsd:string . 
-  ?generic_concept skos:inScheme db:UBERON .
+select ?cl (str(?cl_name) as ?cl_name) ?target_class (substr(str(?target_name),0,30) as ?target_name) (str(?target_ac) as ?target_ac)  (str(?comment) as ?note) where {
+   ?cl cello:hasMoAbTarget ?annot.
+   ?cl cello:recommendedName ?cl_name .
+   ?annot a ?target_class .
+   ?annot rdfs:label ?target_name .
+   optional {?annot rdfs:comment ?comment }
+   optional {
+    ?annot cello:isIdentifiedByXref ?xref .
+    ?xref cello:accession ?target_ac .
+  	}
+    filter (bound(?comment)) # comment this filter to also retrieve those without comment
+    filter (bound(?xref))    # comment this filter to also retrieve targets not identified by a cross-reference
 }
-group by ?xref_label ?xref_notation
-order by desc(count(distinct ?cl))
+limit 100
 
 
 ## ------------------------------------------------------
-ID: 156
-LB: Top 10 most represented dog breeds in cell line entries
+ID: 115
+LB: Monoclonal antibody isotype of two chosen cell lines
+KW: MoAb, isotype
+## ------------------------------------------------------
+select ?cl ?cl_name ?hc_label ?lc_label
+where {
+  values ?cl { cvcl:CVCL_B375 cvcl:CVCL_B0T9 }
+  ?cl cello:hasMoAbIsotype ?annot .
+  ?cl cello:recommendedName ?cl_name .
+  ?annot a cello:MoAbIsotype .
+  ?annot cello:hasAntibodyHeavyChain / rdfs:label ?hc_label .
+  ?annot cello:hasAntibodyLightChain / rdfs:label ?lc_label .
+}
+order by ?cl
+
+
+## ------------------------------------------------------
+ID: 116
+LB: Count of cell lines by cell line category
+KW: ca, category, stats
+## ------------------------------------------------------
+select ?class ?class_name (count(?cl) as ?instance_count) where {
+  ?class rdfs:subClassOf* cello:CellLine . # cell line generic class
+  ?class rdfs:label ?class_name .
+  optional {?cl rdf:type ?class. }
+}
+group by ?class ?class_name
+order by ?class desc(count(*))
+
+
+## ------------------------------------------------------
+ID: 117
+LB: Count of cell lines by sex of the individual from which the cell line originates
+KW: sx, sex
+## ------------------------------------------------------
+select ?sex (count(?cl) as ?cl_count) where {
+  ?cl a / rdfs:subClassOf cello:CellLine.
+  optional { ?cl cello:derivedFromIndividualWithSex ?sex. }
+}
+group by ?sex
+order by ?sex
+
+
+## ------------------------------------------------------
+ID: 118
+LB: Top 100 most represented species in Cellosaurus
+KW: ox, species, stats
+## ------------------------------------------------------
+select ?species_ac ?species_name (count(distinct(?cl)) as ?cl_count) where {
+  ?cl cello:derivedFromIndividualBelongingToSpecies ?species .
+  ?species cello:isIdentifiedByXref / cello:accession ?species_ac .
+  ?species cello:name ?species_name .
+}
+group by ?species_ac ?species_name
+order by desc(count(distinct(?cl)))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 119
+LB: Top 10 most represented dog breeds in Cellosaurus
 KW: ox, species, breed, stats
 ## ------------------------------------------------------
 select ?species_ac ?species_name ?breed_ac ?breed_name (count(distinct(?cl)) as ?cl_count) where {
@@ -1077,21 +372,198 @@ limit 10
 
 
 ## ------------------------------------------------------
-ID: 157
-LB: Some cell lines and the celloection the belong to
-KW: part, collection
+ID: 120
+LB: Top 100 anatomical part from which cell lines are derived from
+KW: site, tissue, stats
 ## ------------------------------------------------------
-select ?cl ?cl_name ?coll where {
-	?cl cello:inCollection ?coll .
-	?cl cello:recommendedName ?cl_name .
-}
+select ?site_name ?site_type ?site_ac (count(?cl) as ?cl_count)
+where {
+    ?cl cello:derivedFromSite ?site .
+    ?site cello:name ?site_name .
+    ?site cello:siteType ?site_type .
+    optional { ?site rdfs:comment ?note } # unused here but shows that a comment may exist
+    optional {?site cello:isIdentifiedByXref / cello:accession ?site_ac } # a few anatomical parts are not identified by a xref
+  }
+group by ?site_name ?site_type ?site_ac
+order by desc(count(?cl))
 limit 100
 
 
 ## ------------------------------------------------------
-ID: 158
+ID: 121
+LB: Count of cell lines originated from lymph nodes in different body parts
+KW: site, anatomy, organ, tissue, body part, stats
+## ------------------------------------------------------
+select ?xref_label ?xref_notation (count(distinct ?cl) as ?cl_count)
+where {
+  ?cl cello:derivedFromSite ?site .
+  ?site cello:isIdentifiedByXref ?xref .
+  ?xref skos:prefLabel ?xref_label ; skos:notation ?xref_notation .
+  ?xref cello:more_specific_than* ?generic_concept .
+  # examples:
+  # UBERON_0002107 liver
+  # UBERON_0002371 bone marrow
+  # UBERON_0000029 lymph node
+  ?generic_concept skos:notation "UBERON_0000029"^^xsd:string .
+  ?generic_concept skos:inScheme db:UBERON .
+}
+group by ?xref_label ?xref_notation
+order by desc(count(distinct ?cl))
+
+
+## ------------------------------------------------------
+ID: 122
+LB: Top 100 most represented cell types in Cellosaurus
+KW: cell-type, cell, stats
+## ------------------------------------------------------
+select ?cell_type_ac ?cell_type_name (count(distinct ?cl) as ?cell_line_count) where {
+    ?cl cello:derivedFromCellType ?ct.
+    ?ct cello:name ?cell_type_name .
+    optional {
+    	?ct cello:isIdentifiedByXref / cello:accession ?cell_type_ac .
+    }
+  }
+group by ?cell_type_ac ?cell_type_name
+order by desc(count(distinct(?cl)))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 123
+LB: Statistics of methods used for gene knockout and gene integration
+KW: ko, int, integrated, knockout, gene knockout, gene integration, stats
+## ------------------------------------------------------
+select  ?modification_class ?method_class  ?method_name (count(*) as ?cnt) where {
+  ?proc_inst cello:hasGenomeModificationMethod ?gem_inst .
+  ?proc_inst a ?modification_class .
+  ?proc_class rdfs:subClassOf OBI:0001364 . # parent cello:GeneIntegration and cello:GeneKnockdown
+  ?gem_inst a ?method_class .
+  #?gem_class rdfs:subClassOf OBI:0600043 . # genome modification method
+  ?method_class rdfs:label ?method_name .
+}
+group by  ?modification_class ?method_class ?method_name
+order by  ?modification_class desc(count(*)) ?method_class ?method_name
+
+
+## ------------------------------------------------------
+ID: 124
+LB: Count of cross-references by database
+KW: database, stats
+## ------------------------------------------------------
+select ?db_class ?db (count(*) as ?xref_count) where {
+  ?xref a cello:Xref .
+  ?xref cello:database ?db .
+  ?db a ?db_class .
+  ?db_class rdfs:subClassOf cello:Database .
+}
+group by ?db_class ?db
+order by desc(count(*))
+
+
+## ------------------------------------------------------
+ID: 125
+LB: Count of publications referenced by publication type
+KW: publication, stats
+## ------------------------------------------------------
+select ?pub_type (count(?cl) as ?cnt) where {
+  ?pub_type rdfs:subClassOf* cello:Publication .
+  optional {?cl rdf:type ?pub_type. }
+}
+group by ?pub_type
+order by desc(count(*))
+
+
+## ------------------------------------------------------
+ID: 126
+LB: Top 100 population (ethnic grouping) of the individual from which human cell lines were sampled
+KW: pop, population, stats
+## ------------------------------------------------------
+select ?population_name (count(?cl) as ?cl_count) where {
+        ?cl cello:derivedFromIndividualBelongingToPopulation ?pop.
+        ?pop cello:name ?population_name .
+  filter not exists { ?cl cello:hasParentCellLine ?any_parent }
+}
+group by ?population_name
+order by desc(count(?cl))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 127
+LB: Top 100 parent cell lines (from which other cell lines have been derived)
+KW: ch, child, stats
+## ------------------------------------------------------
+select ?cl ?cl_name (count(?child) as ?child_count) where {
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:hasChildCellLine ?child .
+}
+group by ?cl ?cl_name
+order by desc(count(?child))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 128
+LB: Top 100 agents used to transform cell lines
+KW: tfor, transformant, stats
+## ------------------------------------------------------
+select ?transformant_name (count(distinct ?cl) as ?cl_count) where {
+  ?cl cello:transformedBy ?annot.
+  ?annot rdfs:label ?transformant_name .
+}
+group by ?transformant_name
+order by desc(count(?annot))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 129
+LB: Top 100 most referenced publications in Cellosaurus
+KW: rx, ref, reference, publication, stats
+## ------------------------------------------------------
+select ?publi ?publi_identifiers (count(distinct(?cl_ac)) as ?cl_count) where {
+  select
+  	?publi
+  	(group_concat(distinct str(?pac); separator = ', ') as ?publi_identifiers)
+    ?cl_ac
+  	where {
+      ?cl a / rdfs:subClassOf cello:CellLine .
+  	  ?cl cello:primaryAccession ?cl_ac .
+      ?cl cello:references ?publi.
+      ?publi a ?publiClass .
+      ?publi cello:seeAlsoXref / cello:accession ?pac.
+    }
+    group by ?publi ?cl_ac
+}
+group by ?publi ?publi_identifiers
+order by desc(count(distinct(?cl_ac)))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 130
+LB: Top 100 authors of publications referenced in Cellosaurus
+KW: author, contributor, publication, stats
+## ------------------------------------------------------
+select
+(str(?person_name) as ?author_name)
+(count(distinct ?publi) as ?publi_count)
+where {
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:references ?publi .
+  ?publi ?p ?contr .
+  ?contr a schema:Person .
+  ?contr cello:name ?person_name .
+}
+group by ?person_name
+order by desc(count(distinct(?publi)))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 131
 LB: Cell lines with at least one publication prior to 1970
-KW: insecta, species, publication, year
+KW: publication, year
 ## ------------------------------------------------------
 select ?cl ?cl_name ?ref_class ?year_str ?id_str ?title_str where {
   ?cl cello:derivedFromIndividualBelongingToSpecies / cello:isIdentifiedByXref ?species_xref .
@@ -1112,8 +584,8 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 159
-LB: Publications referenced in insect cell lines
+ID: 132
+LB: Publications referenced in insect cell line entries
 KW: insecta, species, publication, year
 ## ------------------------------------------------------
 select distinct ?ref_class ?year_str ?id_str ?title_str where {
@@ -1133,57 +605,210 @@ limit 1000
 
 
 ## ------------------------------------------------------
-ID: 160
-LB: Cell lines from patients with a kidney cancer
-KW: disease, cancer, kidney
+ID: 133
+LB: Title, year and type of publication referenced by some cell lines
+KW: rx, rt, references, title, year, publication, patent, thesis, private, QC
 ## ------------------------------------------------------
-# All cell lines with a child of: C3150 "Kidney neoplasm"
-select ?cl ?cl_name  ?disease_id ?disease_label where {
-  ?cl cello:derivedFromIndividualWithDisease ?disease .
+select ?cl (str(?cl_name) as ?cl_name) ?ref_class ?year_str ?id_str ?title_str where {
+  ?cl a / rdfs:subClassOf cello:CellLine .
   ?cl cello:recommendedName ?cl_name .
-  ?disease cello:isIdentifiedByXref ?disease_xref .
-  ?disease rdfs:label ?disease_label .
-  ?disease_xref  cello:more_specific_than* ?generic_disease .
-  ?disease_xref skos:notation ?disease_id .
-  ?generic_disease skos:notation "C3150"^^xsd:string . # Kidney neoplasm
-}
-limit 1000
+  ?cl cello:references ?ref .
+  #values ?ref_class { fabio:ConferencePaper }  # uncomment to set constraint on reference class
+  #values ?ref_class { fabio:JournalArticle }   # uncomment to set constraint on reference class
+  ?ref a ?ref_class .
+  ?ref cello:internalId ?id .
+  ?ref cello:title ?title .
+  ?ref cello:publicationYear ?year .
+  bind(concat('in ', str(?year)) as ?year_str)
+  bind(str(?id) as ?id_str)
+  bind(substr(str(?title),0,60) as ?title_str)
 
-
-## ------------------------------------------------------
-ID: 161
-LB: All the different sarcomas represented in Cellosaurus
-KW: disease, sarcoma
-## ------------------------------------------------------
-# All NCiT terms child of C9118 "Sarcoma"
-select distinct ?concept_id ?concept_label where {
-  ?concept  cello:more_specific_than+ ?generic_concept .
-  ?concept skos:notation ?concept_id ; skos:prefLabel ?concept_label .
-  # ?generic_concept rdfs:label "Sarcoma"^^xsd:string . # we use skos:notation instead
-  ?generic_concept skos:notation "C9118"^^xsd:string .
+  #filter (strstarts(str(?id),"PubMed=") )     # uncomment to set constraint on internal id
+  #filter (strstarts(str(?id),"DOI=") )        # uncomment to set constraint on internal id
+  #filter (strstarts(str(?id),"Patent=") )     # uncomment to set constraint on internal id
+  #filter (strstarts(str(?id),"CelloPub=") )   # uncomment to set constraint on internal id
 }
 limit 100
 
 
 ## ------------------------------------------------------
-ID: 162
-LB: Cell lines from animal belonging the order "carnivora"
-KW: species, carnivora
+ID: 134
+LB: Some cell lines with an omics comment
+KW: omics
 ## ------------------------------------------------------
-# All cell lines with a child of TaxID: 33554
-select ?cl ?cl_name ?xref_db ?xref_ac ?xref_label where {
-  ?cl cello:derivedFromIndividualBelongingToSpecies ?species .
+select ?cl ?cl_name ?omics_category ?sub_category where {
+  ?cl cello:hasOmicsInfo ?annot .
   ?cl cello:recommendedName ?cl_name .
-  ?species  cello:isIdentifiedByXref ?xref .
-  ?xref cello:more_specific_than+ ?generic_concept .
-  ?generic_concept skos:notation "33554"^^xsd:string ; skos:inScheme db:NCBI_TaxID . # Carnivore
-  ?xref cello:accession ?xref_ac ; cello:database ?xref_db; skos:prefLabel ?xref_label .
+  ?annot schema:category ?omics_category .
+  ?annot rdfs:comment ?sub_category .
 }
-limit 2000
+limit 100
 
 
 ## ------------------------------------------------------
-ID: 163
+ID: 135
+LB: Some cell lines with a karyotypic comment
+KW: kar, karyotype
+## ------------------------------------------------------
+select ?cl (str(?cl_name) as ?cl_name) ?shortened_karyotypic_comment where {
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:hasKaryotypicInfoComment ?annot.
+  ?annot rdfs:comment ?comment .
+  bind(
+    if(
+      strlen(str(?comment)) > 140,
+      concat( substr(str(?comment), 0, 140), "..."),
+      str(?comment))
+      as ?shortened_karyotypic_comment)
+}
+limit 3000
+
+
+## ------------------------------------------------------
+ID: 136
+LB: Some cell lines with a gene knockout
+KW: ko, knockout, gene
+## ------------------------------------------------------
+select ?cl ?method (str(?gene_name) as ?gene_name)  (str(?gene_ac) as ?gene_ac) (str(?comment) as ?comment) where {
+  ?cl cello:hasGeneKnockout ?annot.
+  ?annot cello:hasGenomeModificationMethod ?method .
+  ?annot cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref / cello:accession ?gene_ac  .
+  ?gene cello:name ?gene_name .
+  optional {?annot rdfs:comment ?comment . }
+  #filter (bound(?comment)) # uncomment to get only ko annotations with a comment
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 137
+LB: Some senescence comments about cell lines with their source
+KW: sen, senescence, source
+## ------------------------------------------------------
+select ?cl (str(?cl_name) as ?cl_name) ?source_type (str(?source) as ?source) ?shortened_comment
+where {
+  ?cl cello:hasSenescenceComment ?annot.
+  ?cl cello:recommendedName ?cl_name .
+  ?annot rdfs:comment ?comment .
+  optional {
+    ?annot cello:hasSource ?s .
+  	optional { ?s cello:originatesFrom / a ?st }.
+   	optional { ?s cello:originatesFrom / cello:internalId ?id }   	# src origin is a xref or a publi
+    optional { ?s cello:originatesFrom / skos:prefLabel ?org }      # src origin is an organization
+    optional { ?s rdfs:label ?lb }                                  # src origin not specified
+  }
+  bind (coalesce(?id, ?org, ?lb, '-') as ?source)
+  bind (coalesce(?st, '-') as ?source_type)
+  bind(
+    if(
+      strlen(str(?comment)) > 140,
+      concat( substr(str(?comment), 0, 140), "..."),
+      str(?comment))
+      as ?shortened_comment)
+}
+order by ?cl ?source
+limit 100
+
+
+## ------------------------------------------------------
+ID: 138
+LB: Some cell lines with the age of the individual at which the sample was collected to create the cell line
+KW: age, individual
+## ------------------------------------------------------
+select ?cl ?cl_name ?individual_age  where {
+  ?cl cello:derivedFromIndividualAtAge ?individual_age .
+  ?cl cello:recommendedName ?cl_name .
+}
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 139
+LB: Some cell lines known to be resistant to some chemical compound or toxin
+KW: res, resistance, chemical, drug, toxin
+## ------------------------------------------------------
+select ?cl ?cl_name ?compound_class (substr(str(?compound_str),0,36) as ?compound_name) ?compound_iri ?compound_url where
+  {
+   ?cl a / rdfs:subClassOf cello:CellLine .
+   ?cl cello:recommendedName ?cl_name .
+   ?cl cello:hasResistance ?compound.
+   ?compound a ?compound_class .
+   ?compound cello:name ?compound_str .
+   optional {
+    ?compound cello:isIdentifiedByXref ?xref .
+    ?xref cello:accession ?ac.
+    ?xref rdfs:seeAlso ?compound_url .
+  }
+  optional {
+    ?compound cello:isIdentifiedByIRI ?compound_iri .
+  }
+  #filter(!bound(?compound_iri))  # uncomment to see only chemical for which we have no IRI (owl concept)
+  #filter(!bound(?compound_url))  # uncomment to see only chemical for which we have no identifying xref
+}
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 140
+LB: Cell lines with a misspelling record
+KW: miss, misspelling, source
+## ------------------------------------------------------
+select ?cl (str(?cl_name) as ?cl_name) (str(?misspelling_name) as ?misspelling_name) ?appears_in (str(?note) as ?note)
+where {
+  ?cl cello:hasMisspellingRecord ?rec.
+  ?cl cello:recommendedName ?cl_name .
+  ?rec cello:misspellingName ?misspelling_name .
+  optional {?rec rdfs:comment ?note. }
+  optional {
+    ?rec cello:appearsIn ?s .
+  	optional { ?s  a ?st }.
+   	optional { ?s cello:internalId ?id }   	# src origin is a xref or a publi
+    optional { ?s skos:prefLabel ?org }     # src origin is an organization
+    optional { ?s rdfs:label ?lb }          # src origin not specified
+  }
+  bind (str(coalesce(?id, ?org, ?lb, '-')) as ?appears_in)
+  bind (coalesce(?st, '-') as ?source_type)
+  # filter (bound(?s)) # uncomment to get misspelling not linked to a particular source
+  # filter (bound(?note)) # uncomment to get misspelling with an additional note
+}
+
+
+## ------------------------------------------------------
+ID: 141
+LB: Some cell lines with a miscellaneous comment
+KW: misc, miscellaneous
+## ------------------------------------------------------
+select ?cl (str(?cl_name) as ?cl_name) (str(?comment) as ?miscellaneous_comment) where {
+  ?cl cello:hasMiscellaneousInfoComment ?annot.
+  ?cl cello:recommendedName ?cl_name .
+  ?annot rdfs:comment ?comment .
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 142
+LB: Count of cell lines for each insect taxon
+KW: ox, taxon, species
+## ------------------------------------------------------
+select ?taxon_scheme ?taxon_ac ?taxon_name (count(?cl) as ?cell_line_count) where {
+?cl cello:derivedFromIndividualBelongingToSpecies  / cello:isIdentifiedByXref ?taxon.
+?taxon skos:prefLabel ?taxon_name.
+?taxon skos:inScheme ?taxon_scheme .
+?taxon skos:notation ?taxon_ac .
+?taxon cello:more_specific_than* / skos:prefLabel "Insecta"^^xsd:string
+}
+group by ?taxon_scheme ?taxon_ac ?taxon_name
+order by desc(count(?cl))
+limit 300
+
+
+## ------------------------------------------------------
+ID: 143
 LB: Names of all the species of sturgeons represented in Cellosaurus
 KW: species, sturgeons, Acipenseridae
 ## ------------------------------------------------------
@@ -1198,25 +823,27 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 164
-LB: Cells lines obtained from muscular tissue
-KW: tissue, site, muscle
+ID: 144
+LB: Cell lines that are annotated as originating from liver
+KW: site, anatomy, organ, tissue, body part
 ## ------------------------------------------------------
-# All cell lines with a child of UBERON_0001630 muscle organ
-select distinct ?cl ?cl_name ?xref_db ?xref_ac ?xref_label where {
+select ?cl ?cl_name ?xref_label ?xref_notation
+where {
   ?cl cello:derivedFromSite ?site .
   ?cl cello:recommendedName ?cl_name .
-  ?site  cello:isIdentifiedByXref ?xref .
+  ?site cello:isIdentifiedByXref ?xref .
+  ?xref skos:prefLabel ?xref_label ; skos:notation ?xref_notation .
   ?xref cello:more_specific_than* ?generic_concept .
-  ?generic_concept skos:notation "UBERON_0001630"^^xsd:string ; skos:inScheme db:UBERON . # muscle organ
-  ?xref cello:accession ?xref_ac ; cello:database ?xref_db; skos:prefLabel ?xref_label .
+  # examples: liver: UBERON_0002107, bone marrow: UBERON_0002371, lymph node: UBERON_0000029
+  ?generic_concept skos:notation "UBERON_0002107"^^xsd:string . # liver
+  ?generic_concept skos:inScheme db:UBERON .
 }
-limit 1000
+limit 100
 
 
 ## ------------------------------------------------------
-ID: 165
-LB: Cell lines that are endothelial cells
+ID: 145
+LB: Cell lines that are annotated as endothelial cells
 KW: cell type, endothelial
 ## ------------------------------------------------------
 # All cell line with a child of CL_0000115 A+ endothelial cell
@@ -1230,3 +857,354 @@ select distinct ?cl ?cl_name ?xref_db ?xref_ac ?xref_label where {
 }
 limit 1000
 
+
+## ------------------------------------------------------
+ID: 146
+LB: Some hybrid cell lines with the species from which they originate
+KW: ox, species, hybrid
+## ------------------------------------------------------
+select
+  ?cl_class ?cl ?cl_name
+  (count(?species_name) as ?species_cnt)
+  (group_concat(?species_name ; separator = ', ') as ?species_list)
+  where {
+    select ?cl_class ?cl ?cl_name ?species_name
+      where {
+      ?cl a ?cl_class .
+      ?cl cello:recommendedName ?cl_name .
+      ?cl cello:derivedFromIndividualBelongingToSpecies / rdfs:label ?species_name .
+    }
+}
+group by ?cl_class ?cl ?cl_name having (count(?species_name) > 1)
+order by desc(count(?species_name))
+limit 100
+
+
+## ------------------------------------------------------
+ID: 147
+LB: Some cell lines with the name and cross-reference of their transformant
+KW: tfor, transformant
+## ------------------------------------------------------
+select ?cl ?cl_name (str(?lbl) as ?transformant_name) ?xref_db ?xref_ac (str(?cm) as ?comment)
+  where {
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:transformedBy ?annot.
+  ?annot rdfs:label ?lbl .
+  ?annot a ?annot_class .
+  optional {?annot rdfs:comment ?cm . }
+  optional {?annot cello:isIdentifiedByXref ?xr . ?xr cello:database ?xref_db ; cello:accession ?xref_ac .}
+  #filter ( ! bound(?xr)) # uncomment to see only transformants not identified by a cross-reference
+  #filter ( bound(?cm) )  # uncomment to see transformants with a non empty optional comment
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 148
+LB: Some cell lines and the group they belong to
+KW: group, part
+## ------------------------------------------------------
+select ?cl ?cl_name ?group where {
+        ?cl cello:inGroup ?group .
+        ?cl cello:recommendedName ?cl_name .
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 149
+LB: Some cell lines and the panel (collection) they belong to
+KW: part, collection
+## ------------------------------------------------------
+select ?cl ?cl_name ?coll where {
+        ?cl cello:inCollection ?coll .
+        ?cl cello:recommendedName ?cl_name .
+}
+limit 100
+
+
+## ------------------------------------------------------
+ID: 150
+LB: Registered name(s) of some cell lines
+KW: reg, registration, registeredName
+## ------------------------------------------------------
+select ?cl ?cl_name
+        (count(?registered_name) as ?registered_name_count)
+        (group_concat(str(?registered_name); separator=' , ') as ?registered_names)
+where {
+        ?cl cello:registeredName ?registered_name .
+    ?cl cello:recommendedName ?cl_name .
+}
+group by ?cl ?cl_name
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 151
+LB: Detailed registered name record of some cell lines
+KW: reg, registration, registeredName
+## ------------------------------------------------------
+select ?cl ?cl_name ?registered_name ?organization_name  where {
+        ?cl cello:hasRegistationRecord ?record .
+    ?cl cello:recommendedName ?cl_name .
+        ?record cello:registeredName ?registered_name .
+  ?record cello:inRegister / cello:recommendedName ?organization_name .
+}
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 152
+LB: Direct and indirect parent cell lines from which some cell line originates
+KW: hi, parent
+## ------------------------------------------------------
+select ?cl ?cl_name ?parent_cl ?parent_cl_name where {
+  values ?cl {	cvcl:CVCL_D5AX }
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:hasParentCellLine+ ?parent_cl .
+  ?parent_cl cello:recommendedName ?parent_cl_name .
+}
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 153
+LB: Cell lines originating from same individual as a given cell line (sister cell lines)
+KW: oi, sister, derivedFromSameIndividualAs
+## ------------------------------------------------------
+select ?cl ?cl_name ?sister_cl ?sister_cl_name where
+{
+  values ?cl { cvcl:CVCL_X038 } # the IRI of the cell line which we look the sisters for
+  ?cl cello:derivedFromSameIndividualAs ?sister_cl .
+  ?cl cello:recommendedName ?cl_name .
+  ?sister_cl cello:recommendedName ?sister_cl_name .
+}
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 154
+LB: Count of sequence variation annotations by sequence variation type and status
+KW: sequence variation, stats
+## ------------------------------------------------------
+select ?seqvar_class ?status ?with_source (count(distinct ?annot) as ?seqvar_count) where {
+ ?annot a cello:SequenceVariationInfo .
+ optional { ?annot cello:hasTarget ?sv . ?sv a ?seqvar_class  }
+ optional { ?annot  cello:variationStatus ?status }
+ optional { ?annot  cello:hasSource ?src }
+ bind( if (bound(?src), "yes", "no") as ?with_source)
+}
+group by ?seqvar_class ?status ?with_source
+order by ?seqvar_class ?status ?with_source
+
+
+## ------------------------------------------------------
+ID: 155
+LB: Count of sequence variation annotations by sequence variation type and other characteristics
+KW: sequence variation, stats
+## ------------------------------------------------------
+select ?sv_name ?with_none_reported ?with_hgvs ?with_comment ?gene_cnt (count(*) as ?cases_cnt) {
+select ?sv ?sv_name ?nr ?with_none_reported ?hgvs ?with_hgvs ?comment ?with_comment (count(?gene) as ?gene_cnt) where {
+	?sv_type rdfs:subClassOf* cello:SequenceVariation .
+    ?sv_type rdfs:label ?sv_name .
+    ?sv a ?sv_type .
+    ?sv cello:ofGene ?gene .
+    optional { ?sv cello:hgvs ?hgvs . }
+    optional { ?sv cello:noneReported ?nr . }
+    optional { ?sv rdfs:comment ?comment . }
+  	bind (if(bound(?hgvs), "Yes", "No") as ?with_hgvs)
+  	bind (if(?nr = 1, "Yes", "No") as ?with_none_reported)
+  	bind (if(bound(?comment), "Yes", "No") as ?with_comment)
+}
+group by ?sv ?sv_name ?nr ?with_none_reported ?hgvs ?with_hgvs ?comment ?with_comment
+}
+group by ?sv_name ?with_none_reported ?with_hgvs ?with_comment ?gene_cnt
+order by ?sv_name ?with_none_reported
+
+
+## ------------------------------------------------------
+ID: 156
+LB: Some topic comments (optionally with their source) about cell lines
+KW: misc, omics, anec, biot, caution, char, donor, time, prob
+## ------------------------------------------------------
+select ?cl ?cl_name ?annot_class ?source ?shortened_comment where {
+  values ?annot_class {
+    cello:AnecdotalComment
+    cello:BiotechnologyComment
+    cello:CautionComment
+    cello:CharacteristicsComment
+    cello:DonorInfoComment
+    cello:DoublingTime
+    cello:OmicsInfo
+    cello:ProblematicCellLineComment
+    cello:MiscellaneousInfoComment
+  }
+  ?prop rdfs:subPropertyOf cello:hasAnnotation .
+  ?cl ?prop ?annot .
+  ?cl cello:recommendedName ?cl_name .
+  ?annot a ?annot_class .
+  ?annot rdfs:comment ?comment .
+
+  optional {
+    ?annot cello:hasSource ?s .
+  	optional { ?s cello:originatesFrom / a ?st }.
+   	optional { ?s cello:originatesFrom / cello:internalId ?id }   	# src origin is a xref or a publi
+    optional { ?s cello:originatesFrom / skos:prefLabel ?org }      # src origin is an organization
+    optional { ?s rdfs:label ?lb }                                  # src origin not specified
+  }
+  bind (coalesce(?id, ?org, ?lb, '-') as ?source)
+  bind (coalesce(?st, '-') as ?source_type)
+  bind (str(substr(?comment, 0, 80)) as ?shortened_comment)
+  #filter (?source != '-') # uncomment to get only sourced comments
+}
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 157
+LB: Version, date of entry creation, and date of last update in Cellosaurus for some cell lines
+KW: dt, dtc, dtu, dtv, version
+## ------------------------------------------------------
+select ?cl ?cl_name ?version ?date_added_to_cellosaurus ?date_of_last_change  where {
+        ?cl cello:version ?version .
+        ?cl cello:created ?date_added_to_cellosaurus .
+        ?cl cello:modified ?date_of_last_change .
+    ?cl cello:recommendedName ?cl_name .
+}
+order by ?cl
+limit 100
+
+
+## ------------------------------------------------------
+ID: 158
+LB: Cross-references of a chosen cell line
+KW: dr, xref
+## ------------------------------------------------------
+select ?cl ?cl_name ?xref_db ?xref_ac where {
+values ?cl { cvcl:CVCL_1100 }
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:seeAlsoXref ?xref .
+  ?xref cello:database ?xref_db.
+  ?xref cello:accession ?xref_ac.
+}
+order by ?xref_db ?xref_ac
+
+
+## ------------------------------------------------------
+ID: 159
+LB: Example (sample) of a cross-reference with its properties from each database
+KW: dr, xref, disc, discontinued
+## ------------------------------------------------------
+select ?db_class ?db (sample(?ac) as ?sample_ac) (sample(str(?disc)) as ?sample_disc) (sample(?lbl) as ?sample_label) (sample(?url) as ?sample_url) where {
+  ?xref a cello:Xref .
+  ?xref cello:database ?db.
+  ?xref cello:accession ?ac.
+  ?db a ?db_class .
+  ?db_class rdfs:subClassOf cello:Database . # (useful to get rid of irrelevant owl:NamedIndividual)
+  optional { ?xref cello:discontinued ?disc  }.
+  optional { ?xref rdfs:label ?lbl  }.
+  optional { ?xref rdfs:seeAlso ?url } .
+  # filter (bound(?disc))  # uncomment to see xrefs identifying a discontinued product reference in a catalog
+  # filter (bound(?lbl))   # uncomment to see xrefs having a label (genes, chemicals, anatomy, ...)
+  # filter (! bound(?url)) # uncomment to see xrefs having NO url (discontinued products, ...)
+}
+group by ?db_class ?db
+order by ?db_class ?db
+limit 300
+
+
+## ------------------------------------------------------
+ID: 160
+LB: Count of cell lines established by organization
+KW: from, provided, established by, organization, stats, private
+## ------------------------------------------------------
+select
+        (str(?oname) as ?org_name) 		# organization name
+        (str(?pname) as ?person_name)   # name of contact person (optional)
+        (count(?cl) as ?cl_count)		# count of cell linesknown as etablished by organization
+where {
+  #values ?cl { cvcl:CVCL_C2T2 }
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:establishedBy ?org.
+  ?org a schema:Organization.
+  ?org cello:recommendedName ?oname . # there is 1 and only 1 rec name by org
+  optional {
+    ?person cello:isMemberOf ?org.
+    ?person a schema:Person .
+    ?person cello:name ?pname .
+  }
+}
+group by ?oname ?pname
+order by desc(count(?cl))
+
+
+## ------------------------------------------------------
+ID: 161
+LB: Super class and equivalent class of each class defined in the cello ontology
+KW: ontology, class, semantics, private
+## ------------------------------------------------------
+select ?cello_class ?hasSuperClass ?rdfs_superClass ?hasEqClass ?owl_equivalentClass  where {
+  ?cello_class a owl:Class .
+  ?cello_class rdfs:isDefinedBy cello: .
+  optional { ?cello_class owl:equivalentClass ?owl_equivalentClass . }
+  optional { ?cello_class rdfs:subClassOf ?rdfs_superClass . }
+  bind(if(bound(?owl_equivalentClass),"yes", "no") as ?hasEqClass)
+  bind(if(bound(?rdfs_superClass),"yes", "no") as ?hasSuperClass)
+}
+order by ?rdfs_superClass ?owl_equivalentClass ?parent ?cello_class
+
+
+## ------------------------------------------------------
+ID: 162
+LB: Super property and equivalent property of each property defined in the cello ontology
+KW: ontology, property, semantics, private
+## ------------------------------------------------------
+select ?cello_prop ?hasSuperProp ?rdfs_superProp ?hasEqProp ?owl_equivalentProp  where {
+  ?cello_prop a rdf:Property .
+  ?cello_prop rdfs:isDefinedBy cello: .
+  optional { ?cello_prop owl:equivalentProperty ?owl_equivalentProp . }
+  optional { ?cello_prop rdfs:subPropertyOf ?rdfs_superProp . }
+  bind(if(bound(?owl_equivalentProp),"yes", "no") as ?hasEqProp)
+  bind(if(bound(?rdfs_superProp),"yes", "no") as ?hasSuperProp)
+}
+order by ?rdfs_superProp ?owl_equivalentProp ?parent ?cello_prop
+
+
+## ------------------------------------------------------
+ID: 163
+LB: Usage of name properties for instances of each class defined in cello: ontology
+KW: id, sy, miss, misspelling, reg, registration, label, name, recommendedName, misspellingName, private, semantics
+## ------------------------------------------------------
+select distinct ?entity_type ?sub_prop
+where {
+  # values ?entity_type { cello:CellLine } # uncomment to see name properties used for cello:CellLine instances
+  ?sub_prop rdfs:subPropertyOf* rdfs:label .
+  ?entity ?sub_prop ?_ .
+  ?entity a ?entity_type .
+  filter strstarts(str(?entity_type), (str(cello:)))
+}
+order by ?entity_type
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 164
+LB: Typical triples found in Cellosaurus RDF (without filtering some irrelevant tuples)
+KW: ontology, range, domain, class, property, subject, object, datatype, semantics, private
+## ------------------------------------------------------
+select ?subject_class ?property ?object_type (count(*) as ?triple_count) where {
+  GRAPH <https://www.cellosaurus.org/rdf/graphs/main> {
+    ?s ?property ?o.
+    ?s a ?subject_class.
+    optional {?o a ?o_class }
+    bind(coalesce(?o_class, datatype(?o), 'IRI') as ?object_type)
+  }
+}
+group by ?subject_class ?property ?object_type
+order by ?subject_class ?property ?object_type

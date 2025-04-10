@@ -1,4 +1,10 @@
+from api_platform import ApiPlatform
 from namespace_registry import NamespaceRegistry
+from sparql_client import EndpointClient
+from optparse import OptionParser
+import sys
+
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class Query:
@@ -25,6 +31,15 @@ class Query:
         lines.append(")")
         return "\n".join(lines)
     
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_prefixed_sparql(self, ns_reg: NamespaceRegistry):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        lines = []
+        q.set_necessary_sparql_prefixes(ns_reg)
+        for pfx in self.prefixes: lines.append(pfx) 
+        for spa in self.sparql:   lines.append(spa)       
+        return "\n".join(lines)
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def set_necessary_sparql_prefixes(self, ns_reg: NamespaceRegistry):
@@ -100,13 +115,36 @@ class QueryFileReader:
         f_in.close()
 
 
+#-------------------------------------------------
 if __name__ == '__main__':
+#-------------------------------------------------
 
+    optparser = OptionParser(usage="python queries_utils.py [--crlf] sparql_service_url")
+    optparser.add_option("-c", "--crlf",
+        action="store_true", dest="with_crlf", default=False,
+        help="When set, output file line sep is CR/LF instead of LF")
+    (options, args) = optparser.parse_args()
+    with_crlf = options.with_crlf
+    if len(args) != 1:
+        print("ERROR, usage is: python queries_utils.py [--crlf] sparql_service_url")    
+        sys.exit(1)
 
+    sparql_service = args[0]
+    platform = ApiPlatform("prod")
+    ns_reg = NamespaceRegistry(platform)
+    client = EndpointClient(server_url=sparql_service, ns_reg=ns_reg)
 
     reader = QueryFileReader()
+    sep = "\t"
+    elems = ["status", "rows", "t[s]", "id", "label"]
+    print(sep.join(elems))
     for q in reader.query_list:
-        print(q)
-        print("-----")        
-        print(q.get_ttl_for_sparql_endpoint())
-        print("---------------------------------------")        
+        sparql_lines = q.get_prefixed_sparql(ns_reg)
+        response = client.run_query(sparql_lines)
+        rows = response.get("rows") or 0
+        duration = response.get("duration") or 0.0
+        status = "OK" if response.get("success") else "ER"
+        elems = [status, str(rows), str(duration), q.id, q.label]
+        print(sep.join(elems))
+    print("end")
+    

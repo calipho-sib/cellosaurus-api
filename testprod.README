@@ -34,11 +34,14 @@ git pull
 #
 ...
 
+target_platform=test
+# target_platform=prod
+
 #
 # build api and solr indexes and solr data 
 #
-/bin/python3.9 cellapi_builder.py BUILD
-/bin/python3.9 cellapi_builder.py SOLR   (long process, a few minutes)
+/bin/python3.9 cellapi_builder.py platform=$target_platform BUILD
+/bin/python3.9 cellapi_builder.py platform=$target_platform SOLR   (long process, a few minutes)
 
 #
 # reload solr data in solr core
@@ -46,6 +49,12 @@ git pull
 ./solr_service.sh restart
 ./solr/bin/post -c pamcore1 -d "<delete><query>*:*</query></delete>"
 ./solr/bin/post -c pamcore1 solr_data/data*.xml
+
+#
+# build and load RDF data 
+#
+./doit-rdf.sh $target_platform > logit 2>&1 &
+
 
 #
 # restart api service
@@ -59,24 +68,33 @@ git pull
 #
 # copy code, data_in and solr_data to remote server
 #
+
+target_server=buck
+#target_server=...
+
 mac-098:cellapi pmichel$
-./_deploy_api_code.sh buck
-./_push_dir.sh data_in buck
-./_push_dir.sh solr_data buck
+./scripts/deploy_api_code.sh $target_server
+./scripts/push_dir.sh data_in $target_server
+./scripts/push_dir.sh solr_data $target_server
+./scripts/push_dir.sh rdf_data $target_server
 
 #
 # open code, data_in and solr_data archives
 #
-ssh buck
+ssh $target_server
+
+target_platform=test
+
 cd /work/cellapi
 tar xvzf cellapi.tar.gz
 tar xvzf data_in.tar.gz
 tar xvzf solr_data.tar.gz
+tar xvzf rdf_data.tar.gz
 
 #
 # build api and solr indexes and solr data
 #
-/bin/python3.9 cellapi_builder.py BUILD
+/bin/python3.9 cellapi_builder.py --platform=$target_platform BUILD
 
 #
 # reload solr data in solr core
@@ -92,9 +110,9 @@ tar xvzf solr_data.tar.gz
 ./api_service.sh start
 
 #
-# build RDF and load files in virtuoso
+# setup and load RDF files in virtuoso
 #
-python ./cellapi_builder.py RDF && ./sparql_service.sh clear  && cd private/scripts/ && ./load_ttl_files.sh && cd ../..
+./scripts/reload_rdf_all.sh 
 
 
 -------------------------------------------------------
@@ -118,7 +136,7 @@ also: https://api.cellosaurus.org/
 
 -------------- TEST for CLASTR ------------------------
 
-
+docker-compose down
 docker-compose up --build -d
 
 DEV
