@@ -1208,3 +1208,187 @@ select ?subject_class ?property ?object_type (count(*) as ?triple_count) where {
 }
 group by ?subject_class ?property ?object_type
 order by ?subject_class ?property ?object_type
+
+
+## ===============================================================
+## queries below were added after release 52, April 10, 2025 
+## ===============================================================
+
+
+## ------------------------------------------------------
+ID: 165
+LB: Cell lines with a EGFR mutation
+KW: mutation, sequence variation
+## ------------------------------------------------------
+select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?gene_ac ?gene_name  where {
+  values (?seqvar_class ?gene_ac_xsd) { (cello:GeneMutation  "HGNC:3236"^^xsd:string) } # mutations (of) EGFR gene
+  ?cl cello:recommendedName ?cl_name_xsd .
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:variationStatus ?status_xsd .
+  ?annot cello:hasTarget ?seqvar .
+  ?seqvar a ?seqvar_class .
+  ?seqvar rdfs:label ?seqvar_label_xsd .
+  ?seqvar cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref ?xref .
+  ?xref cello:accession ?gene_ac_xsd .
+  ?xref rdfs:label ?gene_name_xsd .
+  bind(str(?cl_name_xsd) as ?cl_name)
+  bind(str(?status_xsd) as ?status)
+  bind(str(?seqvar_label_xsd) as ?seqvar_label)
+  bind(str(?gene_ac_xsd) as ?gene_ac)
+  bind(str(?gene_name_xsd) as ?gene_name)
+}
+order by ?ac
+limit 10000
+
+
+## ------------------------------------------------------
+ID: 166
+LB: Some cell lines with an hemizygous mutation
+KW: mutation, sequence variation, zygozity
+## ------------------------------------------------------
+select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac ?gene_name  where {
+  # possible values for zygozity are Hemizygous Hemizygous or homozygous Heteroplasmic 
+  # Heterozygous Heterozygous or homozygous Homoplasmic Homozygous Mosaic Unspecified
+  values ( ?zygozity ) { ( "Hemizygous"^^xsd:string) }
+  ?cl cello:recommendedName ?cl_name_xsd .
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:variationStatus ?status_xsd .
+  ?annot cello:hasTarget ?seqvar .
+  ?seqvar cello:zygosity ?zygozity .
+  ?seqvar a ?seqvar_class .
+  ?seqvar rdfs:label ?seqvar_label_xsd .
+  ?seqvar cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref ?xref .
+  ?xref cello:accession ?gene_ac_xsd .
+  ?xref rdfs:label ?gene_name_xsd .
+  bind(str(?cl_name_xsd) as ?cl_name)
+  bind(str(?status_xsd) as ?status)
+  bind(str(?seqvar_label_xsd) as ?seqvar_label)
+  bind(str(?gene_ac_xsd) as ?gene_ac)
+  bind(str(?gene_name_xsd) as ?gene_name)
+}
+order by ?cl_name
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 167
+LB: Some cell lines with a BCR ABL1 fusion
+KW: gene, fusion, sequence variation
+## ------------------------------------------------------
+select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac1 ?gene_name1 ?gene_ac2 ?gene_name2  where {
+  values ( ?gene_ac_xsd1 ?gene_ac_xsd2 ) { ( "HGNC:76"^^xsd:string "HGNC:1014"^^xsd:string ) } # accession of gene ABL1 and BCR
+  ?cl cello:recommendedName ?cl_name_xsd .
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:variationStatus ?status_xsd .
+  ?annot cello:hasTarget ?seqvar .
+  ?seqvar a ?seqvar_class .
+  ?seqvar rdfs:label ?seqvar_label_xsd .
+  ?seqvar cello:ofGene ?gene1 .
+  ?seqvar cello:ofGene ?gene2 .
+  ?gene1 cello:isIdentifiedByXref ?xref1 .
+  ?xref1 cello:accession ?gene_ac_xsd1 .
+  ?xref1 rdfs:label ?gene_name_xsd1 .
+  ?gene2 cello:isIdentifiedByXref ?xref2 .
+  ?xref2 cello:accession ?gene_ac_xsd2 .
+  ?xref2 rdfs:label ?gene_name_xsd2 .
+  bind(str(?cl_name_xsd) as ?cl_name)
+  bind(str(?status_xsd) as ?status)
+  bind(str(?seqvar_label_xsd) as ?seqvar_label)
+  bind(str(?gene_ac_xsd1) as ?gene_ac1)
+  bind(str(?gene_name_xsd1) as ?gene_name1)
+  bind(str(?gene_ac_xsd2) as ?gene_ac2)
+  bind(str(?gene_name_xsd2) as ?gene_name2)
+}
+order by ?cl_name
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 167
+LB: Some cell lines with a CDKN2A deletion
+KW: gene, deletion, sequence variation
+## ------------------------------------------------------
+select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac ?gene_name  where {
+  values ( ?seqvar_class ?gene_ac_xsd ) { ( cello:GeneDeletion "HGNC:1787"^^xsd:string) } # HGNC accession of CDKN2A
+  ?cl cello:recommendedName ?cl_name_xsd .
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:variationStatus ?status_xsd .
+  ?annot cello:hasTarget ?seqvar .
+  ?seqvar cello:zygosity ?zygozity .
+  ?seqvar a ?seqvar_class .
+  ?seqvar rdfs:label ?seqvar_label_xsd .
+  ?seqvar cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref ?xref .
+  ?xref cello:accession ?gene_ac_xsd .
+  ?xref rdfs:label ?gene_name_xsd .
+  bind(str(?cl_name_xsd) as ?cl_name)
+  bind(str(?status_xsd) as ?status)
+  bind(str(?seqvar_label_xsd) as ?seqvar_label)
+  bind(str(?gene_ac_xsd) as ?gene_ac)
+  bind(str(?gene_name_xsd) as ?gene_name)
+}
+order by ?cl_name
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 168
+LB: Cell lines with a *RAS (HRAS, NRAS, KRAS) in "p.Gly12"
+KW: gene, mutation, sequence variation
+## ------------------------------------------------------
+select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac ?gene_name  where {
+  #values ( ?seqvar_class ?gene_ac_xsd ) { ( cello:GeneDeletion "HGNC:1787"^^xsd:string) } # HGNC accession of CDKN2A
+  ?cl cello:recommendedName ?cl_name_xsd .
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:variationStatus ?status_xsd .
+  ?annot cello:hasTarget ?seqvar .
+  ?seqvar cello:zygosity ?zygozity .
+  ?seqvar a ?seqvar_class .
+  ?seqvar rdfs:label ?seqvar_label_xsd .
+  ?seqvar cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref ?xref .
+  ?xref cello:accession ?gene_ac_xsd .
+  ?xref rdfs:label ?gene_name_xsd .
+  bind(str(?cl_name_xsd) as ?cl_name)
+  bind(str(?status_xsd) as ?status)
+  bind(str(?seqvar_label_xsd) as ?seqvar_label)
+  bind(str(?gene_ac_xsd) as ?gene_ac)
+  bind(str(?gene_name_xsd) as ?gene_name)  
+  filter(contains(?seqvar_label, 'p.Gly12')) 	# matches p.Gly12 anywere in the mutation label
+  filter(regex(?gene_name, '.*RAS')) 			# matches any character followed with RAS, i.e. HRAS, NRAS, KRAS
+}
+order by ?cl_name
+limit 5000
+
+
+## ------------------------------------------------------
+ID: 168
+LB: Mouse cell lines with a sequence variation
+KW: gene, mutation, sequence variation, species, mouse
+## ------------------------------------------------------
+select distinct ?cl ?cl_name ?species_ac ?species_label ?seqvar_class ?gene_ac  ?gene_name  where {
+  values ( ?generic_species_notation ) { ( "10090"^^xsd:string) } # NCBI_TaxID accession of Mouse
+  ?cl cello:recommendedName ?cl_name_xsd .
+  ?cl cello:derivedFromIndividualBelongingToSpecies ?species .
+  ?species  cello:isIdentifiedByXref ?species_xref .
+  ?species cello:name ?species_label .
+  ?species_xref cello:accession ?species_ac .
+  ?species_xref cello:more_specific_than* ?generic_concept .
+  ?generic_concept skos:notation ?generic_species_notation ; skos:inScheme db:NCBI_TaxID . # Mouse = 10090
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:hasTarget ?seqvar .
+  ?seqvar a ?seqvar_class .
+  ?seqvar cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref ?gene_xref .
+  ?gene_xref cello:accession ?gene_ac_xsd .
+  ?gene_xref rdfs:label ?gene_name_xsd .
+  bind(str(?cl_name_xsd) as ?cl_name)
+  bind(str(?status_xsd) as ?status)
+  bind(str(?seqvar_label_xsd) as ?seqvar_label)
+  bind(str(?gene_ac_xsd) as ?gene_ac)
+  bind(str(?gene_name_xsd) as ?gene_name)  
+}
+order by ?cl_name
+limit 1000
