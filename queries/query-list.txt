@@ -1210,11 +1210,6 @@ group by ?subject_class ?property ?object_type
 order by ?subject_class ?property ?object_type
 
 
-## ===============================================================
-## queries below were added after release 52, April 10, 2025 
-## ===============================================================
-
-
 ## ------------------------------------------------------
 ID: 165
 LB: Cell lines with a EGFR mutation

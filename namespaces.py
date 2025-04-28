@@ -520,7 +520,8 @@ class FBcvNamespace(BaseNamespace):
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def __init__(self): 
         super(FBcvNamespace, self).__init__("FBcv", "http://purl.obolibrary.org/obo/FBcv_")
-        self._0003008 = self.registerClass("0003008", label="CRISPR/Cas9")   # genome modification method subclass
+        self._0003008 = self.registerClass("0003008", label="CRISPR/Cas9")      # genome modification method subclass
+        self._0005070 = self.registerClass("0005070", label="Protein trap")     # genome modification method subclass
 
 
 

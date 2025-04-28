@@ -129,6 +129,7 @@ class RdfBuilder:
             "Null mutation": ns.cello.NullMutation,
             "P-element": ns.cello.PElement,
             "PiggyBac transposition": ns.cello.PiggybacTransposition,
+            "Protein trap": ns.cello.ProteinTrap,
             "Prime editing": ns.cello.PrimeEditing,
             "Promoterless gene targeting": ns.cello.PromoterlessGeneTargeting,
             "Recombinant Adeno-Associated Virus": ns.cello.RecombinantAdenoAssociatedVirus,

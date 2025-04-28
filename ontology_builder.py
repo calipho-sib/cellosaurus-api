@@ -173,6 +173,7 @@ class OntologyBuilder:
 
         # local named individuals of external classes for genome modification methods
         ns.describe(ns.cello.CrisprCas9, ns.rdf.type, ns.FBcv._0003008)
+        ns.describe(ns.cello.ProteinTrap, ns.rdf.type, ns.FBcv._0005070)
         ns.describe(ns.cello.XRay, ns.rdf.type, ns.NCIt.C17262)
         ns.describe(ns.cello.GammaRadiation, ns.rdf.type, ns.NCIt.C44386)
         ns.describe(ns.cello.Transfection, ns.rdf.type, ns.OBI._0001152)

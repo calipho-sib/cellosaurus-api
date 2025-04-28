@@ -82,10 +82,11 @@ class CelloOntologyNamespace(BaseNamespace):
         self.NullMutation = self.registerNamedIndividual("NullMutation", label="Null mutation")                                               # described
         self.PElement = self.registerNamedIndividual("PElement", label="P-element")                                                           # described
         self.PiggybacTransposition = self.registerNamedIndividual("PiggybacTransposition", label="PiggyBac transposition")                    # described
+        self.ProteinTrap = self.registerNamedIndividual("ProteinTrap", label="Protein trap")                                                  # TO BE DESCRIBED
         self.PrimeEditing = self.registerNamedIndividual("PrimeEditing", label="Prime editing")                                               # described
         self.PromoterlessGeneTargeting = self.registerNamedIndividual("PromoterlessGeneTargeting", label="Promoterless gene targeting")       # described
         self.RecombinantAdenoAssociatedVirus = self.registerNamedIndividual("RecombinantAdenoAssociatedVirus", label="Recombinant Adeno-Associated Virus")    # described
-        self.RMCE = self.registerNamedIndividual("RMCE", label="Recombinase-mediated cassette exchange")                                      # described
+        self.RMCE = self.registerNamedIndividual("RMCE", label="Recombinase-mediated cassette exchange")                                                      # described
         self.ShrnaKnockdown = self.registerNamedIndividual("ShrnaKnockdown", label="shRNA knockdown")                                                         # described
         self.SleepingBeautyTransposition = self.registerNamedIndividual("SleepingBeautyTransposition", label="Sleeping Beauty transposition")                 # described
         self.SpontaneousMutation = self.registerNamedIndividual("SpontaneousMutation", label="Spontaneous mutation")                          # described
