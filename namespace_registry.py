@@ -103,7 +103,7 @@ class NamespaceRegistry:
         lines.append(term.iri)
         label = term.props.get("rdfs:label")
         if label is None:
-            label = "".join(["\"", term.get_label_str(), "\"", "^^xsd:string"])
+            label = "".join(["\"", term.get_label_str(), "\""])
             term.props["rdfs:label"] = { label }
 
         # build composite comment including label, skos relationships (otherwise invisible in widoco)
@@ -204,7 +204,7 @@ class NamespaceRegistry:
         composite_content = "<br>".join(parts)
         quote = "\""
         if "\"" in composite_content: quote = "\"\"\"" 
-        result = "".join([quote, composite_content, quote, "^^xsd:string"])
+        result = "".join([quote, composite_content, quote])
         if len(composite_content)>0:
             term.props["rdfs:comment"] = { result } 
         term.composite_comment_already_built = True       

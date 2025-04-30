@@ -35,14 +35,14 @@ class BaseNamespace:
 
     def registerNamedIndividual(self, id, label=None, comment=None, hidden=False):
         iri = self.registerTerm(id, p="rdf:type", v={ "owl:NamedIndividual" }, hidden=hidden)
-        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
-        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
+        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"")
+        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"")
         return iri
     
     def registerClass(self, id, label=None, comment=None, hidden=False):
         iri = self.registerTerm(id, p="rdf:type", v={ "owl:Class" }, hidden=hidden)
-        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
-        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
+        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"")
+        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"")
         return iri
     
     def registerProperty(self, id, hidden=False):
@@ -50,20 +50,20 @@ class BaseNamespace:
 
     def registerDatatypeProperty(self, id,   label=None, comment=None, hidden=False):
         iri = self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:DatatypeProperty" }, hidden=hidden)
-        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
-        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
+        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"")
+        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"")
         return iri
     
     def registerObjectProperty(self, id,  label=None, comment=None, hidden=False):
         iri = self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:ObjectProperty" }, hidden=hidden)
-        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
-        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
+        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"")
+        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"")
         return iri
 
     def registerAnnotationProperty(self, id,  label=None, comment=None, hidden=False):
         iri = self.registerTerm(id, p="rdf:type", v={ "rdf:Property", "owl:AnnotationProperty" }, hidden=hidden)
-        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"^^xsd:string")
-        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"^^xsd:string")
+        if label   is not None: self.describe(iri, "rdfs:label",   f"\"{label}\"")
+        if comment is not None: self.describe(iri, "rdfs:comment", f"\"{comment}\"")
         return iri
 
 
@@ -81,8 +81,8 @@ class XsdNamespace(BaseNamespace):
     def string(self, str):
         if '"' in str: return self.string3(str) # string datatype with triple quotes allow escape chars like \n \t etc.
         else: return self.string1(str)
-    def string1(self, str): return "".join(["\"", self.escape_string(str), "\"^^xsd:string"])
-    def string3(self, str): return "".join(["\"\"\"", self.escape_string(str), "\"\"\"^^xsd:string"])
+    def string1(self, str): return "".join(["\"", self.escape_string(str), "\""])
+    def string3(self, str): return "".join(["\"\"\"", self.escape_string(str), "\"\"\""])
     def date(self, str): return "".join(["\"", str, "\"^^xsd:date"])
     def integer(self, int_number): return str(int_number)
     def float(self, float_number): return "".join(["\"", str(float_number), "\"^^xsd:float"])

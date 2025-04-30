@@ -26,8 +26,10 @@ class Term:
         if tmp.startswith("\"\"\""): tmp = tmp[3:]
         elif tmp.startswith("\""): tmp = tmp[1:]
         # remove right part of the wrapper
-        if tmp.endswith("\"\"\"^^xsd:string"): tmp = tmp[:-15]
-        elif tmp.endswith("\"^^xsd:string"): tmp = tmp[:-13]
+        if tmp.endswith("\"\"\""): tmp = tmp[:-3]                   # implicit xsd:string
+        elif tmp.endswith("\""): tmp = tmp[:-1]                     # implicit xsd:string
+        elif tmp.endswith("\"\"\"^^xsd:string"): tmp = tmp[:-15]    # explicit xsd:string
+        elif tmp.endswith("\"^^xsd:string"): tmp = tmp[:-13]        # explicit xsd:string
         tmp = self.unescape_string(tmp)
         return tmp
         

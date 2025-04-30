@@ -178,7 +178,7 @@ class Ncit_Parser:
         # example of line containing verion:
         # data-version: releases/2024-05-07
         # since 2025: 
-        # property_value: owl:versionInfo "25.02d" xsd:string        
+        # property_value: owl:versionInfo "25.02d"       
         self.termi_version = "version not found"
         while True:
             line = f_in.readline()

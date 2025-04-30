@@ -377,7 +377,7 @@ class RdfBuilder:
 # Define genome modification method class as a list of members (owl:oneOf)
 
 {localClass} a owl:Class ;
-    rdfs:label "Genome modification method"^^xsd:string ;
+    rdfs:label "Genome modification method" ;
     rdfs:subClassOf {obigemClass} ;
     owl:oneOf (
       {member_lines}

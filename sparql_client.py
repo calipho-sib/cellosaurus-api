@@ -62,7 +62,7 @@ class EndpointClient:
                 pattern = pattern.lower()
                 elems.append(f"""  FILTER (lcase(str(?lbl)) = "{pattern}") """)
             else:
-                elems.append(f"""  FILTER (?lbl = "{pattern}"^^xsd:string) """)
+                elems.append(f"""  FILTER (?lbl = "{pattern}") """)
         elems.append("}")
         elems.append("limit 10000")
         query = "\n".join(elems)

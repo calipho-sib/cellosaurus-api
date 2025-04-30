@@ -162,7 +162,7 @@ class TermFinder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         quote = "\"" 
         if quote in str:  quote = "\"\"\""
-        return "".join([quote, str, quote, "^^xsd:string"])
+        return "".join([quote, str, quote])
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

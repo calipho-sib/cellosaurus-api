@@ -776,33 +776,33 @@ class OntologyBuilder:
 # Topic individuals based on classes defined outside our ontology
 
 cello:Biotechnology a owl:NamedIndividual, NCIt:C16351 ; 
-    rdfs:label "Biotechnology"^^xsd:string ;
-    cello:name "Biotechnology"^^xsd:string ;
-    rdfs:comment "The field devoted to applying the techniques of biochemistry, cellular biology, biophysics, and molecular biology to addressing issues related to human beings and the environment."^^xsd:string ;
+    rdfs:label "Biotechnology" ;
+    cello:name "Biotechnology" ;
+    rdfs:comment "The field devoted to applying the techniques of biochemistry, cellular biology, biophysics, and molecular biology to addressing issues related to human beings and the environment." ;
     .
 
 cello:DoublingTimeNI a owl:NamedIndividual, NCIt:C94346 ;
-    rdfs:label "Doubling time"^^xsd:string ;
-    cello:name "Doubling time"^^xsd:string ;
-    rdfs:comment "In biology, the amount of time it takes for one cell to divide or for a group of cells (such as a tumor) to double in size. The doubling time is different for different kinds of cancer cells or tumors."^^xsd:string ;
+    rdfs:label "Doubling time" ;
+    cello:name "Doubling time" ;
+    rdfs:comment "In biology, the amount of time it takes for one cell to divide or for a group of cells (such as a tumor) to double in size. The doubling time is different for different kinds of cancer cells or tumors." ;
     .
 
 cello:Omics a owl:NamedIndividual, NCIt:C205365 ;
-    rdfs:label "Omics"^^xsd:string ;
-    cello:name "Omics"^^xsd:string ;
-    rdfs:comment "The fields of research that use large scale sets of bioinformatics data to identify, describe and quantify the entire set of molecules and molecular processes that contribute to the form and function of cells, tissues and organisms."^^xsd:string ;
+    rdfs:label "Omics" ;
+    cello:name "Omics" ;
+    rdfs:comment "The fields of research that use large scale sets of bioinformatics data to identify, describe and quantify the entire set of molecules and molecular processes that contribute to the form and function of cells, tissues and organisms." ;
     .
 
 cello:Senescence a owl:NamedIndividual, NCIt:C17467 ;
-    rdfs:label "Senescence"^^xsd:string ;
-    cello:name "Senescence"^^xsd:string ;
-    rdfs:comment "PDL stands for Population Doubling Level. The process of growing old and showing the effects of time."^^xsd:string ;
+    rdfs:label "Senescence" ;
+    cello:name "Senescence" ;
+    rdfs:comment "PDL stands for Population Doubling Level. The process of growing old and showing the effects of time." ;
     .
 
 cello:Virology a owl:NamedIndividual, NCIt:C17256 ;
-    rdfs:label "Virology"^^xsd:string ;
-    cello:name "Virology"^^xsd:string ;
-    rdfs:comment "The science that deals with the study of viruses."^^xsd:string ;
+    rdfs:label "Virology" ;
+    cello:name "Virology" ;
+    rdfs:comment "The science that deals with the study of viruses." ;
     .
 
 
@@ -816,57 +816,57 @@ cello:GeneralTopic a owl:Class ;
 # Topic individuals based on classes defined within our ontology
 
 cello:Characteristics a owl:NamedIndividual, cello:GeneralTopic ;
-    rdfs:label "Characteristics"^^xsd:string ;
-    cello:name "Characteristics"^^xsd:string ;
-    rdfs:comment "Production process or specific biological properties of the cell line"^^xsd:string ;
+    rdfs:label "Characteristics" ;
+    cello:name "Characteristics" ;
+    rdfs:comment "Production process or specific biological properties of the cell line" ;
     .
 
 cello:Discontinuation a owl:NamedIndividual, cello:GeneralTopic ;
-    rdfs:label "Discontinuation"^^xsd:string ;
-    cello:name "Discontinuation"^^xsd:string ;
-    rdfs:comment "Discontinuation status of the cell line in a cell line catalog."^^xsd:string ;
+    rdfs:label "Discontinuation" ;
+    cello:name "Discontinuation" ;
+    rdfs:comment "Discontinuation status of the cell line in a cell line catalog." ;
  	.
      
 cello:Miscellaneous a owl:NamedIndividual, cello:GeneralTopic ;
-    rdfs:label "Miscellaneous"^^xsd:string ;
-    cello:name "Miscellaneous"^^xsd:string ;
-    rdfs:comment "Miscellaneous remarks about the cell line."^^xsd:string ;
+    rdfs:label "Miscellaneous" ;
+    cello:name "Miscellaneous" ;
+    rdfs:comment "Miscellaneous remarks about the cell line." ;
     .
 
 cello:ProblematicCellLine a owl:NamedIndividual, cello:GeneralTopic ;
-    rdfs:label "Problematic cell line"^^xsd:string ;
-    cello:name "Problematic cell line"^^xsd:string ;
-    rdfs:comment "Remarks about a problematic aspect of the cell line."^^xsd:string ;
+    rdfs:label "Problematic cell line" ;
+    cello:name "Problematic cell line" ;
+    rdfs:comment "Remarks about a problematic aspect of the cell line." ;
     .
     
 cello:Caution a owl:NamedIndividual, cello:GeneralTopic ;
-    rdfs:label "Caution"^^xsd:string ;
-    cello:name "Caution"^^xsd:string ;
-    rdfs:comment "Errors, inconsistencies, ambiguities regarding the origin or other aspects of the cell line."^^xsd:string ;
+    rdfs:label "Caution" ;
+    cello:name "Caution" ;
+    rdfs:comment "Errors, inconsistencies, ambiguities regarding the origin or other aspects of the cell line." ;
     .
 
 cello:Anecdotal a owl:NamedIndividual, cello:GeneralTopic ;
-    rdfs:label "Anecdotal"^^xsd:string ;
-    cello:name "Anecdotal"^^xsd:string ;
-    rdfs:comment "Anecdotal details regarding the cell line (its origin, its name or any other particularity)."^^xsd:string ;
+    rdfs:label "Anecdotal" ;
+    cello:name "Anecdotal" ;
+    rdfs:comment "Anecdotal details regarding the cell line (its origin, its name or any other particularity)." ;
     .
 
 cello:Misspelling a owl:NamedIndividual, cello:GeneralTopic ;
-    rdfs:label "Misspelling"^^xsd:string ;
-    cello:name "Misspelling"^^xsd:string ;
-    rdfs:comment "Identified misspelling(s) of the cell line name with in some case the specific publication or external resource entry where it appears."^^xsd:string ;
+    rdfs:label "Misspelling" ;
+    cello:name "Misspelling" ;
+    rdfs:comment "Identified misspelling(s) of the cell line name with in some case the specific publication or external resource entry where it appears." ;
     .
 
 cello:DonorInfo a owl:NamedIndividual, cello:GeneralTopic ;
-    rdfs:label "DonorInfo"^^xsd:string ;
-    cello:name "DonorInfo"^^xsd:string ;
-    rdfs:comment "Miscellaneous information relevant to the donor of the cell line."^^xsd:string ;
+    rdfs:label "DonorInfo" ;
+    cello:name "DonorInfo" ;
+    rdfs:comment "Miscellaneous information relevant to the donor of the cell line." ;
     .
 
 cello:Registration a owl:NamedIndividual, cello:GeneralTopic ;
-    rdfs:label "Registration"^^xsd:string ;
-    cello:name "Registration"^^xsd:string ;
-    rdfs:comment "Register or official list in which the cell line is registered."^^xsd:string ;
+    rdfs:label "Registration" ;
+    cello:name "Registration" ;
+    rdfs:comment "Register or official list in which the cell line is registered." ;
     .
 
     
@@ -875,7 +875,7 @@ cello:Registration a owl:NamedIndividual, cello:GeneralTopic ;
 # Define cell line annotation topic class as a list of members (owl:oneOf)
 
 cello:CellLineAnnotationTopic a owl:Class ;
-    rdfs:label "Cell line annotation topic"^^xsd:string ;
+    rdfs:label "Cell line annotation topic" ;
     rdfs:subClassOf EDAM:topic_0003 ;
     owl:equivalentClass [
         owl:intersectionOf (
