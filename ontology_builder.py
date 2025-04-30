@@ -409,6 +409,9 @@ class OntologyBuilder:
         ns.describe(ns.cello.ImmunoglobulinLightChain, ns.rdfs.subClassOf, ns.cello.Protein)
         ns.describe(ns.cello.ImmunoglobulinHeavyChain, ns.rdfs.subClassOf, ns.cello.Protein)
 
+        ns.describe(ns.cello.DoublingTimeRange, ns.rdfs.subClassOf, ns.schema.Duration)
+
+
         # - - - - - - - - 
         # misc properties
         # - - - - - - - - 
@@ -487,6 +490,8 @@ class OntologyBuilder:
 
         ns.describe(ns.cello.hasDonorInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasDoublingTime, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        ns.describe(ns.cello.hasDoublingTimeRange, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
+        # ns.describe(ns.cello.hasDoublingTimeRange, ns.rdfs.subPropertyOf, ns.schema.duration) # semantics of duration is injected in DoublingTimeRange class instead
         ns.describe(ns.cello.hasKaryotypicInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasMiscellaneousInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasProblematicCellLineComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)

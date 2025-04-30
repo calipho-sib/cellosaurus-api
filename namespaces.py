@@ -306,6 +306,10 @@ class SchemaOrgNamespace(BaseNamespace):
         self.Observation = self.registerClass("Observation")
         self.observationAbout = self.registerObjectProperty("observationAbout", hidden = False)
         self.category = self.registerDatatypeProperty("category", comment="A category for the item.")
+        self.Duration = self.registerClass("Duration")
+        self.minValue = self.registerDatatypeProperty("minValue")                   # only a rdf:Property in original ontology but useful for protege, widoco, ...
+        self.maxValue = self.registerDatatypeProperty("maxValue")                   # only a rdf:Property in original ontology but useful for protege, widoco, ...
+        self.unitCode = self.registerDatatypeProperty("unitCode")                   # schema:unitCode "HUR"  # ISO 4217 code for hour
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class DctermsNamespace(BaseNamespace):

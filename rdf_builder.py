@@ -1021,6 +1021,11 @@ class RdfBuilder:
         for annot in cl_data.get("doubling-time-list") or []:
             triples.extend(self.get_triples_for_doubling_time(cl_IRI, annot))
 
+        # fields: doubling-time-range
+        ct_annot = cl_data.get("doubling-time-range")
+        if ct_annot is not None:
+            triples.extend(self.get_triples_for_doubling_time_range(cl_IRI, ct_annot))
+
         # fields: CC transformant
         for annot in cl_data.get("transformant-list") or []:
             triples.extend(self.get_triples_for_transformant(cl_IRI, annot))
@@ -1625,6 +1630,25 @@ class RdfBuilder:
         if comment is not None: triples.append(annot_BN, ns.rdfs.comment, ns.xsd.string(comment))
         triples.extend(self.get_triples_for_sources(annot_BN, sources))
         return triples
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_triples_for_doubling_time_range(self, cl_IRI, annot):    
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns
+        triples = TripleList()
+        annot_BN = self.get_blank_node()
+        min = annot["min"]
+        max = annot["max"]
+        unit = annot["unit"]
+        triples.append(cl_IRI, ns.cello.hasDoublingTimeRange, annot_BN)
+        triples.append(annot_BN, ns.rdf.type, ns.cello.DoublingTimeRange)
+        triples.append(annot_BN, ns.schema.minValue, ns.xsd.integer(min))
+        triples.append(annot_BN, ns.schema.maxValue, ns.xsd.integer(max))
+        triples.append(annot_BN, ns.schema.unitCode, ns.xsd.string(unit))
+        return triples
+
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_triples_for_msi(self, cl_IRI, annot):    
