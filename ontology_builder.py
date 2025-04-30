@@ -491,7 +491,6 @@ class OntologyBuilder:
         ns.describe(ns.cello.hasDonorInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasDoublingTime, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasDoublingTimeRange, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
-        # ns.describe(ns.cello.hasDoublingTimeRange, ns.rdfs.subPropertyOf, ns.schema.duration) # semantics of duration is injected in DoublingTimeRange class instead
         ns.describe(ns.cello.hasKaryotypicInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasMiscellaneousInfoComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
         ns.describe(ns.cello.hasProblematicCellLineComment, ns.rdfs.subPropertyOf, ns.cello.hasAnnotation)
@@ -742,6 +741,37 @@ class OntologyBuilder:
     def get_topic_and_topic_annotations(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         text = """
+
+# To be ignored: for test purpose
+
+# cello:thing cello:numeric 1 . 
+# cello:thing cello:numeric "1"^^xsd:integer . 
+# cello:thing cello:numeric "1"^^xsd:float . 
+# cello:thing cello:numeric "1"^^xsd:decimal . 
+
+# cello:thing cello:numeric 1.1e0 . 
+# cello:thing cello:numeric "1.1"^^xsd:integer . 
+# cello:thing cello:numeric "1.1"^^xsd:float . 
+# cello:thing cello:numeric "1.1"^^xsd:decimal . 
+
+# cello:thing cello:numeric 1.2 . 
+# cello:thing cello:numeric "1.2"^^xsd:integer . 
+# cello:thing cello:numeric "1.2"^^xsd:float . 
+# cello:thing cello:numeric "1.2"^^xsd:decimal . 
+        
+# cello:thing cello:numeric 1.3 . 
+# cello:thing cello:numeric "1.4"^^xsd:integer . 
+# cello:thing cello:numeric "1.5"^^xsd:float . 
+# cello:thing cello:numeric "1.6"^^xsd:decimal . 
+        
+# cello:thing cello:str "string1" .
+# cello:thing cello:str "string2" .
+# cello:thing cello:str "string2"^^xsd:string  .
+# cello:thing cello:str "string3"^^xsd:string .
+# cello:thing cello:str "string4" .
+# cello:thing cello:str "string5" .
+# cello:thing cello:str "string6" .
+
 
 # Topic individuals based on classes defined outside our ontology
 
