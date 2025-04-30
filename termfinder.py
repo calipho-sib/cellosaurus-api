@@ -52,7 +52,7 @@ class EndpointClient:
 
 
 #-------------------------------------------------
-class StringFinder:
+class TermFinder:
 #-------------------------------------------------
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -64,6 +64,10 @@ class StringFinder:
 
         self.get_props_query = """
             select distinct ?prop where { ?s ?prop ?o . }
+        """
+
+        self.get_classes_query = """
+            select distinct ?clazz where { ?instance a ?clazz . }
         """
 
         self.check_string_range_query = """
@@ -89,6 +93,25 @@ class StringFinder:
             ?instance a ?classInDomain .
             ?instance ?prop ?value .
             }
+        """
+
+        self.get_iri_name_prop_values_query = """  
+            select ?instance ?clazz ?name_prop ?name ?prop ?value where {
+            # values ( ?clazz ?name_prop  ?prop  ) { ( fabio:JournalArticle cello:title  cello:volume ) }
+            values ( ?clazz ?name_prop ?prop ) { ( $clazz_iri $name_prop_iri $prop_iri ) }
+            ?instance a ?clazz .
+            ?instance ?name_prop ?name .
+            ?instance ?prop ?value .
+            }
+        """
+
+        self.get_iri_name_query = """  
+            select ?instance ?clazz ?name_prop ?name where {
+            # values ( ?clazz ?name_prop    ) { ( fabio:JournalArticle cello:title  ) }
+            values ( ?clazz ?name_prop  ) { ( $clazz_iri $name_prop_iri ) }
+            ?instance a ?clazz .
+            ?instance ?name_prop ?name .
+            }        
         """
 
         self.prefix_query ="""
@@ -135,12 +158,65 @@ class StringFinder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_detailed_records(self, prop_iri, class_iri, limit=None):
+    def xsd_string(self, str):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        quote = "\"" 
+        if quote in str:  quote = "\"\"\""
+        return "".join([quote, str, quote, "^^xsd:string"])
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_icpnpv_records(self, prop_iri, class_iri, limit=None):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        #if prop_iri.startswith("http"): return [] # we skip props for which we have no prefix
+        prop_long_iri = "".join([ "<", self.get_long_IRI(prop_iri), ">" ])
+        class_long_iri = "".join([ "<", self.get_long_IRI(class_iri), ">" ])
+        class_nickname = class_iri.split(":")[1].lower()
+
+        # $clazz_iri $name_prop_iri $prop_iri
+        name_props = ["rdfs:label", "cello:title"]
+        records = list()
+        for name_prop_iri in name_props:
+            name_prop_long_iri = "".join([ "<", self.get_long_IRI(name_prop_iri), ">" ])
+            query = self.get_iri_name_prop_values_query
+            query = query.replace("$clazz_iri", class_long_iri)
+            query = query.replace("$name_prop_iri",  name_prop_long_iri)
+            query = query.replace("$prop_iri",  prop_long_iri)
+            if limit is not None: query += "\nLIMIT " + str(limit)
+            response = self.client.run_query(query)
+            # fields: ?instance ?clazz ?name_prop ?name ?prop ?value
+            if not response.get("success"):
+                log_it(f"ERROR while running query to get icpnpv record for class {class_iri}, name_prop {name_prop_iri} and prop {prop_iri}", response.get("error_type"))
+                log_it(response.get("error_msg"))
+                sys.exit(2)
+            rows = response.get("results").get("bindings")
+            for row in rows:
+                instance = self.get_short_IRI(row["instance"]["value"])
+                clazz = self.get_short_IRI(row["clazz"]["value"])
+                name_prop = self.get_short_IRI(row["name_prop"]["value"])
+                name = row["name"]["value"].strip()
+                prop = self.get_short_IRI(row["prop"]["value"])
+                value = row["value"]["value"].strip()
+                if instance.startswith("nodeID"): instance = "?some_" + class_nickname
+                xsd_name = self.xsd_string(name)
+                xsd_value = self.xsd_string(value)
+                ttl = f"""{instance} a {clazz} ; {name_prop} {xsd_name} ; {prop} {xsd_value} . """
+                display = ttl.replace("^^xsd:string", "")
+                record = " || ".join([instance, clazz, name_prop, name, prop, value, ttl, display])
+                records.append(record)
+
+        return records
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_detailed_records_v1(self, prop_iri, class_iri, limit=None):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         if prop_iri.startswith("http"): return [] # we skip props for which we have no prefix
         prop_long_iri = "".join([ "<", self.get_long_IRI(prop_iri), ">" ])
         class_long_iri = "".join([ "<", self.get_long_IRI(class_iri), ">" ])
-        query = self.get_strings_query.replace("$prop_iri", prop_long_iri).replace("$class_iri", class_long_iri)
+        query = self.get_prop_values_query.replace("$prop_iri", prop_long_iri).replace("$class_iri", class_long_iri)
         if limit is not None: query += "\nLIMIT " + str(limit)
         response = self.client.run_query(query)
         if not response.get("success"):
@@ -195,6 +271,17 @@ class StringFinder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def is_name_prop(self, prop_iri):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        # props that are used to index entities are rdfs:label and cello:title
+        # other props below are all redundant as sub properties of rdfs:label
+        return prop_iri in {
+            "cello:title", "rdfs:label", "skos:prefLabel", "skos:altLabel",
+            "cello:name", "cello:alternativeName", "cello:recommendedName"
+        }
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_props(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         props = list()
@@ -214,6 +301,60 @@ class StringFinder:
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_solr_doc(self, record, id):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        (inst, cl, nprop, name, tprop, tval, ttl, display) = record.split(" || ")
+        
+        doc_node = etree.Element("doc")
+        
+        #   <field name="cl" type="text_gen_sort"/>
+        #   <field name="inst" type="text_gen_sort"/>
+        #   <field name="nprop" type="text_gen_sort"/>
+        #   <field name="name" type="text_gen_sort"/>
+        #   <field name="tprop" type="text_gen_sort"/>
+        #   <field name="tval" type="text_gen_sort"/>
+        #   <field name="ttl" type="text_gen_sort"/>
+
+        fld = etree.SubElement(doc_node, "field")
+        fld.set("name", "doc_id")
+        fld.text = str(id)
+
+        fld = etree.SubElement(doc_node, "field")
+        fld.set("name", "cl")
+        fld.text = cl
+        
+        fld = etree.SubElement(doc_node, "field")
+        fld.set("name", "inst")
+        fld.text = inst
+
+        fld = etree.SubElement(doc_node, "field")
+        fld.set("name", "nprop")
+        fld.text = nprop
+
+        fld = etree.SubElement(doc_node, "field")
+        fld.set("name", "name")
+        fld.text = name
+
+        fld = etree.SubElement(doc_node, "field")
+        fld.set("name", "tprop")
+        fld.text = tprop
+
+        fld = etree.SubElement(doc_node, "field")
+        fld.set("name", "tval")
+        fld.text = tval
+
+        fld = etree.SubElement(doc_node, "field")
+        fld.set("name", "ttl")
+        fld.text = ttl
+
+        fld = etree.SubElement(doc_node, "field")
+        fld.set("name", "display")
+        fld.text = display
+
+        return doc_node
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_solr_doc_v1(self, record, id):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         (cl, inst, prop, label) = record.split(" || ")
         doc_node = etree.Element("doc")
@@ -257,6 +398,45 @@ class StringFinder:
         rec_num = 0
         for p in props:
             prop_num += 1
+            if not self.has_string_range(p): continue
+            if  self.is_name_prop(p): continue
+            if p.startswith("http"): continue # we skip pros for which we have no prefix
+            log_it("INFO", f"Property {p} selected")            
+            log_it("INFO", f"querying list of classes in domain of property {p} {prop_num}/{prop_cnt}...")
+            classes_in_domain = self.get_classes_in_domain(p)
+            log_it("INFO", f"retrieved {len(classes_in_domain)} classes in domain of property {p} {prop_num}/{prop_cnt}")
+            for cl in classes_in_domain:                
+                log_it("INFO", f"querying icpnpv records for class {cl} and property {p} {prop_num}/{prop_cnt}...")
+                records = self.get_icpnpv_records(p, cl, limit=1000 if sample_only else None)
+                log_it("INFO", f"retrieved {len(records)} icpnpv record for class {cl} and property {p} {prop_num}/{prop_cnt}")
+                if len(records) > 100000:
+                    log_it("WARNING", f"More than 100000 records for class {cl} and property {p}...")                
+                for rec in records:
+                    rec_num += 1
+                    doc = self.get_solr_doc(rec, rec_num)
+                    data_bytes = etree.tostring(doc, encoding="utf-8", pretty_print=True)
+                    f_out.write(data_bytes)
+
+        f_out.write(bytes("</add>\n", "utf-8"))
+        f_out.close()
+        log_it("INFO", "end")
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def do_it_v1(self, output_file, sample_only=False):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+        f_out = open(output_file, "wb")
+        f_out.write(bytes("<add>\n", "utf-8"))
+        self.load_prefixes()
+        log_it("INFO", f"querying list of properties...")
+        props = self.get_props()
+        log_it("INFO", f"retrieved {len(props)} properties")
+        prop_num = 0
+        prop_cnt = len(props)
+        rec_num = 0
+        for p in props:
+            prop_num += 1
             has_string_range = self.has_string_range(p)
             if not has_string_range: 
                 log_it("INFO", f"Property {p} has not a xsd:string range, skipping it")
@@ -266,7 +446,7 @@ class StringFinder:
             log_it("INFO", f"retrieved {len(classes_in_domain)} classes in domain of property {p} {prop_num}/{prop_cnt}")
             for cl in classes_in_domain:
                 log_it("INFO", f"querying detailed record for class {cl} and property {p} {prop_num}/{prop_cnt}...")
-                records = self.get_detailed_records(p, cl, limit=1000 if sample_only else None)
+                records = self.get_detailed_records_v1(p, cl, limit=1000 if sample_only else None)
                 log_it("INFO", f"retrieved {len(records)} detailed record for class {cl} and property {p} {prop_num}/{prop_cnt}")
                 if len(records) > 100000:
                     log_it("WARNING", f"More than 100000 records for class {cl} and property {p}...")                
@@ -297,6 +477,6 @@ if __name__ == '__main__':
         print("ERROR, usage is: python string_finder.py [--sample] [--crlf] sparql_service_url output_file")    
         sys.exit(1)
 
-    builder = StringFinder(sparql_service=args[0])
+    builder = TermFinder(sparql_service=args[0])
     builder.do_it(output_file=args[1],sample_only=options.sample)
 

@@ -21,8 +21,9 @@
       position: absolute;
       border: 1px solid #ccc;
       background-color: white;
+      max-width: 50%;
       max-height: 150px;
-      overflow-y: auto;
+      overflow-y: scroll;
       z-index: 1000;
       display: none; /* Initially hidden */
     }
@@ -59,24 +60,21 @@
         dropdown.style.width = `${textarea.offsetWidth}px`;
       }
 
-      // Filter options based on query
-    //   function filterOptions(query) {
-    //     const lq = query.toLowerCase();
-    //     const filtered_options = options.filter(option => option.toLowerCase().indexOf(lq) > -1 );
-    //     return filtered_options;
-    //   }
 
       async function filterOptions(query) {
         try {
-
             const base_url = "http://localhost/tfac";
             var params = {
                 "defType": "edismax",
-                "q.op": "OR", 
-                "rows": 8,
+                "q.op": "AND", 
+                "rows": 5,
                 "indent": "true",
                 "hl":"true",
-                "qf": "cl inst prop label",
+                "hl.fl": "display",
+                // "hl.snippets": 1,             // is default
+                // "hl.display.fragsize": 30,    // 100 is default, seems not to work
+                // "fragsizeIsMinimum": false,   // default is true
+                "qf": "display",
                 "q": query
             }
             const query_string = Object.keys(params)
@@ -90,27 +88,26 @@
             //console.log("data", data);
             const result_list = [];
             if (data.response.docs) {
-                for (const record of data.response.docs) {
-                    var elems = [];
-                    const id = record.doc_id;
-                    for (const field of ["cl", "inst", "prop", "label"]) {
-                        if (data.highlighting && 
-                            data.highlighting[id] && 
-                            data.highlighting[id][field]) {
-                            elems.push(data.highlighting[id][field][0]);
-                        } else {
-                            elems.push(record[field][0])
-                        }
-                    }
-                    const line = elems.join(" - ");
-                    result_list.push(line);
-                }
-                
+              console.log("QTime", data.responseHeader.QTime);
+              for (const record of data.response.docs) {
+                const id = record.doc_id;
+                const fullvalue = record["display"];
+                const fragment = data.highlighting[id]["display"][0]; // we expect to ALWAYS have at least 1 highlight fragment
+                const rawfrag = fragment.replaceAll("<em>", "").replaceAll("</em>", "");
+                var elems = [];
+                if (! fullvalue.startsWith(rawfrag)) elems.push("...");
+                elems.push(fragment);
+                if (! fullvalue.endsWith(rawfrag)) elems.push("...");
+                const line = elems.join("");                                        
+                const ttl = record["ttl"];
+                const obj = { line: line, ttl: ttl }                  
+                result_list.push(obj);
+              }
             }
             return result_list; 
         } catch (error) {
-            console.error(error);
-            return []; // Return an empty array on error
+          console.error(error);
+          return []; // Return an empty array on error
         }
       }
 
@@ -125,11 +122,11 @@
         filteredOptions.forEach(option => {
           const item = document.createElement("div");
           item.classList.add("autocomplete-item");
-          item.innerHTML = option;
-
+          item.innerHTML = option.line;
+          item.dataset.ttl = option.ttl;
           // Handle click on an autocomplete item
           item.addEventListener("click", () => {
-            insertTextAtCursor(option);
+            insertTextAtCursor(option.ttl);
             dropdown.style.display = "none";
           });
 
@@ -166,7 +163,13 @@
           const start = textarea.selectionStart; // Start index of selection
           const end = textarea.selectionEnd;     // End index of selection
           const selectedText = textarea.value.substring(start, end);      
-          const query = selectedText;
+
+          const rawquery = selectedText;
+          var elems = [];
+          for (const token of rawquery.replaceAll("+", "plus").replaceAll("-","minus").split(" ")) {
+            elems.push(token + "*");
+          }
+          const query = elems.join(" ");
 
           //console.log("query", query);
           if (query.length > 0) {
