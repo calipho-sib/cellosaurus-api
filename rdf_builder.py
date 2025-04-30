@@ -1641,6 +1641,7 @@ class RdfBuilder:
         min = annot["min"]
         max = annot["max"]
         unit = annot["unit"]
+        if unit == "hour": unit = "HUR" # ISO 4217 code for hour
         triples.append(cl_IRI, ns.cello.hasDoublingTimeRange, annot_BN)
         triples.append(annot_BN, ns.rdf.type, ns.cello.DoublingTimeRange)
         triples.append(annot_BN, ns.schema.minValue, ns.xsd.integer(min))

@@ -179,7 +179,7 @@ class CelloOntologyNamespace(BaseNamespace):
         self.BiotechnologyComment = self.registerClass("BiotechnologyComment")          # described as a Data iterm cello:GeneralTopic
         self.SenescenceComment = self.registerClass("SenescenceComment")                # described as an IAO:Topic
         self.DoublingTime = self.registerClass("DoublingTime")                          # described as an IAO:Topic
-        comment = "A consolidation of doubling time values provided in cello:DoublingTime annotations"
+        comment = "A consolidation of doubling time values provided in cello:DoublingTime annotations. Duration values are expressed in hour(s): (HUR is the ISO 4217 unit code for hour)."
         self.DoublingTimeRange = self.registerClass("DoublingTimeRange", comment=comment)   # described as a schema:Duration subclass
         self.VirologyComment = self.registerClass("VirologyComment")                        # described as an IAO:Topic
         self.OmicsInfo = self.registerClass("OmicsInfo")                                    # described as an IAO:Topic
