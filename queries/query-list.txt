@@ -628,6 +628,24 @@ limit 100
 
 ## ------------------------------------------------------
 ID: 134
+LB: Some cell lines with a doubling time between 3 and 5 days
+KW: time, doubling time
+## ------------------------------------------------------
+select ?cl ?cl_name ?min ?max ?unit where  {
+  ?cl cello:hasDoublingTimeRange ?duration .
+  ?cl cello:recommendedName ?cl_name .
+  ?duration schema:minValue ?min .
+  ?duration schema:maxValue ?max .
+  ?duration schema:unitCode ?unit . # ISO 4217 code for duration unit: HUR=hour(s)
+  filter (?min >= 24 * 3) # 3 days in hours
+  filter (?max <= 24 * 5) # 5 days in hours
+}
+order by asc(?min)
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 135
 LB: Some cell lines with an omics comment
 KW: omics
 ## ------------------------------------------------------
@@ -641,7 +659,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 135
+ID: 136
 LB: Some cell lines with a karyotypic comment
 KW: kar, karyotype
 ## ------------------------------------------------------
@@ -659,7 +677,7 @@ limit 3000
 
 
 ## ------------------------------------------------------
-ID: 136
+ID: 137
 LB: Some cell lines with a gene knockout
 KW: ko, knockout, gene
 ## ------------------------------------------------------
@@ -676,7 +694,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 137
+ID: 138
 LB: Some senescence comments about cell lines with their source
 KW: sen, senescence, source
 ## ------------------------------------------------------
@@ -706,7 +724,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 138
+ID: 139
 LB: Some cell lines with the age of the individual at which the sample was collected to create the cell line
 KW: age, individual
 ## ------------------------------------------------------
@@ -719,7 +737,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 139
+ID: 140
 LB: Some cell lines known to be resistant to some chemical compound or toxin
 KW: res, resistance, chemical, drug, toxin
 ## ------------------------------------------------------
@@ -746,7 +764,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 140
+ID: 141
 LB: Cell lines with a misspelling record
 KW: miss, misspelling, source
 ## ------------------------------------------------------
@@ -771,7 +789,7 @@ where {
 
 
 ## ------------------------------------------------------
-ID: 141
+ID: 142
 LB: Some cell lines with a miscellaneous comment
 KW: misc, miscellaneous
 ## ------------------------------------------------------
@@ -784,7 +802,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 142
+ID: 143
 LB: Count of cell lines for each insect taxon
 KW: ox, taxon, species
 ## ------------------------------------------------------
@@ -801,7 +819,7 @@ limit 300
 
 
 ## ------------------------------------------------------
-ID: 143
+ID: 144
 LB: Names of all the species of sturgeons represented in Cellosaurus
 KW: species, sturgeons, Acipenseridae
 ## ------------------------------------------------------
@@ -816,7 +834,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 144
+ID: 145
 LB: Cell lines that are annotated as originating from liver
 KW: site, anatomy, organ, tissue, body part
 ## ------------------------------------------------------
@@ -835,7 +853,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 145
+ID: 146
 LB: Cell lines that are annotated as endothelial cells
 KW: cell type, endothelial
 ## ------------------------------------------------------
@@ -852,7 +870,7 @@ limit 1000
 
 
 ## ------------------------------------------------------
-ID: 146
+ID: 147
 LB: Some hybrid cell lines with the species from which they originate
 KW: ox, species, hybrid
 ## ------------------------------------------------------
@@ -874,7 +892,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 147
+ID: 148
 LB: Some cell lines with the name and cross-reference of their transformant
 KW: tfor, transformant
 ## ------------------------------------------------------
@@ -894,7 +912,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 148
+ID: 149
 LB: Some cell lines and the group they belong to
 KW: group, part
 ## ------------------------------------------------------
@@ -906,7 +924,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 149
+ID: 150
 LB: Some cell lines and the panel (collection) they belong to
 KW: part, collection
 ## ------------------------------------------------------
@@ -918,7 +936,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 150
+ID: 151
 LB: Registered name(s) of some cell lines
 KW: reg, registration, registeredName
 ## ------------------------------------------------------
@@ -935,7 +953,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 151
+ID: 152
 LB: Detailed registered name record of some cell lines
 KW: reg, registration, registeredName
 ## ------------------------------------------------------
@@ -950,7 +968,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 152
+ID: 153
 LB: Direct and indirect parent cell lines from which some cell line originates
 KW: hi, parent
 ## ------------------------------------------------------
@@ -965,7 +983,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 153
+ID: 154
 LB: Cell lines originating from same individual as a given cell line (sister cell lines)
 KW: oi, sister, derivedFromSameIndividualAs
 ## ------------------------------------------------------
@@ -980,7 +998,160 @@ limit 1000
 
 
 ## ------------------------------------------------------
-ID: 154
+ID: 155
+LB: Cell lines with a EGFR mutation
+KW: mutation, sequence variation
+## ------------------------------------------------------
+select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?gene_ac ?gene_name  where {
+  values (?seqvar_class ?gene_ac) { (cello:GeneMutation  "HGNC:3236") } # mutations (of) EGFR gene
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:variationStatus ?status .
+  ?annot cello:hasTarget ?seqvar .
+  ?seqvar a ?seqvar_class .
+  ?seqvar rdfs:label ?seqvar_label .
+  ?seqvar cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref ?xref .
+  ?xref cello:accession ?gene_ac .
+  ?xref rdfs:label ?gene_name.
+}
+order by ?ac
+limit 10000
+
+
+## ------------------------------------------------------
+ID: 156
+LB: Some cell lines with an hemizygous mutation
+KW: mutation, sequence variation, zygozity
+## ------------------------------------------------------
+select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac ?gene_name  where {
+  # possible values for zygozity are Hemizygous Hemizygous or homozygous Heteroplasmic
+  # Heterozygous Heterozygous or homozygous Homoplasmic Homozygous Mosaic Unspecified
+  values ( ?zygozity ) { ( "Hemizygous") }
+  ?cl cello:recommendedName ?cl_name_xsd .
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:variationStatus ?status_xsd .
+  ?annot cello:hasTarget ?seqvar .
+  ?seqvar cello:zygosity ?zygozity .
+  ?seqvar a ?seqvar_class .
+  ?seqvar rdfs:label ?seqvar_label_xsd .
+  ?seqvar cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref ?xref .
+  ?xref cello:accession ?gene_ac_xsd .
+  ?xref rdfs:label ?gene_name_xsd .
+  bind(str(?cl_name_xsd) as ?cl_name)
+  bind(str(?status_xsd) as ?status)
+  bind(str(?seqvar_label_xsd) as ?seqvar_label)
+  bind(str(?gene_ac_xsd) as ?gene_ac)
+  bind(str(?gene_name_xsd) as ?gene_name)
+}
+order by ?cl_name
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 157
+LB: Some cell lines with a BCR ABL1 fusion
+KW: gene, fusion, sequence variation
+## ------------------------------------------------------
+select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac1 ?gene_name1 ?gene_ac2 ?gene_name2  where {
+  values ( ?gene_ac_xsd1 ?gene_ac_xsd2 ) { ( "HGNC:76" "HGNC:1014" ) } # accession of gene ABL1 and BCR
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:variationStatus ?status .
+  ?annot cello:hasTarget ?seqvar .
+  ?seqvar a ?seqvar_class .
+  optional { ?seqvar cello:zygosity ?zygozity . }
+  ?seqvar rdfs:label ?seqvar_label .
+  ?seqvar cello:ofGene ?gene1 .
+  ?seqvar cello:ofGene ?gene2 .
+  ?gene1 cello:isIdentifiedByXref ?xref1 .
+  ?xref1 cello:accession ?gene_ac1 .
+  ?xref1 rdfs:label ?gene_name1 .
+  ?gene2 cello:isIdentifiedByXref ?xref2 .
+  ?xref2 cello:accession ?gene_ac2 .
+  ?xref2 rdfs:label ?gene_name2 .
+}
+order by ?cl_name
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 158
+LB: Some cell lines with a CDKN2A deletion
+KW: gene, deletion, sequence variation
+## ------------------------------------------------------
+select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac ?gene_name  where {
+  values ( ?seqvar_class ?gene_ac_xsd ) { ( cello:GeneDeletion "HGNC:1787") } # HGNC accession of CDKN2A
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:variationStatus ?status .
+  ?annot cello:hasTarget ?seqvar .
+  optional { ?seqvar cello:zygosity ?zygozity . }
+  ?seqvar a ?seqvar_class .
+  ?seqvar rdfs:label ?seqvar_label .
+  ?seqvar cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref ?xref .
+  ?xref cello:accession ?gene_ac .
+  ?xref rdfs:label ?gene_name .
+}
+order by ?cl_name
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 159
+LB: Cell lines with a *RAS (HRAS, NRAS, KRAS) in "p.Gly12"
+KW: gene, mutation, sequence variation
+## ------------------------------------------------------
+select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac ?gene_name  where {
+  #values ( ?seqvar_class ?gene_ac_xsd ) { ( cello:GeneDeletion "HGNC:1787") } # HGNC accession of CDKN2A
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:variationStatus ?status .
+  ?annot cello:hasTarget ?seqvar .
+  optional { ?seqvar cello:zygosity ?zygozity . }
+  ?seqvar a ?seqvar_class .
+  ?seqvar rdfs:label ?seqvar_label .
+  ?seqvar cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref ?xref .
+  ?xref cello:accession ?gene_ac .
+  ?xref rdfs:label ?gene_name .
+  filter(contains(?seqvar_label, 'p.Gly12')) 	# matches p.Gly12 anywere in the mutation label
+  filter(regex(?gene_name, '.*RAS')) 			# matches any character followed with RAS, i.e. HRAS, NRAS, KRAS
+}
+order by ?cl_name
+limit 5000
+
+
+## ------------------------------------------------------
+ID: 160
+LB: Mouse cell lines with a sequence variation
+KW: gene, mutation, sequence variation, species, mouse
+## ------------------------------------------------------
+select distinct ?cl ?cl_name ?species_ac ?species_label ?seqvar_class ?gene_ac  ?gene_name  where {
+  values ( ?generic_species_notation ) { ( "10090") } # NCBI_TaxID accession of Mouse
+  ?cl cello:recommendedName ?cl_name .
+  ?cl cello:derivedFromIndividualBelongingToSpecies ?species .
+  ?species  cello:isIdentifiedByXref ?species_xref .
+  ?species cello:name ?species_label .
+  ?species_xref cello:accession ?species_ac .
+  ?species_xref cello:more_specific_than* ?generic_concept .
+  ?generic_concept skos:notation ?generic_species_notation ; skos:inScheme db:NCBI_TaxID . # Mouse = 10090
+  ?cl cello:hasSequenceVariationInfo ?annot .
+  ?annot cello:hasTarget ?seqvar .
+  ?seqvar a ?seqvar_class .
+  ?seqvar cello:ofGene ?gene .
+  ?gene cello:isIdentifiedByXref ?gene_xref .
+  ?gene_xref cello:accession ?gene_ac .
+  ?gene_xref rdfs:label ?gene_name .
+}
+order by ?cl_name
+limit 1000
+
+
+## ------------------------------------------------------
+ID: 161
 LB: Count of sequence variation annotations by sequence variation type and status
 KW: sequence variation, stats
 ## ------------------------------------------------------
@@ -996,7 +1167,7 @@ order by ?seqvar_class ?status ?with_source
 
 
 ## ------------------------------------------------------
-ID: 155
+ID: 162
 LB: Count of sequence variation annotations by sequence variation type and other characteristics
 KW: sequence variation, stats
 ## ------------------------------------------------------
@@ -1020,7 +1191,7 @@ order by ?sv_name ?with_none_reported
 
 
 ## ------------------------------------------------------
-ID: 156
+ID: 163
 LB: Some topic comments (optionally with their source) about cell lines
 KW: misc, omics, anec, biot, caution, char, donor, time, prob
 ## ------------------------------------------------------
@@ -1059,7 +1230,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 157
+ID: 164
 LB: Version, date of entry creation, and date of last update in Cellosaurus for some cell lines
 KW: dt, dtc, dtu, dtv, version
 ## ------------------------------------------------------
@@ -1074,7 +1245,7 @@ limit 100
 
 
 ## ------------------------------------------------------
-ID: 158
+ID: 165
 LB: Cross-references of a chosen cell line
 KW: dr, xref
 ## ------------------------------------------------------
@@ -1090,7 +1261,7 @@ order by ?xref_db ?xref_ac
 
 
 ## ------------------------------------------------------
-ID: 159
+ID: 166
 LB: Example (sample) of a cross-reference with its properties from each database
 KW: dr, xref, disc, discontinued
 ## ------------------------------------------------------
@@ -1113,7 +1284,7 @@ limit 300
 
 
 ## ------------------------------------------------------
-ID: 160
+ID: 167
 LB: Count of cell lines established by organization
 KW: from, provided, established by, organization, stats, private
 ## ------------------------------------------------------
@@ -1138,7 +1309,7 @@ order by desc(count(?cl))
 
 
 ## ------------------------------------------------------
-ID: 161
+ID: 168
 LB: Super class and equivalent class of each class defined in the cello ontology
 KW: ontology, class, semantics, private
 ## ------------------------------------------------------
@@ -1154,7 +1325,7 @@ order by ?rdfs_superClass ?owl_equivalentClass ?parent ?cello_class
 
 
 ## ------------------------------------------------------
-ID: 162
+ID: 169
 LB: Super property and equivalent property of each property defined in the cello ontology
 KW: ontology, property, semantics, private
 ## ------------------------------------------------------
@@ -1170,7 +1341,7 @@ order by ?rdfs_superProp ?owl_equivalentProp ?parent ?cello_prop
 
 
 ## ------------------------------------------------------
-ID: 163
+ID: 170
 LB: Usage of name properties for instances of each class defined in cello: ontology
 KW: id, sy, miss, misspelling, reg, registration, label, name, recommendedName, misspellingName, private, semantics
 ## ------------------------------------------------------
@@ -1187,7 +1358,7 @@ limit 1000
 
 
 ## ------------------------------------------------------
-ID: 164
+ID: 171
 LB: Typical triples found in Cellosaurus RDF (without filtering some irrelevant tuples)
 KW: ontology, range, domain, class, property, subject, object, datatype, semantics, private
 ## ------------------------------------------------------
@@ -1203,154 +1374,3 @@ group by ?subject_class ?property ?object_type
 order by ?subject_class ?property ?object_type
 
 
-## ------------------------------------------------------
-ID: 165
-LB: Cell lines with a EGFR mutation
-KW: mutation, sequence variation
-## ------------------------------------------------------
-select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?gene_ac ?gene_name  where {
-  values (?seqvar_class ?gene_ac) { (cello:GeneMutation  "HGNC:3236") } # mutations (of) EGFR gene
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:hasSequenceVariationInfo ?annot .
-  ?annot cello:variationStatus ?status .
-  ?annot cello:hasTarget ?seqvar .
-  ?seqvar a ?seqvar_class .
-  ?seqvar rdfs:label ?seqvar_label .
-  ?seqvar cello:ofGene ?gene .
-  ?gene cello:isIdentifiedByXref ?xref .
-  ?xref cello:accession ?gene_ac .
-  ?xref rdfs:label ?gene_name.
-}
-order by ?ac
-limit 10000
-
-
-## ------------------------------------------------------
-ID: 166
-LB: Some cell lines with an hemizygous mutation
-KW: mutation, sequence variation, zygozity
-## ------------------------------------------------------
-select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac ?gene_name  where {
-  # possible values for zygozity are Hemizygous Hemizygous or homozygous Heteroplasmic 
-  # Heterozygous Heterozygous or homozygous Homoplasmic Homozygous Mosaic Unspecified
-  values ( ?zygozity ) { ( "Hemizygous") }
-  ?cl cello:recommendedName ?cl_name_xsd .
-  ?cl cello:hasSequenceVariationInfo ?annot .
-  ?annot cello:variationStatus ?status_xsd .
-  ?annot cello:hasTarget ?seqvar .
-  ?seqvar cello:zygosity ?zygozity .
-  ?seqvar a ?seqvar_class .
-  ?seqvar rdfs:label ?seqvar_label_xsd .
-  ?seqvar cello:ofGene ?gene .
-  ?gene cello:isIdentifiedByXref ?xref .
-  ?xref cello:accession ?gene_ac_xsd .
-  ?xref rdfs:label ?gene_name_xsd .
-  bind(str(?cl_name_xsd) as ?cl_name)
-  bind(str(?status_xsd) as ?status)
-  bind(str(?seqvar_label_xsd) as ?seqvar_label)
-  bind(str(?gene_ac_xsd) as ?gene_ac)
-  bind(str(?gene_name_xsd) as ?gene_name)
-}
-order by ?cl_name
-limit 1000
-
-
-## ------------------------------------------------------
-ID: 167
-LB: Some cell lines with a BCR ABL1 fusion
-KW: gene, fusion, sequence variation
-## ------------------------------------------------------
-select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac1 ?gene_name1 ?gene_ac2 ?gene_name2  where {
-  values ( ?gene_ac_xsd1 ?gene_ac_xsd2 ) { ( "HGNC:76" "HGNC:1014" ) } # accession of gene ABL1 and BCR
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:hasSequenceVariationInfo ?annot .
-  ?annot cello:variationStatus ?status .
-  ?annot cello:hasTarget ?seqvar .
-  ?seqvar a ?seqvar_class .
-  optional { ?seqvar cello:zygosity ?zygozity . }
-  ?seqvar rdfs:label ?seqvar_label .
-  ?seqvar cello:ofGene ?gene1 .
-  ?seqvar cello:ofGene ?gene2 .
-  ?gene1 cello:isIdentifiedByXref ?xref1 .
-  ?xref1 cello:accession ?gene_ac1 .
-  ?xref1 rdfs:label ?gene_name1 .
-  ?gene2 cello:isIdentifiedByXref ?xref2 .
-  ?xref2 cello:accession ?gene_ac2 .
-  ?xref2 rdfs:label ?gene_name2 .
-}
-order by ?cl_name
-limit 1000
-
-
-## ------------------------------------------------------
-ID: 168
-LB: Some cell lines with a CDKN2A deletion
-KW: gene, deletion, sequence variation
-## ------------------------------------------------------
-select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac ?gene_name  where {
-  values ( ?seqvar_class ?gene_ac_xsd ) { ( cello:GeneDeletion "HGNC:1787") } # HGNC accession of CDKN2A
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:hasSequenceVariationInfo ?annot .
-  ?annot cello:variationStatus ?status .
-  ?annot cello:hasTarget ?seqvar .
-  optional { ?seqvar cello:zygosity ?zygozity . }
-  ?seqvar a ?seqvar_class .
-  ?seqvar rdfs:label ?seqvar_label .
-  ?seqvar cello:ofGene ?gene .
-  ?gene cello:isIdentifiedByXref ?xref .
-  ?xref cello:accession ?gene_ac .
-  ?xref rdfs:label ?gene_name .
-}
-order by ?cl_name
-limit 1000
-
-
-## ------------------------------------------------------
-ID: 169
-LB: Cell lines with a *RAS (HRAS, NRAS, KRAS) in "p.Gly12"
-KW: gene, mutation, sequence variation
-## ------------------------------------------------------
-select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac ?gene_name  where {
-  #values ( ?seqvar_class ?gene_ac_xsd ) { ( cello:GeneDeletion "HGNC:1787") } # HGNC accession of CDKN2A
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:hasSequenceVariationInfo ?annot .
-  ?annot cello:variationStatus ?status .
-  ?annot cello:hasTarget ?seqvar .
-  optional { ?seqvar cello:zygosity ?zygozity . }
-  ?seqvar a ?seqvar_class .
-  ?seqvar rdfs:label ?seqvar_label .
-  ?seqvar cello:ofGene ?gene .
-  ?gene cello:isIdentifiedByXref ?xref .
-  ?xref cello:accession ?gene_ac .
-  ?xref rdfs:label ?gene_name .
-  filter(contains(?seqvar_label, 'p.Gly12')) 	# matches p.Gly12 anywere in the mutation label
-  filter(regex(?gene_name, '.*RAS')) 			# matches any character followed with RAS, i.e. HRAS, NRAS, KRAS
-}
-order by ?cl_name
-limit 5000
-
-
-## ------------------------------------------------------
-ID: 170
-LB: Mouse cell lines with a sequence variation
-KW: gene, mutation, sequence variation, species, mouse
-## ------------------------------------------------------
-select distinct ?cl ?cl_name ?species_ac ?species_label ?seqvar_class ?gene_ac  ?gene_name  where {
-  values ( ?generic_species_notation ) { ( "10090") } # NCBI_TaxID accession of Mouse
-  ?cl cello:recommendedName ?cl_name .
-  ?cl cello:derivedFromIndividualBelongingToSpecies ?species .
-  ?species  cello:isIdentifiedByXref ?species_xref .
-  ?species cello:name ?species_label .
-  ?species_xref cello:accession ?species_ac .
-  ?species_xref cello:more_specific_than* ?generic_concept .
-  ?generic_concept skos:notation ?generic_species_notation ; skos:inScheme db:NCBI_TaxID . # Mouse = 10090
-  ?cl cello:hasSequenceVariationInfo ?annot .
-  ?annot cello:hasTarget ?seqvar .
-  ?seqvar a ?seqvar_class .
-  ?seqvar cello:ofGene ?gene .
-  ?gene cello:isIdentifiedByXref ?gene_xref .
-  ?gene_xref cello:accession ?gene_ac .
-  ?gene_xref rdfs:label ?gene_name .
-}
-order by ?cl_name
-limit 1000
