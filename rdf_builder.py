@@ -8,6 +8,7 @@ from databases import Database, Databases, get_db_category_IRI
 from sexes import Sex, get_sex_IRI
 from msi_status import MsiStatus, get_Msi_Status_IRI
 from namespace_term import Term as NsTerm
+from personname import PersonName
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 class DataError(Exception): 
@@ -673,14 +674,24 @@ class RdfBuilder:
             triples.append(orga_IRI, ns.cello.country, ns.xsd.string(org.country))
 
         if org.contact is not None and len(org.contact)>0:
-            for name in org.contact.split(" and "):
+            persons = org.contact.split(" & ")
+            if len(persons) > 1: 
+                log_it("DEBUG", "found multiple persons with ' & ' for org", data) 
+            else:
+                persons = org.contact.split(" and ")
+                if len(persons) > 1: 
+                    log_it("DEBUG", "found multiple persons with ' and ' for org", data) 
+    
+            for name in persons:
                 p_BN = self.get_blank_node()
                 triples.append(p_BN, ns.rdf.type, ns.schema.Person)
-                triples.extend(self.get_materialized_triples_for_prop(p_BN, ns.cello.name, ns.xsd.string(name)))
                 triples.append(p_BN, ns.cello.isMemberOf, orga_IRI)
+                triples.extend(self.get_triples_for_person_name_from_new_format(p_BN, name))
 
         return("".join(triples.lines))
         
+
+    
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def remove_accents(self, input_str):
@@ -723,12 +734,10 @@ class RdfBuilder:
                 orga_IRI = ns.orga.IRI(p_name, None, None, None, None)
                 triples.append(ref_IRI, ns.cello.creator, orga_IRI)
             else:
-                for name in p_name.split(" and "):                
-                    p_BN = self.get_blank_node()
-                    triples.append(ref_IRI, ns.cello.creator, p_BN)
-                    triples.append(p_BN, ns.rdf.type, ns.schema.Person)
-                    #triples.append(p_BN, ns.cello.name, ns.xsd.string(name))
-                    triples.extend(self.get_materialized_triples_for_prop(p_BN, ns.cello.name, ns.xsd.string(name)))
+                p_BN = self.get_blank_node()
+                triples.append(ref_IRI, ns.cello.creator, p_BN)
+                triples.append(p_BN, ns.rdf.type, ns.schema.Person)
+                triples.extend(self.get_triples_for_person_name_from_json(p_BN, p))
 
         # title (mandatory)
         ttl = ref_data["title"]
@@ -798,14 +807,44 @@ class RdfBuilder:
 
         # editors (optional)
         for p in ref_data.get("editor-list") or []:
-            p_name = p["name"]
-            for name in p_name.split(" and "):
-                p_BN = self.get_blank_node()
-                triples.append(ref_IRI, ns.cello.editor, p_BN)
-                triples.append(p_BN, ns.rdf.type, ns.schema.Person)
-                triples.extend(self.get_materialized_triples_for_prop(p_BN, ns.cello.name, ns.xsd.string(name)))
-
+            p_BN = self.get_blank_node()
+            triples.append(ref_IRI, ns.cello.editor, p_BN)
+            triples.append(p_BN, ns.rdf.type, ns.schema.Person)
+            triples.extend(self.get_triples_for_person_name_from_json(p_BN, p))
         return("".join(triples.lines))
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_triples_for_person_name_from_json(self, person_BN, person_obj):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns 
+        triples = TripleList()
+        p_name = person_obj["name"]
+        triples.extend(self.get_materialized_triples_for_prop(person_BN, ns.cello.name, ns.xsd.string(p_name)))
+        p_given = person_obj.get("first-names")
+        p_family = person_obj.get("last-name")
+        p_suffix = person_obj.get("name-suffix")
+        if p_given is not None: triples.append(person_BN, ns.schema.givenName, ns.xsd.string(p_given))       # should never by None but only tested during XML generation
+        if p_family is not None: triples.append(person_BN, ns.schema.familyName, ns.xsd.string(p_family))    # should never by None but only tested during XML generation
+        if p_suffix is not None: triples.append(person_BN, ns.cello.nameSuffix, ns.xsd.string(p_suffix))     # is optional and rare
+        return triples
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_triples_for_person_name_from_new_format(self, person_BN, name_in_new_format):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        ns = self.ns 
+        pn = PersonName(name_in_new_format)
+        triples = TripleList()
+        if pn.invalid:
+            log_it("WARNING", "invalid person name format:", name_in_new_format)
+            triples.extend(self.get_materialized_triples_for_prop(person_BN, ns.cello.name, ns.xsd.string(name_in_new_format)))
+        else:
+            triples.extend(self.get_materialized_triples_for_prop(person_BN, ns.cello.name, ns.xsd.string(pn.old_format)))
+            triples.append(person_BN, ns.schema.givenName, ns.xsd.string(pn.firstnames))
+            triples.append(person_BN, ns.schema.familyName, ns.xsd.string(pn.lastname))
+            if pn.suffix is not None: triples.append(person_BN, ns.cello.nameSuffix, ns.xsd.string(pn.suffix))
+        return triples
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

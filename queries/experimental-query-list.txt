@@ -115,7 +115,99 @@ LB: Find me cell lines that have mutations in a gene which is highly expressed i
 KW: federated, Bgee, expression, gene, mutation
 ## -----------------------------------------------------------------------------------------
 
+(step 1)
 
-Bgee:
+PREFIX orth: <http://purl.org/net/orth#>
+PREFIX genex: <http://purl.org/genex#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX up: <http://purl.uniprot.org/core/>
+PREFIX lscr: <http://purl.org/lscr#>
 
+SELECT DISTINCT ?gene ?protein ?score {
+	values (?anat ?anat2 ) { (obo:UBERON_0000473 obo:GO_0005575 ) } . # testis / generic cellulat component
+	?seq a orth:Gene ; rdfs:label ?gene ; orth:organism / obo:RO_0002162 ?species . #in taxon
+	?seq lscr:xrefUniprot ?protein .
+	?species a up:Taxon .
+  	?species up:commonName "human" .
+	?expression a genex:Expression .
+	?expression genex:hasSequenceUnit ?seq .
+	?expression genex:hasExpressionCondition ?condition .
+	?expression genex:hasExpressionLevel ?score .
+	?condition genex:hasAnatomicalEntity ?anat .
+	?condition genex:hasAnatomicalEntity ?anat2  .
+	?condition genex:hasDevelopmentalStage / rdfs:label "life cycle" .
+  	#?condition genex:hasStrain / rdfs:label "wild-type" .
+	#?condition genex:hasSex "any" .  
+  filter(?score > 90)
+  filter(! contains(str(?protein), '_'))
+}
+ORDER BY DESC(?score)
+
+TODO: use uniprot to map up:protein to HGNC urls
+
+
+Find me cell lines that have mutations in a gene which is highly expressed in testis
+score  : gene number
+-------:-------------
+90-100 : 3904
+80-90  : 5215
+70-80  : 5086
+60-70  : 4888
+50-60  : 5958
+40-50  : 8676
+30-40  : 8906
+20-30  : 3211
+10-20  : 1833
+00-10  :  840
+
+Syntax ok:
+
+(step 2)
+
+PREFIX orth: <http://purl.org/net/orth#>
+PREFIX genex: <http://purl.org/genex#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX up: <http://purl.uniprot.org/core/>
+PREFIX lscr: <http://purl.org/lscr#>
+
+
+SELECT DISTINCT ?gene ?protein ?human_gene_iri ?score {
+  
+  service <https://sparql.uniprot.org/sparql> {
+      select ?protein ?human_gene_iri where {
+        ?protein rdfs:seeAlso ?human_gene_iri . 
+        ?human_gene_iri up:database <http://purl.uniprot.org/database/AGR>   }  }     
+  
+
+  ?seq a orth:Gene ; rdfs:label ?gene ; orth:organism / obo:RO_0002162 ?species . #in taxon
+	?seq lscr:xrefUniprot ?protein .
+	?species a up:Taxon .
+  	?species up:commonName "human" .
+	?expression a genex:Expression .
+	?expression genex:hasSequenceUnit ?seq .
+	?expression genex:hasExpressionCondition ?condition .
+	?expression genex:hasExpressionLevel ?score .
+	?condition genex:hasAnatomicalEntity obo:UBERON_0000473 .           # testis
+	?condition genex:hasAnatomicalEntity obo:GO_0005575  .              # any cellular component
+	?condition genex:hasDevelopmentalStage / rdfs:label "life cycle" .  # any stage
+  	#?condition genex:hasStrain / rdfs:label "wild-type" .              # any strain
+	#?condition genex:hasSex "any" .                                    # any sex
+
+  
+#  filter(?score > 90)
+#  filter(! contains(str(?protein), '_'))
+  
+}
+#limit 100
+
+
+
+## -----------------------------------------------------------------------------------------
+TODO in cellosaurus:
+## -----------------------------------------------------------------------------------------
+- add IRI for uniprot proteins
+- add up:commonName / up:scientificName for species
+- derivedFromIndividualBelongingToSpecies - add skos link or owl:equiv as obo:RO_0002162 used in Bgee
+- see how to integrate up:Taxon also used in Bgee
+## -----------------------------------------------------------------------------------------
 

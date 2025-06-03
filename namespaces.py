@@ -278,12 +278,13 @@ class OaNamespace(BaseNamespace):
         super(OaNamespace, self).__init__("oa", "http://www.w3.org/ns/oa#")
         #self.Annotation = self.registerClass("Annotation")
 
+
 # # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # class FoafNamespace(BaseNamespace):
 # # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #     def __init__(self): 
 #         super(FoafNamespace, self).__init__("foaf", "http://xmlns.com/foaf/0.1/")
-#         self.name = self.registerProperty("name", hidden=True)
+
 
 # # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # class OrgNamespace(BaseNamespace):
@@ -310,6 +311,9 @@ class SchemaOrgNamespace(BaseNamespace):
         self.minValue = self.registerDatatypeProperty("minValue")                   # only a rdf:Property in original ontology but useful for protege, widoco, ...
         self.maxValue = self.registerDatatypeProperty("maxValue")                   # only a rdf:Property in original ontology but useful for protege, widoco, ...
         self.unitCode = self.registerDatatypeProperty("unitCode")                   # schema:unitCode "HUR"  # ISO 4217 code for hour
+        self.givenName = self.registerDatatypeProperty("givenName", hidden=False)
+        self.familyName = self.registerDatatypeProperty("familyName", hidden=False)
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class DctermsNamespace(BaseNamespace):

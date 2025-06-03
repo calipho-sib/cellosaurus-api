@@ -23,7 +23,7 @@ from namespace_registry import NamespaceRegistry
 
 from rdf_builder import RdfBuilder
 from datamodel_builder import DataModelBuilder
-from organizations import KnownOrganizations, Organization
+from organizations import KnownOrganizations
 
 from terminologies import Terminologies, Terminology
 from ontology_builder import OntologyBuilder

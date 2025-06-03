@@ -411,3 +411,4 @@ class CelloOntologyNamespace(BaseNamespace):
         comment="Links two concepts where he subject concept is more specific than the object concept. The semantics is similar to skos:broader."
         self.more_specific_than = self.registerObjectProperty("more_specific_than", comment=comment)                # described as equivalent of skos:broader
         
+        self.nameSuffix = self.registerDatatypeProperty("nameSuffix", comment="Optional person name suffix like Jr. Sn. 1st, 2nd, 3rd or 4th .")
