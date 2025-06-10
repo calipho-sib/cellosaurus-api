@@ -928,6 +928,23 @@ async def get_help_resolver(request: Request):
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+@app.get("/sparql-service-help", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def get_help_resolver(request: Request):
+    scope = request.scope.get("root_path")
+    if scope is None or scope == "/": scope = ""
+    content = htmlBuilder.get_file_content("html.templates/sparql-service-help.template.html")
+    # build response and send it
+    content = content.replace("$base_IRI", platform.get_rdf_base_IRI())
+    content = content.replace("$public_sparql_URI", platform.get_public_sparql_service_IRI())
+    content_tree = html.fromstring(content)
+    htmlBuilder.add_nav_css_link_to_head(content_tree)
+    htmlBuilder.add_nav_node_to_body(content_tree)
+    final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
+    return responses.Response(content=final_content,media_type="text/html")
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 @app.get("/sparql-editor", tags=["Cell lines"], response_class=responses.HTMLResponse, include_in_schema=False)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 async def get_sparql_editor(request: Request):

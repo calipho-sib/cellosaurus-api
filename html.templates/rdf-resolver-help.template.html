@@ -15,10 +15,25 @@
   </head>
 
   <body>
-      <h1>Getting description of RDF entities in different formats</h1>
+    <h1>Dereferencing service</h1>
+
     <div style="padding-left: 80px;">
-      Several formats are supported. The format can be chosen by adding the parameter ?format=&lt;format&gt;<br>
+      <p>
+        The RDF dereferencing service is the mechanism that, given a URI, returns an RDF description 
+        of the resource identified by that URI, enabling clients to retrieve structured, machine-readable 
+        data about the resource from the web in different formats.
+      <br>
+        All the resources defined in the Cellosaurus graph can be dereferenced. 
+        It includes the ontology itself, each ontology term, the cell lines, but also the cross-references, the databases and the organizations.
+      </p>
+
+      <h2>Getting description of RDF entities in different formats</h2>
+      <p>
+      Several formats are supported. The format can be chosen by adding the parameter ?format=&lt;format&gt; 
+      or simply by appending the format at the end of the URI, like a file extension.
+      <br>
       where format is one of:
+      </p>
       <ul>
         <li>html (default)</li>
         <li>n3</li>
@@ -27,15 +42,25 @@
         <li>jsonld</li>
       </ul> 
         Examples
+      <!--
         <ul>
         <li>the ontology in jsonld <a target=_blank" href="$base_IRI/ontology/?format=jsonld">$base_IRI/ontology/?format=jsonld</a></li>
         <li>the cello:CancerCellLine class in HTML <a target=_blank" href="$base_IRI/ontology/CancerCellLine">$base_IRI/ontology/CancerCellLine</a></li>
         <li>the cello:Xref class in rdf <a target=_blank" href="$base_IRI/ontology/Xref?format=rdf">$base_IRI/ontology/Xref?format=rdf</a></li>
         <li>the cell line CVCL_0030 in ttl <a target=_blank" href="$base_IRI/cvcl/CVCL_0030?format=ttl">$base_IRI/cvcl/CVCL_0030?format=ttl</a></li>
       </ul>
+        -->
+      
+      <ul>
+        <li><a target=_blank" href="$base_IRI/ontology/.jsonld">$base_IRI/ontology/?format=jsonld</a> - the ontology in jsonld</li>
+        <li><a target=_blank" href="$base_IRI/ontology/CancerCellLine">$base_IRI/ontology/CancerCellLine</a> - the cello:CancerCellLine class in HTML</li>
+        <li><a target=_blank" href="$base_IRI/ontology/Xref.rdf">$base_IRI/ontology/Xref.rdf</a> - the cello:Xref class in rdf</li>
+        <li><a target=_blank" href="$base_IRI/cvcl/CVCL_0030.ttl">$base_IRI/cvcl/CVCL_0030.ttl</a> - the cell line CVCL_0030 in ttl</li>
+      </ul>
+
       <h2>Resolving RDF entities with a script</h2>
       <p>
-      The SPARQL protocol is based on the HTTP content negotiation. Instead of using the parameter <i>format</i> as described above, <br>
+      The SPARQL protocol (and thus the dereferencing service) is based on the HTTP content negotiation. Instead of using the parameter <i>format</i> as described above, <br>
       you can use the 'Accept' header to tell the SPARQL server which mime-type you would like to have in the response.
       </p>
       <p>The following mime-type can be used:</p>

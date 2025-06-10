@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cellosaurus RDF resolver examples</title>
+    <meta name="description" content="SPARQL RDF resolver examples page" />
+    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/f/f3/Rdf_logo.svg" />
+    <style>
+      h1 {
+        font-size: 36px;
+        margin-left: 80px;
+      }
+      pre {
+        background-color: rgb(240, 240, 240);
+        padding: 5px;
+        margin-right: 33px;
+      }
+    </style>    
+
+  </head>
+
+  <body>
+    <h1>SPARQL service</h1>
+
+    <div style="padding-left: 80px;">
+      <p>
+        The SPARQL service (or SPARQL endpoint) is the web service that accepts SPARQL queries over HTTP and 
+        returns results from the RDF dataset. It acts as the gateway allowing clients to query and retrieve structured 
+        data stored in RDF format using the SPARQL protocol and query language.
+      </p>
+      <ul>
+        <li><a target=_blank" href="$public_sparql_URI">$public_sparql_URI</a> - SPARQL service URI</li>
+      </ul>
+      <p>
+        This service can be accessed programmatically and also provides a basic web form for manually submitting queries. 
+        For a more user-friendly experience, the <a href="/sparql-editor">SPARQL Editor</a> offers enhanced features tailored to human users.
+      </p>        
+
+      <p>There are many wasy to connect to and query the SPARQL service programmatically, 
+        here are a few examples with a basic query which retrieves the IRI and name of 10 cancer cell lines from Cellosaurus:
+      </p>
+
+      <h2>Access to SPARQL endpoint using curl in a bash script</h2>
+      <p>
+        1. Copy the following content to a file, e.g. to file <i>test.sh</i>
+      </p>
+      <pre>
+#!/bin/bash
+
+ENDPOINT="$public_sparql_URI"
+QUERY='select * where { ?cl a cello:CancerCellLine ; cello:recommendedName ?name } limit 10'
+
+curl -X POST \
+  -H "Content-Type: application/sparql-query" \
+  -H "Accept: application/sparql-results+json" \
+  --data "$QUERY" \
+  "$ENDPOINT"
+      </pre>
+      <p>
+        2. Make it executable and run it
+      </p>
+<pre>
+chmod +x test.sh
+./test.sh
+</pre>
+
+      <h2>Access to SPARQL endpoint using python</h2>
+
+      <p>
+        There are several python libraries providing interfaces between SPARQL and python, e.g. <i>sparqlwrapper</i>.
+      </p>
+
+      <p>
+        1. Install the library in your python environment
+      </p>
+      <pre>pip install sparqlwrapper</pre>
+      <p>
+        See also: <a target="_blank" href="https://sparqlwrapper.readthedocs.io/en/latest/main.html">https://sparqlwrapper.readthedocs.io/en/latest/main.html</a>
+      </p>
+
+      <p>
+        2. Create a file, e.g. <i>test.py</i> and copy the follwing code into it
+      </p>
+      <pre>
+from SPARQLWrapper import SPARQLWrapper, JSON
+
+endpoint = SPARQLWrapper("$public_sparql_URI")
+
+endpoint.setQuery("select * where { ?cl a cello:CancerCellLine ; cello:recommendedName ?name } limit 10")
+endpoint.setReturnFormat(JSON)
+
+response = endpoint.queryAndConvert()
+for row in response["results"]["bindings"]:
+    print(row)
+      </pre>
+      3. Run it
+      <pre>python test.py</pre>
+
+    </div>
+
+  </body>
+</html>
