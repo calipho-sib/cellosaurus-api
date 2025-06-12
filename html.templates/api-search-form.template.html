@@ -1,25 +1,46 @@
 <!DOCTYPE html>
+<head>
+    <title>Cellosaurus API search form</title>
+    <style>
+        .result-table td,th {
+          border: 1px solid black;
+          border-collapse: collapse;
+          padding:5px;
+        }
+        .result-table   {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        h1 {
+          font-size: 36px;
+          margin-left: 80px;
+        }
+        form {
+            padding-left: 80px;
+        }
+        </style>    
+</head>
 <html>
-    <head>
-        <style>
-            h1 {
-              font-size: 36px;
-              margin-left: 80px;
-            }
-            form {
-                padding-left: 80px;
-            }
-            </style>    
-    
-    </head>
     <body>
-        <h1>API Simple search form</h1>
-        <form>
-            <table>
-                <tbody>
+            <h1>Cellosaurus API search form</h1>
+            <form>
+                <table>
+                   <tbody>
                     <tr>
                         <td>Search criteria</td>
-                        <td><input style="width:100%;" type"text" name="q" value="$q" /></td>
+                        <td><input style="width:600px;" type"text" name="q" value="$q" /></td>
+                    </tr>
+                    <tr>
+                        <td>Output fields</td>
+                        <td><input style="width:600px;" type"text" name="fields" value="$fields" /></td>
+                    </tr>
+                    <tr>
+                        <td>Sort criteria</td>
+                        <td><input style="width:100px;" type"text" name="sort" value="$sort" /></td>
+                    </tr>
+                    <tr>
+                        <td>Max output rows</td>
+                        <td><input style="width:100px;" type"text" name="rows" value="$rows" /></td>
                     </tr>
                     <tr>
                         <td></td>
@@ -30,16 +51,21 @@
                         <td>$numFound</td>
                     </tr>
                     <tr>
-                        <td>IDs found</td>
-                        <td><textarea cols="50" rows="20" id="idsFound">$idsFound</textarea></td>
+                        <td>Output</td>
+                        <table class="result-table">
+                            <tbody>
+                                $resultRows
+                            </tbody>
+                        </table>
                     </tr>
                     <tr><td colspan="2">
                         <h3>Useful links</h3>
                         <ul>
                             <li><a target="_blank" href="https://solr.apache.org/guide/8_11/the-standard-query-parser.html">Solr search syntax</href></li>
-                            <li><a href="$scope/help-fields">Comprehensive description of Cellosaurus cell line fields</href></li>
+                            <li><a href="$scope/api-fields">Comprehensive description of Cellosaurus cell line fields</href></li>
                         </ul>
-                    </td></tr>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </form>

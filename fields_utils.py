@@ -191,10 +191,10 @@ class FldDef:
         f_out.close()
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    def get_content_of_field_help_page(self):
+    def get_content_of_api_fields_page(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         # read HTML template
-        f=open("html.templates/api-fields-help.template.html","r")
+        f=open("html.templates/api-fields.template.html","r")
         template = f.read()
         f.close()
         
@@ -227,10 +227,7 @@ if __name__ == "__main__":
     
     fldDef.build_enum()
     print("Built file fields_enum.py")
-    
-    # fldDef.build_help_page()
-    # print("Built static/api-fields-help.template.py")
-    
+        
     print("End")
 
     if 1==2:
