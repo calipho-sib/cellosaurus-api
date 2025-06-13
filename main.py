@@ -10,6 +10,8 @@ from urllib.parse import urlencode
 import uvicorn
 from enum import Enum
 from namespace_registry import NamespaceRegistry
+from starlette.middleware.base import BaseHTTPMiddleware
+
 
 import os
 #import sys
@@ -141,6 +143,15 @@ if rdf_is_visible:
 
 
 
+
+class CacheControlMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["Cache-Control"] = "no-cache"
+        #log_it(">>> no cache", request.url)
+        return response
+
+
 # general documentation in the header of the page
 app = FastAPI(
     title="Cellosaurus API methods",
@@ -166,6 +177,12 @@ app = FastAPI(
     # here in the FastAPI c'tor
     )
 
+
+#
+# Adds a Cache-control: no-cache header in response
+# see CacheControlMiddleware class above
+#
+app.add_middleware(CacheControlMiddleware)
 
 
 # local hosting of js / css for swagger and redocs
