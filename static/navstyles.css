@@ -1,4 +1,5 @@
 /*
+ 
   It seems that widoco uses variables to choose color in some conditions
   For the navigation layout of rdf-ontology page to be the same as in other
   pages served by FastAPI (i.e. rdf-dereferencing, sparql-editor,...) we need

@@ -181,13 +181,21 @@ app = FastAPI(
 #
 # Adds a Cache-control: no-cache header in response
 # see CacheControlMiddleware class above
-# With this setting:
+#
+# With this setting, perplexity.ai says:
 # FastAPI will always resend a fresh response with status 200 for your own routes if you only set Cache-Control: no-cache 
 # and do not implement validation headers like ETag or Last-Modified or handle conditional requests. The no-cache directive forces the 
 # browser to revalidate with the server, but unless your server checks the client's cache validation headers and returns a 
 # 304 Not Modified when appropriate, FastAPI will simply generate and send a new response with status 200 every time
 #
-app.add_middleware(CacheControlMiddleware)
+# It seems that the header Cache-Control: no-cache is also sent by CacheControlMiddleware for static resources whatever the response status (200, 304).
+# Browsers seem to send If-Not_Modified-Since and If-None-Match headers which are properly handled by FastAPI
+# The best "trick" to make sure cache is handled properly on browsers is to update the timestamp of resource files befaore each release
+#
+# Conclusion: we don't use CacheControlMiddleware class
+#  
+# app.add_middleware(CacheControlMiddleware)
+#
 
 
 # local hosting of js / css for swagger and redocs
