@@ -675,7 +675,7 @@ class OntologyBuilder:
         lines.append(onto_url)
         lines.append("    a " + ns.owl.Ontology + " ;")
         lines.append("    " + ns.rdfs.label + " " + ns.xsd.string("Cellosaurus ontology") + " ;")
-        lines.append("    " + ns.dcterms.created + " " + ns.xsd.date("2024-07-30") + " ;")
+        lines.append("    " + ns.dcterms.created + " " + ns.xsd.date("2025-03-30") + " ;")
         lines.append("    " + ns.dcterms.modified + " " + ns.xsd.date(date_string) + " ;")
         lines.append("    " + ns.dcterms.description + " " + ns.xsd.string3(onto_descr) + " ;")
         lines.append("    " + ns.dcterms.license + " <http://creativecommons.org/licenses/by/4.0> ;")

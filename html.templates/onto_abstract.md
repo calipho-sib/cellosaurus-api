@@ -1,7 +1,7 @@
 Cellosaurus is a manually curated resource that attempts to extensively describe all cell lines used in biomedical research.
 The OWL Cellosaurus ontology serves as the semantic model for all the diverse information contained in the Cellosaurus RDF.
 
-Cellosaurus is a comprehensive knowledge resource on cell lines used in biomedical research, encompassing both vertebrate and invertebrate species. It provides detailed information for over 140,000 cell lines, including recommended names, synonyms, unique accession numbers, species of origin, and structured comments. The database contains crucial details such as contamination status, genetic modifications, disease associations, STR profiles, and cell line categorization.
+Cellosaurus is a comprehensive knowledge resource on cell lines used in biomedical research, encompassing both vertebrate and invertebrate species. It provides detailed information for over 170,000 cell lines, including recommended names, synonyms, unique accession numbers, species of origin, and structured comments. The database contains crucial details such as contamination status, genetic modifications, disease associations, STR profiles, and cell line categorization.
 
 Delivering a RDF version of Cellosaurus is an important step towards FAIRification. Making it available from our [SPARQL endpoint]($public_sparql_URL) is key to Linked Open Data (LOD) perspective and for improving interoperability in particular thanks to federated queries.
 

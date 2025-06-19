@@ -17,7 +17,8 @@
   <body>
       <h1>Cellosaurus RDF files download</h1>
     <div style="padding-left: 80px; padding-right:60px; ">
-      The RDF data is available as a compressed tar file. It contains several files in Turtle format (ttl) including both ontology, metadata, query examples and data. <br>
+      The RDF data is available as a compressed tar file. It contains several files in Turtle format (ttl) including ontology, 
+      metadata, query examples and data. <br>
       The content reflects what is made available at our sparql endpoint.
       <ul>
         <li><a download href="/static/downloads/cellosaurus_ttl.tar.gz">cellosaurus_ttl.tar.gz</a></li>
@@ -56,7 +57,7 @@ select * where {
   ?concept skos:inScheme db:NCBI_TaxID ; skos:notation "50557"^^xsd:string .  # Insecta
 }</pre>
       would not require "*" (a path of zero or more occurrences of cello:more_specific_than) and would run faster after
-      loading the files proposed below. The files can be found here:
+      loading the files proposed below:
       <ul>
         <li><a download href="/static/downloads/materialized_transitive_more_specific_than.ttl">materialized_transitive_more_specific_than.ttl</a></li>
         <li><a download href="/static/downloads/materialized_transitive_subproperties.ttl">materialized_transitive_subproperties.ttl</a></li>
