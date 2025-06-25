@@ -1026,6 +1026,7 @@ async def get_sparql_editor(request: Request):
     content_tree = html.fromstring(content)
     htmlBuilder.fix_ontology_css_collisions(content_tree)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
+    htmlBuilder.add_nav_favicon_link_to_head(content_tree)
     htmlBuilder.add_script_node_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    

@@ -49,6 +49,18 @@ class HtmlBuilder:
         head_node.append(script_node)
 
 
+
+    # - - - - - - - - - - - - - - - - - - 
+    def add_nav_favicon_link_to_head(self, some_tree):
+    # - - - - - - - - - - - - - - - - - - 
+        # <link rel="shortcut icon" href="/static/favicon32.png">
+        head_node = some_tree.xpath("/html/head")[0]
+        lnk = html.Element("link")
+        lnk.set("type", "text/css")
+        lnk.set("rel", "shortcut icon")
+        lnk.set("href", "/static/favicon32.png")
+        head_node.insert(0, lnk)
+
     # - - - - - - - - - - - - - - - - - - 
     def add_nav_css_link_to_head(self, some_tree):
     # - - - - - - - - - - - - - - - - - - 
