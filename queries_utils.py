@@ -65,8 +65,15 @@ class Query:
         # .
         #
         lines = list()
+        sparql_endpoint = ns_reg.platform.get_public_sparql_service_IRI()
         lines.append(f"cello:Query_{self.id} a sh:SPARQLExecutable ;")
-        lines.append(f"    rdfs:comment \"\"\"{self.label}\"\"\" ; ")
+        lines.append(f"    sh:prefixes _:sparql_examples_prefixes ;")
+        lines.append(f"    rdfs:comment \"\"\"{self.label}\"\"\"@en ; ")
+        quoted_list = list()
+        for k in self.keywords: quoted_list.append("".join(["\"", k, "\""]))
+        quoted_keywords = " , ".join(quoted_list)
+        lines.append(f"    schema:keywords {quoted_keywords} ; ")
+        lines.append(f"    schema:target <{sparql_endpoint}> ; ")
         lines.append(f"    sh:select \"\"\"")
         self.set_necessary_sparql_prefixes(ns_reg)
         for line in self.prefixes: lines.append(f"{line}")

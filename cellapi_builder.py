@@ -913,10 +913,10 @@ if __name__ == "__main__":
     if platform_key not in ["local", "test", "prod"]: 
         sys.exit("Invalid --platform option, expected local, test, or prod")
 
-    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, INFERRED, MODEL, SPARQL_PAGES, QUERIES or TEST")
+    if len(args) < 1: sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, INFERRED, MODEL, SPARQL_PAGES, GIT_QUERIES, QUERIES or TEST")
 
-    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "INFERRED", "MODEL", "SPARQL_PAGES", "QUERIES", "TEST" ]: 
-        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, INFERRED, MODEL, SPARQL_PAGES, QUERIES or TEST")
+    if args[0] not in [ "BUILD", "SOLR", "RDF", "LOAD_RDF", "ONTO", "INFERRED", "MODEL", "SPARQL_PAGES", "GIT_QUERIES", "QUERIES", "TEST" ]: 
+        sys.exit("Invalid arg1, expected BUILD, SOLR, RDF, LOAD_RDF, ONTO, INFERRED, MODEL, SPARQL_PAGES, GIT_QUERIES, QUERIES or TEST")
 
     input_dir = "data_in/"
     if input_dir[-1] != "/" : input_dir + "/"
@@ -1249,26 +1249,58 @@ if __name__ == "__main__":
 
         # create ttl file containing a list of example SPARQL queries 
  
-        out_dir = "rdf_data/"
-        file_out = open(out_dir + "queries.ttl", "wb")
+        rdf_dir = "rdf_data/"
+        rdf_file = open(rdf_dir + "queries.ttl", "wb")
         log_it("INFO:", f"serializing example SPARQL queries")   
         reader = QueryFileReader()
-        file_out.write(bytes("#\n", "utf-8"))
-        file_out.write(bytes("# example SPARQL queries\n", "utf-8"))
-        file_out.write(bytes("#\n\n", "utf-8"))
-        file_out.write(bytes("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . \n", "utf-8"))
-        file_out.write(bytes("@prefix sh: <http://www.w3.org/ns/shacl#> . \n", "utf-8"))
-        file_out.write(bytes(f"@prefix cello: <{ns_reg.cello.url}> .\n", "utf-8"))
-        #file_out.write(bytes("@prefix cello: <https://purl.expasy.org/cellosaurus/rdf/ontology/> .\n", "utf-8"))
-        file_out.write(bytes("\n\n", "utf-8"))
+        rdf_file.write(bytes("#\n", "utf-8"))
+        rdf_file.write(bytes("# example SPARQL queries\n", "utf-8"))
+        rdf_file.write(bytes("#\n\n", "utf-8"))
+        rdf_file.write(bytes("@prefix schema: <https://schema.org/> . \n", "utf-8"))
+        rdf_file.write(bytes("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . \n", "utf-8"))
+        rdf_file.write(bytes("@prefix sh: <http://www.w3.org/ns/shacl#> . \n", "utf-8"))
+        rdf_file.write(bytes(f"@prefix cello: <{ns_reg.cello.url}> .\n", "utf-8"))
+        rdf_file.write(bytes("\n\n", "utf-8"))
         count = 0
         for q in reader.query_list:    
             query : Query = q
             count += 1
             ttl = query.get_ttl_for_sparql_endpoint(ns_reg)
-            file_out.write(bytes(ttl + "\n\n", "utf-8"))
+            rdf_file.write(bytes(ttl + "\n\n", "utf-8"))
         log_it("INFO", f"wrote {count} queries")
         log_it("INFO:", f"serialized example SPARQL queries")
+        rdf_file.close()
+
+
+    # -------------------------------------------------------
+    if args[0]=="GIT_QUERIES":
+    # -------------------------------------------------------
+
+        # create ttl file containing a list of example SPARQL queries 
+ 
+        git_dir = "../sparql-examples/examples/Cellosaurus"
+        log_it("INFO:", f"serializing example SPARQL queries for git repository: {git_dir}")   
+
+        reader = QueryFileReader()
+        count = 0
+        for q in reader.query_list:    
+            count += 1
+            query : Query = q
+            rdf_file = open(git_dir + f"/{q.id}.ttl", "wb")
+            rdf_file.write(bytes("#\n", "utf-8"))
+            rdf_file.write(bytes(f"# example SPARQL query {q.id}\n", "utf-8"))
+            rdf_file.write(bytes("#\n\n", "utf-8"))
+            rdf_file.write(bytes("@prefix schema: <https://schema.org/> . \n", "utf-8"))
+            rdf_file.write(bytes("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . \n", "utf-8"))
+            rdf_file.write(bytes("@prefix sh: <http://www.w3.org/ns/shacl#> . \n", "utf-8"))
+            rdf_file.write(bytes(f"@prefix cello: <{ns_reg.cello.url}> .\n", "utf-8"))
+            rdf_file.write(bytes("\n\n", "utf-8"))
+            ttl = query.get_ttl_for_sparql_endpoint(ns_reg)
+            rdf_file.write(bytes(ttl + "\n\n", "utf-8"))
+            rdf_file.close()
+
+        log_it("INFO", f"wrote {count} queries")
+        log_it("INFO:", f"serialized example SPARQL queries for git")
 
 
     # -------------------------------------------------------

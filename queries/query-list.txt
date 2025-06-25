@@ -68,7 +68,7 @@ limit 2000
 
 ## ------------------------------------------------------
 ID: 104
-LB: Cell lines from animals belonging the order "carnivora"
+LB: Cell lines from animals belonging the order 'carnivora'
 KW: species, carnivora
 ## ------------------------------------------------------
 # All cell lines with a child of TaxID: 33554
@@ -275,7 +275,7 @@ ID: 114
 LB: Some antibody producing cell lines with their antibody target
 KW: MoAb, mabt, protein, chemical
 ## ------------------------------------------------------
-select ?cl ?cl_name ?target_class (substr(?target_name,0,30) as ?target_name) ?target_ac  ?comment where {
+select ?cl ?cl_name ?target_class (substr(?target_name,0,30) as ?target_name_truncated) ?target_ac  ?comment where {
    ?cl cello:hasMoAbTarget ?annot.
    ?cl cello:recommendedName ?cl_name .
    ?annot a ?target_class .
@@ -1101,7 +1101,7 @@ limit 1000
 
 ## ------------------------------------------------------
 ID: 159
-LB: Cell lines with a *RAS (HRAS, NRAS, KRAS) in "p.Gly12"
+LB: Cell lines with a *RAS (HRAS, NRAS, KRAS) in 'p.Gly12'
 KW: gene, mutation, sequence variation
 ## ------------------------------------------------------
 select ?cl ?cl_name ?status ?seqvar_class ?seqvar_label ?zygozity ?gene_ac ?gene_name  where {
