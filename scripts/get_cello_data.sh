@@ -37,7 +37,7 @@ for f in $files; do
 done
 
 # only in draft directory
-files="cellosaurus_species.cv celloparser.cv cellosaurus_anatomy.cv cellosaurus_institutions.cv cellosaurus_journals.cv cellosaurus_omics.cv"
+files="cellosaurus_species.cv celloparser.cv cellosaurus_anatomy.cv cellosaurus_institutions.cv cellosaurus_journals.cv cellosaurus_omics.cv cellosaurus_countries.cv"
 for f in $files; do
   echo "retrieving $draft_dir/$f"
   scp $draft_dir/$f $trg_dir/$f
