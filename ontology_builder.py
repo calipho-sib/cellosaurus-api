@@ -188,6 +188,7 @@ class OntologyBuilder:
         ns.describe(ns.cello.GenomeModificationMethodNOS, ns.rdf.type, ns.cello.GenomeModificationMethod)
         ns.describe(ns.cello.BacHomologousRecombination, ns.rdf.type, ns.cello.GenomeModificationMethod)
         ns.describe(ns.cello.CreLoxp, ns.rdf.type, ns.cello.GenomeModificationMethod)
+        ns.describe(ns.cello.CrisprCas12a, ns.rdf.type, ns.cello.GenomeModificationMethod)
         ns.describe(ns.cello.CrisprCas9N, ns.rdf.type, ns.cello.GenomeModificationMethod)
         ns.describe(ns.cello.EbvBasedVectorSirnaKnockdown, ns.rdf.type, ns.cello.GenomeModificationMethod)
         ns.describe(ns.cello.FloxingCreRecombination, ns.rdf.type, ns.cello.GenomeModificationMethod)

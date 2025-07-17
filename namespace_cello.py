@@ -69,6 +69,7 @@ class CelloOntologyNamespace(BaseNamespace):
         # which are instances of local classes
         self.BacHomologousRecombination = self.registerNamedIndividual("BacHomologousRecombination", label="BAC homologous recombination")                    # described
         self.CreLoxp = self.registerNamedIndividual("CreLoxp", label="Cre/loxP")                                                                              # described
+        self.CrisprCas12a = self.registerNamedIndividual("CrisprCas12a", label="CRISPR/Cas12a")                                                                  # described
         self.CrisprCas9N = self.registerNamedIndividual("CrisprCas9N", label="CRISPR/Cas9n")                                                                  # described
         self.EbvBasedVectorSirnaKnockdown = self.registerNamedIndividual("EbvBasedVectorSirnaKnockdown", label="EBV-based vector siRNA knockdown")            # described
         self.FloxingCreRecombination = self.registerNamedIndividual("FloxingCreRecombination", label="Floxing/Cre recombination")                             # described

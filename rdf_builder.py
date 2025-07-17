@@ -117,6 +117,7 @@ class RdfBuilder:
             "Transduction": ns.cello.Transduction,
             "BAC homologous recombination": ns.cello.BacHomologousRecombination,
             "Cre/loxP": ns.cello.CreLoxp,
+            "CRISPR/Cas12a": ns.cello.CrisprCas12a,
             "CRISPR/Cas9n": ns.cello.CrisprCas9N,
             "EBV-based vector siRNA knockdown": ns.cello.EbvBasedVectorSirnaKnockdown,
             "Floxing/Cre recombination": ns.cello.FloxingCreRecombination,
