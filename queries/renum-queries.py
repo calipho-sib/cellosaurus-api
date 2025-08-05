@@ -7,7 +7,7 @@ while True:
     line = f_in.readline()
     if line=="": break
     line = line.rstrip()
-    if line.startswith("ID: "):
+    if line.startswith("ID:"):
         num += 1
         line = f"ID: {num}"
     line = "".join([line, linesep])

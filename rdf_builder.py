@@ -253,7 +253,10 @@ class RdfBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_xref_term_IRI(self, xref):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        return xref.get("iri")
+    # <iri> is an optional sub-element of <xref> in the XML
+    # its presence depends upon the existence of a Db_IRI field 
+    # for the xref database in cellosaurus_xrefs.txt 
+        return xref.get("iri") 
 
 
 

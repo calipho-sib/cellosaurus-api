@@ -1308,8 +1308,60 @@ group by ?org_name ?person_name
 order by desc(count(?cl))
 
 
-## ------------------------------------------------------
+## -----------------------------------------------------------------------------------------
 ID: 168
+LB: All hybridoma which have as target a protein involved in GO:0001618:virus receptor activity
+KW: federated, uniprot, GO, mabt, monoclonal antibody target, virus receptor activity
+## -----------------------------------------------------------------------------------------
+
+PREFIX GO: <http://purl.obolibrary.org/obo/GO_>
+
+SELECT ?cl ?target_protein_label ?target_protein_ac ?protein  WHERE {
+  service <https://sparql.uniprot.org/sparql> {
+    select ?protein where {
+      ?protein rdf:type up:Protein ; up:classifiedWith GO:0001618 . # virus receptor activity
+	  }
+  }
+  ?cl a cello:Hybridoma .
+  ?cl cello:hasMoAbTarget ?target .
+  ?target rdfs:label ?target_protein_label .
+  ?target cello:isIdentifiedByIRI ?protein .
+  BIND(SUBSTR(STR(?protein),33) AS ?target_protein_ac)
+}
+
+
+## -----------------------------------------------------------------------------------------
+ID: 169
+LB: All cell lines KO for a gene that contains a Homeobox domain (Prosite:PS50071)
+KW: federated, uniprot, prosite, domain, gene, ko, knockout
+## -----------------------------------------------------------------------------------------
+
+PREFIX HGNC: <https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:>
+PREFIX uniprot: <http://purl.uniprot.org/uniprot/>
+
+SELECT ?cl ?ko_gene_ac ?ko_gene_name ?ko_gene_link ?up_protein  {
+  service <https://sparql.uniprot.org/sparql> {
+    SELECT distinct ?up_protein ?up_xref WHERE {
+      ?up_protein a up:Protein ;
+  		up:reviewed true;
+        rdfs:seeAlso <https://purl.expasy.org/prosite/signature/PS50071> . # homeobox2 domain reference
+      ?up_protein rdfs:seeAlso ?up_xref .
+      ?up_xref up:database <http://purl.uniprot.org/database/AGR> # Alliance of Genome Resources database
+    }
+  }
+  bind(substr(str(?up_xref), 29) as ?ko_gene_ac) . # value example of up_xref: <http://purl.uniprot.org/agr/HGNC:24227>
+  ?cl a / rdfs:subClassOf cello:CellLine .
+  ?cl cello:hasGeneKnockout / cello:ofGene / cello:isIdentifiedByXref ?xref .
+  # ?xref cello:database db:HGNC .  # uncomment to get only Human genes
+  # ?xref cello:database db:MGI .   # uncomment to get only Mice genes
+  ?xref cello:accession ?ko_gene_ac . #  example gene_ac in cello:  HGNC:4044
+  ?xref rdfs:seeAlso ?ko_gene_link ; rdfs:label ?ko_gene_name .
+}
+order by ?ko_gene_ac
+
+
+## ------------------------------------------------------
+ID: 170
 LB: Super class and equivalent class of each class defined in the cello ontology
 KW: ontology, class, semantics, private
 ## ------------------------------------------------------
@@ -1325,7 +1377,7 @@ order by ?rdfs_superClass ?owl_equivalentClass ?parent ?cello_class
 
 
 ## ------------------------------------------------------
-ID: 169
+ID: 171
 LB: Super property and equivalent property of each property defined in the cello ontology
 KW: ontology, property, semantics, private
 ## ------------------------------------------------------
@@ -1341,7 +1393,7 @@ order by ?rdfs_superProp ?owl_equivalentProp ?parent ?cello_prop
 
 
 ## ------------------------------------------------------
-ID: 170
+ID: 172
 LB: Usage of name properties for instances of each class defined in cello: ontology
 KW: id, sy, miss, misspelling, reg, registration, label, name, recommendedName, misspellingName, private, semantics
 ## ------------------------------------------------------
@@ -1358,7 +1410,7 @@ limit 1000
 
 
 ## ------------------------------------------------------
-ID: 171
+ID: 173
 LB: Typical triples found in Cellosaurus RDF (without filtering some irrelevant tuples)
 KW: ontology, range, domain, class, property, subject, object, datatype, semantics, private
 ## ------------------------------------------------------
