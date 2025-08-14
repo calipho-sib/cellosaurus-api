@@ -1,80 +1,155 @@
-# ===============================================================
-# deploy API / SOLR data
-# ===============================================================
+# ==================================
+# on local dev machine
+# ==================================
 
-#
-# 1. Get new release and build data locally
-#
+# dev machine is currently lin-202.swiss-prot.ch
+ssh lin-202.swiss-prot.ch
 
-trg_host="myserver"
+# get new data and rebuild 
+# api indexes, solr indexes and virtuoso db
 
-ssh mac-098
-release_number=46
-cd cello/cellosaurus-api
-./scripts/get_cello_data $release_number
-./scripts/rebuild_api_data.sh
-# ./scripts/rebuild_api_data.sh --no-solr
+release_number=53
+platform=prod
+
+./scripts/get_cello_data.sh $release_number
+python fields_utils.py
+python cellapi_builder.py --platform=$platform BUILD
+python cellapi_builder.py --platform=$platform SOLR
+
+./solr_service.sh restart
+./solr/bin/post -c pamcore1 -d "<delete><query>*:*</query></delete>"
+sleep 10
+./solr/bin/post -c pamcore1 solr_data/data*.xml
+
+./doit-rdf.sh $platform
+
+# copy code and new data for api, solr 
+# and virtuoso to test or prod server
+ 
+# test server
+trg_host=buck
+
+# prod server
+#trg_host=piccard
 
 ./scripts/deploy_api_code.sh $trg_host
 ./scripts/push_dir.sh data_in $trg_host
 ./scripts/push_dir.sh solr_data $trg_host
 ./scripts/push_dir.sh rdf_data $trg_host
 
-#
-# 2. Deploy code and data to prod server, rebuild indexes and restart
-#
+# ==================================
+# on test or prod server
+# ==================================
 
 ssh $trg_host
-cd /work/cellapi/
 
-./api_service.sh stop
-./solr_service.sh stop
+# on test server use platorm=test
+platform=test
+# on prod server use platorm=prod
+#platform=prod
 
-tar xvzf cellapi.tar.gz
+cd /work/cellapi
 
-rm -rf data_in solr_data 
+# decompress new data
+rm -rf data_in solr_data rdf_data
 tar xvzf data_in.tar.gz
 tar xvzf solr_data.tar.gz
 tar xvzf rdf_data.tar.gz
 
-./scripts/rebuild_api_data.sh --no-solr
-
-# ===============================================================
-# deploy RDF / SPARQL data
-# ===============================================================
-
-trg_host="myserver"
-
-ssh mac-098
-cd /work/cellosaurus-api
-
-#  
-# 1. Generate RDF for platform local, test or prod
-#  
-./doit-rdf.sh prod
-
-#  
-# 2. Send code and rdf_data to server
-#  
-./scripts/deploy_api_code.sh $trg_host
-./push_dir rdf_data $trg_host
-
-#  
-# 3. Deploy code and load rdf_data
-#  
-ssh $trg_host
-cd /work/cellapi
+# decompress new code and rebuild api indexes
 ./api_service.sh stop
 tar xvzf cellapi.tar.gz
+python3.9 fields_utils.py
+python3.9 cellapi_builder.py --platform=$platform BUILD
 ./api_service.sh start
-rm rdf_data/*; tar xvzf rdf_data.tar.gz 
+
+# update solr index data
+./solr_service.sh restart
+./solr/bin/post -c pamcore1 -d "<delete><query>*:*</query></delete>"
+sleep 10
+./solr/bin/post -c pamcore1 solr_data/data*.xml
+
+# update virtuoso rdf data
 ./scripts/reload_rdf_all.sh
 
-#  
-# 4. TESTs
-#  
-https://test-api.cellosaurus.org/sparql-editor
-https://api.cellosaurus.org/sparql-editor
 
-end
+# -------------------------------------------------------
+# TESTS to be run after deployment
+# -------------------------------------------------------
+# on test server
+curl "http://buck.sib.swiss:8082/release-info"
+curl "http://buck.sib.swiss:8082/cellapi/cell-line-children/CVCL_0030.tsv"
+curl "http://buck.sib.swiss:8082/search-form?q=id%3AHeLa"
+open "http://buck.sib.swiss:8082/help"
+
+also: https://test-api.cellosaurus.org/
+
+# on prod server
+curl "http://piccard.sib.swiss:8082/release-info"
+curl "http://piccard.sib.swiss:8082/cellapi/cell-line-children/CVCL_0030.tsv"
+curl "http://piccard.sib.swiss:8082/search-form?q=id%3AHeLa"
+open "http://piccard.sib.swiss:8082/help"
+
+also: https://api.cellosaurus.org/
+
+
+# -------------------------------------------------------
+# TESTS for CLADTR service
+# -------------------------------------------------------
+
+# stop and restart service for it to reload new cellosaurus.xml
+# after data release is deployed (part done by Eliabeth)
+# the option --build is not necessary if the code of clastr has 
+# not changed
+
+ssh $trg_host
+docker-compose down
+docker-compose up --build -d
+
+DEV
+url    : https://web.expasy.org/cellosaurus-str-search/
+server : buck (interne)
+port   : 8081
+project path : /work/cellosaurus-STR-similarity-search-tool
+
+
+TEST
+url    : https://www.mix-id1.cellosaurus.org/str-search/
+server : buck (interne)
+port   : 8081
+
+
+PROD
+url    : https://web.expasy.org/cellosaurus-str-search/
+server : piccard (DMZ)
+port   : 8081
+project path : /work/cellosaurus-STR-similarity-search-tool
+
+
+# -------------------------------------------------------
+# More info
+-------------------------------------------------------
+# help on starting solr
+./bin/solr start -help
+
+# start / stop solr
+bin/solr start | restart | stop
+for help on options, use: bin/solr start -help
+See also: https://solr.apache.org/guide/8_11/solr-control-script-reference.html
+
+# create collection
+bin/solr create -c films
+
+# add data to some collection
+solr/bin/post -c pamcore1 -d "<delete><query>*:*</query></delete>"
+solr/bin/post -c pamcore1  ~/Documents/work/heg/cellonto/solr_data/data*.xml
+
+# delete data to some collection
+
+# delete documents matching a query:
+solr/bin/post -c pamcore1 -d "<delete><query>*:*</query></delete>"
+solr/bin/post -c pamcore1 -d "<delete><query>accession:CVCL_B0T9</query></delete>"
+
+# delete documents with an exact id value:
+bin/post -c pamcore1 -d "<delete><id>type=identifier; #132 PL12 SC-D1</id></delete>"
 

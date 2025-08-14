@@ -25,6 +25,6 @@ echo "reloading rdf queries file"
 $scripts_dir/load_ttl_files.sh queries no_checkpoint
 
 echo "reloading rdf void file"
-$scripts_dir/load_ttl_files.sh void no_checkout
+$scripts_dir/load_ttl_files.sh void no_checkpoint
 
 echo "done"
