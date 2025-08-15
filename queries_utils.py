@@ -18,6 +18,7 @@ class Query:
         self.keywords = list()
         self.prefixes = list()
         self.sparql = list()
+        self.services = list()
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def __str__(self):
@@ -74,6 +75,8 @@ class Query:
         quoted_keywords = " , ".join(quoted_list)
         lines.append(f"    schema:keywords {quoted_keywords} ; ")
         lines.append(f"    schema:target <{sparql_endpoint}> ; ")
+        for s in self.services:
+            lines.append(f"    spex:federatesWith <{s}> ;")
         lines.append(f"    sh:select \"\"\"")
         self.set_necessary_sparql_prefixes(ns_reg)
         for line in self.prefixes: lines.append(f"{line}")
@@ -118,6 +121,12 @@ class QueryFileReader:
                     query.keywords.append(k.strip())
             else:
                 query.sparql.append(line)
+                if "service" in line.lower():
+                    p1 = line.index("<")
+                    p2 = line.index(">")
+                    service =line[p1-1:p2]
+                    query.services.append(service)
+
         self.query_list.append(query)
         f_in.close()
 
@@ -142,6 +151,13 @@ if __name__ == '__main__':
     client = EndpointClient(server_url=sparql_service, ns_reg=ns_reg)
 
     reader = QueryFileReader()
+
+    for q in reader.query_list:
+        descr = q.get_ttl_for_sparql_endpoint(ns_reg)
+        print(f"\n-------- Query id {q.id} --------\n")
+        print(descr)
+
+    sys.exit()
     sep = "\t"
     elems = ["status", "rows", "t[s]", "id", "label"]
     print(sep.join(elems))

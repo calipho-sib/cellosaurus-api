@@ -1259,6 +1259,7 @@ if __name__ == "__main__":
         rdf_file.write(bytes("@prefix schema: <https://schema.org/> . \n", "utf-8"))
         rdf_file.write(bytes("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . \n", "utf-8"))
         rdf_file.write(bytes("@prefix sh: <http://www.w3.org/ns/shacl#> . \n", "utf-8"))
+        rdf_file.write(bytes("@prefix spex: <https://purl.expasy.org/sparql-examples/ontology#> . \n", "utf-8"))
         rdf_file.write(bytes(f"@prefix cello: <{ns_reg.cello.url}> .\n", "utf-8"))
         rdf_file.write(bytes("\n\n", "utf-8"))
         count = 0
@@ -1293,6 +1294,7 @@ if __name__ == "__main__":
             rdf_file.write(bytes("@prefix schema: <https://schema.org/> . \n", "utf-8"))
             rdf_file.write(bytes("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . \n", "utf-8"))
             rdf_file.write(bytes("@prefix sh: <http://www.w3.org/ns/shacl#> . \n", "utf-8"))
+            rdf_file.write(bytes("@prefix spex: <https://purl.expasy.org/sparql-examples/ontology#> . \n", "utf-8"))
             rdf_file.write(bytes(f"@prefix cello: <{ns_reg.cello.url}> .\n", "utf-8"))
             rdf_file.write(bytes("\n\n", "utf-8"))
             ttl = query.get_ttl_for_sparql_endpoint(ns_reg)
