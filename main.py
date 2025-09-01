@@ -209,15 +209,15 @@ app = FastAPI(
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # historical routes with permanent redirect
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/help-methods")
+@app.get("/help-methods", include_in_schema=False)
 async def redirect_to_new_route():
     return RedirectResponse(url="/api-methods", status_code=301)
 
-@app.get("/help-fields")
+@app.get("/help-fields", include_in_schema=False)
 async def redirect_to_new_route():
     return RedirectResponse(url="/api-fields", status_code=301)
 
-@app.get("/fullsearch-form")
+@app.get("/fullsearch-form", include_in_schema=False)
 async def redirect_to_new_route():
     return RedirectResponse(url="/api-search-form", status_code=301)
 
