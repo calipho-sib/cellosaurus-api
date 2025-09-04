@@ -221,6 +221,10 @@ async def redirect_to_new_route():
 async def redirect_to_new_route():
     return RedirectResponse(url="/api-search-form", status_code=301)
 
+# @app.get("/BC2T6", include_in_schema=False)
+# async def redirect_to_new_route():
+#     return RedirectResponse(url="https://docs.google.com/presentation/d/1mLzexH6gqsPsw93ROVNRkkKXZcfdjnIk9H1cMVN20jI/edit?usp=sharing", status_code=301)
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # active routes
@@ -1134,7 +1138,8 @@ async def fullsearch_form(
                 if value is None: value = "-"
                 if isinstance(value, list): value = " | ".join(value)
                 if field.strip() == "ac":
-                    lnk1 = "/cell-line/" + value + "?fields=" + fields + "&format=xml"
+                    lnk1 = "https://www.cellosaurus.org/" + value
+                    #lnk1 = "/cell-line/" + value + "?fields=" + fields + "&format=xml"
                     #lnk2 = "/cell-line/" + value + "?fields=" + "&format=xml"
                     columns.append(f"""<td><a target="_blank" href="{lnk1}">{value}</a></td>""")
                 else:
