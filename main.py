@@ -273,7 +273,7 @@ async def swagger_ui_redirect():
 async def startup_event():
 
     # load cellosaurus data
-    global cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in, cl_xml_f_in, rf_xml_f_in, fldDef , release_info, clid_dict, htmlBuilder 
+    global cl_dict, rf_dict, cl_txt_f_in, rf_txt_f_in, cl_xml_f_in, rf_xml_f_in, fldDef , release_info, clid_f1_dict, clid_f3_dict, htmlBuilder 
     global rdf_is_visible, platform, ns_reg
 
     t0 = datetime.datetime.now()
@@ -285,7 +285,8 @@ async def startup_event():
     cl_xml_f_in = open(ApiCommon.CL_XML_FILE,"rb")
     rf_xml_f_in = open(ApiCommon.RF_XML_FILE,"rb")
     fldDef = FldDef(ApiCommon.FLDDEF_FILE)
-    clid_dict = api.get_clid_dic(fldDef)
+    clid_f1_dict = api.get_clid_f1_dic(fldDef)
+    clid_f3_dict = api.get_clid_f3_dic(fldDef)
     htmlBuilder = HtmlBuilder(platform)
     
     # Customizing uvicorn native log is done below in __main__()
@@ -784,18 +785,121 @@ async def get_model_description(request:Request):
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-@app.get("/fsearch/cell-line" , name="Quick search cell lines", tags=["Cell lines"], responses={"200":three_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
+# Note Pam 25.09.2025: 
+# Method to be used to partially replace the search system on www.cellosaurus.org (advanced syntax is possible)
+# Sort order of result and adding id and ox fields is still performed by Elisabeth's code 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-async def fsearch_cell_line(
+@app.get("/f1search/cell-line" , name="Quick facet search cell line ACs", tags=["Cell lines"], responses={"200":three_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def f1search_cell_line(
+        request: Request,
+        q: str = Query(
+            default="id:HeLa",
+            title="Quick facet search cell line ACs",
+            description="Quick search query string using Solr synax returning one ac field value per line"
+            ),
+        rows: int = Query(
+            default=10000000,
+            title="rows",
+            description="Number of items to retrieve from the search result list. See also <i>rows</i> in Solr synax"
+            ),
+        ):
+
+    t0 = datetime.datetime.now()
+
+    fields = "ac,id"
+    facet_field="id"
+    sort = "score desc" # sort order of response / docs
+
+    # call solr service for quick facet search
+    url = api.get_solr_search_url()
+    params = api.get_all_solr_params(fldDef, query=q, fields=fields, sort=sort, start=0, rows=rows)
+    params["facet"] = "true"            # enables facet search
+    params["facet.field"] = facet_field # solr field which concats id,ac and ox values
+    params["facet.method"] = "fc"       # fastest method
+    params["facet.sort"] = "index"      # sort order of id field: 'index' means alphabetically
+    params["facet.limit"] = rows        # same role as rows when we read facet value list
+    params["facet.mincount"] = 1        # to get only records matching query q
+    params["rows"] = 1                  # we don't need document list, we get result from facet_fields
+    params["indent"] = "True"           # pretty print does not seem to change performance
+    headers = { "Accept": "application/json" }
+    print("url...:", url)
+    print("params: ", params)
+    response = requests.get(url, params=params, headers=headers)
+    print("solr request: ", response.url)
+    
+    obj = response.json()
+    if response.status_code != 200:
+        error_msg = ""
+        solr_error = obj.get("error")
+        if solr_error is not None: error_msg = solr_error.get("msg")
+        obj = {"code": response.status_code, "message": error_msg}
+        data = json.dumps(obj, sort_keys=True, indent=2) + "\n"
+        log_it("INFO:", "Processed" , request.url, "format", "txt", duration_since=t0)
+        return responses.Response(content=data, media_type="application/json", status_code=response.status_code)
+
+    # now handle successful response
+    meta = dict()
+    obj["responseHeader"]["params"]["q"]=q           # query typed by API user
+    meta["QTime"]=obj["responseHeader"]["QTime"]
+    meta["query"]=obj["responseHeader"]["params"]
+    meta["numFound"]=obj["response"]["numFound"]
+    meta["sort"]=sort
+    meta["fields"]=fields
+
+    # init lines with header
+    # lines = get_search_result_txt_header_as_lines(meta) 
+    lines = list()
+
+    # 1) have a look at first doc in response and see if we have an exact match on ac or id
+    exact_match = False
+    items = obj["response"]["docs"]
+    if len(items)==1: 
+        item = items[0]
+        id = item["id"]
+        lowid = id.lower()
+        lowac = item["ac"].lower()
+        lowq = q.lower()
+        #print("found first", "<" + lowac + ">", "<" + lowid + ">", "lowq:", "<" + lowq + ">")
+        if lowq == lowac or lowq == "ac:" + lowac or lowq == "as:" + lowac or lowq == "acas:" + lowac or lowq == "text:" + lowac: exact_match = True
+        elif lowq == lowid or lowq == "id:" + lowid or lowq == "sy:" + lowid or lowq == "idsy:" + lowid or lowq == "text:" + lowid: exact_match = True
+        #print("exact_match", exact_match)
+    if exact_match:
+        lines.append(clid_f1_dict[id])
+
+    # 2) retrieve id field values from facets
+    items = obj["facet_counts"]["facet_fields"].get(facet_field) or []
+    if exact_match:
+        for idx in range(len(items)):
+            item = items[idx]
+            # skip item already set above in case of exact match
+            if idx % 2 == 0 and item != id: lines.append(clid_f1_dict[item]) 
+    else:
+        for idx in range(len(items)):
+            item = items[idx]
+            if idx % 2 == 0: lines.append(clid_f1_dict[item]) 
+
+    data = "\n".join(lines)
+    log_it("INFO:", "Processed" , request.url, "format", "txt", duration_since=t0)
+    return responses.Response(content=data,media_type="text/plain")
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Note Pam 25.09.2025: 
+# Method not (yet) used but could replace more completely search system on www.cellosaurus.org cause we return the 3 fields displayed in the result page
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+@app.get("/f3search/cell-line" , name="Quick facet search cell lines", tags=["Cell lines"], responses={"200":three_media_types_responses, "400": {"model": ErrorMessage}}, include_in_schema=False)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+async def f3search_cell_line(
         request: Request,
         q: str = Query(
             default="id:HeLa",
             title="Quick facet search query",
-            description="Quick search query string using Solr synax"
+            description="Quick search query string using Solr synax returning id, ac and ox fields"
             ),
 
         rows: int = Query(
-            default=1000,
+            default=10000000,
             title="rows",
             description="Number of items to retrieve from the search result list. See also <i>rows</i> in Solr synax"
             ),
@@ -877,7 +981,7 @@ async def fsearch_cell_line(
         elif lowq == lowid or lowq == "id:" + lowid or lowq == "sy:" + lowid or lowq == "idsy:" + lowid or lowq == "text:" + lowid: exact_match = True
         #print("exact_match", exact_match)
     if exact_match:
-        lines.append(clid_dict[id])
+        lines.append(clid_f3_dict[id])
 
     # 2) retrieve id field values from facets
     items = obj["facet_counts"]["facet_fields"].get(facet_field) or []
@@ -885,11 +989,11 @@ async def fsearch_cell_line(
         for idx in range(len(items)):
             item = items[idx]
             # skip item already set above in case of exact match
-            if idx % 2 == 0 and item != id: lines.append(clid_dict[item]) 
+            if idx % 2 == 0 and item != id: lines.append(clid_f3_dict[item]) 
     else:
         for idx in range(len(items)):
             item = items[idx]
-            if idx % 2 == 0: lines.append(clid_dict[item]) 
+            if idx % 2 == 0: lines.append(clid_f3_dict[item]) 
 
     # use api methods to retrieve full / partial records in multiple formats
     if format == "tsv":

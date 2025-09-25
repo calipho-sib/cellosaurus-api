@@ -852,12 +852,38 @@ def get_field_from_dt_line(line, fname):
     return None
 
 # - - - - - - - - - - - - - - 
-def get_clid_dic(fldDef):
+def get_clid_f1_dic(fldDef):
 # - - - - - - - - - - - - - - 
     # called by main at init time
-    # for subsequent efficient /fsearch 
+    # for subsequent efficient /f1search/... 
     t0 = datetime.now()
-    log_it("INFO:", "Building clid_dict...")
+    log_it("INFO:", "Building clid_f1_dict...")
+    url = get_solr_search_url()
+    params = get_all_solr_params(fldDef, query="*:*", fields="ac,id", sort="id asc", start=0, rows=1000000)
+    headers = { "Accept": "application/json" }
+    response = requests.get(url, params=params, headers=headers)
+    obj = response.json()
+    if response.status_code != 200:
+        error_msg = ""
+        solr_error = obj.get("error")
+        if solr_error is not None: error_msg = solr_error.get("msg")
+        log_it("ERROR:", "code:", response.status_code, error_msg )
+        log_it("ERROR:", "while building clid_dict, exiting !", duration_since=t0)
+        sys.exit(1)
+    clid_dict = dict()
+    items = obj["response"]["docs"]
+    for item in items:
+        clid_dict[item["id"]] = item["ac"]
+    log_it("INFO:", "clid_f1_dict size:", len(clid_dict), duration_since=t0)
+    return clid_dict
+
+# - - - - - - - - - - - - - - 
+def get_clid_f3_dic(fldDef):
+# - - - - - - - - - - - - - - 
+    # called by main at init time
+    # for subsequent efficient /f3search/... 
+    t0 = datetime.now()
+    log_it("INFO:", "Building clid_f3_dict...")
     url = get_solr_search_url()
     params = get_all_solr_params(fldDef, query="*:*", fields="ac,id,ox", sort="id asc", start=0, rows=1000000)
     headers = { "Accept": "application/json" }
@@ -881,8 +907,9 @@ def get_clid_dic(fldDef):
         fields.append(" / ".join(oxs))
         line = "\t".join(fields)     
         clid_dict[item["id"]] = line
-    log_it("INFO:", "clid_dict size:", len(clid_dict), duration_since=t0)
+    log_it("INFO:", "clid_f3_dict size:", len(clid_dict), duration_since=t0)
     return clid_dict
+
 
 # - - - - - - - - - - - - - - - - - - - - 
 def save_virtuoso_isql_setup_file(output_file, ns_reg: NamespaceRegistry):
