@@ -67,7 +67,7 @@ class Query:
         #
         lines = list()
         sparql_endpoint = ns_reg.platform.get_public_sparql_service_IRI()
-        lines.append(f"cello:Query_{self.id} a sh:SPARQLExecutable ;")
+        lines.append(f"cello:Query_{self.id} a sh:SPARQLExecutable, sh:SPARQLSelectExecutable ;")
         lines.append(f"    sh:prefixes _:sparql_examples_prefixes ;")
         lines.append(f"    rdfs:comment \"\"\"{self.label}\"\"\"@en ; ")
         quoted_list = list()
@@ -124,7 +124,7 @@ class QueryFileReader:
                 if "service" in line.lower():
                     p1 = line.index("<")
                     p2 = line.index(">")
-                    service =line[p1-1:p2]
+                    service =line[p1+1:p2]
                     query.services.append(service)
 
         self.query_list.append(query)
