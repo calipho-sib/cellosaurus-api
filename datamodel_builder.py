@@ -109,6 +109,35 @@ class DataModelBuilder:
             order by ?subject_class ?property ?object_type        
         """
 
+        self.class_use_void_query = """
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX void-ext: <http://ldf.fi/void-ext#>
+            SELECT ?subject_class ?property ?object_type ?triple_count  WHERE {
+            #values ?subject_class { cello:GeneDeletion }
+            #values ?subject_class { schema:Observation }
+            values ?subject_class { <$class_long_IRI> } # generic with variable in original
+            {
+                ?cp void:class ?subject_class .
+                ?cp void:entities ?triple_count .
+                bind(owl:Class as ?object_type) .
+                bind(rdf:type as ?property) .
+            }
+                union
+            {
+                ?cp void:class ?subject_class .
+                ?cp void:propertyPartition ?pp .
+                ?pp void:property ?property .
+                ?pp void:triples ?triple_count .
+                {
+                ?pp void-ext:datatypePartition / void-ext:datatype ?object_type .
+                } union {
+                ?pp void:classPartition / void:class ?object_type }
+            }
+            }
+            order by ?subject_class ?property ?object_type        
+        """
+
         self.prop_use_query = """
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             select ?property ?tag ?node_type (count(*) as ?triple_count) where {
@@ -127,6 +156,42 @@ class DataModelBuilder:
                 ?_s ?property ?_o .
                 bind(xsd:integer as ?node_type)
                 bind('count' as ?tag)
+            }
+            }
+            group by ?property ?tag ?node_type
+            order by ?property ?tag ?node_type
+        """
+
+        self.prop_use_void_query = """
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX void: <http://rdfs.org/ns/void#>
+            PREFIX void-ext: <http://ldf.fi/void-ext#>
+            SELECT ?property ?tag ?node_type (sum(?triples) as ?triple_count)  WHERE {
+            #values ?property { cello:name }
+            #values ?property { cello:detectedAllele }
+            values ?property { <$prop_long_IRI> }
+            {
+                ?pp void:property ?property .
+                ?pp void:triples ?triples .
+                {
+                    ?pp void-ext:datatypePartition / void-ext:datatype ?node_type .
+                } union {
+                    ?pp void:classPartition / void:class ?node_type 
+                }
+                bind('range' as ?tag) .
+            } union {
+                ?cp void:class ?node_type .
+                ?cp void:propertyPartition ?pp .
+                ?pp void:property ?property .
+                ?pp void:triples ?triples .
+                bind('domain' as ?tag) .
+
+            } union {
+                ?pp void:property ?property .
+                ?pp void:triples ?triples .
+                ?pp void:distinctSubjects ?_ . # trick to get only non dataset entity
+                bind('count' as ?tag) .
+                bind(xsd:integer as ?node_type) .
             }
             }
             group by ?property ?tag ?node_type
@@ -176,14 +241,19 @@ class DataModelBuilder:
             self.url2pfx[url] = pfx
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def load_use_for_prop_entities(self, entities):
+    def load_use_for_prop_entities(self, entities, use_void):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         for entity_key in entities:
             entity = entities[entity_key]
             if entity["tag"] != "prop" : continue
-            #print("entity_key:",entity_key)
+            if entity_key.startswith("http"):
+                print("WARNING, ignoring usage of unprefixed property:", entity_key)
+                continue
             long_IRI = self.get_long_IRI(entity_key)
-            query = self.prop_use_query.replace("$prop_long_IRI", long_IRI)
+            if use_void:
+                query = self.prop_use_void_query.replace("$prop_long_IRI", long_IRI)
+            else:
+                query = self.prop_use_query.replace("$prop_long_IRI", long_IRI)
             log_it("INFO", f"querying for usage of {entity_key}")
             response = self.client.run_query(query)
             if not response.get("success"):
@@ -202,13 +272,19 @@ class DataModelBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def load_use_for_class_entities(self, entities):
+    def load_use_for_class_entities(self, entities, use_void):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         for entity_key in entities:
             entity = entities[entity_key]
             if entity["tag"] != "class" : continue
+            if entity_key.startswith("http"):
+                print("WARNING, ignoring usage of unprefixed class:", entity_key)
+                continue
             long_IRI = self.get_long_IRI(entity_key)
-            query = self.class_use_query.replace("$class_long_IRI", long_IRI)
+            if use_void:
+                query = self.class_use_void_query.replace("$class_long_IRI", long_IRI)
+            else:
+                query = self.class_use_query.replace("$class_long_IRI", long_IRI)
             log_it("INFO", f"querying for usage of {entity_key}")
             response = self.client.run_query(query)
             if not response.get("success"):
@@ -257,17 +333,18 @@ class DataModelBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def retrieve_and_save_model(self, jsonfile):
+    def retrieve_and_save_model(self, jsonfile, use_void, default_term):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         entities = dict()
 
         self.load_prefixes()
         self.load_def_for_entities(self.class_def_query, "class", entities)
         self.load_def_for_entities(self.prop_def_query, "prop", entities)
-        self.load_use_for_class_entities(entities)
-        self.load_use_for_prop_entities(entities)
+        self.load_use_for_class_entities(entities, use_void)
+        self.load_use_for_prop_entities(entities, use_void)
 
         data = dict()
+        data["default_term"] = default_term
         data["entities"] = entities
         data["pfx2url"] = self.pfx2url
         f_out = open(jsonfile, "w", encoding="utf-8")
@@ -279,16 +356,26 @@ class DataModelBuilder:
 #-------------------------------------------------
 if __name__ == '__main__':
 #-------------------------------------------------
-    optparser = OptionParser(usage="python datamodel_builder.py [--crlf] sparql_service_url output_file")
-    optparser.add_option("-c", "--crlf",
-        action="store_true", dest="with_crlf", default=False,
-        help="When set, output file line sep is CR/LF instead of LF")
+    usage = "python datamodel_builder.py [--use-void] <sparql_service_url> <output_file>"
+    optparser = OptionParser(usage=usage)
+    optparser.add_option("-V", "--use-void",
+        action="store_true", dest="use_void", default=False,
+        help="When set, queries use void metadescription instead of dynamic queries")
+    optparser.add_option(
+        "-d", "--default-term",
+        action="store",
+        type="string",
+        dest="default_term",
+        default=None,
+        help="Determines which term is selected on opening the page, if undefined open on first term found. Example: 'cello:CellLine'"
+    )    
     (options, args) = optparser.parse_args()
-    with_crlf = options.with_crlf
+    use_void = options.use_void
+    default_term = options.default_term
     if len(args) != 2:
-        print("ERROR, usage is: python datamodel_builder.py [--crlf] sparql_service_url output_file")    
+        print(f"ERROR, usage is: {usage}")    
         sys.exit(1)
 
     builder = DataModelBuilder(sparql_service=args[0])
-    builder.retrieve_and_save_model(jsonfile=args[1])
+    builder.retrieve_and_save_model(jsonfile=args[1], use_void=use_void, default_term=default_term)
 

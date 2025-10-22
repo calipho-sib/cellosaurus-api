@@ -56,6 +56,11 @@
 
         /* nodes and props styles */
 
+        .txt-box {
+            border: none;
+            padding: 5px 12px 5px 12px; 
+        }
+        .txt-box a { text-decoration: none; }
 
         .iri-box {
             border: 1px solid black;
@@ -71,9 +76,10 @@
         }
         .lit-box a { text-decoration: none; }
 
+        .txt-bg { #background-color: #b5b5b6; }
         .cls-bg { background-color: #b7dbf2; }
         .prp-bg { background-color: #cdf4b6; }
-        .ukn-bg { background-color: #ffb899; }
+        .ext-bg { background-color: #ffb899; }
         .lit-bg { background-color: #ffe19a; } 
 
         /* .lit-bg { background-color: #fbc6fb; }         */
@@ -145,11 +151,21 @@
     async function initPage() {
 
         try {
-            const response = await fetch("/static/datamodel.json");
+
+            const params = new URLSearchParams(window.location.search);
+            let filename = "/static/datamodel.json";
+            if (params.has("dmfile")) filename = "/static/" + params.get("dmfile");
+            const response = await fetch(filename);
             jsonData = await response.json();
             const currentHash = location.hash.substring(1);
             let term = currentHash.replace("_", ":")
-            if (! termIsEntity(term)) term = "cello:CellLine";
+            if (! termIsEntity(term)) {
+                if (jsonData.default_term) {
+                    term = jsonData.default_term;
+                } else {
+                    term = Object.keys(jsonData.entities)[0];
+                }
+            }
             moveToTerm(term);
             setupAutocomplete(document.getElementById("searchInput"));
         } catch (error) {
@@ -260,15 +276,34 @@
     }
 
     function termIsLiteral(term) {
-        let [pfx, id] = term.split(":");
+        let parts = term.split(":");
+        if (parts.length != 2) return false;
+        const space_or_slash_pattern = /[\s\/]/
+        let pfx = parts[0]
+        if ( space_or_slash_pattern.test(pfx) ) return false;
+        let id = parts[1]
+        if ( space_or_slash_pattern.test(id) ) return false;
         return (pfx == "xsd");
     }
 
+    function termIsExternal(term) {
+        let parts = term.split(":");
+        if (parts.length != 2) return false;
+        const space_or_slash_pattern = /[\s\/]/
+        let pfx = parts[0]
+        if ( space_or_slash_pattern.test(pfx) ) return false;
+        let id = parts[1]
+        if ( space_or_slash_pattern.test(id) ) return false;
+        return (pfx != "xsd");
+    }
+
+    
     function getTermType(term) {
         if (termIsClass(term)) return "class";
         if (termIsProp(term)) return "prop";
         if (termIsLiteral(term)) return "literal";
-        return "unknown"
+        if (termIsExternal(term)) return "external";
+        return "text"
     }
 
     function termHasKnownPrefix(term) {
@@ -290,19 +325,37 @@
         return jsonData["entities"][term] != undefined 
     }
 
+    function truncateString(str) {
+        if (str.length <= 30) return str;
+        const start = str.slice(0, 13);
+        const end = str.slice(-14);
+        return start + "..." + end;
+    }
+
     function get_elem_for_so(term, asInstance, tag="span", classNames=null) {
         // var opacity_class = asInstance ? "opaque-33" : "opaque-66";
         var opacity_class = "opaque-level";
-        var bg_style = "ukn-bg";
-        var  box_style = "iri-box";
-        if (getTermType(term) == "class") bg_style = "cls-bg";
-        if (getTermType(term) == "prop") bg_style = "prp-bg";
-        if (getTermType(term) == "literal") bg_style = "lit-bg";
-        if (getTermType(term) == "literal") box_style = "lit-box"
+        var bg_style = "txt-bg";
+        var box_style = "txt-box";
+        var term_type = getTermType(term);
+        if (term_type == "class") {
+            bg_style = "cls-bg";
+            box_style = "iri-box";
+        } else if (term_type == "prop") {
+            bg_style = "prp-bg";
+            box_style = "iri-box";
+        } else if (term_type == "literal") {
+            bg_style = "lit-bg";
+            box_style = "lit-box";
+        } else if (term_type == "external") {
+            bg_style = "ext-bg";
+            box_style = "iri-box";
+        }
         const node = document.createElement(tag);
         node.classList.add(opacity_class, bg_style, box_style)
         if (classNames) classNames.forEach( el => node.classList.add(el));
         var text = asInstance ? "[ a " + term + " ]" : term;
+        if (term_type == 'text') text ="'" + truncateString(text) + "'";
         if (termIsEntity(term)) {
             console.log("entity", term)
             const id = getId(term);
@@ -733,7 +786,7 @@
                 <td>a term defined as Literal</td>
             </tr>
             <tr>
-                <td><span class="iri-box ukn-bg"><a href="#">pfx:SomeProperty</a></span></td>
+                <td><span class="iri-box ext-bg"><a href="#">pfx:SomeProperty</a></span></td>
                 <td>a term not defined locally</td>
             </tr>
             <tr>

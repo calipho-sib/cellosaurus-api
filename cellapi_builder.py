@@ -1241,7 +1241,7 @@ if __name__ == "__main__":
         fileout = "static/datamodel.json"
         log_it("INFO:", f"serializing cellosaurus RDF data model to: {fileout}")        
         builder = DataModelBuilder(platform.get_builder_sparql_service_IRI())
-        builder.retrieve_and_save_model(fileout)
+        builder.retrieve_and_save_model(fileout, use_void=False, default_term="cello:CellLine")
         log_it("INFO:", f"serialized cellosaurus RDF data model to: {fileout}")
 
 
