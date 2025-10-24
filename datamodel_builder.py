@@ -228,6 +228,7 @@ class DataModelBuilder:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def load_prefixes(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        log_it("INFO", f"querying for prefixes...")
         response = self.client.run_query(self.prefix_query)
         if not response.get("success"):
             log_it(f"ERROR while running query for getting prefixes", response.get("error_type"))
@@ -239,10 +240,12 @@ class DataModelBuilder:
             url = self.get_short_IRI(row["url"]["value"])
             self.pfx2url[pfx] = url
             self.url2pfx[url] = pfx
+        log_it("INFO", f"querying for prefixes... Done")
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def load_use_for_prop_entities(self, entities, use_void):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        log_it("INFO", f"querying for usage of properties...")
         for entity_key in entities:
             entity = entities[entity_key]
             if entity["tag"] != "prop" : continue
@@ -269,11 +272,13 @@ class DataModelBuilder:
                 if tag == "count": entities[prop]["count"] = int(count)
                 statement = " | ".join([prop, tag, node_type, count])
                 entities[prop]["usage"].append(statement)
+        log_it("INFO", f"querying for usage of properties... Done")
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def load_use_for_class_entities(self, entities, use_void):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        log_it("INFO", f"querying for usage of classes...")
         for entity_key in entities:
             entity = entities[entity_key]
             if entity["tag"] != "class" : continue
@@ -303,11 +308,13 @@ class DataModelBuilder:
                 if obj in entities:
                     statement = " | ".join([subj, prop, obj, count])
                     entities[obj]["usage"].append(statement)
+        log_it("INFO", f"querying for usage of classes... Done")
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def load_def_for_entities(self, query, tag, entities):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        log_it("INFO", f"querying for definitions of {tag}...")
         response = self.client.run_query(query)
         if not response.get("success"):
             log_it(f"ERROR while running query for definition of entities {tag}", response.get("error_type"))
@@ -330,6 +337,7 @@ class DataModelBuilder:
             if obj in entities:
                 statement = " | ".join([subj, prop, obj])
                 entities[obj]["definition"].append(statement)
+        log_it("INFO", f"querying for definitions of {tag}... Done")
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
