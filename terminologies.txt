@@ -55,7 +55,7 @@ Info  : https://github.com/monarch-initiative/vertebrate-breed-ontology
 IRI   : http://purl.obolibrary.org/obo/vbo.owl
 Info  : OBO - https://raw.githubusercontent.com/monarch-initiative/vertebrate-breed-ontology/master/vbo.obo
 Info  : OWL - https://raw.githubusercontent.com/monarch-initiative/vertebrate-breed-ontology/master/vbo.owl
-Use   : https://raw.githubusercontent.com/monarch-initiative/vertebrate-breed-ontology/master/vbo.owl
+Use   : curl --output vbo.owl https://raw.githubusercontent.com/monarch-initiative/vertebrate-breed-ontology/master/vbo.owl
 --
 Abbrev: RS
 Name  : Rat Strain Ontology
