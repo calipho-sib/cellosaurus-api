@@ -1,4 +1,5 @@
 import datetime
+import json
 from ApiCommon import CELLAPI_VERSION
 
 class FldDef:
@@ -219,6 +220,61 @@ class FldDef:
         # f_out.close()
         
 
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def get_instructions_for_llm(self):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        fields = list()
+        for tag in self.keys():
+            if tag in ["idsy", "ref", "cc", "din", "dio", "ch", "dtc", "dtu", "dtv", "ra", "rl", "rt"]: continue
+            prefix = next(iter(self.get_prefixes(tag)))
+            if tag == "ra": prefix = "RA"
+            if tag == "acas": prefix = "AS"
+            if len(prefix)==2: 
+                prefix = f"'{prefix}   '"
+            elif prefix.startswith("CC   "):
+                prefix = f"'{prefix}: '"
+            descr = self.get_description(tag)
+            fields.append({ "field_and_topic_prefix" : prefix, "field_value_description": descr})
+            ft_descr = json.dumps({"fields_and_topics_description": fields}, indent=4)
+
+
+        instructions = """
+            A Cellosaurus entry consistis a list of lines containing semi-structured information.
+            Each line starts with field identifier of 2 digits followed by 3 spaces. 
+            Note: '//' is not followed by 3 speces.
+            Here is the list of the Cellosaurus fields in the order of their appearance in the entry:
+            ---------  ------------------------------  -----------------------
+            Field      Content                         Occurrence in an entry
+            ---------  ------------------------------  -----------------------
+            ID         Identifier (cell line name)     Once; starts an entry
+            AC         Accession (CVCL_xxxx)           Once
+            AS         Secondary accession(s)          Optional; once
+            SY         Synonyms                        Optional; once
+            DR         Cross-references                Optional; once or more
+            RX         References identifiers          Optional: once or more
+            WW         Web pages                       Optional; once or more
+            CC         Comments on specific topics     Optional; once or more
+            ST         STR profile data                Optional; twice or more
+            DI         Diseases                        Optional; once or more
+            OX         Species of origin               Once or more
+            HI         Hierarchy                       Optional; once or more
+            OI         Originate from same individual  Optional; once or more
+            SX         Sex of cell                     Optional; once
+            AG         Age of donor at sampling        Optional; once
+            CA         Category                        Once
+            DT         Date (entry history)            Once
+            //         Terminator                      Once; ends an entry
+                            
+            The field CC comes together with a topic which further refines the type of content expected as a value.
+            The following json object gives more details about the content expected in each field and each CC topic:
+        """        
+        lines = list()
+        for line in instructions.split("\n"): lines.append(line.strip())
+        lines.append(ft_descr)
+        return "\n".join(lines)
+    
+
 # ===========================================================================================
 if __name__ == "__main__":
 # ===========================================================================================
@@ -226,14 +282,19 @@ if __name__ == "__main__":
     fldDef = FldDef(None)
     
     fldDef.build_enum()
-    print("Built file fields_enum.py")
-        
+    print("OK Built file fields_enum.py")
+
+    text = fldDef.get_instructions_for_llm()        
+    print("--- DEBUG instructions start ---")
+    print(text)
+    print("--- DEBUG instructions end ---")
     print("End")
 
     if 1==2:
         print("--- Test prefixes for each tag")
         cd = FldDef(None)
         for k in cd.keys():
+            
             for pr in cd.get_prefixes(k):
                 print(k, "->", pr)
     
