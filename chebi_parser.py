@@ -101,7 +101,8 @@ class Chebi_Parser:
             elif line.startswith("name: "):
                 term.name = line[6:].rstrip()
             elif line.startswith("is_a: "):
-                term.isaList.append(line[6:].strip().replace(":", "_"))
+                # now is_a lines look like 'is_a: CHEBI:16114 ! medicarpin'
+                term.isaList.append(line[6:].split(" ! ")[0].replace(":","_"))  
             elif line.startswith("relationship: has_part "):
                 term.hasPartList.append(line[23:].strip().replace(":", "_"))
         return term
