@@ -27,7 +27,7 @@ echo ""
 
 
 if [ "$1" == "" ]; then
-    echo "ERROR, usage is: $0 start|stop|restart|status|clear"
+    echo "ERROR, usage is: $0 start|stop|restart|status|clear|checkpoint"
     exit 1
 fi
 
@@ -53,6 +53,16 @@ status() {
         echo "$(date) virtuoso is running, pid is $pid"
     fi
 }
+
+checkpoint() {
+    status
+    if pgrep $DAEMON; then
+        echo "$(date) requesting checkpoint"
+        $ISQL 1111 dba $DBA_PW exec="checkpoint;"
+        echo "$(date) checkpoint done"
+    fi
+}
+
 
 stop() {
     status
@@ -108,6 +118,9 @@ start() {
 
 action=$1
 
+if [ "$action" == "checkpoint" ]; then
+    checkpoint
+fi
 if [ "$action" == "status" ]; then
     status
 fi

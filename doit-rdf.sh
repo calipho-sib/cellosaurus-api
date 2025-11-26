@@ -26,6 +26,9 @@ if [ "$2" != "novoid" ]; then
 fi
 
 python cellapi_builder.py --platform=$platform LOAD_RDF void
+
+./sparql_service checkpoint
+
 cd ~/work/widoco
 ./doit-cello.sh $platform
 cd ~/work/cellosaurus-api
