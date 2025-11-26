@@ -680,11 +680,11 @@ class RdfBuilder:
         if org.contact is not None and len(org.contact)>0:
             persons = org.contact.split(" & ")
             if len(persons) > 1: 
-                log_it("DEBUG", "found multiple persons with ' & ' for org", data) 
+                # log_it("DEBUG", "found multiple persons with ' & ' for org", data) 
+                pass
             else:
                 persons = org.contact.split(" and ")
-                if len(persons) > 1: 
-                    log_it("DEBUG", "found multiple persons with ' and ' for org", data) 
+                # if len(persons) > 1: log_it("DEBUG", "found multiple persons with ' and ' for org", data) 
     
             for name in persons:
                 p_BN = self.get_blank_node()
@@ -1759,7 +1759,8 @@ class RdfBuilder:
                 pass
             else:
                 # keep default: ChemicalEntity
-                log_it("DEBUG", f"Unspecified MoAbTarget in {cl_IRI}: {annot}" )    
+                # log_it("DEBUG", f"Unspecified MoAbTarget in {cl_IRI}: {annot}" )    
+                pass
             triples.append(annot_BN, ns.rdf.type, clazz)
             triples.extend(self.get_materialized_triples_for_prop(annot_BN, ns.cello.name, ns.xsd.string(annot)))
             return triples
