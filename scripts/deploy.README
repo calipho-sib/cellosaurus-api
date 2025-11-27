@@ -11,7 +11,7 @@ ssh lin-202.swiss-prot.ch
 release_number=54
 platform=prod
 
-./scripts/get_cello_data.sh $release_number
+./scripts/get_cello_data.sh $release_number no-xml
 
 
 # build a fresh XML built on latest sources
