@@ -60,6 +60,8 @@ platform=test
 
 cd /work/cellapi
 
+===> GO ON FROM HERE ===>
+
 # decompress new data
 rm -rf data_in solr_data rdf_data
 tar xvzf data_in.tar.gz
@@ -89,8 +91,8 @@ sleep 10
 # on test server
 curl "http://buck.sib.swiss:8082/release-info"
 curl "http://buck.sib.swiss:8082/cellapi/cell-line-children/CVCL_0030.tsv"
-curl "http://buck.sib.swiss:8082/search-form?q=id%3AHeLa"
-open "http://buck.sib.swiss:8082/help"
+curl "http://buck.sib.swiss:8082/api-search-form?q=id%3AHeLa"
+open "http://buck.sib.swiss:8082"
 
 also: https://test-api.cellosaurus.org/
 
