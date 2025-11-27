@@ -60,20 +60,19 @@ platform=test
 
 cd /work/cellapi
 
-===> GO ON FROM HERE ===>
-
 # decompress new data
 rm -rf data_in solr_data rdf_data
 tar xvzf data_in.tar.gz
 tar xvzf solr_data.tar.gz
 tar xvzf rdf_data.tar.gz
 
-# decompress new code and rebuild api indexes
+# stop api
 ./api_service.sh stop
+
+# decompress new code and rebuild api indexes
 tar xvzf cellapi.tar.gz
 python3.9 fields_utils.py
 python3.9 cellapi_builder.py --platform=$platform BUILD
-./api_service.sh start
 
 # update solr index data
 ./solr_service.sh restart
@@ -83,6 +82,10 @@ sleep 10
 
 # update virtuoso rdf data
 ./scripts/reload_rdf_all.sh
+
+# restart API
+# Note: cannot be done before solr / sparql services are updated and restarted
+./api_service.sh start
 
 
 # -------------------------------------------------------
@@ -99,14 +102,14 @@ also: https://test-api.cellosaurus.org/
 # on prod server
 curl "http://piccard.sib.swiss:8082/release-info"
 curl "http://piccard.sib.swiss:8082/cellapi/cell-line-children/CVCL_0030.tsv"
-curl "http://piccard.sib.swiss:8082/search-form?q=id%3AHeLa"
-open "http://piccard.sib.swiss:8082/help"
+curl "http://piccard.sib.swiss:8082/api-search-form?q=id%3AHeLa"
+open "http://piccard.sib.swiss:8082"
 
 also: https://api.cellosaurus.org/
 
 
 # -------------------------------------------------------
-# TESTS for CLADTR service
+# TESTS for CLASTR service
 # -------------------------------------------------------
 
 # stop and restart service for it to reload new cellosaurus.xml
