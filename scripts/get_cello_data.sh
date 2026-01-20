@@ -8,9 +8,8 @@ no_xml=$2
 
 echo "release_number: $release__number"
 
-# kant is not available any more
-# draft_dir="npteam@kant:/share/sib/calipho/calipho/cellosaurus"
-draft_dir="/share/sib/calipho/calipho/cellosaurus"
+# directory with clone of https://gitlab.sib.swiss/calipho/cellodata
+draft_dir="/home/pmichel/work/cellodata"
 
 if [ "$release_number" == "draft" ]; then
   src_dir=${draft_dir}
@@ -25,10 +24,11 @@ trg_dir=$base_dir/data_in
 mkdir -p $trg_dir
 
 # either in draft or release directory
+# Note: we assume cellosaurus.xsd file is in $trg_dir (normally as a symlink) 
 if [ "$no_xml" == "no-xml" ]; then
-  files="cellosaurus.txt cellosaurus_refs.txt cellosaurus_xrefs.txt cellosaurus.xsd"
+  files="cellosaurus.txt cellosaurus_refs.txt cellosaurus_xrefs.txt"
 else
-  files="cellosaurus.txt cellosaurus_refs.txt cellosaurus_xrefs.txt cellosaurus.xml cellosaurus.xsd"
+  files="cellosaurus.txt cellosaurus_refs.txt cellosaurus_xrefs.txt cellosaurus.xml"
 fi
 
 for f in $files; do
@@ -36,7 +36,7 @@ for f in $files; do
   scp $src_dir/$f $trg_dir/$f
 done
 
-# only in draft directory
+# always in draft directory
 files="cellosaurus_species.cv celloparser.cv cellosaurus_anatomy.cv cellosaurus_institutions.cv cellosaurus_journals.cv cellosaurus_omics.cv cellosaurus_countries.cv"
 for f in $files; do
   echo "retrieving $draft_dir/$f"

@@ -2,6 +2,10 @@
 # on local dev machine
 # ==================================
 
+--------
+PART-1
+--------
+
 # dev machine is currently lin-202.swiss-prot.ch
 ssh lin-202.swiss-prot.ch
 
@@ -31,7 +35,12 @@ python cellapi_builder.py --platform=$platform SOLR
 sleep 10
 ./solr/bin/post -c pamcore1 solr_data/data*.xml
 
-./doit-rdf.sh $platform
+./doit-rdf.sh $platform > doit-rdf.log 2>&1 &
+
+
+--------
+PART-2
+--------
 
 # copy code and new data for api, solr 
 # and virtuoso to test or prod server
