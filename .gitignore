@@ -25,4 +25,5 @@ scratch.py
 *.ttl
 deref/
 static/sparql/
+.vscode
 
