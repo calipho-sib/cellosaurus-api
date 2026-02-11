@@ -23,6 +23,15 @@ class HtmlBuilder:
         html_tree = html.fromstring(content)
         return html_tree.xpath('/html/body/nav')[0]
 
+    # - - - - - - - - - - - - - - - - - - 
+    def get_banner_node(self):
+    # - - - - - - - - - - - - - - - - - - 
+        input_file = "./html.templates/nav.template.html"
+        content = self.get_file_content(input_file)
+        content = content.replace("$sparql_service_url", self.platform.get_public_sparql_service_IRI())
+        html_tree = html.fromstring(content)
+        return html_tree.xpath('/html/body/div')[0] # the banner div is the only div element directly under body
+
 
     # - - - - - - - - - - - - - - - - - - 
     def add_nav_node_to_body(self, some_tree):
@@ -33,21 +42,36 @@ class HtmlBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - 
-    def get_script_node(self):
+    def add_banner_node_to_body(self, some_tree):
+    # - - - - - - - - - - - - - - - - - - 
+        body_node = some_tree.xpath('/html/body')[0]
+        banner_node = self.get_banner_node()
+        body_node.insert(0, banner_node)
+
+
+    # - - - - - - - - - - - - - - - - - - 
+    def get_script_node(self, script_id):
     # - - - - - - - - - - - - - - - - - - 
         input_file = "./html.templates/nav.template.html"
         content = self.get_file_content(input_file)
         html_tree = html.fromstring(content)
-        return html_tree.xpath('/html/head/script')[0]
+        return html_tree.xpath(f"/html/head/script[@id='{script_id}']")[0]
 
 
     # - - - - - - - - - - - - - - - - - - 
-    def add_script_node_to_head(self, some_tree):
+    def add_scroll_script_node_to_head(self, some_tree):
     # - - - - - - - - - - - - - - - - - - 
         head_node = some_tree.xpath('/html/head')[0]
-        script_node = self.get_script_node()
+        script_node = self.get_script_node("scroll-script")
         head_node.append(script_node)
 
+
+    # - - - - - - - - - - - - - - - - - - 
+    def add_banner_script_node_to_body(self, some_tree):
+    # - - - - - - - - - - - - - - - - - - 
+        head_node = some_tree.xpath('/html/body')[0]
+        script_node = self.get_script_node("banner-script")
+        head_node.append(script_node)
 
 
     # - - - - - - - - - - - - - - - - - - 
@@ -71,6 +95,18 @@ class HtmlBuilder:
         lnk.set("rel", "stylesheet")
         lnk.set("href", "/static/navstyles.css")
         head_node.insert(0, lnk)
+
+    # - - - - - - - - - - - - - - - - - - 
+    def add_banner_css_link_to_head(self, some_tree):
+    # - - - - - - - - - - - - - - - - - - 
+        # <link type="text/css" rel="stylesheet" href="banner.css">
+        head_node = some_tree.xpath("/html/head")[0]
+        lnk = html.Element("link")
+        lnk.set("type", "text/css")
+        lnk.set("rel", "stylesheet")
+        lnk.set("href", "/static/banner.css")
+        head_node.insert(0, lnk)
+
 
     # - - - - - - - - - - - - - - - - - - 
     def fix_ontology_css_collisions(self, some_tree):

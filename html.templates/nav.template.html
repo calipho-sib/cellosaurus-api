@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Website</title>
     <link rel="stylesheet" href="navstyles.css">
+    <link rel="stylesheet" href="banner.css">
 
 <!-- the script part is used and injected into other templates -->
-    <script>
+    <script id="scroll-script">
     document.addEventListener("DOMContentLoaded", () => {
         const anchors = document.querySelectorAll("a[href^='#']");
         anchors.forEach((anchor) => {
@@ -24,10 +25,74 @@
         });
     });        
     </script>
+    
+    <script id="banner-script">
+
+        // Simple vanilla JS to dismiss banner
+
+        const banner = document.getElementById('policyBanner');
+        const hideNowBtn = document.getElementById('hideNowBtn');
+        const hideWeekBtn = document.getElementById('hideWeekBtn');
+        const body = document.body;
+                
+        function hideBanner() {
+            banner.classList.add('hidden');
+            document.body.classList.remove('banner-active');
+        }
+
+      // hide on cliking the button Hide for now
+        hideNowBtn.addEventListener('click', () => {
+            hideBanner();
+        });
+
+        // hide on cliking the button Hide for a week
+        hideWeekBtn.addEventListener('click', () => {            
+            const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+            const expiresAt = Date.now() + oneWeekMs;
+            localStorage.setItem("hide-banner-expires-at", String(expiresAt));            
+            hideBanner();
+        });
+        
+        // hide if the button Hide for a week was pressed less than a week before now
+        const expiration = localStorage.getItem("hide-banner-expires-at");
+        if (expiration) {
+            const nowMs = Date.now();
+            const expirationMs = Number(expiration);
+            console.log("now", nowMs, "expiration:", expirationMs, "diff", expirationMs - nowMs);
+            if (nowMs < expirationMs) {
+                hideBanner();
+            }
+        }
+        
+        // hide automatically after 20s
+        setTimeout(() => { hideBanner(); }, 20000);
+
+    </script>
+
+
+
 </head>
 
 <!-- the body part is used and injected into other templates -->
-<body>
+
+
+<body class="banner-active">
+  <!-- Policy Change Banner -->
+    <div id="policyBanner" class="policy-banner" role="banner" aria-live="polite">
+        <div class="policy-banner__content">
+            <p style="font-size:larger; font-weight: bolder; margin-bottom: 0px;">Important - Upcoming licensing change</p>
+            <p>
+            From XX June, to ensure the long-term sustainability of the Cellosaurus – a reference resource for cell line quality,<br>
+                identity and traceability in R&D and regulated contexts - commercial use will require a license. Open access for academic<br>
+                and non-profit research will remain unchanged. Check whether your use will require a licence 
+                <a href="/license" style="color: #fff; text-decoration: underline;">here</a>.
+                <br>
+                <button id="hideNowBtn" class="policy-banner__close" aria-label="Dismiss banner">Hide for now</button>
+                <button id="hideWeekBtn" class="policy-banner__close" aria-label="Dismiss banner">Hide for a week</button>
+            </p>
+        </div>
+    </div>
+
     <nav class="nav">
         <a href="https://www.cellosaurus.org" class="logo">
             <img src="/static/cellosaurus.png" alt="Cellosaurus website">

@@ -1,0 +1,44 @@
+.policy-banner {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    /* background: #d32f2f;  Red for urgency */
+    /* background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); */ /* Soft blue */    
+    background: linear-gradient(135deg, #393c3e 0%, #42a5f5 100%); 
+    color: white;
+    /* padding: 1rem 2rem; */
+    text-align: center;
+    z-index: 1000;
+    font-family: system-ui, sans-serif;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+.policy-banner.hidden { transform: translateY(-100%); }
+
+.policy-banner__content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: block;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.policy-banner__close {
+    cursor: pointer;
+    margin-top: 10px;
+    padding: 3px;
+    transition: background 0.2s;
+}
+    
+.policy-banner__close:hover { background: rgba(255,255,255,0.2); }
+
+/* Push main content down */
+body.banner-active { padding-top: 180px; }
+
+@media (max-width: 768px) {
+    .policy-banner { padding: 1rem; font-size: 0.9rem; }
+    body.banner-active { padding-top: 70px; }
+}
