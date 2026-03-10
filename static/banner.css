@@ -3,7 +3,8 @@
     top: 0; left: 0; right: 0;
     /* background: #d32f2f;  Red for urgency */
     /* background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); */ /* Soft blue */    
-    background: linear-gradient(135deg, #393c3e 0%, #42a5f5 100%); 
+    /* background: linear-gradient(135deg, #393c3e 0%, #42a5f5 100%);  */
+    background: linear-gradient(135deg, rgb(1, 77, 1) 0%, rgb(1, 120, 1) 50%, rgb(0, 170, 0) 100%);
     color: white;
     /* padding: 1rem 2rem; */
     text-align: center;
@@ -36,7 +37,7 @@
 .policy-banner__close:hover { background: rgba(255,255,255,0.2); }
 
 /* Push main content down */
-body.banner-active { padding-top: 180px; }
+body.banner-active { padding-top: 93px; }
 
 @media (max-width: 768px) {
     .policy-banner { padding: 1rem; font-size: 0.9rem; }

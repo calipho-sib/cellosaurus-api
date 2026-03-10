@@ -3,6 +3,8 @@ _*.sh
 *.log
 mac-098*.config
 lin-202*.config
+changes-since-may-2024.txt
+fields-info.txt
 solr
 __pycache__/
 private
@@ -26,4 +28,12 @@ scratch.py
 deref/
 static/sparql/
 .vscode
-
+static/bgee.json
+static/biosoda.json
+static/cello.json
+static/hamap.json
+static/metanetx.json
+static/oma.json
+static/orthodb.json
+static/sibils.json
+scripts/get_cello_data_old.sh

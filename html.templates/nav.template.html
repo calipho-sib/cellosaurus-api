@@ -16,7 +16,7 @@
                 e.preventDefault();
                 const href = anchor.getAttribute("href");
                 const targetElement = document.querySelector(href);
-                const offsetTop = targetElement.getBoundingClientRect().top + window.scrollY - 50; // Adjust 100 to match your menu height
+                const offsetTop = targetElement.getBoundingClientRect().top + window.scrollY - 96; // Adjust to match your banner / nav height
                 window.scrollTo({
                     top: offsetTop,
                     behavior: "smooth"
@@ -80,15 +80,10 @@
   <!-- Policy Change Banner -->
     <div id="policyBanner" class="policy-banner" role="banner" aria-live="polite">
         <div class="policy-banner__content">
-            <p style="font-size:larger; font-weight: bolder; margin-bottom: 0px;">Important - Upcoming licensing change</p>
-            <p>
-            From XX June, to ensure the long-term sustainability of the Cellosaurus – a reference resource for cell line quality,<br>
-                identity and traceability in R&D and regulated contexts - commercial use will require a license. Open access for academic<br>
-                and non-profit research will remain unchanged. Check whether your use will require a licence 
-                <a href="/license" style="color: #fff; text-decoration: underline;">here</a>.
-                <br>
-                <button id="hideNowBtn" class="policy-banner__close" aria-label="Dismiss banner">Hide for now</button>
-                <button id="hideWeekBtn" class="policy-banner__close" aria-label="Dismiss banner">Hide for a week</button>
+            <p style="font-size:larger; font-weight: bolder; margin-top: 0.5rem; margin-bottom: 0rem;">Important - Upcoming licensing change</p>
+            <p style="margin-top: 0.3rem; margin-bottom: 0.5rem;">
+                As of June, to ensure the long-term sustainability of Cellosaurus, commercial use will require a licensing agreement.<br>                
+                <a href="/license" style="color: #fff; text-decoration: underline;">Check how this applies to you</a>
             </p>
         </div>
     </div>

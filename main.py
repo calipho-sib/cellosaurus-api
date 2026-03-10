@@ -249,6 +249,8 @@ async def custom_swagger_ui_html(request: Request):
     # build a new HTTP response with amended content
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
+    htmlBuilder.add_banner_node_to_body(content_tree)
+    htmlBuilder.add_banner_css_link_to_head(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
     return HTMLResponse(content=final_content, status_code=200)
 
@@ -1026,7 +1028,6 @@ async def get_basic_help(request: Request):
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
     htmlBuilder.add_banner_node_to_body(content_tree)
-    htmlBuilder.add_banner_script_node_to_body(content_tree)
     htmlBuilder.add_banner_css_link_to_head(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
     return responses.Response(content=final_content,media_type="text/html")
@@ -1047,6 +1048,8 @@ async def get_rdf_concept_hopper(request: Request):
     content_tree = html.fromstring(content)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
+    htmlBuilder.add_banner_node_to_body(content_tree)
+    htmlBuilder.add_banner_css_link_to_head(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
     return responses.Response(content=final_content, media_type="text/html")
 
@@ -1065,6 +1068,8 @@ async def get_rdf_downloads(request: Request):
     content_tree = html.fromstring(content)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
+    htmlBuilder.add_banner_node_to_body(content_tree)
+    htmlBuilder.add_banner_css_link_to_head(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
     return responses.Response(content=final_content,media_type="text/html")
 
@@ -1083,6 +1088,8 @@ async def get_help_resolver(request: Request):
     content_tree = html.fromstring(content)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
+    htmlBuilder.add_banner_node_to_body(content_tree)
+    htmlBuilder.add_banner_css_link_to_head(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
     return responses.Response(content=final_content,media_type="text/html")
 
@@ -1100,6 +1107,8 @@ async def get_help_resolver(request: Request):
     content_tree = html.fromstring(content)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
+    htmlBuilder.add_banner_node_to_body(content_tree)
+    htmlBuilder.add_banner_css_link_to_head(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
     return responses.Response(content=final_content,media_type="text/html")
 
@@ -1120,6 +1129,8 @@ async def get_sparql_editor(request: Request):
     content_tree = html.fromstring(content)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
+    htmlBuilder.add_banner_node_to_body(content_tree)
+    htmlBuilder.add_banner_css_link_to_head(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
     return responses.Response(content=final_content,media_type="text/html")
 
@@ -1140,6 +1151,8 @@ async def get_sparql_editor(request: Request):
     htmlBuilder.add_nav_favicon_link_to_head(content_tree)
     htmlBuilder.add_scroll_script_node_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
+    htmlBuilder.add_banner_node_to_body(content_tree)
+    htmlBuilder.add_banner_css_link_to_head(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
     return responses.Response(content=final_content,media_type="text/html")
 
@@ -1174,6 +1187,8 @@ async def get_help_fields(request: Request):
     content_tree = html.fromstring(content)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
+    htmlBuilder.add_banner_node_to_body(content_tree)
+    htmlBuilder.add_banner_css_link_to_head(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
     return responses.Response(content=final_content,media_type="text/html")
 
@@ -1271,6 +1286,8 @@ async def fullsearch_form(
     content_tree = html.fromstring(content)
     htmlBuilder.add_nav_css_link_to_head(content_tree)
     htmlBuilder.add_nav_node_to_body(content_tree)
+    htmlBuilder.add_banner_node_to_body(content_tree)
+    htmlBuilder.add_banner_css_link_to_head(content_tree)
     final_content = html.tostring(content_tree, pretty_print=True, method="html", doctype="<!DOCTYPE html>",  encoding="utf-8")    
 
     log_it("INFO:", "Processed" , request.url, "format", format, duration_since=t0)
