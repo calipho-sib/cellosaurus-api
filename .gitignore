@@ -37,3 +37,4 @@ static/oma.json
 static/orthodb.json
 static/sibils.json
 scripts/get_cello_data_old.sh
+html.templates/licensing.template.html
