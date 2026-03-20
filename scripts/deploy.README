@@ -12,7 +12,7 @@ ssh lin-202.swiss-prot.ch
 # get new data and rebuild 
 # api indexes, solr indexes and virtuoso db
 
-release_number=54
+release_number=55
 platform=prod
 
 ./scripts/get_cello_data.sh $release_number no-xml
@@ -21,7 +21,7 @@ platform=prod
 # build a fresh XML built on latest sources
 
 cd data_in
-java -jar celloparser3.jar cellosaurus.txt -xml > celloparser.log 2>&1 &
+java -jar celloparser3.jar cellosaurus.txt -xml > celloparser.log 2>&1
 cd ..
 
 # build data for api, solr and sparql services
