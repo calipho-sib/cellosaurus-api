@@ -11,7 +11,9 @@ class HtmlBuilder:
     # - - - - - - - - - - - - - - - - - - 
         self.platform = platform
         self.nav_node = self.get_navigation_node()
-        
+
+        # TODO: change value below to (de)activate banner
+        self.banner_is_active = False        
 
 
     # - - - - - - - - - - - - - - - - - - 
@@ -44,10 +46,11 @@ class HtmlBuilder:
     # - - - - - - - - - - - - - - - - - - 
     def add_banner_node_to_body(self, some_tree):
     # - - - - - - - - - - - - - - - - - - 
-        body_node = some_tree.xpath('/html/body')[0]
-        body_node.set("class", "banner-active")
-        banner_node = self.get_banner_node()
-        body_node.insert(0, banner_node)
+        if self.banner_is_active: 
+            body_node = some_tree.xpath('/html/body')[0]
+            body_node.set("class", "banner-active")
+            banner_node = self.get_banner_node()
+            body_node.insert(0, banner_node)
 
 
     # - - - - - - - - - - - - - - - - - - 
@@ -70,9 +73,10 @@ class HtmlBuilder:
     # - - - - - - - - - - - - - - - - - - 
     def add_banner_script_node_to_body(self, some_tree):
     # - - - - - - - - - - - - - - - - - - 
-        head_node = some_tree.xpath('/html/body')[0]
-        script_node = self.get_script_node("banner-script")
-        head_node.append(script_node)
+        if self.banner_is_active: 
+            head_node = some_tree.xpath('/html/body')[0]
+            script_node = self.get_script_node("banner-script")
+            head_node.append(script_node)
 
 
     # - - - - - - - - - - - - - - - - - - 
@@ -113,11 +117,14 @@ class HtmlBuilder:
     def fix_ontology_css_collisions(self, some_tree):
     # - - - - - - - - - - - - - - - - - - 
         body = some_tree.xpath("/html/body")[0]
-        body.set("style", "padding-left: 0px; padding-right: 0px;")
+        body.set("style", "padding: 0px;")
         cont = body.xpath("./div[@class='container']")[0]
         cont.set("style", "padding-left: 80px;")
         stat = cont.xpath("./div[@class='status']")[0]
-        stat.set("style", "top: 172px;")
+        stat.set("style", "top: 80px;")
+        if self.banner_is_active:
+            body.set("style", "padding-left: 0px; padding-right: 0px;")
+            stat.set("style", "top: 172px;")
         
 
     # - - - - - - - - - - - - - - - - - - 

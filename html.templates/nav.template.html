@@ -16,7 +16,11 @@
                 e.preventDefault();
                 const href = anchor.getAttribute("href");
                 const targetElement = document.querySelector(href);
-                const offsetTop = targetElement.getBoundingClientRect().top + window.scrollY - 96; // Adjust to match your banner / nav height
+                var offsetTop = targetElement.getBoundingClientRect().top + window.scrollY - 50; // Adjust to match your menu height
+                const banner_is_active = false;
+                if (banner_is_active) {
+                    offsetTop = targetElement.getBoundingClientRect().top + window.scrollY - 96; // Adjust to match your banner / nav height
+                }
                 window.scrollTo({
                     top: offsetTop,
                     behavior: "smooth"
