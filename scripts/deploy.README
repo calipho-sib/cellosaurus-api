@@ -22,6 +22,7 @@ platform=prod
 
 cd data_in
 java -jar celloparser3.jar cellosaurus.txt -xml > celloparser.log 2>&1
+vi cellosaurus.xml # CAUTION: modify date if necessary (at line 5)
 cd ..
 
 # build data for api, solr and sparql services
@@ -31,6 +32,7 @@ python cellapi_builder.py --platform=$platform BUILD
 python cellapi_builder.py --platform=$platform SOLR
 
 ./solr_service.sh restart
+sleep 5
 ./solr/bin/post -c pamcore1 -d "<delete><query>*:*</query></delete>"
 sleep 10
 ./solr/bin/post -c pamcore1 solr_data/data*.xml

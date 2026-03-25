@@ -39,7 +39,3 @@
 /* Push main content down */
 body.banner-active { padding-top: 93px; }
 
-@media (max-width: 768px) {
-    .policy-banner { padding: 1rem; font-size: 0.9rem; }
-    body.banner-active { padding-top: 70px; }
-}

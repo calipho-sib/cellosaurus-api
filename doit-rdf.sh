@@ -27,7 +27,8 @@ fi
 
 python cellapi_builder.py --platform=$platform LOAD_RDF void
 
-./sparql_service.sh checkpoint
+# restart virtuoso (stop includes a checkpoint)
+./sparql_service.sh restart
 
 cd ~/work/widoco
 ./doit-cello.sh $platform

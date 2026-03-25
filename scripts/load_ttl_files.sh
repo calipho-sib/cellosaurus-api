@@ -62,6 +62,9 @@ if [ "$error_cnt" != "0" ]; then
     echo "$(date) - ERROR Problem while loading files"; 
     $isql 1111 dba dba "EXEC=select * from DB.DBA.load_list where ll_error is not null;"
     exit 7
+else
+    echo "$(date) - INFO loaded files"; 
+    $isql 1111 dba dba "EXEC=select * from DB.DBA.load_list;"
 fi
 
 
