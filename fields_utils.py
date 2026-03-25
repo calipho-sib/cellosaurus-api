@@ -183,7 +183,7 @@ class FldDef:
     def build_enum(self):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         f_out = open("fields_enum.py", "w")
-        f_out.write("#\n# Generated : " + datetime.datetime.now().isoformat().replace('T',' ')[:19] + "\n#\n\n")
+        f_out.write("#\n# Generated with fields_utils.py\n#\n\n")
         f_out.write("from enum import Enum\n\n")
         f_out.write("class Fields(str, Enum):\n")
         for k in self.fld_dic.keys():

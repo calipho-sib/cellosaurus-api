@@ -1198,11 +1198,10 @@ if __name__ == "__main__":
             sys.exit(10)
         
         exit_code = result.returncode
-        print(result.stdout)
-        print(result.stderr)
         if exit_code == 0:
             log_it("INFO", f"sub-process status code: {exit_code}")
         else:
+            log_it("ERROR", result.stderr )
             log_it("ERROR", f"Error while running sub process, exit code = {exit_code}")
             sys.exit(exit_code)
 

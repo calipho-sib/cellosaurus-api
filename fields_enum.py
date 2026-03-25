@@ -1,5 +1,5 @@
 #
-# Generated : 2025-11-27 10:38:00
+# Generated with fields_utils.py
 #
 
 from enum import Enum
