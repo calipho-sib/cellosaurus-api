@@ -6,7 +6,7 @@ base_dir=$scripts_dir/..
 release_number=$1
 no_xml=$2
 
-echo "release_number: $release__number"
+echo "release_number: $release_number"
 
 # directory with clone of https://gitlab.sib.swiss/calipho/cellodata
 draft_dir="/home/pmichel/work/cellodata"

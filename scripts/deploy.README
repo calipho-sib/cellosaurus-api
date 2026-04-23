@@ -47,11 +47,11 @@ PART-2
 # copy code and new data for api, solr 
 # and virtuoso to test or prod server
  
-# test server
-trg_host=buck
+# test server - CAUTION: use celloteam user on target host
+trg_host=celloteam@buck
 
-# prod server
-#trg_host=piccard
+# prod server - CAUTION: use celloteam user on target host
+#trg_host=celloteam@piccard
 
 ./scripts/deploy_api_code.sh $trg_host
 ./scripts/push_dir.sh data_in $trg_host
