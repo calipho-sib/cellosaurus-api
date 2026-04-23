@@ -39,3 +39,4 @@ static/sibils.json
 static/datamodel.json
 scripts/get_cello_data_old.sh
 html.templates/licensing.template.html
+cello_queries_for_qlever.csv

@@ -86,9 +86,19 @@ class Query:
         return "\n".join(lines)
 
 
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_csv_line_for_qlever(self, ns_reg: NamespaceRegistry):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    #   id, backend, name, query, sortKey
+        id = 10000 + int(self.id)
+        backend = 91
+        name = self.label.replace(",", " ")
+        query = self.get_prefixed_sparql(ns_reg).replace("\"", "'")
+        return f'{id},{backend},{name},"{query}",{id}\n'
 
-
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_github():
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         pass
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -152,10 +162,20 @@ if __name__ == '__main__':
 
     reader = QueryFileReader()
 
-    for q in reader.query_list:
-        descr = q.get_ttl_for_sparql_endpoint(ns_reg)
-        print(f"\n-------- Query id {q.id} --------\n")
-        print(descr)
+    if 1==1:
+        f_out = open("cello_queries_for_qlever.csv", "w")
+        # write csv header
+        f_out.write("id,backend,name,query,sortKey\n")
+        # write csv line(s) for each query
+        for q in reader.query_list:
+            f_out.write(q.get_csv_line_for_qlever(ns_reg))
+        f_out.close()
+
+    if 1 == 2:    
+        for q in reader.query_list:
+            descr = q.get_ttl_for_sparql_endpoint(ns_reg)
+            print(f"\n-------- Query id {q.id} --------\n")
+            print(descr)
 
     sys.exit()
     sep = "\t"
