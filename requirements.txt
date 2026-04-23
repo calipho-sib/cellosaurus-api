@@ -4,3 +4,4 @@ lxml==4.6.5
 pydantic==2.3.0
 Requests==2.31.0
 uvicorn==0.23.2
+SPARQLWrapper==2.0.0
