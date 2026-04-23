@@ -74,5 +74,16 @@ Db_URL: https://www.uniprot.org/uniprotkb/%s/entry
 Term. : Yes
 Remark: Use protein families / domains ? NO, do not use it as terminology
 --
+Abbrev: HGNC
+Name  : Human Gene Nomenclature Committee Database
+Server: https://www.genenames.org
+Db_URL: https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/%s
+Term. : Yes
+Cat   : Organism-specific databases
+Remark: The terminology is loaded for project yvonne but is not used in the scope of cellosaurus-api
+Use   : wget https://storage.googleapis.com/public-download-files/hgnc/json/json/hgnc_complete_set.json
+or
+Use   : wget https://storage.googleapis.com/public-download-files/hgnc/json/json/hgnc_complete_set.json
+//
 
 
