@@ -146,7 +146,7 @@ port   : 8081
 
 
 PROD
-url    : https://web.expasy.org/cellosaurus-str-search/
+url    : https://www.cellosaurus.org/str-search/
 server : piccard (DMZ)
 port   : 8081
 project path : /work/cellosaurus-STR-similarity-search-tool
