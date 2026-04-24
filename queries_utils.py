@@ -33,13 +33,19 @@ class Query:
         return "\n".join(lines)
     
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_prefixed_sparql(self, ns_reg: NamespaceRegistry):
+    def get_prefixed_sparql_lines(self, ns_reg: NamespaceRegistry):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         lines = []
         q.set_necessary_sparql_prefixes(ns_reg)
         for pfx in self.prefixes: lines.append(pfx) 
         for spa in self.sparql:   lines.append(spa)       
-        return "\n".join(lines)
+        return lines
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_prefixed_sparql(self, ns_reg: NamespaceRegistry):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        return "\n".join(self.get_prefixed_sparql_lines(ns_reg))
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -95,6 +101,29 @@ class Query:
         name = self.label.replace(",", " ")
         query = self.get_prefixed_sparql(ns_reg).replace("\"", "'")
         return f'{id},{backend},{name},"{query}",{id}\n'
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def get_yml_block_for_qlever(self, ns_reg: NamespaceRegistry):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+        """
+        - name: my test
+            sort_key: '~'
+            query: |-
+              PREFIX...
+              ...
+        """
+        name = self.label.replace(",", " ").replace(":", " ") # replace forbidden chars in context
+        id = 10000 + int(self.id)
+        query_lines = self.get_prefixed_sparql_lines(ns_reg)
+        lines = list()
+        lines.append(f"  - name: {name}")
+        lines.append(f"    sort_key: {id}")
+        lines.append(f"    query: |-")
+        for line in query_lines:
+            clean_line = line.replace("\"", "'")
+            lines.append(f"      {clean_line}")
+        return "\n".join(lines)
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     def get_ttl_for_github():
@@ -163,12 +192,11 @@ if __name__ == '__main__':
     reader = QueryFileReader()
 
     if 1==1:
-        f_out = open("cello_queries_for_qlever.csv", "w")
-        # write csv header
-        f_out.write("id,backend,name,query,sortKey\n")
-        # write csv line(s) for each query
+        f_out = open("cello_queries_for_qlever.yml", "w")
+        f_out.write("  examples:\n")
         for q in reader.query_list:
-            f_out.write(q.get_csv_line_for_qlever(ns_reg))
+            block = q.get_yml_block_for_qlever(ns_reg) # block is mostly multi-line but never ends with \n
+            f_out.write(f"{block}\n")
         f_out.close()
 
     if 1 == 2:    
