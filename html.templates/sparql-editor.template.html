@@ -10,7 +10,8 @@
     <!-- <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/f/f3/Rdf_logo.svg" /> -->
     <!-- Import the module from a CDN -->
 
-    <!-- <script type="module" src="https://unpkg.com/@sib-swiss/sparql-editor@0.2.14"></script>    this version works -->
+    <!-- this version below (0.2.14) works -->
+    <!-- <script type="module" src="https://unpkg.com/@sib-swiss/sparql-editor@0.2.14"></script>     -->
     <script type="module" src="https://unpkg.com/@sib-swiss/sparql-editor"></script>
     <!-- <script type="module" src="https://esm.sh/@sib-swiss/sparql-editor"></script> -->
     <!-- <script type="module" src="https://cdn.skypack.dev/@sib-swiss/sparql-editor"></script> -->
@@ -32,6 +33,7 @@
     <div style="padding-left:80px;">
       <sparql-editor
         endpoint="$sparql_IRI"
+        default-method="POST"
         examples-repository="https://github.com/sib-swiss/sparql-examples/blob/master/examples/Cellosaurus"
         examples-repo-add-url="https://github.com/sib-swiss/sparql-examples/new/master/examples/Cellosaurus"
         examples-on-main-page="5"

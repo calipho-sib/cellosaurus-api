@@ -29,9 +29,18 @@ class ApiPlatform:
             "local": {
                 "base_IRI": "http://localhost/rdf",
                 "help_IRI": "http://localhost:8082",                        # http://localhost:8082/ontology.ttl thanks to main.app.mount())
+                # ------------------------
+                # Virtuoso SPARQL service
+                # ------------------------
                 "public_sparql_IRI": "http://localhost/sparql/service",
                 "private_sparql_IRI" : "http://localhost:8890/sparql",
-                "builder_sparql_IRI" : "http://localhost:8890/sparql"     
+                "builder_sparql_IRI" : "http://localhost:8890/sparql",
+                # ------------------------
+                # QLever SPARQL service
+                # ------------------------
+                # "public_sparql_IRI": "http://localhost/sparql/service2/",
+                # "private_sparql_IRI" : "http://lin-202.swiss-prot.ch:7019/",
+                # "builder_sparql_IRI" : "http://lin-202.swiss-prot.ch:7019/",
             },
             "test": {
                 "base_IRI": "https://www.mix-id1.cellosaurus.org/rdf",
