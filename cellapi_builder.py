@@ -1053,7 +1053,7 @@ if __name__ == "__main__":
                 if term is None:
                     log_it("ERROR:", f"Cited term/concept {id} not found in {k} terminology")
                 else:
-                    parent_list = parser.get_with_parent_list(id)
+                    parent_list = parser.get_with_relative_list(id)
                     relevant_id_set.update(parent_list)
             relevant_term_dic = dict()
             for id in relevant_id_set:

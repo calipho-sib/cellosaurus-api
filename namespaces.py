@@ -343,7 +343,16 @@ class BFONamespace(BaseNamespace):
     def __init__(self): 
         super(BFONamespace, self).__init__("BFO", "http://purl.obolibrary.org/obo/BFO_")
         self._0000051_has_part = self.registerObjectProperty("0000051", label="has part", comment="a core relation that holds between a whole and its part")
-        #self._0000050_part_of = self.registerObjectProperty("0000050", label="part of", comment="a core relation that holds between a part and its whole")
+        self._0000050_part_of = self.registerObjectProperty("0000050", label="part of", comment="a core relation that holds between a part and its whole")
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class RONamespace(BaseNamespace):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    def __init__(self): 
+        super(RONamespace, self).__init__("RO", "http://purl.obolibrary.org/obo/RO_")
+        self._0000087_has_role = self.registerObjectProperty("0000087", label="has role")
+        self._0000081_role_of = self.registerObjectProperty("0000081", label="role of")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

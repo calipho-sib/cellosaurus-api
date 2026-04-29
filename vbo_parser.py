@@ -45,7 +45,7 @@ class Vbo_Parser:
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
     # - - - - - - - - - - - - - - - - - - 
-    def get_with_parent_list(self, some_id):
+    def get_with_relative_list(self, some_id):
     # - - - - - - - - - - - - - - - - - - 
         some_set = self.get_parents(set(), some_id)
         return list(some_set)
@@ -169,7 +169,7 @@ if __name__ == '__main__':
     ac = parser.to_cellostyle(ac)
     print(parser.term_dict.get(ac))
     print("with parents:")
-    ids = parser.get_with_parent_list(ac)
+    ids = parser.get_with_relative_list(ac)
     for id in ids:print(parser.term_dict[id])
     sys.exit(0)
 

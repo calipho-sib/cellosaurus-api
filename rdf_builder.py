@@ -534,7 +534,7 @@ class RdfBuilder:
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-    def get_ttl_for_term(self, term):
+    def get_ttl_for_term(self, term: Term):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         ns = self.ns
         triples = TripleList()
@@ -551,9 +551,14 @@ class RdfBuilder:
         for alt in term.altLabelList:
             no_accent_label = self.remove_accents(alt)
             triples.extend(self.get_materialized_triples_for_prop(xr_IRI, ns.skos.altLabel, ns.xsd.string(no_accent_label)))
-        for parent_id in term.parentIdList:
-            parent_IRI = ns.xref.IRI(db, parent_id, None, store=False)
-            triples.append(xr_IRI, ns.cello.more_specific_than, parent_IRI)
+        # parents are either superclasses or partitive parents (a whole that has the term as a part) 
+        for relative_id in term.parentIdList:
+            relative_IRI = ns.xref.IRI(db, relative_id, None, store=False)
+            triples.append(xr_IRI, ns.cello.more_specific_than, relative_IRI) 
+        # ChEBI defines roles that are useful to know about for some SPARQL queries (Viktor project)
+        for relative_id in term.roleIdList:
+            relative_IRI = ns.xref.IRI(db, relative_id, None, store=False)
+            triples.append(xr_IRI, ns.RO._0000087_has_role, relative_IRI)
 
         return("".join(triples.lines))
 

@@ -7,9 +7,11 @@ class Term:
         self.altLabelList = altLabelList
         self.parentIdList = parentIdList
         self.scheme = scheme
+        self.roleIdList = list()  # only used by ChEBI
+        self.partOfIdList = list()
 
     def __str__(self):
-        return(f"Term({self.id}, {self.prefLabel}, parents: {self.parentIdList} )")
+        return(f"Term({self.id}, {self.prefLabel}, parents: {self.parentIdList} roles: {self.roleIdList} partOf: {self.partOfIdList} )")
 
 # ------------------------
 class Terminology:

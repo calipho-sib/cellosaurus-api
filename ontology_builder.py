@@ -461,6 +461,12 @@ class OntologyBuilder:
         ns.describe(ns.cello.misspellingName, ns.rdfs.subPropertyOf, ns.skos.hiddenLabel)
         ns.describe(ns.cello.hgvs, ns.rdfs.subPropertyOf, ns.skos.notation)
         
+        ns.describe(ns.RO._0000081_role_of, ns.owl.inverseOf, ns.RO._0000087_has_role)
+        ns.describe(ns.RO._0000087_has_role, ns.owl.inverseOf, ns.RO._0000081_role_of)
+
+        ns.describe(ns.BFO._0000050_part_of, ns.owl.inverseOf, ns.BFO._0000051_has_part)
+        ns.describe(ns.BFO._0000051_has_part, ns.owl.inverseOf, ns.BFO._0000050_part_of)
+
         ns.describe(ns.cello.includesObservation, ns.rdfs.subPropertyOf, ns.BFO._0000051_has_part)
         ns.describe(ns.cello.hasComponent, ns.rdfs.subPropertyOf, ns.BFO._0000051_has_part)
         ns.describe(ns.cello.inRegister, ns.rdfs.subPropertyOf, ns.BFO._0000051_has_part)

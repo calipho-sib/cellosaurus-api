@@ -30,7 +30,7 @@ class NcbiTaxid_Parser:
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
     # - - - - - - - - - - - - - - - - - - 
-    def get_with_parent_list(self, some_id):
+    def get_with_relative_list(self, some_id):
     # - - - - - - - - - - - - - - - - - - 
         path = [some_id]
         child_id = some_id
@@ -149,7 +149,7 @@ if __name__ == '__main__':
 # =======================================================
 
     parser = NcbiTaxid_Parser("NCBI_TaxID")
-    path = parser.get_with_parent_list("9606")
+    path = parser.get_with_relative_list("9606")
     for id in path:
         print(id, parser.get_scientific_name(id))
     print("------")

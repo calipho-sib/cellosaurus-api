@@ -37,14 +37,14 @@ class NamespaceRegistry:
         self.NCIt = NCItNamespace(); self.OBI = OBINamespace(); self.OMIT = OMITNamespace()
         self.GENO = GENONamespace(); self.CARO = CARONamespace(); self.CL = CLNamespace()
         self.CHEBI = CHEBINamespace(); self.ORDO = ORDONamespace(); self.IAO = IAONamespace()
-        self.EDAM = EDAMNamespace(); self.prism = PrismNamespace(); self.BFO = BFONamespace()
+        self.EDAM = EDAMNamespace(); self.prism = PrismNamespace(); self.BFO = BFONamespace(); self.RO = RONamespace()
         self.FBcv = FBcvNamespace(); self.OLS = OLSNamespace()
 
         self.namespaces = [
             self.cello, self.cvcl, self.xref, self.pub, self.orga, self.db, self.xsd, self.rdf, self.rdfs, self.skos, self.owl, self.dcterms, 
             self.fabio, self.up, self.bibo, self.widoco, self.vann, self.oa, self.wdt, self.wd, self.sh, self.schema, self.help, self.pubmed,
             self.BAO, self.BTO, self.CLO, self.NCIt, self.OBI, self.OMIT, self.FBcv, self.GENO, self.CARO, self.CL, self.CHEBI, self.ORDO, 
-            self.IAO, self.EDAM, self.prism, self.BFO, self.OLS ]
+            self.IAO, self.EDAM, self.prism, self.BFO, self.RO, self.OLS ]
 
         self.pfx2ns = dict()
         for ns in self.namespaces: self.pfx2ns[ns.pfx] = ns

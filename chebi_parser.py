@@ -14,9 +14,10 @@ class ChebiTerm:
         self.hasPartList = list()
         self.isPartOfSet = set()
         self.obsolete = False
+        self.hasRoleList = list()
 
     def __str__(self):
-        return f"ChebiTerm({self.id} {self.name} - isa: {self.isaList} - isPartOf: {self.isPartOfSet} - altIds: {self.altIdList} - obsolete: {self.obsolete} )"
+        return f"ChebiTerm({self.id} {self.name} - isa: {self.isaList} - roles: {self.hasRoleList} - isPartOf: {self.isPartOfSet} - altIds: {self.altIdList} - obsolete: {self.obsolete} )"
 
 class Chebi_Parser:
 
@@ -44,7 +45,7 @@ class Chebi_Parser:
     # - - - - - - - - - - - - - - - - - - 
     # INTERFACE
     # - - - - - - - - - - - - - - - - - - 
-    def get_with_parent_list(self, some_id):
+    def get_with_relative_list(self, some_id):
     # - - - - - - - - - - - - - - - - - - 
         some_set = self.get_parents(set(), some_id)
         return list(some_set)
@@ -57,8 +58,9 @@ class Chebi_Parser:
         else:
             known_parent_set.add(this_id)
         t = self.term_dict[this_id]
-        parent_set = set(t.isaList)
-        parent_set.update(t.isPartOfSet)
+        parent_set = set(t.isaList)                 # parents 
+        parent_set.update(t.isPartOfSet)            # containers
+        parent_set.update(set(t.hasRoleList))       # roles
         for parent_id in parent_set:
             self.get_parents(known_parent_set, parent_id)
         return known_parent_set
@@ -69,14 +71,16 @@ class Chebi_Parser:
     # - - - - - - - - - - - - - - - - - - 
     def get_term(self, id):
     # - - - - - - - - - - - - - - - - - - 
-        cterm = self.term_dict.get(id)
+        cterm: ChebiTerm = self.term_dict.get(id)
         if cterm is None: return None
         if id != cterm.id:
             log_it("WARNING", f"term {id} is a secondary ID of {cterm.id} in {self.abbrev} terminology")
             return None
-        parent_set = set(cterm.isaList)
-        parent_set.update(cterm.isPartOfSet)
-        return Term(id, cterm.name, [], list(parent_set), self.abbrev)
+        parent_set = set(cterm.isaList)         # any superclass of the term becomes a parent => see RDF cello:more_specfic_than property
+        parent_set.update(cterm.isPartOfSet)    # any class that the term is a part of becomes a parent => see RDF cello:more_specfic_than property
+        iterm: Term = Term(id, cterm.name, [], list(parent_set), self.abbrev)
+        iterm.roleIdList = cterm.hasRoleList
+        return iterm
 
 
     # - - - - - - - - - - - - - - - - - - 
@@ -101,10 +105,16 @@ class Chebi_Parser:
             elif line.startswith("name: "):
                 term.name = line[6:].rstrip()
             elif line.startswith("is_a: "):
-                # now is_a lines look like 'is_a: CHEBI:16114 ! medicarpin'
+                # example:
+                # is_a: CHEBI:16114 ! medicarpin'
                 term.isaList.append(line[6:].split(" ! ")[0].replace(":","_"))  
-            elif line.startswith("relationship: has_part "):
-                term.hasPartList.append(line[23:].strip().replace(":", "_"))
+            # ChEBI has part, example:
+            # relationship: BFO:0000051 CHEBI:37154 ! has part fumarate(1-)
+            elif line.startswith("relationship: BFO:0000051 "):
+                term.hasPartList.append(line[26:].split(" ! ")[0].replace(":", "_"))
+            # ChEBI has role
+            elif line.startswith("relationship: RO:0000087 "): 
+                term.hasRoleList.append(line[25:].split(" ! ")[0].replace(":", "_"))
         return term
 
 
@@ -175,7 +185,7 @@ if __name__ == '__main__':
 
     print(parser.get_term(ac))
     print("with parents:")
-    ids = parser.get_with_parent_list(ac)
+    ids = parser.get_with_relative_list(ac)
     for id in ids:print(parser.term_dict[id])
     sys.exit(0)
 
@@ -193,4 +203,5 @@ if __name__ == '__main__':
     #ids = parser.get_parents(set(), "CHEBI:36080")
     ids = parser.get_parents(set(), "CHEBI_36080")
     for id in ids:print(parser.term_dict[id])
+    
     
