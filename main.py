@@ -1258,14 +1258,15 @@ async def fullsearch_form(
             for field in field_list:                    
                 value = doc.get(field.strip())
                 if value is None: value = "-"
-                if isinstance(value, list): value = " | ".join(value)
+                #if isinstance(value, list): value = " | ".join(value)
+                if isinstance(value, list): value = " | ".join(str(x) for x in value)
                 if field.strip() == "ac":
-                    lnk1 = "https://www.cellosaurus.org/" + value
+                    lnk1 = f"https://www.cellosaurus.org/{value}"
                     #lnk1 = "/cell-line/" + value + "?fields=" + fields + "&format=xml"
                     #lnk2 = "/cell-line/" + value + "?fields=" + "&format=xml"
                     columns.append(f"""<td><a target="_blank" href="{lnk1}">{value}</a></td>""")
                 else:
-                    columns.append("<td>" + value + "</td>")
+                    columns.append(f"<td>{value}</td>")
             resultRows.append("<tr>" + "".join(columns) + "</tr>")
 
     # build response and send it
