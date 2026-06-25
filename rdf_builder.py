@@ -1143,8 +1143,34 @@ class RdfBuilder:
 
         return("".join(triples.lines))
 
+
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    # NEW, release 56, modified, extended to support hysigen, yvonne and editgene hgvs
     def extract_hgvs_list(self, label):
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        hgvs_list = list()
+        #clean_hgvs = hgvs.replace("(", " ").replace(")", " ").replace(",", " ")
+        clean_hgvs = label.replace("(", "").replace(")", "").replace(",", " ")
+        # c. coding DNA, g. genomic DNA, m. mitochondrial DNA, n. non-coding DNA, r. RNA, and p. protein.
+        elems = clean_hgvs.split()
+        valid_prefixes = ["c.", "g.", "p.", "m.", "n.", "r."]
+        pfx_muts = dict()
+        for pfx in valid_prefixes: pfx_muts[pfx] = list()
+        for el in elems:
+            matches = 0
+            for pfx in valid_prefixes:
+                if pfx in el:
+                    matches += 1
+                    pfx_muts[pfx].append(el)
+            #if matches == 0: print(f"DEBUG, hgvs matches none of  c. g. p. type for '{el}': in '{hgvs}'")
+            #if matches  > 1: print(f"DEBUG, hgvs matches multiple c. g. p. type for '{el}': in '{hgvs}'")
+        for pfx in valid_prefixes:
+            if len(pfx_muts[pfx]) > 0:
+                hgvs_list.append(" ".join(pfx_muts[pfx]))
+        return hgvs_list
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    def extract_hgvs_list_old(self, label):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         # How to test if description is hgvs ? based on mut type ? and/or parser ?
         # hgvs formal only in Mutation | Simple(_edited/_corrected)
@@ -1204,7 +1230,8 @@ class RdfBuilder:
         
             if var_type=="Mutation" and mut_type.startswith("Simple"): 
                 hgvs_list = self.extract_hgvs_list(label)
-                if len(hgvs_list) not in [1,2]: log_it("WARNING", f"invalid hgvs in: {label}")
+                # line below commented since release 56: we now accept any number of mutations
+                # if len(hgvs_list) not in [1,2]: log_it("WARNING", f"invalid hgvs in: {label}")
                 for hgvs in hgvs_list: 
                     triples.extend(self.get_materialized_triples_for_prop(seqvar_BN, ns.cello.hgvs, ns.xsd.string(hgvs)))       
                     

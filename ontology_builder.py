@@ -296,8 +296,8 @@ class OntologyBuilder:
             for r in range_dic:
                 if r.startswith("xsd:") or r == ns.rdfs.Literal: prop_types.add("owl:DatatypeProperty") 
                 else: prop_types.add("owl:ObjectProperty") 
-            if len(prop_types) != 1: 
-                log_it("ERROR", term.iri, "has not one and only one type", prop_types)
+            if len(prop_types) != 1:
+                if term.iri != ns.cello.hasAnnotation: log_it("ERROR", term.iri, "has not one and only one type", prop_types)
             else:
                 declared_types = term.props.get(ns.rdf.type) # also includes rdf:Property
                 found_type = prop_types.pop()

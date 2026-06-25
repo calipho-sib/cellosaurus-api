@@ -103,18 +103,25 @@ sleep 10
 # TESTS to be run after deployment
 # -------------------------------------------------------
 # on test server
+
+
 curl "http://buck.sib.swiss:8082/release-info"
 curl "http://buck.sib.swiss:8082/cellapi/cell-line-children/CVCL_0030.tsv"
 curl "http://buck.sib.swiss:8082/api-search-form?q=id%3AHeLa"
 open "http://buck.sib.swiss:8082"
 
-also: https://test-api.cellosaurus.org/
+For SPARQL tests, you need to use apache proxy because of CORS, use:
+
+https://test-api.cellosaurus.org/
+
 
 # on prod server
 curl "http://piccard.sib.swiss:8082/release-info"
 curl "http://piccard.sib.swiss:8082/cellapi/cell-line-children/CVCL_0030.tsv"
 curl "http://piccard.sib.swiss:8082/api-search-form?q=id%3AHeLa"
 open "http://piccard.sib.swiss:8082"
+
+For SPARQL tests, you need to use apache proxy because of CORS, use public URL:
 
 also: https://api.cellosaurus.org/
 
